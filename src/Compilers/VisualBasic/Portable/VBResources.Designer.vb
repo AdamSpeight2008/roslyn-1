@@ -7072,6 +7072,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Missing `As` Keyword..
+        '''</summary>
+        Friend ReadOnly Property ERR_MissingAsKeyword() As String
+            Get
+                Return ResourceManager.GetString("ERR_MissingAsKeyword", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to &apos;AddHandler&apos; declaration must end with a matching &apos;End AddHandler&apos;..
         '''</summary>
         Friend ReadOnly Property ERR_MissingEndAddHandler() As String
@@ -7230,6 +7239,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend ReadOnly Property ERR_MissingSubscript() As String
             Get
                 Return ResourceManager.GetString("ERR_MissingSubscript", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Missing a typename..
+        '''</summary>
+        Friend ReadOnly Property ERR_MissingTypeName() As String
+            Get
+                Return ResourceManager.GetString("ERR_MissingTypeName", resourceCulture)
             End Get
         End Property
         

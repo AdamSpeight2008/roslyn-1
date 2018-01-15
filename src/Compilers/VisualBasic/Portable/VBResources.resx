@@ -5530,4 +5530,10 @@
   <data name="FEATURE_DefaultOptionalParameter" xml:space="preserve">
     <value>Default Optional Parameter</value>
   </data>
+  <data name="ERR_MissingAsKeyword" xml:space="preserve">
+    <value>Missing `As` Keyword.</value>
+  </data>
+  <data name="ERR_MissingTypeName" xml:space="preserve">
+    <value>Missing a typename.</value>
+  </data>
 </root>

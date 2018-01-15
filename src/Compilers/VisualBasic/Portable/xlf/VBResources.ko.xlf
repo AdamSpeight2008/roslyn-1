@@ -9081,6 +9081,16 @@
         <target state="new">Default Optional Parameter</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_MissingAsKeyword">
+        <source>Missing `As` Keyword.</source>
+        <target state="new">Missing `As` Keyword.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_MissingTypeName">
+        <source>Missing a typename.</source>
+        <target state="new">Missing a typename.</target>
+        <note />
+      </trans-unit>
     </body>
   </file>
 </xliff>

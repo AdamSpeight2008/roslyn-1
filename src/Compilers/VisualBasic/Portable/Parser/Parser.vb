@@ -3076,23 +3076,20 @@ checkNullable:
         Friend Function ParseGeneralType(Optional allowEmptyGenericArguments As Boolean = False) As TypeSyntax
 
             Dim start As SyntaxToken = CurrentToken
-            Dim result As TypeSyntax
+            Dim result As TypeSyntax=nothing
 
             If _evaluatingConditionCompilationExpression AndAlso Not SyntaxFacts.IsPredefinedTypeOrVariant(start.Kind) Then
 
-                'TODO - 
-                ' 1. Dev10 code does NOT consume any tokens here.
-                ' 2. Should this error check be done in the parser or when the expression is evaluated?
+                ''TODO - 
+                '' 1. Dev10 code does NOT consume any tokens here.
+                '' 2. Should this error check be done in the parser or when the expression is evaluated?
                 Dim ident = InternalSyntaxFactory.MissingIdentifier()
                 ident = ident.AddTrailingSyntax(start, ERRID.ERR_BadTypeInCCExpression)
                 result = SyntaxFactory.IdentifierName(ident)
-                GetNextToken()
-
                 Return result
             End If
 
             Dim allowedEmptyGenericArguments As Boolean = False
-
             result = ParseTypeName(
                 allowEmptyGenericArguments:=allowEmptyGenericArguments,
                 allowedEmptyGenericArguments:=allowedEmptyGenericArguments)
@@ -4672,6 +4669,26 @@ checkNullable:
             Loop
         End Function
 
+        Private Function ParseAsTypeNameClause() As SimpleAsClauseSyntax
+            Dim optionalAsClause As SimpleAsClauseSyntax = Nothing
+            Dim asKeyword As KeywordSyntax = Nothing
+
+            If Not TryGetToken(SyntaxKind.AsKeyword, asKeyword) Then
+                ' For example:-  param0 A String
+               asKeyword =InternalSyntaxFactory.MissingKeyword(SyntaxKind.AsKeyword)
+                asKeyword=ResyncAt(asKeyword, SyntaxKind.IdentifierName, SyntaxKind.EqualsToken, SyntaxKind.CommaToken, SyntaxKind.CloseParenToken)
+            End if
+
+            Dim typeName = ParseGeneralType()
+
+            optionalAsClause = SyntaxFactory.SimpleAsClause(asKeyword, Nothing, typeName)
+            If optionalAsClause.ContainsDiagnostics Then
+                optionalAsClause = ResyncAt(optionalAsClause, SyntaxKind.EqualsToken, SyntaxKind.CommaToken, SyntaxKind.CloseParenToken)
+            End If
+
+            Return optionalAsClause
+        End Function
+
         ''' <summary>
         '''     Parameter -> Attributes? ParameterModifiers* ParameterIdentifier ("as" TypeName)? ("=" ConstantExpression)?
         ''' </summary>
@@ -4694,19 +4711,13 @@ checkNullable:
             End If
 
             Dim optionalAsClause As SimpleAsClauseSyntax = Nothing
-            Dim asKeyword As KeywordSyntax = Nothing
+            optionalAsClause = ParseAsTypeNameClause()
 
-            If TryGetToken(SyntaxKind.AsKeyword, asKeyword) Then
-                Dim typeName = ParseGeneralType()
-
-                optionalAsClause = SyntaxFactory.SimpleAsClause(asKeyword, Nothing, typeName)
-
-                If optionalAsClause.ContainsDiagnostics Then
-                    optionalAsClause = ResyncAt(optionalAsClause, SyntaxKind.EqualsToken, SyntaxKind.CommaToken, SyntaxKind.CloseParenToken)
+            If optionalAsClause.AsKeyword.IsMissing = False AndAlso optionalAsClause.Type.IsMissing  Then
+                  'optionalAsClause = optionalAsClause.AddError(ERRID.ERR_MissingTypeName)
+             Else If optionalAsClause.AsKeyword.isMissing AndAlso optionalAsClause.Type.IsMissing =false Then
+                optionalAsClause = optionalAsClause.AddError(ERRID.ERR_MissingAsKeyword)
                 End If
-
-            End If
-
             Dim equals As PunctuationSyntax = Nothing
             Dim value As ExpressionSyntax = Nothing
 

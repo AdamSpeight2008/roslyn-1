@@ -1741,6 +1741,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         ERR_ValueTupleResolutionAmbiguous3 = 37305
 
+        ERR_MissingTypeName  = 37306
+        ERR_MissingAsKeyword = 37307
+
         '// WARNINGS BEGIN HERE
         WRN_UseOfObsoleteSymbol2 = 40000
         WRN_InvalidOverrideDueToTupleNames2 = 40001
@@ -2017,5 +2020,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_LeadingDigitSeparator
         FEATURE_PrivateProtected
         FEATURE_DefaultOptionalParameter
+
     End Enum
 End Namespace
