@@ -15,8 +15,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ' just preserve the node to report an error in ExpressionLambdaRewriter
                 Return MyBase.VisitFlagsEnumOperationExpressionSyntax(node)
             End If
-            'If node.HasErrors Then Return MyBase.VisitFlagsEnumOperationExpressionSyntax(node)
-            Return Rewrite_As_IsSet(node)
+            'If node.HasErrors Then Return MyBase.VisitFlagsEnumOperationExpressionSyntax(node
+            Select Case node.Op
+                Case FlagsEnumOperatorKind.IsSet
+                    Return Rewrite_As_IsSet(node)
+                Case FlagsEnumOperatorKind.Clear
+                    Return Rewrite_As_FlagClr(node)
+                Case FlagsEnumOperatorKind.Set
+                    Return Rewrite_As_FlagSet(node)
+            End Select
+                Return MyBase.VisitFlagsEnumOperationExpressionSyntax(node)
         End Function
 
         Private Function Rewrite_As_IsSet(node As BoundFlagsEnumOperationExpressionSyntax) As BoundNode

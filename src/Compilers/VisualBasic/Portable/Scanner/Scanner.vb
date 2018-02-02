@@ -1219,13 +1219,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     End If
 
                 Case "!"c
+                    ' Check to see if could be a FlagsEnum Operator.
                     If CanGet(1) Then
                         Dim nc= Peek(1)
                         If nc="+"c Then
-                      AdvanceChar(2)
+                            AdvanceChar(2)                  
                             Return SyntaxFactory.FlagsEnumSetToken("!+", precedingTrivia.Node, Nothing)
                         ElseIf  nc="-"c Then
-                        AdvanceChar(2)
+                            AdvanceChar(2)
                             Return SyntaxFactory.FlagsEnumClearToken("!-", precedingTrivia.Node, Nothing)
                         End If
                      End if

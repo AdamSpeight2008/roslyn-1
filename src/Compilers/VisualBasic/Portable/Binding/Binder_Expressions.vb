@@ -62,6 +62,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case SyntaxKind.DictionaryAccessExpression
                     Return BindDictionaryAccess(DirectCast(node, MemberAccessExpressionSyntax), diagnostics)
 
+                Case SyntaxKind.FlagsEnumOperationExpression
+                    Return Bind_FlagsEnumOperation(DirectCast(node,FlagsEnumOperationExpressionSyntax),diagnostics)
+
                 Case SyntaxKind.InvocationExpression
                     Return BindInvocationExpression(DirectCast(node, InvocationExpressionSyntax), diagnostics)
 
@@ -3832,16 +3835,60 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                 diagBag As DiagnosticBag
                                               ) As BoundExpression
             Dim FlagName = member.Name.Identifier.ValueText
+            Return Bind_FlagsEnumOperation(FlagName, member, member.Expression, member.OperatorToken, member.Name, diagBag)
+        End Function
+
+        Private Function GetFlagsEnumOperationKind(node As SyntaxToken) As FlagsEnumOperatorKind
+            Select Case node.Kind
+                Case SyntaxKind.FlagsEnumClearToken : Return FlagsEnumOperatorKind.Clear
+                Case SyntaxKind.FlagsEnumIsSetToken,
+                     SyntaxKind.ExclamationToken
+                    Return FlagsEnumOperatorKind.IsSet
+                Case SyntaxKind.FlagsEnumSetToken : Return FlagsEnumOperatorKind.Set
+            End Select
+            Return FlagsEnumOperatorKind.None
+        End Function
+
+        Private Function Bind_FlagsEnumOperation(
+                                                  FlagName As String,
+                                                  node As ExpressionSyntax,
+                                                  EnumFlags As ExpressionSyntax,
+                                                  opToken As SyntaxToken,
+                                                  EnumFlag As SimpleNameSyntax,
+                                                  diagBag As DiagnosticBag
+                                                ) As BoundExpression
             Dim eFlag As FieldSymbol = Nothing
-            If Not IsMemberOfThisEnum(original, FlagName, eFlag) Then
-                Return ReportDiagnosticAndProduceBadExpression(diagBag, member.Name, ERRID.ERR_NameNotMember2, FlagName, original.Name)
+            Dim bFlags = BindExpression(EnumFlags, diagBag)
+            Dim original = bFlags.Type.OriginalDefinition
+
+            If Not IsFlagsEnum(DirectCast(original, INamedTypeSymbol)) Then
+                Return ReportDiagnosticAndProduceBadExpression(diagBag, EnumFlags, ERRID.ERR_EnumNotExpression1)
             End If
-            ' We have a valid member of the enum referred to.
+
+            If Not IsMemberOfThisEnum(original, FlagName, eFlag) Then
+                Return ReportDiagnosticAndProduceBadExpression(diagBag, EnumFlag, ERRID.ERR_NameNotMember2, FlagName, original.Name)
+            End If
+
+            Dim op As FlagsEnumOperatorKind = GetFlagsEnumOperationKind(opToken)
+            If op = FlagsEnumOperatorKind.None Then
+                Return ReportDiagnosticAndProduceBadExpression(diagBag, node, ERRID.ERR_NameNotMember2, FlagName, original.Name)
+            End If
+
             Return New BoundFlagsEnumOperationExpressionSyntax(
-                  syntax:=node,
-               enumFlags:=expr, Nothing,
-                enumFlag:=New BoundFieldAccess(member.Name, expr, eFlag, False, original),
-                    type:=GetSpecialType(SpecialType.System_Boolean, member.Name, diagBag))
+                syntax:=node,
+               enumFlags:=bFlags, op,
+                enumFlag:=New BoundFieldAccess(EnumFlag, bFlags, eFlag, False, original),
+                    type:=If(op = FlagsEnumOperatorKind.IsSet, GetSpecialType(SpecialType.System_Boolean, EnumFlag, diagBag), original)
+                    )
+        End Function
+
+        Private Function Bind_FlagsEnumOperation(
+                                                  node As FlagsEnumOperationExpressionSyntax,
+                                                  diagBag As DiagnosticBag
+                                                ) As BoundExpression
+            Dim FlagName = node.EnumFlag?.Identifier.ValueText
+            FlagName = If(FlagName, String.Empty)
+            Return Bind_FlagsEnumOperation(FlagName,node,node.EnumFlags, node.OperatorToken, node.EnumFlag,diagBag)
         End Function
 
         Private Shared Sub ReportNoDefaultProperty(expr As BoundExpression, diagnostics As DiagnosticBag)
