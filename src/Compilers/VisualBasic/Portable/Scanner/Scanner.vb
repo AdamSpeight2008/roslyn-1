@@ -1219,7 +1219,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     End If
 
                 Case "!"c
-                    Return MakeExclamationToken(precedingTrivia, fullWidth)
+                    If CanGet(1) Then
+                        Dim nc= Peek(1)
+                        If nc="+"c Then
+                      AdvanceChar(2)
+                            Return SyntaxFactory.FlagsEnumSetToken("!+", precedingTrivia.Node, Nothing)
+                        ElseIf  nc="-"c Then
+                        AdvanceChar(2)
+                            Return SyntaxFactory.FlagsEnumClearToken("!-", precedingTrivia.Node, Nothing)
+                        End If
+                     End if
+                        Return MakeExclamationToken(precedingTrivia, fullWidth)
 
                 Case "."c
                     If CanGet(1) AndAlso IsDecimalDigit(Peek(1)) Then
@@ -1520,6 +1530,8 @@ FullWidthRepeat:
 
                             If IsIdentifierStartCharacter(NextChar) OrElse
                                 MatchOneOrAnotherOrFullwidth(NextChar, "["c, "]"c) Then
+                                Exit Select
+                            Else If NextChar = "+"c orelse  NextChar = "-"c Then
                                 Exit Select
                             End If
                         End If

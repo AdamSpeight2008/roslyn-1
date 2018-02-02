@@ -231,6 +231,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                     term = ParseSimpleNameExpressionAllowingKeywordAndTypeArguments()
 
+                Case SyntaxKind.FlagsEnumOperatorSyntax
+
+                    term = ParseSimpleNameExpressionAllowingKeywordAndTypeArguments()
+                    Dim op = DirectCast(start, FlagsEnumOperatorSyntax)
+                    Return ParseFlagsEnumExpr(DirectCast(term, SimpleNameSyntax), op)
+
                 Case SyntaxKind.ExclamationToken
                     term = ParseQualifiedExpr(Nothing)
 
@@ -464,6 +470,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     End If
 
                     term = ParseQualifiedExpr(term)
+                ElseIf [Next].Kind = SyntaxKind.FlagsEnumOperatorSyntax Then
+                    Dim op = DirectCast([Next], FlagsEnumOperatorSyntax)
+                    'op = CheckFeatureAvailability(Feature.FlagsEnumOperators, op)
+
+                    term = ParseFlagsEnumExpr(DirectCast(term, SimpleNameSyntax), op)
 
                 ElseIf [Next].Kind = SyntaxKind.ExclamationToken Then
                     If isAfterSingleLineSub Then
@@ -501,6 +512,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     End If
 
                     term = SyntaxFactory.ConditionalAccessExpression(term, qToken, ParsePostFixExpression(RedimOrNewParent, term:=Nothing))
+
                 Else
                     ' We're done with the term.
                     Exit Do
@@ -979,6 +991,45 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return ParseExpressionCore(OperatorPrecedence.PrecedenceRelational)
         End Function
 
+        Private Shared ReadOnly IsFlagsAttribute As Func(Of AttributeData, Boolean) =
+            Function(attribute)
+                Dim ctor = attribute.AttributeConstructor
+                If (ctor Is Nothing) Then Return False
+                Dim [Type] = ctor.ContainingType
+                If (ctor.Parameters.Any() OrElse [Type].Name <> "FlagsAttribute") Then Return False
+                Dim containingSymbol = Type.ContainingSymbol
+                Return (containingSymbol.Kind = SymbolKind.Namespace) AndAlso
+                       (containingSymbol.Name = "System") AndAlso DirectCast(containingSymbol.ContainingSymbol, INamespaceSymbol).IsGlobalNamespace
+            End Function
+
+        Private Function IsFlagsEnum(typeSymbol As INamedTypeSymbol) As Boolean
+            Return (typeSymbol.TypeKind = TypeKind.Enum) AndAlso typeSymbol.GetAttributes().Any(IsFlagsAttribute)
+        End Function
+
+        Private Function IsMemberOfThisEnum(thisEnumSymbol As Symbols.TypeSymbol, member As String, ByRef result As Symbols.FieldSymbol) As Boolean
+            Dim members = thisEnumSymbol.GetMembers(member)
+            result = DirectCast(members.FirstOrDefault(), Symbols.FieldSymbol)
+            Return result IsNot Nothing
+        End Function
+
+        Private Function ParseFlagsEnumExpr(Term As SimpleNameSyntax, op As FlagsEnumOperatorSyntax) As ExpressionSyntax
+            ' FlagsEnum !+ EnumFlag -> FlagsEnum
+            ' FlagsEnum !- EnumFlag -> FlagsEnum
+            Dim prevPrevToken = PrevToken
+            GetNextToken()
+            Dim comp = VisualBasicCompilation.Create("", {prevPrevToken.ToRed.SyntaxTree})
+            Dim sm = comp.GetSemanticModel(prevPrevToken.ToRed.SyntaxTree, True)
+            Dim ti = sm.GetTypeInfo(Term.ToRed)
+            Dim original = ti.Type.OriginalDefinition
+            If Not IsFlagsEnum(DirectCast(original, INamedTypeSymbol)) Then
+                Return ReportSyntaxError(Term, ERRID.ERR_EnumNotExpression1)
+
+            Else
+                Dim Name = ParseIdentifierNameAllowingKeyword()
+                Return SyntaxFactory.FlagsEnumOperationExpression(Term, op, Name)
+            End If
+        End Function
+
         ' /*********************************************************************
         ' *
         ' * Function:
@@ -1007,7 +1058,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             GetNextToken()
 
             If DotOrBangToken.Kind = SyntaxKind.ExclamationToken Then
-
                 Dim Name = ParseIdentifierNameAllowingKeyword()
                 Return SyntaxFactory.DictionaryAccessExpression(Term, DotOrBangToken, Name)
             Else
