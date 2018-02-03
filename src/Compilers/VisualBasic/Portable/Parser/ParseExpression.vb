@@ -477,7 +477,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Dim op = DirectCast([Next], FlagsEnumOperatorSyntax)
                     'op = CheckFeatureAvailability(Feature.FlagsEnumOperators, op)
 
-                    term = ParseFlagsEnumExpr(DirectCast(term, IdentifierNameSyntax), op)
+                    term = ParseFlagsEnumExpr(term, op)
 
                 ElseIf [Next].Kind = SyntaxKind.ExclamationToken Then
                     If isAfterSingleLineSub Then
@@ -994,7 +994,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return ParseExpressionCore(OperatorPrecedence.PrecedenceRelational)
         End Function
 
-        Private Function ParseFlagsEnumExpr(Term As IdentifierNameSyntax, op As FlagsEnumOperatorSyntax) As ExpressionSyntax
+        Private Function ParseFlagsEnumExpr(Term As ExpressionSyntax, op As FlagsEnumOperatorSyntax) As ExpressionSyntax
             ' FlagsEnum !+ EnumFlag -> FlagsEnum
             ' FlagsEnum !- EnumFlag -> FlagsEnum
             Dim prevPrevToken = PrevToken

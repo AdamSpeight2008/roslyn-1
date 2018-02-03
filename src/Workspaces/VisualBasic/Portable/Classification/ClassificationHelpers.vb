@@ -46,7 +46,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Classification
             ElseIf token.Kind = SyntaxKind.FlagsEnumClearToken OrElse 
                    token.Kind = SyntaxKind.FlagsEnumIsSetToken OrElse
                    token.Kind = SyntaxKind.FlagsEnumSetToken Then
-                Return ClassificationTypeNames.Operator
+                Return ClassificationTypeNames.Punctuation
             ElseIf token.IsKind(SyntaxKind.None, SyntaxKind.BadToken) Then
                 Return Nothing
             Else

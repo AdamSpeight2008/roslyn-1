@@ -24,7 +24,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case FlagsEnumOperatorKind.Set
                     Return Rewrite_As_FlagSet(node)
             End Select
-                Return MyBase.VisitFlagsEnumOperationExpressionSyntax(node)
+            Return MyBase.VisitFlagsEnumOperationExpressionSyntax(node)
         End Function
 
         Private Function Rewrite_As_IsSet(node As BoundFlagsEnumOperationExpressionSyntax) As BoundNode
