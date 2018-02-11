@@ -88,7 +88,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Feature.PrivateProtected
                     Return LanguageVersion.VisualBasic15_5
                 Case Feature.EnumFlagOperators
-                    Return LanguageVersion.VisualBasic15_7 '(PROTOTYPE)
+                    Return LanguageVersion.VisualBasic15_5 '(PROTOTYPE)
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(feature)
             End Select

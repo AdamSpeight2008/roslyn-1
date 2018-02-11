@@ -33,7 +33,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     LanguageVersion.VisualBasic14,
                     LanguageVersion.VisualBasic15,
                     LanguageVersion.VisualBasic15_3,
-                    LanguageVersion.VisualBasic15_5
+                    LanguageVersion.VisualBasic15_5,
+                    LanguageVersion.VisualBasic15_7
 
                     Return True
             End Select
