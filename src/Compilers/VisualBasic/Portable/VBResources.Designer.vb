@@ -12055,6 +12055,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Enum Flag Operators.
+        '''</summary>
+        Friend ReadOnly Property FEATURE_EnumFlagOperators() As String
+            Get
+                Return ResourceManager.GetString("FEATURE_EnumFlagOperators", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to declaring a Global namespace.
         '''</summary>
         Friend ReadOnly Property FEATURE_GlobalNamespace() As String

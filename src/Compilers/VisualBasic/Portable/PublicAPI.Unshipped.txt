@@ -1,5 +1,6 @@
 Microsoft.CodeAnalysis.VisualBasic.Conversion.ToCommonConversion() -> Microsoft.CodeAnalysis.Operations.CommonConversion
 Microsoft.CodeAnalysis.VisualBasic.LanguageVersion.VisualBasic15_5 = 1505 -> Microsoft.CodeAnalysis.VisualBasic.LanguageVersion
+Microsoft.CodeAnalysis.VisualBasic.LanguageVersion.VisualBasic15_7 = 1507 -> Microsoft.CodeAnalysis.VisualBasic.LanguageVersion
 Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperationExpressionSyntax
 Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperationExpressionSyntax.EnumFlag() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.SimpleNameSyntax
 Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperationExpressionSyntax.EnumFlags() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax

@@ -16,10 +16,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return MyBase.VisitFlagsEnumOperationExpressionSyntax(node)
             End If
             'If node.HasErrors Then Return MyBase.VisitFlagsEnumOperationExpressionSyntax(node
-            Dim EnumFlags As BoundExpression = VisitExpression(node.EnumFlags)
-            Dim flagPart As BoundExpression = VisitExpression(node.EnumFlag)
-            flagPart = flagPart.MakeRValue
-            EnumFlags = EnumFlags.MakeRValue
+            Dim EnumFlags As BoundExpression = VisitExpression(node.EnumFlags).MakeRValue
+            Dim flagPart As BoundExpression = VisitExpression(node.EnumFlag).MakeRValue
             Select Case node.Op
                 Case FlagsEnumOperatorKind.IsSet
                     Return Rewrite_As_IsSet(node, EnumFlags, flagPart)

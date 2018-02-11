@@ -2017,5 +2017,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_Tuples
         FEATURE_LeadingDigitSeparator
         FEATURE_PrivateProtected
+        FEATURE_EnumFlagOperators
     End Enum
 End Namespace

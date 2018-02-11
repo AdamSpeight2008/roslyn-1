@@ -475,7 +475,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 ElseIf [Next].Kind = SyntaxKind.FlagsEnumClearToken OrElse
                        [Next].Kind = SyntaxKind.FlagsEnumSetToken Then
                     Dim op = DirectCast([Next], FlagsEnumOperatorSyntax)
-                    'op = CheckFeatureAvailability(Feature.FlagsEnumOperators, op)
+                    op = CheckFeatureAvailability(Feature.EnumFlagOperators, op)
 
                     term = ParseFlagsEnumExpr(term, op)
 

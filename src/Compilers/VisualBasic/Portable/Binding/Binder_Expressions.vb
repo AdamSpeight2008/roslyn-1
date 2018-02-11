@@ -63,7 +63,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Return BindDictionaryAccess(DirectCast(node, MemberAccessExpressionSyntax), diagnostics)
 
                 Case SyntaxKind.FlagsEnumOperationExpression
-                    Return Bind_FlagsEnumOperation(DirectCast(node,FlagsEnumOperationExpressionSyntax),diagnostics)
+                    Return Bind_FlagsEnumOperation(DirectCast(node, FlagsEnumOperationExpressionSyntax), diagnostics)
 
                 Case SyntaxKind.InvocationExpression
                     Return BindInvocationExpression(DirectCast(node, InvocationExpressionSyntax), diagnostics)
