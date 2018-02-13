@@ -762,11 +762,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim resultType As TypeSymbol = GetSpecialType(SpecialType.System_Boolean, node, diagnostics)
             Dim targetSymbol As Symbol = BindTypeOrAliasSyntax(targetTypeSyntax, diagnostics)
             Dim targetType = DirectCast(If(TryCast(targetSymbol, TypeSymbol), DirectCast(targetSymbol, AliasSymbol).Target), TypeSymbol)
+            Dim t As New BoundTypeExpression(targetTypeSyntax, targetType)
 
 
             If operand.HasErrors OrElse operandType.IsErrorType() OrElse targetType.IsErrorType() Then
                 ' If operand is bad or either the source or target types have errors, bail out preventing more cascading errors.
-                Return New BoundTypeOf(node, targetType, operand, operatorIsIsNot, resultType)
+                Return New BoundTypeOf(node, t.Type, operand, operatorIsIsNot, resultType)
             End If
 
             If Not operandType.IsReferenceType AndAlso
