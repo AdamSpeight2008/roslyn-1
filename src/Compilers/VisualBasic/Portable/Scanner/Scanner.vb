@@ -1532,7 +1532,9 @@ FullWidthRepeat:
                             If IsIdentifierStartCharacter(NextChar) OrElse
                                 MatchOneOrAnotherOrFullwidth(NextChar, "["c, "]"c) Then
                                 Exit Select
-                            Else If NextChar = "+"c orelse  NextChar = "-"c Then
+                            ElseIf NextChar = "+"c OrElse NextChar = "-"c Then
+                                Exit Select
+                            ElseIf NextChar = "("c Then
                                 Exit Select
                             End If
                         End If
