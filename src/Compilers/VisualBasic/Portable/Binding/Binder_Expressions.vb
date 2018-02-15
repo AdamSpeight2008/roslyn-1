@@ -3852,6 +3852,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.ExclamationToken
                     Return FlagsEnumOperatorKind.IsSet
                 Case SyntaxKind.FlagsEnumSetToken : Return FlagsEnumOperatorKind.Set
+                Case SyntaxKind.FlagsEnumIsAnyToken : Return FlagsEnumOperatorKind.IsAny
             End Select
             Return FlagsEnumOperatorKind.None
         End Function
@@ -3885,7 +3886,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 syntax:=node,
                enumFlags:=bFlags, op,
                 enumFlag:=New BoundFieldAccess(EnumFlag, bFlags, eFlag, False, original),
-                    type:=If(op = FlagsEnumOperatorKind.IsSet, GetSpecialType(SpecialType.System_Boolean, EnumFlag, diagBag), original)
+                    type:=If(op = FlagsEnumOperatorKind.IsSet Or op = FlagsEnumOperatorKind.IsAny,
+                                  GetSpecialType(SpecialType.System_Boolean, EnumFlag, diagBag), original)
                     )
         End Function
 
@@ -3932,7 +3934,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 syntax:=node,
                enumFlags:=bFlags, op,
                 enumFlag:=BindExpression(EnumFlag, diagBag),
-                    type:=If(op = FlagsEnumOperatorKind.IsSet, GetSpecialType(SpecialType.System_Boolean, EnumFlag, diagBag), original)
+                    type:=If(op = FlagsEnumOperatorKind.IsSet Or op = FlagsEnumOperatorKind.IsAny,
+                             GetSpecialType(SpecialType.System_Boolean, EnumFlag, diagBag), original)
                     )
         End Function
 

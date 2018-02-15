@@ -233,7 +233,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Case SyntaxKind.FlagsEnumOperatorSyntax,
                      SyntaxKind.FlagsEnumClearToken,
-                     SyntaxKind.FlagsEnumSetToken
+                     SyntaxKind.FlagsEnumSetToken,
+                     SyntaxKind.FlagsEnumIsAnyToken
 
                     term = ParseSimpleNameExpressionAllowingKeywordAndTypeArguments()
                     Dim op = DirectCast(start, FlagsEnumOperatorSyntax)
@@ -473,7 +474,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                     term = ParseQualifiedExpr(term)
                 ElseIf [Next].Kind = SyntaxKind.FlagsEnumClearToken OrElse
-                       [Next].Kind = SyntaxKind.FlagsEnumSetToken Then
+                       [Next].Kind = SyntaxKind.FlagsEnumSetToken OrElse
+                       [Next].Kind = SyntaxKind.FlagsEnumIsAnyToken Then
                     Dim op = DirectCast([Next], FlagsEnumOperatorSyntax)
                     op = CheckFeatureAvailability(Feature.EnumFlagOperators, op)
 
@@ -995,8 +997,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseFlagsEnumExpr(Term As ExpressionSyntax, op As FlagsEnumOperatorSyntax) As ExpressionSyntax
-            ' FlagsEnum !+ EnumFlag -> FlagsEnum
-            ' FlagsEnum !- EnumFlag -> FlagsEnum
             Dim prevPrevToken = PrevToken
             GetNextToken()
             If CurrentToken.Kind = SyntaxKind.ParenthesizedExpression Then

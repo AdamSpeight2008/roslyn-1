@@ -11,10 +11,12 @@ Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperationExpressionSyntax.Wit
 Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperationExpressionSyntax.WithOperatorToken(operatorToken As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperationExpressionSyntax
 Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperatorKind
 Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperatorKind.Clear = 3 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperatorKind
+Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperatorKind.IsAny = 4 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperatorKind
 Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperatorKind.IsSet = 1 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperatorKind
 Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperatorKind.None = 0 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperatorKind
 Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperatorKind.Set = 2 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperatorKind
 Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FlagsEnumClearToken = 796 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FlagsEnumIsAnyToken = 798 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
 Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FlagsEnumIsSetToken = 794 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
 Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FlagsEnumOperationExpression = 793 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
 Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FlagsEnumOperatorSyntax = 797 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
@@ -31,6 +33,8 @@ Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperationExpression
 Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitFlagsEnumOperationExpression(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperationExpressionSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
 Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.FlagsEnumClearToken(leadingTrivia As Microsoft.CodeAnalysis.SyntaxTriviaList, text As String, trailingTrivia As Microsoft.CodeAnalysis.SyntaxTriviaList) -> Microsoft.CodeAnalysis.SyntaxToken
 Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.FlagsEnumClearToken(text As String) -> Microsoft.CodeAnalysis.SyntaxToken
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.FlagsEnumIsAnyToken(leadingTrivia As Microsoft.CodeAnalysis.SyntaxTriviaList, text As String, trailingTrivia As Microsoft.CodeAnalysis.SyntaxTriviaList) -> Microsoft.CodeAnalysis.SyntaxToken
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.FlagsEnumIsAnyToken(text As String) -> Microsoft.CodeAnalysis.SyntaxToken
 Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.FlagsEnumIsSetToken(leadingTrivia As Microsoft.CodeAnalysis.SyntaxTriviaList, text As String, trailingTrivia As Microsoft.CodeAnalysis.SyntaxTriviaList) -> Microsoft.CodeAnalysis.SyntaxToken
 Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.FlagsEnumIsSetToken(text As String) -> Microsoft.CodeAnalysis.SyntaxToken
 Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.FlagsEnumOperationExpression(enumFlags As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax, operatorToken As Microsoft.CodeAnalysis.SyntaxToken, enumFlag As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.FlagsEnumOperationExpressionSyntax
