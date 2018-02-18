@@ -3199,5 +3199,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ConflictMarkerTrivia = 792
 
+        ' FlagsEnumOperators
+        FlagsEnum_AllSetToken = 793
+        FlagsEnum_AnySetToken = 794
+        FlagsEnum_SetToken = 795
+        FlagsEnum_ClrToken = 796
+        FlagsEnum_AllSet_Expression = 797
+        FlagsEnum_AnySet_Expression = 798
+        FlagsEnum_Set_Expression = 799
+        FlagsEnum_Clr_Expression = 800
     End Enum
 End Namespace

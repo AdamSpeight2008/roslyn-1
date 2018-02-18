@@ -508,13 +508,33 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     SyntaxKind.BackslashEqualsToken,
                     SyntaxKind.CaretEqualsToken,
                     SyntaxKind.LessThanLessThanEqualsToken,
-                    SyntaxKind.GreaterThanGreaterThanEqualsToken
+                    SyntaxKind.GreaterThanGreaterThanEqualsToken,
+                    SyntaxKind.FlagsEnum_AllSetToken,
+                    SyntaxKind.FlagsEnum_AnySetToken,
+                    SyntaxKind.FlagsEnum_SetToken,
+                    SyntaxKind.FlagsEnum_ClrToken
+
                     Return True
 
                 Case Else
                     Return False
             End Select
         End Function
+
+        Public Shared Function IsFlagsEnumOperator(kind As SyntaxKind) As Boolean
+            Select Case (kind)
+                Case SyntaxKind.FlagsEnum_AllSetToken,
+                    SyntaxKind.FlagsEnum_AnySetToken,
+                    SyntaxKind.FlagsEnum_SetToken,
+                    SyntaxKind.FlagsEnum_ClrToken
+
+                    Return True
+
+                Case Else
+                    Return False
+            End Select
+        End Function
+
 
         Public Shared Function IsPreprocessorDirective(kind As SyntaxKind) As Boolean
             Select Case kind
@@ -758,6 +778,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 Case SyntaxKind.GreaterThanGreaterThanToken
                     Return SyntaxKind.RightShiftExpression
+
+                Case SyntaxKind.FlagsEnum_AllSetToken ' FlagsEnumOperators
+                    Return SyntaxKind.FlagsEnum_AllSet_Expression
+
+                Case SyntaxKind.FlagsEnum_AnySetToken
+                    Return SyntaxKind.FlagsEnum_AnySet_Expression
+
+                Case SyntaxKind.FlagsEnum_SetToken
+                    Return SyntaxKind.FlagsEnum_Set_Expression
+
+                Case SyntaxKind.FlagsEnum_ClrToken
+                    Return SyntaxKind.FlagsEnum_Clr_Expression
 
                 Case Else
                     Return SyntaxKind.None

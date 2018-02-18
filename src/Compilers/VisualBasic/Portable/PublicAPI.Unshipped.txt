@@ -1,7 +1,20 @@
 Microsoft.CodeAnalysis.VisualBasic.Conversion.ToCommonConversion() -> Microsoft.CodeAnalysis.Operations.CommonConversion
 Microsoft.CodeAnalysis.VisualBasic.LanguageVersion.VisualBasic15_5 = 1505 -> Microsoft.CodeAnalysis.VisualBasic.LanguageVersion
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FlagsEnum_AllSetToken = 793 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FlagsEnum_AllSet_Expression = 797 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FlagsEnum_AnySetToken = 794 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FlagsEnum_AnySet_Expression = 798 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FlagsEnum_ClrToken = 796 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FlagsEnum_Clr_Expression = 800 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FlagsEnum_SetToken = 795 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FlagsEnum_Set_Expression = 799 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
 Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions.GetConversion(conversionExpression As Microsoft.CodeAnalysis.Operations.IConversionOperation) -> Microsoft.CodeAnalysis.VisualBasic.Conversion
 Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions.GetInConversion(argument As Microsoft.CodeAnalysis.Operations.IArgumentOperation) -> Microsoft.CodeAnalysis.VisualBasic.Conversion
 Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions.GetInConversion(compoundAssignment As Microsoft.CodeAnalysis.Operations.ICompoundAssignmentOperation) -> Microsoft.CodeAnalysis.VisualBasic.Conversion
 Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions.GetOutConversion(argument As Microsoft.CodeAnalysis.Operations.IArgumentOperation) -> Microsoft.CodeAnalysis.VisualBasic.Conversion
 Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions.GetOutConversion(compoundAssignment As Microsoft.CodeAnalysis.Operations.ICompoundAssignmentOperation) -> Microsoft.CodeAnalysis.VisualBasic.Conversion
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.FlagsEnum_AllSet_Expression(left As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax, operatorToken As Microsoft.CodeAnalysis.SyntaxToken, right As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.BinaryExpressionSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.FlagsEnum_AnySet_Expression(left As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax, operatorToken As Microsoft.CodeAnalysis.SyntaxToken, right As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.BinaryExpressionSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.FlagsEnum_Clr_Expression(left As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax, operatorToken As Microsoft.CodeAnalysis.SyntaxToken, right As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.BinaryExpressionSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.FlagsEnum_Set_Expression(left As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax, operatorToken As Microsoft.CodeAnalysis.SyntaxToken, right As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.BinaryExpressionSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFacts.IsFlagsEnumOperator(kind As Microsoft.CodeAnalysis.VisualBasic.SyntaxKind) -> Boolean

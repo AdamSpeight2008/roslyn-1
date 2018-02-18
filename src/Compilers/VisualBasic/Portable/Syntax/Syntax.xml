@@ -5849,7 +5849,24 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="BinaryOperator" />
         <native-equiv name="Expression.Opcodes.AndAlso" />
       </node-kind>
-
+<!-- FlagsEnumOperators -->
+      <node-kind name="FlagsEnum_AllSet_Expression">
+        <lm-equiv name="BinaryOperator" />
+        <native-equiv name="Expression.Opcodes.FlagEnum_AllSet" />
+      </node-kind>
+      <node-kind name="FlagsEnum_AnySet_Expression">
+        <lm-equiv name="BinaryOperator" />
+        <native-equiv name="Expression.Opcodes.FlagEnum_AnySet" />
+      </node-kind>
+      <node-kind name="FlagsEnum_Set_Expression">
+        <lm-equiv name="BinaryOperator" />
+        <native-equiv name="Expression.Opcodes.FlagEnum_Set" />
+      </node-kind>
+      <node-kind name="FlagsEnum_Clr_Expression">
+        <lm-equiv name="BinaryOperator" />
+        <native-equiv name="Expression.Opcodes.FlagEnum_Clr" />
+      </node-kind>
+      
       <child name="Left" kind="@ExpressionSyntax">
         <description>The left operand.</description>
         <lm-equiv name="Left"></lm-equiv>
@@ -5884,6 +5901,10 @@ Unify Enum declarations with other block type declarations.
         <kind name="AndKeyword" node-kind="AndExpression"/>
         <kind name="OrElseKeyword" node-kind="OrElseExpression"/>
         <kind name="AndAlsoKeyword" node-kind="AndAlsoExpression"/>
+        <kind name="FlagsEnum_AllSetToken" node-kind="FlagsEnum_AllSetToken"/>
+        <kind name="FlagsEnum_AnySetToken" node-kind="FlagsEnum_AnySetToken"/>
+        <kind name="FlagsEnum_SetToken" node-kind="FlagsEnum_SetToken"/>
+        <kind name="FlagsEnum_ClrToken" node-kind="FlagsEnum_ClrToken"/>
       </child>
 
       <child name="Right" kind="@ExpressionSyntax">
@@ -8769,6 +8790,22 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name="tokens.tkEOF" />
       </node-kind>
       <node-kind name="EmptyToken" token-text="">
+            </node-kind>
+      <node-kind name="FlagsEnum_AllSetToken" token-text="!">
+        <lm-equiv name="FlagsEnum_AllSetToken" />
+        <native-equiv name="" />
+      </node-kind>
+      <node-kind name="FlagsEnum_AnySetToken" token-text="!/">
+        <lm-equiv name="FlagsEnum_AnySetToken" />
+        <native-equiv name="" />
+      </node-kind>
+            <node-kind name="FlagsEnum_SetToken" token-text="!+">
+        <lm-equiv name="FlagsEnum_SetToken" />
+        <native-equiv name="" />
+      </node-kind>
+            <node-kind name="FlagsEnum_ClrToken" token-text="!-">
+        <lm-equiv name="FlagsEnum_ClrToken" />
+        <native-equiv name="" />
       </node-kind>
 
 
