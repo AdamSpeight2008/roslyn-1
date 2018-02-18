@@ -9569,7 +9569,7 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name="Base"></native-equiv>
       </child>
       <child name="OperatorToken" kind="@FlagsEnumOperatorSyntax"></child>
-      <child name="EnumFlag" kind="@ExpressionSyntax">
+      <child name="EnumFlag" kind="@ExpressionSyntax" optional="true">
         <description>The identifier after the "!", "!+", "!-" or "!/" token.</description>
         <lm-equiv name="Value"></lm-equiv>
         <native-equiv name="Name"></native-equiv>

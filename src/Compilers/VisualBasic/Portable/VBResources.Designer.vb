@@ -7153,6 +7153,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Missing Enum Flag..
+        '''</summary>
+        Friend ReadOnly Property ERR_MissingEnumFlag() As String
+            Get
+                Return ResourceManager.GetString("ERR_MissingEnumFlag", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Enum &apos;{0}&apos; requires &lt;Flags&gt; attribute..
         '''</summary>
         Friend ReadOnly Property ERR_MissingFlagsAttributeOnEnum() As String
