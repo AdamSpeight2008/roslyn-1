@@ -19,7 +19,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGeneration
             Return SyntaxFactory.TypeParameter(
                 varianceKeyword:=If(symbol.Variance = VarianceKind.In, SyntaxFactory.Token(SyntaxKind.InKeyword), If(symbol.Variance = VarianceKind.Out, SyntaxFactory.Token(SyntaxKind.OutKeyword), Nothing)),
                 identifier:=symbol.Name.ToIdentifierToken,
-                typeParameterConstraintClause:=GenerateTypeParameterConstraintClause(symbol))
+                typeParameterConstraintClause:=GenerateTypeParameterConstraintClause(symbol),
+                attributeLists:=Nothing)
         End Function
 
         Private Shared Function GenerateTypeParameterConstraintClause(symbol As ITypeParameterSymbol) As TypeParameterConstraintClauseSyntax

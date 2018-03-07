@@ -13,7 +13,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
         <Fact>
         Public Sub TestUpdateWithNull()
             ' create type parameter with constraint clause
-            Dim tp = SyntaxFactory.TypeParameter(Nothing, SyntaxFactory.Identifier("T"), SyntaxFactory.TypeParameterSingleConstraintClause(SyntaxFactory.TypeConstraint(SyntaxFactory.IdentifierName("IGoo"))))
+            Dim tp = SyntaxFactory.TypeParameter(
+                                varianceKeyword:=Nothing,
+                                     identifier:=SyntaxFactory.Identifier("T"),
+                                typeParameterConstraintClause:=SyntaxFactory.TypeParameterSingleConstraintClause(SyntaxFactory.TypeConstraint(SyntaxFactory.IdentifierName("IGoo"))),
+                                attributeLists:=Nothing)
 
             ' attempt to make variant w/o constraint clause (do not access property first)
             Dim tp2 = tp.WithTypeParameterConstraintClause(Nothing)

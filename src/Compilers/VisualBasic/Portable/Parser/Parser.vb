@@ -4373,6 +4373,12 @@ checkNullable:
                     End If
                 End If
 
+                Dim _attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax) = Nothing
+                If CurrentToken.Kind = SyntaxKind.LessThanToken Then
+                    _attributes = ParseAttributeLists(False)
+
+                End If
+
                 If name Is Nothing Then
                     name = ParseIdentifier()
                 End If
@@ -4428,7 +4434,7 @@ checkNullable:
                     End If
                 End If
 
-                Dim typeParameter = SyntaxFactory.TypeParameter(optionalVarianceModifier, name, typeParameterConstraintClause)
+                Dim typeParameter = SyntaxFactory.TypeParameter(optionalVarianceModifier, _attributes, name, typeParameterConstraintClause)
 
                 typeParameters.Add(typeParameter)
 

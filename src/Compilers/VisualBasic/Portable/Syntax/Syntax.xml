@@ -1024,8 +1024,14 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="Variance"></lm-equiv>
         <native-equiv name="Variance"></native-equiv>
       </child>
-
-      <child name="Identifier" kind="IdentifierToken">
+      
+     <child name="AttributeLists" optional="true" list="true" kind="AttributeList">
+        <description>A list of all attribute lists on this declaration. If no attributes were specified, an empty list is returned.</description>
+        <lm-equiv name="Attributes"></lm-equiv>
+        <native-equiv name="Attributes"></native-equiv>
+      </child>
+      
+        <child name="Identifier" kind="IdentifierToken">
         <description>The name of the type parameter</description>
         <lm-equiv name="Name"></lm-equiv>
         <native-equiv name="Name"></native-equiv>
