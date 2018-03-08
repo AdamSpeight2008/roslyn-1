@@ -997,9 +997,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Function ParseFlagsEnumExpr(Term As ExpressionSyntax, op As FlagsEnumOperatorSyntax) As ExpressionSyntax
             Dim prevPrevToken = PrevToken
             GetNextToken()
-            If CurrentToken.Kind = SyntaxKind.ParenthesizedExpression Then Return SyntaxFactory.FlagsEnumOperationExpression(Term, op, ParseExpression())
             Dim Name = ParseIdentifierNameAllowingKeyword(True)
-            Return SyntaxFactory.FlagsEnumOperationExpression(Term, op, Name)
+            If Name IsNot Nothing Then
+                Return SyntaxFactory.FlagsEnumOperationExpression(Term, op, Name)
+            End If
+            Dim expr = ParseExpression()
+            Return SyntaxFactory.FlagsEnumOperationExpression(Term, op, expr)
         End Function
 
         Private Function TryParseFlagEnumExpr_Or_QualifiedExpr(
