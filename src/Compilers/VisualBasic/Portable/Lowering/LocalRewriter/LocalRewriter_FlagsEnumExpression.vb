@@ -19,14 +19,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim EnumFlags As BoundExpression = VisitExpression(node.EnumFlags).MakeRValue
             Dim flagPart As BoundExpression = VisitExpression(node.EnumFlag).MakeRValue
             Select Case node.Op
-                Case FlagsEnumOperatorKind.IsSet
-                    Return Rewrite_As_IsSet(node, EnumFlags, flagPart)
-                Case FlagsEnumOperatorKind.Clear
-                    Return Rewrite_As_FlagClr(node, EnumFlags, flagPart)
-                Case FlagsEnumOperatorKind.Set
-                    Return Rewrite_As_FlagSet(node, EnumFlags, flagPart)
+                Case FlagsEnumOperatorKind.IsAny : Return Rewrite_As_IsAny(node, EnumFlags, flagPart)
+                Case FlagsEnumOperatorKind.IsSet : Return Rewrite_As_IsSet(node, EnumFlags, flagPart)
+                Case FlagsEnumOperatorKind.Clear : Return Rewrite_As_FlagClr(node, EnumFlags, flagPart)
+                Case FlagsEnumOperatorKind.[Set] : Return Rewrite_As_FlagSet(node, EnumFlags, flagPart)
             End Select
             Return MyBase.VisitFlagsEnumOperationExpressionSyntax(node)
+        End Function
+
+        Private Function Rewrite_As_IsAny(node As BoundFlagsEnumOperationExpressionSyntax, EnumFlags As BoundExpression, flagPart As BoundExpression) As BoundNode
+            ' IsAny <== (Flags And Flag) <> 0
+            Dim _AND_ = MakeBinaryExpression(node.Syntax, BinaryOperatorKind.And, EnumFlags, flagPart, False, EnumFlags.Type).MakeCompilerGenerated
+            Dim Zero = New BoundLiteral(node.Syntax, ConstantValue.Create(0), EnumFlags.Type).MakeCompilerGenerated
+            Dim _EQ_ = MakeBinaryExpression(node.Syntax, BinaryOperatorKind.NotEquals, _AND_.MakeRValue, Zero, False, GetSpecialType(SpecialType.System_Boolean)).MakeCompilerGenerated
+            Return _EQ_.MakeRValue
         End Function
 
         Private Function Rewrite_As_IsSet(node As BoundFlagsEnumOperationExpressionSyntax, EnumFlags As BoundExpression, flagPart As BoundExpression) As BoundNode

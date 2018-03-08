@@ -9569,14 +9569,18 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name="Base"></native-equiv>
       </child>
       <child name="OperatorToken" kind="@FlagsEnumOperatorSyntax"></child>
-      <child name="EnumFlag" kind="@SimpleNameSyntax">
-        <description>The identifier after the "!" or "!+" or "!-" token.</description>
+      <child name="EnumFlag" kind="@ExpressionSyntax" optional="true">
+        <description>The identifier after the "!", "!+", "!-" or "!/" token.</description>
         <lm-equiv name="Value"></lm-equiv>
         <native-equiv name="Name"></native-equiv>
       </child>
     </node-structure>
       
     <node-structure name="FlagsEnumOperatorSyntax" parent ="SyntaxToken" has-default-factory ="true" default-trailing-trivia="space" >
+      <node-kind name="FlagsEnumIsAnyToken"  token-text="!/">
+        <lm-equiv name="BangPlusToken" />
+        <native-equiv name="" />
+      </node-kind>
       <node-kind name="FlagsEnumSetToken"  token-text="!+">
         <lm-equiv name="BangPlusToken" />
         <native-equiv name="" />
@@ -9612,7 +9616,11 @@ Unify Enum declarations with other block type declarations.
         <enumerator name="Clear" hexvalue="3">
           <description>The "!=" flagsEnum operator."</description>
         </enumerator>
+        <enumerator name="IsAny" hexvalue="4">
+          <description>The "!/" flagsEnum operator."</description>
+        </enumerator>
       </enumerators>
     </enumeration>
+    
   </definitions>
 </define-parse-tree>

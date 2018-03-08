@@ -43,8 +43,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Classification
                 End Select
             ElseIf token.Kind = SyntaxKind.XmlEntityLiteralToken Then
                 Return ClassificationTypeNames.XmlLiteralEntityReference
-            ElseIf token.Kind = SyntaxKind.FlagsEnumClearToken OrElse 
+            ElseIf token.Kind = SyntaxKind.FlagsEnumClearToken OrElse
                    token.Kind = SyntaxKind.FlagsEnumIsSetToken OrElse
+                   token.Kind = SyntaxKind.FlagsEnumIsAnyToken OrElse
                    token.Kind = SyntaxKind.FlagsEnumSetToken Then
                 Return ClassificationTypeNames.Punctuation
             ElseIf token.IsKind(SyntaxKind.None, SyntaxKind.BadToken) Then

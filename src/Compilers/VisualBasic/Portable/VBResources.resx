@@ -5533,4 +5533,7 @@
   <data name="FEATURE_EnumFlagOperators" xml:space="preserve">
     <value>Enum Flag Operators</value>
   </data>
+  <data name="ERR_MissingEnumFlag" xml:space="preserve">
+    <value>Missing Enum Flag.</value>
+  </data>
 </root>

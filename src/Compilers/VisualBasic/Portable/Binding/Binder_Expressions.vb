@@ -3769,6 +3769,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                             If IsFlagsEnum(DirectCast(original, INamedTypeSymbol)) Then
                                 Return BindEnumFlagExpression(original, node, left, node, diagnostics)
                             Else
+                                ' Return BindEnumFlagExpression(original, node, left, node, diagnostics)
                                 Return ReportDiagnosticAndProduceBadExpression(diagnostics, node, ERRID.ERR_MissingFlagsAttributeOnEnum, original.Name)
                             End If
                             ' Else
@@ -3834,8 +3835,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                 member As MemberAccessExpressionSyntax,
                                                 diagBag As DiagnosticBag
                                               ) As BoundExpression
-            Dim FlagName = member.Name.Identifier.ValueText
-            Return Bind_FlagsEnumOperation(FlagName, member, member.Expression, member.OperatorToken, member.Name, diagBag)
+            Dim EnumMember = TryCast(member.Expression, SimpleNameSyntax)
+            If EnumMember IsNot Nothing Then
+                Dim FlagName = EnumMember.Identifier.ValueText
+                Return Bind_FlagsEnumOperation_WithEnumMember(FlagName, member, EnumMember, member.OperatorToken, member.Name, diagBag)
+            Else
+                Return Bind_FlagsEnumOperation_WithExpression(member, member.Expression, member.OperatorToken, member.Name, diagBag)
+
+            End If
         End Function
 
         Private Function GetFlagsEnumOperationKind(node As SyntaxToken) As FlagsEnumOperatorKind
@@ -3845,11 +3852,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.ExclamationToken
                     Return FlagsEnumOperatorKind.IsSet
                 Case SyntaxKind.FlagsEnumSetToken : Return FlagsEnumOperatorKind.Set
+                Case SyntaxKind.FlagsEnumIsAnyToken : Return FlagsEnumOperatorKind.IsAny
             End Select
             Return FlagsEnumOperatorKind.None
         End Function
 
-        Private Function Bind_FlagsEnumOperation(
+        Private Function Bind_FlagsEnumOperation_WithEnumMember(
                                                   FlagName As String,
                                                   node As ExpressionSyntax,
                                                   EnumFlags As ExpressionSyntax,
@@ -3878,7 +3886,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 syntax:=node,
                enumFlags:=bFlags, op,
                 enumFlag:=New BoundFieldAccess(EnumFlag, bFlags, eFlag, False, original),
-                    type:=If(op = FlagsEnumOperatorKind.IsSet, GetSpecialType(SpecialType.System_Boolean, EnumFlag, diagBag), original)
+                    type:=If(op = FlagsEnumOperatorKind.IsSet Or op = FlagsEnumOperatorKind.IsAny,
+                                  GetSpecialType(SpecialType.System_Boolean, EnumFlag, diagBag), original)
                     )
         End Function
 
@@ -3886,9 +3895,48 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                   node As FlagsEnumOperationExpressionSyntax,
                                                   diagBag As DiagnosticBag
                                                 ) As BoundExpression
-            Dim FlagName = node.EnumFlag?.Identifier.ValueText
-            FlagName = If(FlagName, String.Empty)
-            Return Bind_FlagsEnumOperation(FlagName,node,node.EnumFlags, node.OperatorToken, node.EnumFlag,diagBag)
+            Dim Sn = TryCast(node.EnumFlag, SimpleNameSyntax)
+            If Sn IsNot Nothing Then
+                Dim FlagName = Sn.Identifier.ValueText
+                FlagName = If(FlagName, String.Empty)
+                Return Bind_FlagsEnumOperation_WithEnumMember(FlagName, node, node.EnumFlags, node.OperatorToken, Sn, diagBag)
+            Else
+                Return Bind_FlagsEnumOperation_WithExpression(node, node.EnumFlags, node.OperatorToken, node.EnumFlag, diagBag)
+
+            End if
+        End Function
+
+        Private Function Bind_FlagsEnumOperation_WithExpression(
+                                                  node As ExpressionSyntax,
+                                                  EnumFlags As ExpressionSyntax,
+                                                  opToken As SyntaxToken,
+                                                  EnumFlag As ExpressionSyntax,
+                                                  diagBag As DiagnosticBag
+                                                ) As BoundExpression
+            Dim eFlag As FieldSymbol = Nothing
+            Dim bFlags = BindExpression(EnumFlags, diagBag)
+            Dim original = bFlags.Type.OriginalDefinition
+
+            If Not IsFlagsEnum(DirectCast(original, INamedTypeSymbol)) Then
+                Return ReportDiagnosticAndProduceBadExpression(diagBag, EnumFlags, ERRID.ERR_EnumNotExpression1)
+            End If
+
+            'If Not IsMemberOfThisEnum(original, FlagName, eFlag) Then
+            '    Return ReportDiagnosticAndProduceBadExpression(diagBag, EnumFlag, ERRID.ERR_NameNotMember2, FlagName, original.Name)
+            'End If
+
+            Dim op As FlagsEnumOperatorKind = GetFlagsEnumOperationKind(opToken)
+            If op = FlagsEnumOperatorKind.None Then
+                Return ReportDiagnosticAndProduceBadExpression(diagBag, node, ERRID.ERR_NameNotMember2, "", original.Name)
+            End If
+
+            Return New BoundFlagsEnumOperationExpressionSyntax(
+                syntax:=node,
+               enumFlags:=bFlags, op,
+                enumFlag:=BindExpression(EnumFlag, diagBag),
+                    type:=If(op = FlagsEnumOperatorKind.IsSet Or op = FlagsEnumOperatorKind.IsAny,
+                             GetSpecialType(SpecialType.System_Boolean, EnumFlag, diagBag), original)
+                    )
         End Function
 
         Private Shared Sub ReportNoDefaultProperty(expr As BoundExpression, diagnostics As DiagnosticBag)
