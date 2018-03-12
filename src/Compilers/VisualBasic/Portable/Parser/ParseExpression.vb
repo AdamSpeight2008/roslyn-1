@@ -1015,8 +1015,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
             Dim expr = ParseExpression()
             Return SyntaxFactory.FlagsEnumOperationExpression(Term, op, expr)
-
-
         End Function
 
         Private Function TryParseFlagEnumExpr_Or_QualifiedExpr(
@@ -1028,7 +1026,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             If DotOrBangToken.Kind = SyntaxKind.ExclamationToken Then
                 If CurrentToken.Kind = SyntaxKind.OpenParenToken Then
-
                     Dim expr = ParseParenthesizedExpressionOrTupleLiteral()
                     If expr IsNot Nothing Then
                         expr = DirectCast(expr.WithLeadingTrivia(Term.GetTrailingTriviaCore), ExpressionSyntax)
@@ -1038,6 +1035,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                             output = SyntaxFactory.FlagsEnumOperationExpression(Term, op, expr)
                             Return True
                         End If
+
                     End If
                 Else
                     Dim Name = ParseIdentifierNameAllowingKeyword()
