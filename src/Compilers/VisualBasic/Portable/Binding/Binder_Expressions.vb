@@ -3839,9 +3839,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If EnumMember IsNot Nothing Then
                 Dim FlagName = EnumMember.Identifier.ValueText
                 Return Bind_FlagsEnumOperation_WithEnumMember(FlagName, member, EnumMember, member.OperatorToken, member.Name, diagBag)
-            Else
+            ElseIf member.Name IsNot Nothing Then
                 Return Bind_FlagsEnumOperation_WithExpression(member, member.Expression, member.OperatorToken, member.Name, diagBag)
-
+            Else
+                Return Nothing
             End If
         End Function
 
