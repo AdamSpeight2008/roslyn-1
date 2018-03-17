@@ -3845,16 +3845,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                 member As MemberAccessExpressionSyntax,
                                                 diagBag As DiagnosticBag
                                               ) As BoundExpression
+
+            If (member.Expression Is Nothing) OrElse (member.Name Is Nothing) Then
+                Return ReportDiagnosticAndProduceBadExpression(diagBag, DirectCast(node, VisualBasicSyntaxNode), ERRID.ERR_ExpectedExpression)
+            End If
+
             Dim EnumMember = TryCast(member.Expression, SimpleNameSyntax)
             If EnumMember IsNot Nothing Then
                 Dim FlagName = EnumMember.Identifier.ValueText
                 Return Bind_FlagsEnumOperation_WithEnumMember(FlagName, member, EnumMember, member.OperatorToken, EnumMember, diagBag)
-            ElseIf member.Name IsNot Nothing Then
-                Return Bind_FlagsEnumOperation_WithExpression(member, member.Expression, member.OperatorToken, member.Name, diagBag)
-            Else
-                Throw ExceptionUtilities.Unreachable()
-                Return Nothing
             End If
+
+            Dim pexpr = TryCast(member.Name, ParenthesizedExpressionSyntax)
+            If pexpr IsNot Nothing Then
+
+                Return Bind_FlagsEnumOperation_WithExpression(member, member.Expression, member.OperatorToken, pexpr, diagBag)
+            End If
+
+            Return ReportDiagnosticAndProduceBadExpression(diagBag, member.Name, ERRID.ERR_ExpectedParenthesizedExpression)
+
         End Function
 
         Private Function GetFlagsEnumOperationKind(node As SyntaxToken) As FlagsEnumOperatorKind
@@ -3911,25 +3920,41 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                   node As FlagsEnumOperationExpressionSyntax,
                                                   diagBag As DiagnosticBag
                                                 ) As BoundExpression
-            If node.EnumFlags IsNot nothing Then
-                Dim Sn = TryCast(node.EnumFlag, SimpleNameSyntax)
-                If Sn IsNot Nothing Then
-                    Dim FlagName = If(Sn.Identifier.ValueText, String.Empty)
-                    Return Bind_FlagsEnumOperation_WithEnumMember(FlagName, node, node.EnumFlags, node.OperatorToken, Sn, diagBag)
-                Else
-                    Return Bind_FlagsEnumOperation_WithExpression(node, node.EnumFlags, node.OperatorToken, node.EnumFlag, diagBag)
-                End If
-            Else
-                Return ReportDiagnosticAndProduceBadExpression(diagBag, node, ERRID.ERR_ExpectedExpression)
 
-             end if
+            If (node.EnumFlags Is Nothing) Then
+                Return ReportDiagnosticAndProduceBadExpression(diagBag, node, ERRID.ERR_ExpectedExpression)
+            End If
+            If (node.EnumFlag Is Nothing) Then
+                Return ReportDiagnosticAndProduceBadExpression(diagBag, node, ERRID.ERR_ExpectedExpression)
+            End If
+
+            Dim Sn = TryCast(node.EnumFlag, SimpleNameSyntax)
+            If Sn IsNot Nothing Then
+                Dim FlagName = If(Sn.Identifier.ValueText, String.Empty)
+                Return Bind_FlagsEnumOperation_WithEnumMember(FlagName, node, node.EnumFlags, node.OperatorToken, Sn, diagBag)
+            End If
+
+            Dim pexpr = TryCast(node.EnumFlag, ParenthesizedExpressionSyntax)
+            If pexpr IsNot Nothing Then
+                Return Bind_FlagsEnumOperation_WithExpression(node, node.EnumFlags, node.OperatorToken, pexpr, diagBag)
+            End If
+            Return ReportDiagnosticAndProduceBadExpression(diagBag, node.EnumFlag, ERRID.ERR_ExpectedParenthesizedExpression)
+        End Function
+
+        Private Function IsInvalidFlagsEnumOperator(Fe As FlagsEnumOperatorKind) As Boolean
+            Select Case Fe
+                Case FlagsEnumOperatorKind.IsSet, FlagsEnumOperatorKind.IsAny,
+                     FlagsEnumOperatorKind.Clear, FlagsEnumOperatorKind.Set
+                    Return False
+            End Select
+            Return True
         End Function
 
         Private Function Bind_FlagsEnumOperation_WithExpression(
                                                   node As ExpressionSyntax,
                                                   EnumFlags As ExpressionSyntax,
                                                   opToken As SyntaxToken,
-                                                  EnumFlag As ExpressionSyntax,
+                                                  EnumFlag As ParenthesizedExpressionSyntax,
                                                   diagBag As DiagnosticBag
                                                 ) As BoundExpression
             Dim eFlag As FieldSymbol = Nothing
@@ -3942,9 +3967,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
 
             Dim op As FlagsEnumOperatorKind = GetFlagsEnumOperationKind(opToken)
-            If op = FlagsEnumOperatorKind.None Then
-                Return ReportDiagnosticAndProduceBadExpression(diagBag, DirectCast(node.GetNodeSlot(1), VisualBasicSyntaxNode), ERRID.ERR_UnknownOperator, op.ToString, original.Name)
+            If IsInvalidFlagsEnumOperator(op) Then
+                Return ReportDiagnosticAndProduceBadExpression(diagBag,
+                                                               DirectCast(node.GetNodeSlot(1), VisualBasicSyntaxNode),
+                                                               ERRID.ERR_UnknownOperator, op.ToString, original.Name)
             End If
+
             If TypeOf EnumFlag IsNot ParenthesizedExpressionSyntax Then
                 ' ERRID #373307
                 Return ReportDiagnosticAndProduceBadExpression(diagBag, EnumFlag, ERRID.ERR_ExpectedParenthesizedExpression, op.ToString, original.Name)

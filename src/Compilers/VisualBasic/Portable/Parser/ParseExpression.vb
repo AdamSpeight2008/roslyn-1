@@ -1004,6 +1004,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Dim pexpr = ParseRightAsParenthesizedExpression(Term, op)
                 If pexpr IsNot Nothing Then Return pexpr
             End If
+            Return ReportSyntaxError(Of ExpressionSyntax)(Term, ERRID.ERR_BadEnumFlags1)
+
             Return Nothing
         End Function
 

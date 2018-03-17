@@ -2312,12 +2312,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     ' Allow expression initializer
                     ' Disallow assignment initializer
                     Dim value As ExpressionSyntax = ParseExpressionCore(OperatorPrecedence.PrecedenceNone) 'Dev10 was ParseInitializer
+                    If value IsNot Nothing Then
+                        Debug.Assert(Equals IsNot Nothing)
+                        optionalInitializer = SyntaxFactory.EqualsValue(Equals, value)
 
-                    Debug.Assert(Equals IsNot Nothing)
-                    optionalInitializer = SyntaxFactory.EqualsValue(Equals, value)
-
-                    If optionalInitializer.ContainsDiagnostics Then
-                        optionalInitializer = ResyncAt(optionalInitializer, SyntaxKind.CommaToken)
+                        If optionalInitializer.ContainsDiagnostics Then
+                            optionalInitializer = ResyncAt(optionalInitializer, SyntaxKind.CommaToken)
+                        End If
                     End If
                 End If
             Else
