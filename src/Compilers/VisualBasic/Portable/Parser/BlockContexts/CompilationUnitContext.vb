@@ -5,6 +5,8 @@ Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Extensions.BlockContextExtensions
+
 '-----------------------------------------------------------------------------
 ' Contains the definition of the DeclarationContext
 '-----------------------------------------------------------------------------

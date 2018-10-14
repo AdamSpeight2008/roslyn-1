@@ -11,7 +11,8 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports InternalSyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SyntaxFactory
 
-Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
+Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Extensions
+
     Friend Module ParserExtensions
 
         <Extension()>

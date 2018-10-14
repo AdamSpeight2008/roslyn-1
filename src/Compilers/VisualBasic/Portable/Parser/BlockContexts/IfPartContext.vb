@@ -2,6 +2,7 @@
 
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Extensions.BlockContextExtensions
 '-----------------------------------------------------------------------------
 ' Contains the definition of the BlockContext
 '-----------------------------------------------------------------------------

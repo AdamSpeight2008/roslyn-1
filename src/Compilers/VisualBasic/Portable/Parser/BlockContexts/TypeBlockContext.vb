@@ -4,6 +4,7 @@
 ' Contains the definition of the DeclarationContext
 '-----------------------------------------------------------------------------
 Imports InternalSyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SyntaxFactory
+Imports Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Extensions.BlockContextExtensions
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     Friend Class TypeBlockContext

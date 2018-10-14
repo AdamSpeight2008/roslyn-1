@@ -2,6 +2,9 @@
 
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Extensions.BlockContextExtensions
+Imports Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Extensions.ParserExtensions
+
 '-----------------------------------------------------------------------------
 ' Contains the definition of the DeclarationContext
 '-----------------------------------------------------------------------------

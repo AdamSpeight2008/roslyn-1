@@ -2,7 +2,7 @@
 
 Imports System.Runtime.CompilerServices
 
-Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
+Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Extensions
 
     Friend Module BlockContextExtensions
 
@@ -89,5 +89,4 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
     End Module
-
 End Namespace
