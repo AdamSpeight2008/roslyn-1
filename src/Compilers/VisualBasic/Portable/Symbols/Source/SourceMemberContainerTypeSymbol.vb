@@ -3795,9 +3795,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
                                 Debug.Assert(interface2.IsGenericType AndAlso interface1.OriginalDefinition = interface2.OriginalDefinition)
 
                                 ' Check for interface unification, then variance ambiguity
-                                If TypeUnification.CanUnify(Me, interface1, interface2) Then
+                                If Utilities.TypeUnification.CanUnify(Me, interface1, interface2) Then
                                     ReportInterfaceUnificationError(diagnostics, interface1, interface2)
-                                ElseIf VarianceAmbiguity.HasVarianceAmbiguity(Me, interface1, interface2, Nothing) Then
+                                ElseIf Utilities.VarianceAmbiguity.HasVarianceAmbiguity(Me, interface1, interface2, Nothing) Then
                                     ReportVarianceAmbiguityWarning(diagnostics, interface1, interface2)
                                 End If
                             End If
@@ -3912,7 +3912,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         ''' </summary>
         Private Sub ReportVarianceAmbiguityWarning(diagnostics As DiagnosticBag, interface1 As NamedTypeSymbol, interface2 As NamedTypeSymbol)
             Dim useSiteDiagnostics As HashSet(Of DiagnosticInfo) = Nothing
-            Dim hasVarianceAmbiguity As Boolean = VarianceAmbiguity.HasVarianceAmbiguity(Me, interface1, interface2, useSiteDiagnostics)
+            Dim hasVarianceAmbiguity As Boolean = Utilities.VarianceAmbiguity.HasVarianceAmbiguity(Me, interface1, interface2, useSiteDiagnostics)
 
             If hasVarianceAmbiguity OrElse Not useSiteDiagnostics.IsNullOrEmpty Then
                 If GetImplementsLocation(interface1).SourceSpan.Start > GetImplementsLocation(interface2).SourceSpan.Start Then

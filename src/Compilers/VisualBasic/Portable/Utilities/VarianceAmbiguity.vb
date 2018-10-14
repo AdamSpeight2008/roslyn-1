@@ -6,7 +6,7 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
-Namespace Microsoft.CodeAnalysis.VisualBasic
+Namespace Microsoft.CodeAnalysis.VisualBasic.Utilities
 
     ''' <summary>
     ''' Utility functions to check if two implemented interfaces have variance ambiguity.

@@ -10,7 +10,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 'TODO - This is copied from C# and should be moved to common assemble.
-Namespace Microsoft.CodeAnalysis.VisualBasic
+Namespace Microsoft.CodeAnalysis.VisualBasic.Extensions
     Friend Module FunctionExtensions
         <Extension()>
         Public Function TransitiveClosure(Of T)(relation As Func(Of T, IEnumerable(Of T)), item As T) As HashSet(Of T)

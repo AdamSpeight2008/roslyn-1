@@ -5,7 +5,7 @@ Imports System.Diagnostics
 Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 
-Namespace Microsoft.CodeAnalysis.VisualBasic
+Namespace Microsoft.CodeAnalysis.VisualBasic.Utilities
 
     Friend Class TypeUnification
         ''' <summary>
