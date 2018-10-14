@@ -108,6 +108,7 @@ Friend Module Program
                     output.WriteLine("Imports Microsoft.CodeAnalysis.VisualBasic.Syntax")
                     output.WriteLine("Imports Roslyn.Utilities")
                     output.WriteLine("Imports Xunit")
+                    output.WriteLine("Imports Microsoft.CodeAnalysis.VisualBasic.Extensions.SyntaxNodeExtensions")
 
                     Dim testWriter As New TestWriter(definition, checksum)
                     testWriter.WriteTestCode(output)
@@ -178,5 +179,6 @@ Friend Module Program
         output.WriteLine("Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax")
         output.WriteLine("Imports Microsoft.CodeAnalysis.VisualBasic.Syntax")
         output.WriteLine("Imports Roslyn.Utilities")
+        output.WriteLine("Imports Microsoft.CodeAnalysis.VisualBasic.Extensions.SyntaxNodeExtensions")
     End Sub
 End Module

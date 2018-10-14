@@ -7,6 +7,7 @@ Imports System.Runtime.CompilerServices
 Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Utilities
+Imports Microsoft.CodeAnalysis.VisualBasic.Extensions.SyntaxNodeExtensions
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 

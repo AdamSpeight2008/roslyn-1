@@ -7,6 +7,7 @@ Imports System.Runtime.CompilerServices
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Utilities
 Imports Xunit
+Imports Microsoft.CodeAnalysis.VisualBasic.Extensions.SyntaxNodeExtensions
 ' Tests for parse trees.
 ' DO NOT HAND EDIT
 

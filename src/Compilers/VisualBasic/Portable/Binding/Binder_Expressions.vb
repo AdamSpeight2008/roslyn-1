@@ -9,6 +9,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
 Imports Microsoft.CodeAnalysis.VisualBasic.SyntaxFacts
 Imports Microsoft.CodeAnalysis.Collections
+Imports Microsoft.CodeAnalysis.VisualBasic.Extensions.SyntaxNodeExtensions
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 

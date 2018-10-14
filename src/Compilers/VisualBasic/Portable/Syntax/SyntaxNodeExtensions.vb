@@ -6,7 +6,7 @@ Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Scanner = Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Scanner
 
-Namespace Microsoft.CodeAnalysis.VisualBasic
+Namespace Microsoft.CodeAnalysis.VisualBasic.Extensions
 
     Friend Module SyntaxNodeExtensions
 
@@ -21,7 +21,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="node"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <Extension()> _
+        <Extension()>
         Public Function ContainingWithStatement(node As VisualBasicSyntaxNode) As WithStatementSyntax
             Debug.Assert(node IsNot Nothing)
 
@@ -52,7 +52,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return Nothing
         End Function
 
-        <Extension()> _
+        <Extension()>
         Public Sub GetAncestors(Of T As VisualBasicSyntaxNode, C As VisualBasicSyntaxNode)(node As VisualBasicSyntaxNode, result As ArrayBuilder(Of T))
 
             Dim current = node.Parent
@@ -66,7 +66,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             result.ReverseContents()
         End Sub
 
-        <Extension()> _
+        <Extension()>
         Public Function GetAncestorOrSelf(Of T As VisualBasicSyntaxNode)(node As VisualBasicSyntaxNode) As T
 
             Do While node IsNot Nothing
