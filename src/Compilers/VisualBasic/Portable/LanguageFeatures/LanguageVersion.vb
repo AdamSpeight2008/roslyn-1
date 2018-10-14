@@ -1,9 +1,12 @@
-﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿
+
+' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.Runtime.CompilerServices
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
+
     ''' <summary>
     ''' Supported Visual Basic language versions.
     ''' </summary>
@@ -152,30 +155,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Select
             Return True
         End Function
-
-        ''' <summary>Inference of tuple element names was added in VB 15.3</summary>
-        <Extension>
-        Friend Function DisallowInferredTupleElementNames(self As LanguageVersion) As Boolean
-            Return self < Feature.InferredTupleNames.GetLanguageVersion()
-        End Function
-
-        <Extension>
-        Friend Function AllowNonTrailingNamedArguments(self As LanguageVersion) As Boolean
-            Return self >= Feature.NonTrailingNamedArguments.GetLanguageVersion()
-        End Function
     End Module
 
-    Friend Class VisualBasicRequiredLanguageVersion
-        Inherits RequiredLanguageVersion
 
-        Friend ReadOnly Property Version As LanguageVersion
-
-        Friend Sub New(version As LanguageVersion)
-            Me.Version = version
-        End Sub
-
-        Public Overrides Function ToString() As String
-            Return Version.ToDisplayString()
-        End Function
-    End Class
 End Namespace
+

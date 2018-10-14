@@ -41,6 +41,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     Friend Module FeatureExtensions
 
         <Extension>
+        Friend Function GetFeatureFlag(feature As Feature) As String
+            Return Nothing
+        End Function
+
+        <Extension>
         Friend Function GetLanguageVersion(feature As Feature) As LanguageVersion
 
             Select Case feature
