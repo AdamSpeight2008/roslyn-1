@@ -7,6 +7,7 @@ Imports Microsoft.CodeAnalysis.Collections
 Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.VisualBasic.Extensions
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
     Friend Module SyntaxHelpers
@@ -14,7 +15,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
         ''' Parse expression. Returns null if there are any errors.
         ''' </summary>
         <Extension>
-        Friend Function ParseExpression(expr As String, diagnostics As DiagnosticBag, allowFormatSpecifiers As Boolean, <Out> ByRef formatSpecifiers As ReadOnlyCollection(Of String)) As ExecutableStatementSyntax
+        Friend Function ParseExpression(
+                                         expr As String,
+                                         diagnostics As DiagnosticBag,
+                                         allowFormatSpecifiers As Boolean,
+                             <Out> ByRef formatSpecifiers As ReadOnlyCollection(Of String)
+                                       ) As ExecutableStatementSyntax
             Dim syntax = ParseDebuggerExpression(expr, consumeFullText:=Not allowFormatSpecifiers)
             diagnostics.AddRange(syntax.GetDiagnostics())
             formatSpecifiers = Nothing
@@ -29,7 +35,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
         End Function
 
         <Extension>
-        Friend Function ParseAssignment(target As String, expr As String, diagnostics As DiagnosticBag) As AssignmentStatementSyntax
+        Friend Function ParseAssignment(
+                                         target As String,
+                                         expr As String,
+                                         diagnostics As DiagnosticBag
+                                       ) As AssignmentStatementSyntax
             Dim text = SourceText.From(expr)
             Dim expression = SyntaxHelpers.ParseDebuggerExpressionInternal(text, consumeFullText:=True)
             ' We're creating a SyntaxTree for just the RHS so that the Diagnostic spans for parse errors
@@ -60,7 +70,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
         ''' Parse statement. Returns null if there are any errors.
         ''' </summary>
         <Extension>
-        Friend Function ParseStatement(statement As String, diagnostics As DiagnosticBag) As StatementSyntax
+        Friend Function ParseStatement(
+                                        statement As String,
+                                        diagnostics As DiagnosticBag
+                                      ) As StatementSyntax
             Dim syntax = ParseDebuggerStatement(statement)
             diagnostics.AddRange(syntax.GetDiagnostics())
             Return If(diagnostics.HasAnyErrors(), Nothing, syntax)
@@ -74,10 +87,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
         ''' The native VB EE didn't support format specifiers.
         ''' </remarks>
         Private Function ParseFormatSpecifiers(
-            builder As ArrayBuilder(Of String),
-            expr As String,
-            offset As Integer,
-            diagnostics As DiagnosticBag) As Boolean
+                                                builder As ArrayBuilder(Of String),
+                                                expr As String,
+                                                offset As Integer,
+                                                diagnostics As DiagnosticBag
+                                              ) As Boolean
 
             Dim expectingComma = True
             Dim start = -1
@@ -131,7 +145,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
             Return True
         End Function
 
-        Private Sub ReportInvalidFormatSpecifier(token As String, diagnostics As DiagnosticBag)
+        Private Sub ReportInvalidFormatSpecifier(
+                                                  token As String,
+                                                  diagnostics As DiagnosticBag
+                                                )
             diagnostics.Add(ERRID.ERR_InvalidFormatSpecifier, Location.None, token)
         End Sub
 
@@ -143,7 +160,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
         ''' It would be better if this method returned ExpressionStatementSyntax, but this is the best we can do for
         ''' the time being due to issues in the binder resolving ambiguities between invocations and array access.
         ''' </remarks>
-        Friend Function ParseDebuggerExpression(text As String, consumeFullText As Boolean) As PrintStatementSyntax
+        Friend Function ParseDebuggerExpression(
+                                                 text As String,
+                                                 consumeFullText As Boolean
+                                               ) As PrintStatementSyntax
             Dim expression = ParseDebuggerExpressionInternal(SourceText.From(text), consumeFullText)
             Dim statement = InternalSyntax.SyntaxFactory.PrintStatement(
                 New InternalSyntax.PunctuationSyntax(SyntaxKind.QuestionToken, "?", Nothing, Nothing), expression)
@@ -151,7 +171,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
             Return DirectCast(syntaxTree.GetDebuggerStatement(), PrintStatementSyntax)
         End Function
 
-        Private Function ParseDebuggerExpressionInternal(source As SourceText, consumeFullText As Boolean) As InternalSyntax.ExpressionSyntax
+        Private Function ParseDebuggerExpressionInternal(
+                                                          source As SourceText,
+                                                          consumeFullText As Boolean
+                                                        ) As InternalSyntax.ExpressionSyntax
             Using scanner As New InternalSyntax.Scanner(source, VisualBasicParseOptions.Default, isScanningForExpressionCompiler:=True) ' NOTE: Default options should be enough
                 Using p = New InternalSyntax.Parser(scanner)
                     p.GetNextToken()
@@ -162,7 +185,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
             End Using
         End Function
 
-        Private Function ParseDebuggerStatement(text As String) As StatementSyntax
+        Private Function ParseDebuggerStatement(
+                                                 text As String
+                                               ) As StatementSyntax
             Using scanner As New InternalSyntax.Scanner(SourceText.From(text), VisualBasicParseOptions.Default, isScanningForExpressionCompiler:=True) ' NOTE: Default options should be enough
                 Using p = New InternalSyntax.Parser(scanner)
                     p.GetNextToken()
@@ -175,12 +200,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
         End Function
 
         <Extension>
-        Private Function CreateSyntaxTree(root As InternalSyntax.VisualBasicSyntaxNode) As SyntaxTree
+        Private Function CreateSyntaxTree(
+                                           root As InternalSyntax.VisualBasicSyntaxNode
+                                         ) As SyntaxTree
             Return VisualBasicSyntaxTree.Create(DirectCast(root.CreateRed(Nothing, 0), VisualBasicSyntaxNode))
         End Function
 
         <Extension>
-        Private Function MakeDebuggerStatementContext(statement As InternalSyntax.StatementSyntax) As InternalSyntax.CompilationUnitSyntax
+        Private Function MakeDebuggerStatementContext(
+                                                       statement As InternalSyntax.StatementSyntax
+                                                     ) As InternalSyntax.CompilationUnitSyntax
             Return InternalSyntax.SyntaxFactory.CompilationUnit(
                 options:=Nothing,
                 [imports]:=Nothing,
@@ -190,8 +219,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
         End Function
 
         <Extension>
-        Private Function GetDebuggerStatement(syntaxTree As SyntaxTree) As StatementSyntax
-            Return DirectCast(DirectCast(syntaxTree.GetRoot(), CompilationUnitSyntax).Members.Single(), StatementSyntax)
+        Private Function GetDebuggerStatement(
+                                               syntaxTree As SyntaxTree
+                                             ) As StatementSyntax
+            Return DirectCast(syntaxTree.GetRoot(), CompilationUnitSyntax).Members.Single()
         End Function
 
         ''' <summary>
@@ -202,7 +233,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
         ''' For now, we'll leave out single line If statements, as the parsing for those would require extra
         ''' complexity on the EE side (ParseStatementInMethodBody should handle them, but it doesn't...).
         ''' </summary>
-        Friend Function IsSupportedDebuggerStatement(syntax As StatementSyntax) As Boolean
+        Friend Function IsSupportedDebuggerStatement(
+                                                      syntax As StatementSyntax
+                                                    ) As Boolean
             Select Case syntax.Kind
                 Case SyntaxKind.AddAssignmentStatement,
                      SyntaxKind.CallStatement,
@@ -225,14 +258,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
             End Select
         End Function
 
-        Friend Function EscapeKeywordIdentifiers(identifier As String) As String
+        Friend Function EscapeKeywordIdentifiers(
+                                                  identifier As String
+                                                ) As String
             If SyntaxFacts.IsKeywordKind(SyntaxFacts.GetKeywordKind(identifier)) Then
-                Dim pooled = PooledStringBuilder.GetInstance()
-                Dim builder = pooled.Builder
-                builder.Append("["c)
-                builder.Append(identifier)
-                builder.Append("]"c)
-                Return pooled.ToStringAndFree()
+                Dim pooledBuilder = PooledStringBuilder.GetInstance()
+                With pooledBuilder.Builder
+                    .Append("["c)
+                    .Append(identifier)
+                    .Append("]"c)
+                    Return pooledBuilder.ToStringAndFree()
+                End With
             Else
                 Return identifier
             End If

@@ -7,6 +7,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
 Imports Microsoft.VisualStudio.Debugger.Clr
 Imports Roslyn.Utilities
+Imports Microsoft.CodeAnalysis.VisualBasic.Extensions
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
 

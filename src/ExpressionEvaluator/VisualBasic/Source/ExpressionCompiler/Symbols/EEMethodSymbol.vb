@@ -8,6 +8,7 @@ Imports Microsoft.CodeAnalysis.ExpressionEvaluator
 Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Roslyn.Utilities
+Imports Microsoft.CodeAnalysis.VisualBasic.Extensions
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
 

@@ -2,6 +2,7 @@
 
 Imports Microsoft.CodeAnalysis.Emit
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
+Imports Microsoft.CodeAnalysis.VisualBasic.Extensions
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Emit.NoPia
 

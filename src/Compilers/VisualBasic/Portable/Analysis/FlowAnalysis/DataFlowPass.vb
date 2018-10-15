@@ -21,6 +21,7 @@ Imports System.Runtime.InteropServices
 Imports System.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.VisualBasic.Extensions
 
 #If REFERENCE_STATE Then
 Imports OptionalState = Microsoft.CodeAnalysis.[Optional](Of Microsoft.CodeAnalysis.VisualBasic.DataFlowPass.LocalState)
@@ -168,9 +169,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             ' check unused variables
             If Not _seenOnErrorOrResume Then
-                For Each local In _unusedVariables
-                    ReportUnused(local)
-                Next
+                ReportUnused(_unusedVariables)
             End If
 
             ' VB doesn't support "out" so it doesn't warn for unassigned parameters. However, check variables passed
@@ -185,6 +184,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Return True
         End Function
+
+        Private Sub ReportUnused(locals As HashSet(Of LocalSymbol))
+            For Each local In locals
+                ReportUnused(local)
+            Next
+        End Sub
 
         Private Sub ReportUnused(local As LocalSymbol)
             ' Never report that the function value is unused
@@ -240,11 +245,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Protected Overrides Function Dump(state As LocalState) As String
-            Dim builder As New StringBuilder()
-            builder.Append("[assigned ")
-            AppendBitNames(state.Assigned, builder)
-            builder.Append("]")
-            Return builder.ToString()
+            Dim pooledBuilder = PooledStringBuilder.GetInstance
+            With pooledBuilder
+                .Builder.Append("[assigned ")
+                AppendBitNames(state.Assigned, .Builder)
+                .Builder.Append("]")
+                Return pooledBuilder.ToStringAndFree
+            End With
         End Function
 
         Protected Sub AppendBitNames(a As BitVector, builder As StringBuilder)

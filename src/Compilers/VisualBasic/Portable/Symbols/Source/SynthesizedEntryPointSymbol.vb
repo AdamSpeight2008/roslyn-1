@@ -2,6 +2,7 @@
 
 Imports System.Collections.Immutable
 Imports System.Linq
+Imports Microsoft.CodeAnalysis.VisualBasic.Extensions
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
     ''' <summary>
