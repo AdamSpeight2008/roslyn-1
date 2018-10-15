@@ -301,8 +301,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.SetState(UnreachableState())
         End Sub
 
-        Private Function IsConstantTrue(node As BoundExpression) As Boolean
-            If Me._suppressConstantExpressions Then
+        Private Function IsConstantBooleanValue(node As BoundExpression, value As Boolean) As Boolean
+            If _suppressConstantExpressions Then
                 Return False
             End If
 
@@ -313,22 +313,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If constantValue.Discriminator <> ConstantValueTypeDiscriminator.Boolean Then
                 Return False
             End If
-            Return constantValue.BooleanValue
+            Return constantValue.BooleanValue = value
+        End Function
+
+        Private Function IsConstantTrue(node As BoundExpression) As Boolean
+            Return IsConstantBooleanValue(node, True)
         End Function
 
         Private Function IsConstantFalse(node As BoundExpression) As Boolean
-            If Me._suppressConstantExpressions Then
-                Return False
-            End If
-
-            If Not node.IsConstant Then
-                Return False
-            End If
-            Dim constantValue = node.ConstantValueOpt
-            If constantValue.Discriminator <> ConstantValueTypeDiscriminator.Boolean Then
-                Return False
-            End If
-            Return Not constantValue.BooleanValue
+            Return IsConstantBooleanValue(node, False)
         End Function
 
         Private Function IsConstantNull(node As BoundExpression) As Boolean
