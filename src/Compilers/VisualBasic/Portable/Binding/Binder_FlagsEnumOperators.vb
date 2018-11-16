@@ -1,14 +1,8 @@
 ﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.Collections.Immutable
-Imports System.Reflection
-Imports System.Runtime.InteropServices
-Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
-Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
-Imports Microsoft.CodeAnalysis.VisualBasic.SyntaxFacts
-Imports Microsoft.CodeAnalysis.Collections
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
       
@@ -82,18 +76,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 If nameSyntax IsNot Nothing Then
                     ' (left : Objext)!( ___ )
                     If type.SpecialType = SpecialType.System_Object OrElse type.IsExtensibleInterfaceNoUseSiteDiagnostics() Then
-                        Dim name = nameSyntax.Identifier
-                        Dim arg = New BoundLiteral(nameSyntax, ConstantValue.Create(name.ValueText), GetSpecialType(SpecialType.System_String, name, diagnostics))
-                        Dim boundArguments = ImmutableArray.Create(Of BoundExpression)(arg)
-                        Return BindLateBoundInvocation(node, Nothing, left, boundArguments, Nothing, diagnostics)
+                        Return BindLeftSideAsObject(node, diagnostics, left, nameSyntax)
                     End If
 
                     ' (left : Interface)!( ___ )
                     If type.IsInterfaceType Then
-                        Dim useSiteDiagnostics As HashSet(Of DiagnosticInfo) = Nothing
-                        ' In case IsExtensibleInterfaceNoUseSiteDiagnostics above failed because there were bad inherited interfaces.
-                        type.AllInterfacesWithDefinitionUseSiteDiagnostics(useSiteDiagnostics)
-                        diagnostics.Add(node, useSiteDiagnostics)
+                        BindLeftSideAsInterface(node, diagnostics, type)
                     End If
 
                     Dim defaultPropertyGroup As BoundExpression = BindDefaultPropertyGroup(node, left, diagnostics)
@@ -117,7 +105,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     ElseIf defaultPropertyGroup Is Nothing OrElse Not defaultPropertyGroup.HasErrors Then
 
                         Select Case type.TypeKind
-                            Case TypeKind.Enum ' Needs to be Feature conditional
+                            Case TypeKind.Enum
                                 If InternalSyntax.Parser.CheckFeatureAvailability(
                                     diagnostics,
                                     node.OperatorToken.GetLocation(), 
@@ -131,8 +119,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                     Else
                                         Return ReportDiagnosticAndProduceBadExpression(diagnostics, node, ERRID.ERR_MissingFlagsAttributeOnEnum, original.Name)
                                     End If
+                                Else
+                                    ReportQualNotObjectRecord(left, diagnostics)
                                 End If
-                                ReportQualNotObjectRecord(left, diagnostics)
 
                             Case TypeKind.Array
                                 ReportQualNotObjectRecord(left, diagnostics)
@@ -159,11 +148,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
 
             Return BadExpression(node,
-                                  ImmutableArray.Create(left,
-                                                         New BoundLiteral(node.Name,
-                                                                           ConstantValue.Create(node.Name.ToString),
-                                                                           GetSpecialType(SpecialType.System_String, node.Name, diagnostics))),
+                                 ImmutableArray.Create(left,
+                                                       New BoundLiteral(node.Name,
+                                                                        ConstantValue.Create(node.Name.ToString),
+                                                      GetSpecialType(SpecialType.System_String, node.Name, diagnostics))),
                                  ErrorTypeSymbol.UnknownResultType)
+        End Function
+
+        Private Shared Sub BindLeftSideAsInterface(node As MemberAccessExpressionSyntax, diagnostics As DiagnosticBag, type As TypeSymbol)
+            Dim useSiteDiagnostics As HashSet(Of DiagnosticInfo) = Nothing
+            ' In case IsExtensibleInterfaceNoUseSiteDiagnostics above failed because there were bad inherited interfaces.
+            type.AllInterfacesWithDefinitionUseSiteDiagnostics(useSiteDiagnostics)
+            diagnostics.Add(node, useSiteDiagnostics)
+        End Sub
+
+        Private Function BindLeftSideAsObject(node As MemberAccessExpressionSyntax, diagnostics As DiagnosticBag, left As BoundExpression, nameSyntax As SimpleNameSyntax) As BoundExpression
+            Dim name = nameSyntax.Identifier
+            Dim arg = New BoundLiteral(nameSyntax, ConstantValue.Create(name.ValueText), GetSpecialType(SpecialType.System_String, name, diagnostics))
+            Dim boundArguments = ImmutableArray.Create(Of BoundExpression)(arg)
+            Return BindLateBoundInvocation(node, Nothing, left, boundArguments, Nothing, diagnostics)
         End Function
 
         Private Const _FlagsAttribute_ = "FlagsAttribute"
@@ -278,13 +281,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim bFlags = BindExpression(enumFlags, diagBag)
             Dim original = bFlags.Type.OriginalDefinition
 
-            If Not IsFlagsEnum(DirectCast(original, INamedTypeSymbol)) Then Return ReportDiagnosticAndProduceBadExpression(diagBag, enumFlags, ERRID.ERR_EnumNotExpression1, "")
+            If Not IsFlagsEnum(DirectCast(original, INamedTypeSymbol)) Then
+                Return ReportDiagnosticAndProduceBadExpression(diagBag, enumFlags, ERRID.ERR_EnumNotExpression1)
+            End If
 
             Dim opKind = GetFlagsEnumOperationKind(opToken)
-            If opKind = FlagsEnumOperatorKind.None Then Return ReportDiagnosticAndProduceBadExpression(diagBag, 
-                                                                   DirectCast(node.GetNodeSlot(1), VisualBasicSyntaxNode),
-                                                                   ERRID.ERR_UnknownOperator, opKind.ToString, original.Name)
-            If TypeOf enumFlag IsNot ParenthesizedExpressionSyntax Then Return ReportDiagnosticAndProduceBadExpression(diagBag, enumFlag, ERRID.ERR_ExpectedParenthesizedExpression, opKind.ToString, original.Name)
+            If opKind = FlagsEnumOperatorKind.None Then
+                Return ReportDiagnosticAndProduceBadExpression(diagBag, DirectCast(node.GetNodeSlot(1), VisualBasicSyntaxNode), ERRID.ERR_UnknownOperator, opKind.ToString, original.Name)
+            End If
+            If TypeOf enumFlag IsNot ParenthesizedExpressionSyntax Then
+                Return ReportDiagnosticAndProduceBadExpression(diagBag, enumFlag, ERRID.ERR_ExpectedParenthesizedExpression, opKind.ToString, original.Name)
+            End If
             Return New BoundFlagsEnumOperationExpressionSyntax(
                   syntax:= node,
                enumFlags:= bFlags, opKind,
