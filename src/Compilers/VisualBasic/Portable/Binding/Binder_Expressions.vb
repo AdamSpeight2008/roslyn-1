@@ -3861,14 +3861,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private Function GetFlagsEnumOperationKind(node As SyntaxToken) As FlagsEnumOperatorKind
             Select Case node.Kind
-                Case SyntaxKind.FlagsEnumClearToken : Return FlagsEnumOperatorKind.Clear
-                Case SyntaxKind.FlagsEnumIsSetToken,
-                     SyntaxKind.ExclamationToken
-                    Return FlagsEnumOperatorKind.IsSet
-                Case SyntaxKind.FlagsEnumSetToken : Return FlagsEnumOperatorKind.Set
-                Case SyntaxKind.FlagsEnumIsAnyToken : Return FlagsEnumOperatorKind.IsAny
+                Case SyntaxKind.FlagsEnumClearToken     : Return FlagsEnumOperatorKind.Clear
+                Case SyntaxKind.FlagsEnumIsSetToken,    
+                     SyntaxKind.ExclamationToken        : Return FlagsEnumOperatorKind.IsSet
+                Case SyntaxKind.FlagsEnumSetToken       : Return FlagsEnumOperatorKind.Set
+                Case SyntaxKind.FlagsEnumIsAnyToken     : Return FlagsEnumOperatorKind.IsAny
+                Case Else                               : Return FlagsEnumOperatorKind.None
             End Select
-            Return FlagsEnumOperatorKind.None
         End Function
 
         Private Function Bind_FlagsEnumOperation_WithEnumMember(
@@ -3884,27 +3883,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim bFlags = BindExpression(EnumFlags, diagBag)
             Dim original = bFlags.Type.OriginalDefinition
 
-            If Not IsFlagsEnum(DirectCast(original, INamedTypeSymbol)) Then
-                ' ERRID #373306
-                Return ReportDiagnosticAndProduceBadExpression(diagBag, EnumFlags, ERRID.ERR_EnumNotExpression1, original.Name)
-            End If
+            If Not IsFlagsEnum(DirectCast(original, INamedTypeSymbol)) Then Return ReportDiagnosticAndProduceBadExpression(diagBag, EnumFlags, ERRID.ERR_EnumNotExpression1, original.Name)
+            If Not IsMemberOfThisEnum(original, FlagName, eFlag)       Then Return ReportDiagnosticAndProduceBadExpression(diagBag, EnumFlag, ERRID.ERR_NameNotMember2, FlagName, original.Name)
 
-            If Not IsMemberOfThisEnum(original, FlagName, eFlag) Then
-                Return ReportDiagnosticAndProduceBadExpression(diagBag, EnumFlag, ERRID.ERR_NameNotMember2, FlagName, original.Name)
-            End If
-
-            Dim op As FlagsEnumOperatorKind = GetFlagsEnumOperationKind(opToken)
-            If op = FlagsEnumOperatorKind.None Then
-                ' ERRID #373307
-
-                Return ReportDiagnosticAndProduceBadExpression(diagBag, DirectCast(node.GetNodeSlot(1), VisualBasicSyntaxNode), ERRID.ERR_UnknownOperator, op.ToString, original.Name)
-            End If
+            Dim opKind As FlagsEnumOperatorKind = GetFlagsEnumOperationKind(opToken)
+            If opKind = FlagsEnumOperatorKind.None                     Then Return ReportDiagnosticAndProduceBadExpression(diagBag, 
+                                                                                                                           DirectCast(node.GetNodeSlot(1), VisualBasicSyntaxNode), 
+                                                                                                                           ERRID.ERR_UnknownOperator, opKind.ToString, original.Name)
 
             Return New BoundFlagsEnumOperationExpressionSyntax(
-                syntax:=node,
-               enumFlags:=bFlags, op:=op,
-                enumFlag:=New BoundFieldAccess(EnumFlag, bFlags, eFlag, False, original),
-                    type:=If(op = FlagsEnumOperatorKind.IsSet Or op = FlagsEnumOperatorKind.IsAny,
+                  syntax:= node,
+               enumFlags:= bFlags, op:=opKind,
+                enumFlag:= New BoundFieldAccess(EnumFlag, bFlags, eFlag, False, original),
+                    type:= If(opKind = FlagsEnumOperatorKind.IsSet Or opKind = FlagsEnumOperatorKind.IsAny,
                                   GetSpecialType(SpecialType.System_Boolean, EnumFlag, diagBag), original)
                     )
         End Function
@@ -3913,52 +3904,35 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                   node As FlagsEnumOperationExpressionSyntax,
                                                   diagBag As DiagnosticBag
                                                 ) As BoundExpression
-            If node.EnumFlags IsNot nothing Then
-                Dim Sn = TryCast(node.EnumFlag, SimpleNameSyntax)
-                If Sn IsNot Nothing Then
-                    Dim FlagName = If(Sn.Identifier.ValueText, String.Empty)
-                    Return Bind_FlagsEnumOperation_WithEnumMember(FlagName, node, node.EnumFlags, node.OperatorToken, Sn, diagBag)
-                Else
-                    Return Bind_FlagsEnumOperation_WithExpression(node, node.EnumFlags, node.OperatorToken, node.EnumFlag, diagBag)
-                End If
-            Else
-                Return ReportDiagnosticAndProduceBadExpression(diagBag, node, ERRID.ERR_ExpectedExpression)
-
-             end if
+            If node.EnumFlags Is nothing Then Return ReportDiagnosticAndProduceBadExpression(diagBag, node, ERRID.ERR_ExpectedExpression)
+            Dim identifer = TryCast(node.EnumFlag, SimpleNameSyntax)
+            If identifer Is Nothing Then Return Bind_FlagsEnumOperation_WithExpression(node, node.EnumFlags, node.OperatorToken, node.EnumFlag, diagBag)
+            Dim FlagName = If(identifer.Identifier.ValueText, String.Empty)
+            Return Bind_FlagsEnumOperation_WithEnumMember(FlagName, node, node.EnumFlags, node.OperatorToken, identifer, diagBag)
         End Function
 
         Private Function Bind_FlagsEnumOperation_WithExpression(
-                                                  node As ExpressionSyntax,
-                                                  EnumFlags As ExpressionSyntax,
-                                                  opToken As SyntaxToken,
-                                                  EnumFlag As ExpressionSyntax,
-                                                  diagBag As DiagnosticBag
-                                                ) As BoundExpression
+                                                                 node As ExpressionSyntax,
+                                                                 enumFlags As ExpressionSyntax,
+                                                                 opToken As SyntaxToken,
+                                                                 enumFlag As ExpressionSyntax,
+                                                                 diagBag As DiagnosticBag
+                                                               ) As BoundExpression
             Dim eFlag As FieldSymbol = Nothing
-            Dim bFlags = BindExpression(EnumFlags, diagBag)
+            Dim bFlags = BindExpression(enumFlags, diagBag)
             Dim original = bFlags.Type.OriginalDefinition
 
-            If Not IsFlagsEnum(DirectCast(original, INamedTypeSymbol)) Then
-                ' ERRID #373306
-                Return ReportDiagnosticAndProduceBadExpression(diagBag, EnumFlags, ERRID.ERR_EnumNotExpression1, "")
-            End If
+            If Not IsFlagsEnum(DirectCast(original, INamedTypeSymbol)) Then Return ReportDiagnosticAndProduceBadExpression(diagBag, enumFlags, ERRID.ERR_EnumNotExpression1, "")
 
-            Dim op As FlagsEnumOperatorKind = GetFlagsEnumOperationKind(opToken)
-            If op = FlagsEnumOperatorKind.None Then
-                Return ReportDiagnosticAndProduceBadExpression(diagBag, DirectCast(node.GetNodeSlot(1), VisualBasicSyntaxNode), ERRID.ERR_UnknownOperator, op.ToString, original.Name)
-            End If
-            If TypeOf EnumFlag IsNot ParenthesizedExpressionSyntax Then
-                ' ERRID #373307
-                Return ReportDiagnosticAndProduceBadExpression(diagBag, EnumFlag, ERRID.ERR_ExpectedParenthesizedExpression, op.ToString, original.Name)
-
-            End If
-
+            Dim opKind = GetFlagsEnumOperationKind(opToken)
+            If opKind = FlagsEnumOperatorKind.None Then Return ReportDiagnosticAndProduceBadExpression(diagBag, DirectCast(node.GetNodeSlot(1), VisualBasicSyntaxNode), ERRID.ERR_UnknownOperator, opKind.ToString, original.Name)
+            If TypeOf enumFlag IsNot ParenthesizedExpressionSyntax Then Return ReportDiagnosticAndProduceBadExpression(diagBag, enumFlag, ERRID.ERR_ExpectedParenthesizedExpression, opKind.ToString, original.Name)
             Return New BoundFlagsEnumOperationExpressionSyntax(
-                syntax:=node,
-               enumFlags:=bFlags, op,
-                enumFlag:=BindExpression(EnumFlag, diagBag),
-                    type:=If(op = FlagsEnumOperatorKind.IsSet Or op = FlagsEnumOperatorKind.IsAny,
-                             GetSpecialType(SpecialType.System_Boolean, EnumFlag, diagBag), original)
+                  syntax:= node,
+               enumFlags:= bFlags, opKind,
+                enumFlag:= BindExpression(enumFlag, diagBag),
+                    type:= If(opKind = FlagsEnumOperatorKind.IsSet Or opKind = FlagsEnumOperatorKind.IsAny,
+                            GetSpecialType(SpecialType.System_Boolean, enumFlag, diagBag), original)
                     )
         End Function
 

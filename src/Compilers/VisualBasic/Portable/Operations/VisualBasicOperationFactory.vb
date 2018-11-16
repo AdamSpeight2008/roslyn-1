@@ -83,209 +83,105 @@ Namespace Microsoft.CodeAnalysis.Operations
 
         Private Function CreateInternal(boundNode As BoundNode) As IOperation
             Select Case boundNode.Kind
-                Case BoundKind.AssignmentOperator
-                    Return CreateBoundAssignmentOperatorOperation(DirectCast(boundNode, BoundAssignmentOperator))
-                Case BoundKind.MeReference
-                    Return CreateBoundMeReferenceOperation(DirectCast(boundNode, BoundMeReference))
-                Case BoundKind.MyBaseReference
-                    Return CreateBoundMyBaseReferenceOperation(DirectCast(boundNode, BoundMyBaseReference))
-                Case BoundKind.MyClassReference
-                    Return CreateBoundMyClassReferenceOperation(DirectCast(boundNode, BoundMyClassReference))
-                Case BoundKind.Literal
-                    Return CreateBoundLiteralOperation(DirectCast(boundNode, BoundLiteral))
-                Case BoundKind.AwaitOperator
-                    Return CreateBoundAwaitOperatorOperation(DirectCast(boundNode, BoundAwaitOperator))
-                Case BoundKind.NameOfOperator
-                    Return CreateBoundNameOfOperatorOperation(DirectCast(boundNode, BoundNameOfOperator))
-                Case BoundKind.Lambda
-                    Return CreateBoundLambdaOperation(DirectCast(boundNode, BoundLambda))
-                Case BoundKind.Call
-                    Return CreateBoundCallOperation(DirectCast(boundNode, BoundCall))
-                Case BoundKind.OmittedArgument
-                    Return CreateBoundOmittedArgumentOperation(DirectCast(boundNode, BoundOmittedArgument))
-                Case BoundKind.Parenthesized
-                    Return CreateBoundParenthesizedOperation(DirectCast(boundNode, BoundParenthesized))
-                Case BoundKind.ArrayAccess
-                    Return CreateBoundArrayAccessOperation(DirectCast(boundNode, BoundArrayAccess))
-                Case BoundKind.UnaryOperator
-                    Return CreateBoundUnaryOperatorOperation(DirectCast(boundNode, BoundUnaryOperator))
-                Case BoundKind.UserDefinedUnaryOperator
-                    Return CreateBoundUserDefinedUnaryOperatorOperation(DirectCast(boundNode, BoundUserDefinedUnaryOperator))
-                Case BoundKind.BinaryOperator
-                    Return CreateBoundBinaryOperatorOperation(DirectCast(boundNode, BoundBinaryOperator))
-                Case BoundKind.UserDefinedBinaryOperator
-                    Return CreateBoundUserDefinedBinaryOperatorOperation(DirectCast(boundNode, BoundUserDefinedBinaryOperator))
-                Case BoundKind.BinaryConditionalExpression
-                    Return CreateBoundBinaryConditionalExpressionOperation(DirectCast(boundNode, BoundBinaryConditionalExpression))
-                Case BoundKind.UserDefinedShortCircuitingOperator
-                    Return CreateBoundUserDefinedShortCircuitingOperatorOperation(DirectCast(boundNode, BoundUserDefinedShortCircuitingOperator))
-                Case BoundKind.BadExpression
-                    Return CreateBoundBadExpressionOperation(DirectCast(boundNode, BoundBadExpression))
-                Case BoundKind.TryCast
-                    Return CreateBoundTryCastOperation(DirectCast(boundNode, BoundTryCast))
-                Case BoundKind.DirectCast
-                    Return CreateBoundDirectCastOperation(DirectCast(boundNode, BoundDirectCast))
-                Case BoundKind.Conversion
-                    Return CreateBoundConversionOperation(DirectCast(boundNode, BoundConversion))
-                Case BoundKind.DelegateCreationExpression
-                    Return CreateBoundDelegateCreationExpressionOperation(DirectCast(boundNode, BoundDelegateCreationExpression))
-                Case BoundKind.TernaryConditionalExpression
-                    Return CreateBoundTernaryConditionalExpressionOperation(DirectCast(boundNode, BoundTernaryConditionalExpression))
-                Case BoundKind.TypeOf
-                    Return CreateBoundTypeOfOperation(DirectCast(boundNode, BoundTypeOf))
-                Case BoundKind.GetType
-                    Return CreateBoundGetTypeOperation(DirectCast(boundNode, BoundGetType))
-                Case BoundKind.ObjectCreationExpression
-                    Return CreateBoundObjectCreationExpressionOperation(DirectCast(boundNode, BoundObjectCreationExpression))
-                Case BoundKind.ObjectInitializerExpression
-                    Return CreateBoundObjectInitializerExpressionOperation(DirectCast(boundNode, BoundObjectInitializerExpression))
-                Case BoundKind.CollectionInitializerExpression
-                    Return CreateBoundCollectionInitializerExpressionOperation(DirectCast(boundNode, BoundCollectionInitializerExpression))
-                Case BoundKind.NewT
-                    Return CreateBoundNewTOperation(DirectCast(boundNode, BoundNewT))
-                Case BoundKind.NoPiaObjectCreationExpression
-                    Return CreateNoPiaObjectCreationExpressionOperation(DirectCast(boundNode, BoundNoPiaObjectCreationExpression))
-                Case BoundKind.ArrayCreation
-                    Return CreateBoundArrayCreationOperation(DirectCast(boundNode, BoundArrayCreation))
-                Case BoundKind.ArrayInitialization
-                    Return CreateBoundArrayInitializationOperation(DirectCast(boundNode, BoundArrayInitialization))
-                Case BoundKind.PropertyAccess
-                    Return CreateBoundPropertyAccessOperation(DirectCast(boundNode, BoundPropertyAccess))
-                Case BoundKind.EventAccess
-                    Return CreateBoundEventAccessOperation(DirectCast(boundNode, BoundEventAccess))
-                Case BoundKind.FieldAccess
-                    Return CreateBoundFieldAccessOperation(DirectCast(boundNode, BoundFieldAccess))
-                Case BoundKind.ConditionalAccess
-                    Return CreateBoundConditionalAccessOperation(DirectCast(boundNode, BoundConditionalAccess))
-                Case BoundKind.ConditionalAccessReceiverPlaceholder
-                    Return CreateBoundConditionalAccessReceiverPlaceholderOperation(DirectCast(boundNode, BoundConditionalAccessReceiverPlaceholder))
-                Case BoundKind.Parameter
-                    Return CreateBoundParameterOperation(DirectCast(boundNode, BoundParameter))
-                Case BoundKind.Local
-                    Return CreateBoundLocalOperation(DirectCast(boundNode, BoundLocal))
-                Case BoundKind.LocalDeclaration
-                    Return CreateBoundLocalDeclarationOperation(DirectCast(boundNode, BoundLocalDeclaration))
-                Case BoundKind.LateInvocation
-                    Return CreateBoundLateInvocationOperation(DirectCast(boundNode, BoundLateInvocation))
-                Case BoundKind.LateMemberAccess
-                    Return CreateBoundLateMemberAccessOperation(DirectCast(boundNode, BoundLateMemberAccess))
-                Case BoundKind.FieldInitializer
-                    Return CreateBoundFieldInitializerOperation(DirectCast(boundNode, BoundFieldInitializer))
-                Case BoundKind.PropertyInitializer
-                    Return CreateBoundPropertyInitializerOperation(DirectCast(boundNode, BoundPropertyInitializer))
-                Case BoundKind.ParameterEqualsValue
-                    Return CreateBoundParameterEqualsValueOperation(DirectCast(boundNode, BoundParameterEqualsValue))
-                Case BoundKind.RValuePlaceholder
-                    Return CreateBoundRValuePlaceholderOperation(DirectCast(boundNode, BoundRValuePlaceholder))
-                Case BoundKind.IfStatement
-                    Return CreateBoundIfStatementOperation(DirectCast(boundNode, BoundIfStatement))
-                Case BoundKind.SelectStatement
-                    Return CreateBoundSelectStatementOperation(DirectCast(boundNode, BoundSelectStatement))
-                Case BoundKind.CaseBlock
-                    Return CreateBoundCaseBlockOperation(DirectCast(boundNode, BoundCaseBlock))
-                Case BoundKind.SimpleCaseClause
-                    Return CreateBoundSimpleCaseClauseOperation(DirectCast(boundNode, BoundSimpleCaseClause))
-                Case BoundKind.RangeCaseClause
-                    Return CreateBoundRangeCaseClauseOperation(DirectCast(boundNode, BoundRangeCaseClause))
-                Case BoundKind.RelationalCaseClause
-                    Return CreateBoundRelationalCaseClauseOperation(DirectCast(boundNode, BoundRelationalCaseClause))
-                Case BoundKind.DoLoopStatement
-                    Return CreateBoundDoLoopStatementOperation(DirectCast(boundNode, BoundDoLoopStatement))
-                Case BoundKind.ForToStatement
-                    Return CreateBoundForToStatementOperation(DirectCast(boundNode, BoundForToStatement))
-                Case BoundKind.ForEachStatement
-                    Return CreateBoundForEachStatementOperation(DirectCast(boundNode, BoundForEachStatement))
-                Case BoundKind.TryStatement
-                    Return CreateBoundTryStatementOperation(DirectCast(boundNode, BoundTryStatement))
-                Case BoundKind.CatchBlock
-                    Return CreateBoundCatchBlockOperation(DirectCast(boundNode, BoundCatchBlock))
-                Case BoundKind.Block
-                    Return CreateBoundBlockOperation(DirectCast(boundNode, BoundBlock))
-                Case BoundKind.BadStatement
-                    Return CreateBoundBadStatementOperation(DirectCast(boundNode, BoundBadStatement))
-                Case BoundKind.ReturnStatement
-                    Return CreateBoundReturnStatementOperation(DirectCast(boundNode, BoundReturnStatement))
-                Case BoundKind.ThrowStatement
-                    Return CreateBoundThrowStatementOperation(DirectCast(boundNode, BoundThrowStatement))
-                Case BoundKind.WhileStatement
-                    Return CreateBoundWhileStatementOperation(DirectCast(boundNode, BoundWhileStatement))
-                Case BoundKind.DimStatement
-                    Return CreateBoundDimStatementOperation(DirectCast(boundNode, BoundDimStatement))
-                Case BoundKind.YieldStatement
-                    Return CreateBoundYieldStatementOperation(DirectCast(boundNode, BoundYieldStatement))
-                Case BoundKind.LabelStatement
-                    Return CreateBoundLabelStatementOperation(DirectCast(boundNode, BoundLabelStatement))
-                Case BoundKind.GotoStatement
-                    Return CreateBoundGotoStatementOperation(DirectCast(boundNode, BoundGotoStatement))
-                Case BoundKind.ContinueStatement
-                    Return CreateBoundContinueStatementOperation(DirectCast(boundNode, BoundContinueStatement))
-                Case BoundKind.ExitStatement
-                    Return CreateBoundExitStatementOperation(DirectCast(boundNode, BoundExitStatement))
-                Case BoundKind.SyncLockStatement
-                    Return CreateBoundSyncLockStatementOperation(DirectCast(boundNode, BoundSyncLockStatement))
-                Case BoundKind.NoOpStatement
-                    Return CreateBoundNoOpStatementOperation(DirectCast(boundNode, BoundNoOpStatement))
-                Case BoundKind.StopStatement
-                    Return CreateBoundStopStatementOperation(DirectCast(boundNode, BoundStopStatement))
-                Case BoundKind.EndStatement
-                    Return CreateBoundEndStatementOperation(DirectCast(boundNode, BoundEndStatement))
-                Case BoundKind.WithStatement
-                    Return CreateBoundWithStatementOperation(DirectCast(boundNode, BoundWithStatement))
-                Case BoundKind.UsingStatement
-                    Return CreateBoundUsingStatementOperation(DirectCast(boundNode, BoundUsingStatement))
-                Case BoundKind.ExpressionStatement
-                    Return CreateBoundExpressionStatementOperation(DirectCast(boundNode, BoundExpressionStatement))
-                Case BoundKind.RaiseEventStatement
-                    Return CreateBoundRaiseEventStatementOperation(DirectCast(boundNode, BoundRaiseEventStatement))
-                Case BoundKind.AddHandlerStatement
-                    Return CreateBoundAddHandlerStatementOperation(DirectCast(boundNode, BoundAddHandlerStatement))
-                Case BoundKind.RemoveHandlerStatement
-                    Return CreateBoundRemoveHandlerStatementOperation(DirectCast(boundNode, BoundRemoveHandlerStatement))
-                Case BoundKind.TupleLiteral
-                    Return CreateBoundTupleLiteralOperation(DirectCast(boundNode, BoundTupleLiteral))
-                Case BoundKind.ConvertedTupleLiteral
-                    Return CreateBoundConvertedTupleLiteralOperation(DirectCast(boundNode, BoundConvertedTupleLiteral))
-                Case BoundKind.InterpolatedStringExpression
-                    Return CreateBoundInterpolatedStringExpressionOperation(DirectCast(boundNode, BoundInterpolatedStringExpression))
-                Case BoundKind.Interpolation
-                    Return CreateBoundInterpolationOperation(DirectCast(boundNode, BoundInterpolation))
-                Case BoundKind.AnonymousTypeCreationExpression
-                    Return CreateBoundAnonymousTypeCreationExpressionOperation(DirectCast(boundNode, BoundAnonymousTypeCreationExpression))
-                Case BoundKind.AnonymousTypeFieldInitializer
-                    Return Create(DirectCast(boundNode, BoundAnonymousTypeFieldInitializer).Value)
-                Case BoundKind.AnonymousTypePropertyAccess
-                    Return CreateBoundAnonymousTypePropertyAccessOperation(DirectCast(boundNode, BoundAnonymousTypePropertyAccess))
-                Case BoundKind.WithLValueExpressionPlaceholder
-                    Return CreateBoundWithLValueExpressionPlaceholder(DirectCast(boundNode, BoundWithLValueExpressionPlaceholder))
-                Case BoundKind.WithRValueExpressionPlaceholder
-                    Return CreateBoundWithRValueExpressionPlaceholder(DirectCast(boundNode, BoundWithRValueExpressionPlaceholder))
-                Case BoundKind.QueryExpression
-                    Return CreateBoundQueryExpressionOperation(DirectCast(boundNode, BoundQueryExpression))
-                Case BoundKind.LValueToRValueWrapper
-                    Return CreateBoundLValueToRValueWrapper(DirectCast(boundNode, BoundLValueToRValueWrapper))
-                Case BoundKind.QueryClause
-                    ' Query clause has no special representation in the IOperation tree
-                    Return Create(DirectCast(boundNode, BoundQueryClause).UnderlyingExpression)
-                Case BoundKind.QueryableSource
-                    ' Queryable source has no special representation in the IOperation tree
-                    Return Create(DirectCast(boundNode, BoundQueryableSource).Source)
-                Case BoundKind.AggregateClause
-                    Return CreateBoundAggregateClauseOperation(DirectCast(boundNode, BoundAggregateClause))
-                Case BoundKind.Ordering
-                    ' Ordering clause has no special representation in the IOperation tree
-                    Return Create(DirectCast(boundNode, BoundOrdering).UnderlyingExpression)
-                Case BoundKind.GroupAggregation
-                    ' Group aggregation has no special representation in the IOperation tree
-                    Return Create(DirectCast(boundNode, BoundGroupAggregation).Group)
-                Case BoundKind.QuerySource
-                    ' Query source has no special representation in the IOperation tree
-                    Return Create(DirectCast(boundNode, BoundQuerySource).Expression)
-                Case BoundKind.ToQueryableCollectionConversion
-                    ' Queryable collection conversion has no special representation in the IOperation tree
-                    Return Create(DirectCast(boundNode, BoundToQueryableCollectionConversion).ConversionCall)
+                Case BoundKind.AssignmentOperator                   : Return CreateBoundAssignmentOperatorOperation(DirectCast(boundNode, BoundAssignmentOperator))
+                Case BoundKind.MeReference                          : Return CreateBoundMeReferenceOperation(DirectCast(boundNode, BoundMeReference))
+                Case BoundKind.MyBaseReference                      : Return CreateBoundMyBaseReferenceOperation(DirectCast(boundNode, BoundMyBaseReference))
+                Case BoundKind.MyClassReference                     : Return CreateBoundMyClassReferenceOperation(DirectCast(boundNode, BoundMyClassReference))
+                Case BoundKind.Literal                              : Return CreateBoundLiteralOperation(DirectCast(boundNode, BoundLiteral))
+                Case BoundKind.AwaitOperator                        : Return CreateBoundAwaitOperatorOperation(DirectCast(boundNode, BoundAwaitOperator))
+                Case BoundKind.NameOfOperator                       : Return CreateBoundNameOfOperatorOperation(DirectCast(boundNode, BoundNameOfOperator))
+                Case BoundKind.Lambda                               : Return CreateBoundLambdaOperation(DirectCast(boundNode, BoundLambda))
+                Case BoundKind.Call                                 : Return CreateBoundCallOperation(DirectCast(boundNode, BoundCall))
+                Case BoundKind.OmittedArgument                      : Return CreateBoundOmittedArgumentOperation(DirectCast(boundNode, BoundOmittedArgument))
+                Case BoundKind.Parenthesized                        : Return CreateBoundParenthesizedOperation(DirectCast(boundNode, BoundParenthesized))
+                Case BoundKind.ArrayAccess                          : Return CreateBoundArrayAccessOperation(DirectCast(boundNode, BoundArrayAccess))
+                Case BoundKind.UnaryOperator                        : Return CreateBoundUnaryOperatorOperation(DirectCast(boundNode, BoundUnaryOperator))
+                Case BoundKind.UserDefinedUnaryOperator             : Return CreateBoundUserDefinedUnaryOperatorOperation(DirectCast(boundNode, BoundUserDefinedUnaryOperator))
+                Case BoundKind.BinaryOperator                       : Return CreateBoundBinaryOperatorOperation(DirectCast(boundNode, BoundBinaryOperator))
+                Case BoundKind.UserDefinedBinaryOperator            : Return CreateBoundUserDefinedBinaryOperatorOperation(DirectCast(boundNode, BoundUserDefinedBinaryOperator))
+                Case BoundKind.BinaryConditionalExpression          : Return CreateBoundBinaryConditionalExpressionOperation(DirectCast(boundNode, BoundBinaryConditionalExpression))
+                Case BoundKind.UserDefinedShortCircuitingOperator   : Return CreateBoundUserDefinedShortCircuitingOperatorOperation(DirectCast(boundNode, BoundUserDefinedShortCircuitingOperator))
+                Case BoundKind.BadExpression                        : Return CreateBoundBadExpressionOperation(DirectCast(boundNode, BoundBadExpression))
+                Case BoundKind.TryCast                              : Return CreateBoundTryCastOperation(DirectCast(boundNode, BoundTryCast))
+                Case BoundKind.DirectCast                           : Return CreateBoundDirectCastOperation(DirectCast(boundNode, BoundDirectCast))
+                Case BoundKind.Conversion                           : Return CreateBoundConversionOperation(DirectCast(boundNode, BoundConversion))
+                Case BoundKind.DelegateCreationExpression           : Return CreateBoundDelegateCreationExpressionOperation(DirectCast(boundNode, BoundDelegateCreationExpression))
+                Case BoundKind.TernaryConditionalExpression         : Return CreateBoundTernaryConditionalExpressionOperation(DirectCast(boundNode, BoundTernaryConditionalExpression))
+                Case BoundKind.TypeOf                               : Return CreateBoundTypeOfOperation(DirectCast(boundNode, BoundTypeOf))
+                Case BoundKind.GetType                              : Return CreateBoundGetTypeOperation(DirectCast(boundNode, BoundGetType))
+                Case BoundKind.ObjectCreationExpression             : Return CreateBoundObjectCreationExpressionOperation(DirectCast(boundNode, BoundObjectCreationExpression))
+                Case BoundKind.ObjectInitializerExpression          : Return CreateBoundObjectInitializerExpressionOperation(DirectCast(boundNode, BoundObjectInitializerExpression))
+                Case BoundKind.CollectionInitializerExpression      : Return CreateBoundCollectionInitializerExpressionOperation(DirectCast(boundNode, BoundCollectionInitializerExpression))
+                Case BoundKind.NewT                                 : Return CreateBoundNewTOperation(DirectCast(boundNode, BoundNewT))
+                Case BoundKind.NoPiaObjectCreationExpression        : Return CreateNoPiaObjectCreationExpressionOperation(DirectCast(boundNode, BoundNoPiaObjectCreationExpression))
+                Case BoundKind.ArrayCreation                        : Return CreateBoundArrayCreationOperation(DirectCast(boundNode, BoundArrayCreation))
+                Case BoundKind.ArrayInitialization                  : Return CreateBoundArrayInitializationOperation(DirectCast(boundNode, BoundArrayInitialization))
+                Case BoundKind.PropertyAccess                       : Return CreateBoundPropertyAccessOperation(DirectCast(boundNode, BoundPropertyAccess))
+                Case BoundKind.EventAccess                          : Return CreateBoundEventAccessOperation(DirectCast(boundNode, BoundEventAccess))
+                Case BoundKind.FieldAccess                          : Return CreateBoundFieldAccessOperation(DirectCast(boundNode, BoundFieldAccess))
+                Case BoundKind.ConditionalAccess                    : Return CreateBoundConditionalAccessOperation(DirectCast(boundNode, BoundConditionalAccess))
+                Case BoundKind.ConditionalAccessReceiverPlaceholder : Return CreateBoundConditionalAccessReceiverPlaceholderOperation(DirectCast(boundNode, BoundConditionalAccessReceiverPlaceholder))
+                Case BoundKind.Parameter                            : Return CreateBoundParameterOperation(DirectCast(boundNode, BoundParameter))
+                Case BoundKind.Local                                : Return CreateBoundLocalOperation(DirectCast(boundNode, BoundLocal))
+                Case BoundKind.LocalDeclaration                     : Return CreateBoundLocalDeclarationOperation(DirectCast(boundNode, BoundLocalDeclaration))
+                Case BoundKind.LateInvocation                       : Return CreateBoundLateInvocationOperation(DirectCast(boundNode, BoundLateInvocation))
+                Case BoundKind.LateMemberAccess                     : Return CreateBoundLateMemberAccessOperation(DirectCast(boundNode, BoundLateMemberAccess))
+                Case BoundKind.FieldInitializer                     : Return CreateBoundFieldInitializerOperation(DirectCast(boundNode, BoundFieldInitializer))
+                Case BoundKind.PropertyInitializer                  : Return CreateBoundPropertyInitializerOperation(DirectCast(boundNode, BoundPropertyInitializer))
+                Case BoundKind.ParameterEqualsValue                 : Return CreateBoundParameterEqualsValueOperation(DirectCast(boundNode, BoundParameterEqualsValue))
+                Case BoundKind.RValuePlaceholder                    : Return CreateBoundRValuePlaceholderOperation(DirectCast(boundNode, BoundRValuePlaceholder))
+                Case BoundKind.IfStatement                          : Return CreateBoundIfStatementOperation(DirectCast(boundNode, BoundIfStatement))
+                Case BoundKind.SelectStatement                      : Return CreateBoundSelectStatementOperation(DirectCast(boundNode, BoundSelectStatement))
+                Case BoundKind.CaseBlock                            : Return CreateBoundCaseBlockOperation(DirectCast(boundNode, BoundCaseBlock))
+                Case BoundKind.SimpleCaseClause                     : Return CreateBoundSimpleCaseClauseOperation(DirectCast(boundNode, BoundSimpleCaseClause))
+                Case BoundKind.RangeCaseClause                      : Return CreateBoundRangeCaseClauseOperation(DirectCast(boundNode, BoundRangeCaseClause))
+                Case BoundKind.RelationalCaseClause                 : Return CreateBoundRelationalCaseClauseOperation(DirectCast(boundNode, BoundRelationalCaseClause))
+                Case BoundKind.DoLoopStatement                      : Return CreateBoundDoLoopStatementOperation(DirectCast(boundNode, BoundDoLoopStatement))
+                Case BoundKind.ForToStatement                       : Return CreateBoundForToStatementOperation(DirectCast(boundNode, BoundForToStatement))
+                Case BoundKind.ForEachStatement                     : Return CreateBoundForEachStatementOperation(DirectCast(boundNode, BoundForEachStatement))
+                Case BoundKind.TryStatement                         : Return CreateBoundTryStatementOperation(DirectCast(boundNode, BoundTryStatement))
+                Case BoundKind.CatchBlock                           : Return CreateBoundCatchBlockOperation(DirectCast(boundNode, BoundCatchBlock))
+                Case BoundKind.Block                                : Return CreateBoundBlockOperation(DirectCast(boundNode, BoundBlock))
+                Case BoundKind.BadStatement                         : Return CreateBoundBadStatementOperation(DirectCast(boundNode, BoundBadStatement))
+                Case BoundKind.ReturnStatement                      : Return CreateBoundReturnStatementOperation(DirectCast(boundNode, BoundReturnStatement))
+                Case BoundKind.ThrowStatement                       : Return CreateBoundThrowStatementOperation(DirectCast(boundNode, BoundThrowStatement))
+                Case BoundKind.WhileStatement                       : Return CreateBoundWhileStatementOperation(DirectCast(boundNode, BoundWhileStatement))
+                Case BoundKind.DimStatement                         : Return CreateBoundDimStatementOperation(DirectCast(boundNode, BoundDimStatement))
+                Case BoundKind.YieldStatement                       : Return CreateBoundYieldStatementOperation(DirectCast(boundNode, BoundYieldStatement))
+                Case BoundKind.LabelStatement                       : Return CreateBoundLabelStatementOperation(DirectCast(boundNode, BoundLabelStatement))
+                Case BoundKind.GotoStatement                        : Return CreateBoundGotoStatementOperation(DirectCast(boundNode, BoundGotoStatement))
+                Case BoundKind.ContinueStatement                    : Return CreateBoundContinueStatementOperation(DirectCast(boundNode, BoundContinueStatement))
+                Case BoundKind.ExitStatement                        : Return CreateBoundExitStatementOperation(DirectCast(boundNode, BoundExitStatement))
+                Case BoundKind.SyncLockStatement                    : Return CreateBoundSyncLockStatementOperation(DirectCast(boundNode, BoundSyncLockStatement))
+                Case BoundKind.NoOpStatement                        : Return CreateBoundNoOpStatementOperation(DirectCast(boundNode, BoundNoOpStatement))
+                Case BoundKind.StopStatement                        : Return CreateBoundStopStatementOperation(DirectCast(boundNode, BoundStopStatement))
+                Case BoundKind.EndStatement                         : Return CreateBoundEndStatementOperation(DirectCast(boundNode, BoundEndStatement))
+                Case BoundKind.WithStatement                        : Return CreateBoundWithStatementOperation(DirectCast(boundNode, BoundWithStatement))
+                Case BoundKind.UsingStatement                       : Return CreateBoundUsingStatementOperation(DirectCast(boundNode, BoundUsingStatement))
+                Case BoundKind.ExpressionStatement                  : Return CreateBoundExpressionStatementOperation(DirectCast(boundNode, BoundExpressionStatement))
+                Case BoundKind.RaiseEventStatement                  : Return CreateBoundRaiseEventStatementOperation(DirectCast(boundNode, BoundRaiseEventStatement))
+                Case BoundKind.AddHandlerStatement                  : Return CreateBoundAddHandlerStatementOperation(DirectCast(boundNode, BoundAddHandlerStatement))
+                Case BoundKind.RemoveHandlerStatement               : Return CreateBoundRemoveHandlerStatementOperation(DirectCast(boundNode, BoundRemoveHandlerStatement))
+                Case BoundKind.TupleLiteral                         : Return CreateBoundTupleLiteralOperation(DirectCast(boundNode, BoundTupleLiteral))
+                Case BoundKind.ConvertedTupleLiteral                : Return CreateBoundConvertedTupleLiteralOperation(DirectCast(boundNode, BoundConvertedTupleLiteral))
+                Case BoundKind.InterpolatedStringExpression         : Return CreateBoundInterpolatedStringExpressionOperation(DirectCast(boundNode, BoundInterpolatedStringExpression))
+                Case BoundKind.Interpolation                        : Return CreateBoundInterpolationOperation(DirectCast(boundNode, BoundInterpolation))
+                Case BoundKind.AnonymousTypeCreationExpression      : Return CreateBoundAnonymousTypeCreationExpressionOperation(DirectCast(boundNode, BoundAnonymousTypeCreationExpression))
+                Case BoundKind.AnonymousTypeFieldInitializer        : Return Create(DirectCast(boundNode, BoundAnonymousTypeFieldInitializer).Value)
+                Case BoundKind.AnonymousTypePropertyAccess          : Return CreateBoundAnonymousTypePropertyAccessOperation(DirectCast(boundNode, BoundAnonymousTypePropertyAccess))
+                Case BoundKind.WithLValueExpressionPlaceholder      : Return CreateBoundWithLValueExpressionPlaceholder(DirectCast(boundNode, BoundWithLValueExpressionPlaceholder))
+                Case BoundKind.WithRValueExpressionPlaceholder      : Return CreateBoundWithRValueExpressionPlaceholder(DirectCast(boundNode, BoundWithRValueExpressionPlaceholder))
+                Case BoundKind.QueryExpression                      : Return CreateBoundQueryExpressionOperation(DirectCast(boundNode, BoundQueryExpression))
+                Case BoundKind.LValueToRValueWrapper                : Return CreateBoundLValueToRValueWrapper(DirectCast(boundNode, BoundLValueToRValueWrapper))
+                Case BoundKind.QueryClause                          : Return Create(DirectCast(boundNode, BoundQueryClause).UnderlyingExpression) ' Query clause has no special representation in the IOperation tree
+                Case BoundKind.QueryableSource                      : Return Create(DirectCast(boundNode, BoundQueryableSource).Source)' Queryable source has no special representation in the IOperation tree
+                Case BoundKind.AggregateClause                      : Return CreateBoundAggregateClauseOperation(DirectCast(boundNode, BoundAggregateClause))
+                Case BoundKind.Ordering                             : Return Create(DirectCast(boundNode, BoundOrdering).UnderlyingExpression)                    ' Ordering clause has no special representation in the IOperation tree
+                Case BoundKind.GroupAggregation                     : Return Create(DirectCast(boundNode, BoundGroupAggregation).Group) ' Group aggregation has no special representation in the IOperation tree
+                Case BoundKind.QuerySource                          : Return Create(DirectCast(boundNode, BoundQuerySource).Expression) ' Query source has no special representation in the IOperation tree
+                Case BoundKind.ToQueryableCollectionConversion      : Return Create(DirectCast(boundNode, BoundToQueryableCollectionConversion).ConversionCall) ' Queryable collection conversion has no special representation in the IOperation tree 
                 Case BoundKind.QueryLambda
-                    ' Query lambda must be lowered to the regular lambda form for the operation tree.
-                    Dim rewrittenLambda As BoundNode = RewriteQueryLambda(DirectCast(boundNode, BoundQueryLambda))
+                    Dim rewrittenLambda As BoundNode = RewriteQueryLambda(DirectCast(boundNode, BoundQueryLambda)) ' Query lambda must be lowered to the regular lambda form for the operation tree.
                     Return Create(rewrittenLambda)
                 Case BoundKind.RangeVariableAssignment
                     ' Range variable assignment has no special representation in the IOperation tree
@@ -324,7 +220,8 @@ Namespace Microsoft.CodeAnalysis.Operations
                      BoundKind.XmlNamespace,
                      BoundKind.XmlProcessingInstruction,
                      BoundKind.UnboundLambda,
-                     BoundKind.UnstructuredExceptionHandlingStatement
+                     BoundKind.UnstructuredExceptionHandlingStatement,
+                     BoundKind.FlagsEnumOperationExpressionSyntax
 
                     Dim constantValue = ConvertToOptional(TryCast(boundNode, BoundExpression)?.ConstantValueOpt)
                     Dim isImplicit As Boolean = boundNode.WasCompilerGenerated
