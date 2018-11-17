@@ -43,7 +43,7 @@ Public Class Attributes
         Dim attrList = attrStmt.AttributeLists(0)
         Dim attr = attrList.Attributes(0)
         Dim target = attr.Target
-        Assert.Equal(If(isFullWidth, FULLWIDTH_COLON_STRING, ":"), target.ColonToken.ValueText)
+        Assert.Equal(If(isFullWidth, FULLWIDTH_COLON, ":"), target.ColonToken.ValueText)
     End Sub
 
     <Fact>

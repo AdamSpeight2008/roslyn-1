@@ -5463,8 +5463,8 @@ checkNullable:
             Dim greaterThanText = tokenText.Substring(tokenLength - 1, 1)
             Dim separatorTrivia = If(tokenLength > 2, _scanner.MakeWhiteSpaceTrivia(tokenText.Substring(1, tokenLength - 2)), Nothing)
 
-            Debug.Assert(lessThanText = "<" OrElse lessThanText = SyntaxFacts.FULLWIDTH_LESS_THAN_SIGN_STRING)
-            Debug.Assert(greaterThanText = ">" OrElse greaterThanText = SyntaxFacts.FULLWIDTH_GREATER_THAN_SIGN_STRING)
+            Debug.Assert(lessThanText = "<" OrElse lessThanText = SyntaxFacts.FULLWIDTH_LESS_THAN_SIGN)
+            Debug.Assert(greaterThanText = ">" OrElse greaterThanText = SyntaxFacts.FULLWIDTH_GREATER_THAN_SIGN)
 
             Dim lessThan = _scanner.MakePunctuationToken(
                 SyntaxKind.LessThanToken,

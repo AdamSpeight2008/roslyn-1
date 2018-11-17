@@ -108,6 +108,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend Const FULLWIDTH_LESS_THAN_SIGN           = ChrW(s_fullwidth + AscW("<"c))  REM ＜
         Friend Const FULLWIDTH_GREATER_THAN_SIGN        = ChrW(s_fullwidth + AscW(">"c))  REM ＞
         Friend Const FULLWIDTH_LEFT_PARENTHESIS         = ChrW(s_fullwidth + AscW("("c))  REM （
+        Friend Const FULLWIDTH_RIGHT_PARENTHESIS        = ChrW(s_fullwidth + AscW(")"c))
         Friend Const FULLWIDTH_LEFT_SQUARE_BRACKET      = ChrW(s_fullwidth + AscW("["c))  REM ［
         Friend Const FULLWIDTH_RIGHT_SQUARE_BRACKET     = ChrW(s_fullwidth + AscW("]"c))  REM ］
         Friend Const FULLWIDTH_LEFT_CURLY_BRACKET       = ChrW(s_fullwidth + AscW("{"c))  REM ｛
@@ -118,6 +119,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend Const FULLWIDTH_FULL_STOP                = ChrW(s_fullwidth + AscW("."c))  REM ．
         Friend Const FULLWIDTH_COMMA                    = ChrW(s_fullwidth + AscW(","c))  REM ，
         Friend Const FULLWIDTH_PERCENT_SIGN             = ChrW(s_fullwidth + AscW("%"c))  REM ％
+        Friend Const FULLWIDTH_ASTERISK                 = ChrW(s_fullwidth + AscW("*"c))
+        Friend Const FULLWIDTH_REVERSE_SOLIDUS          = ChrW(s_fullwidth + AscW("\"c))
+        Friend Const FULLWIDTH_CIRCUMFLEX_ACCENT        = ChrW(s_fullwidth + AscW("^"c))
+        Friend Const FULLWIDTH_EXCLAMATION_MARK         = ChrW(s_fullwidth + AscW("!"c))
+        Friend Const FULLWIDTH_COMMERCIAL_AT            = ChrW(s_fullwidth + AscW("@"c))
 
         Friend Const FULLWIDTH_LATIN_CAPITAL_LETTER_B   = ChrW(s_fullwidth + AscW("B"c))  REM Ｂ
         Friend Const FULLWIDTH_LATIN_CAPITAL_LETTER_H   = ChrW(s_fullwidth + AscW("H"c))  REM Ｈ
@@ -138,28 +144,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend Const FULLWIDTH_LATIN_SMALL_LETTER_C     = ChrW(s_fullwidth + AscW("c"c))  REM ｃ
         Friend Const FULLWIDTH_LATIN_SMALL_LETTER_P     = ChrW(s_fullwidth + AscW("p"c))  REM ｐ
         Friend Const FULLWIDTH_LATIN_SMALL_LETTER_M     = ChrW(s_fullwidth + AscW("m"c))  REM ｍ
-
-        Friend Const FULLWIDTH_LEFT_PARENTHESIS_STRING      As String = FULLWIDTH_LEFT_PARENTHESIS
-        Friend Const FULLWIDTH_RIGHT_PARENTHESIS_STRING     As String = ChrW(s_fullwidth + AscW(")"c))
-        Friend Const FULLWIDTH_LEFT_CURLY_BRACKET_STRING    As String = FULLWIDTH_LEFT_CURLY_BRACKET
-        Friend Const FULLWIDTH_RIGHT_CURLY_BRACKET_STRING   As String = FULLWIDTH_RIGHT_CURLY_BRACKET
-        Friend Const FULLWIDTH_FULL_STOP_STRING             As String = FULLWIDTH_FULL_STOP
-        Friend Const FULLWIDTH_COMMA_STRING                 As String = FULLWIDTH_COMMA
-        Friend Const FULLWIDTH_EQUALS_SIGN_STRING           As String = FULLWIDTH_EQUALS_SIGN
-        Friend Const FULLWIDTH_PLUS_SIGN_STRING             As String = FULLWIDTH_PLUS_SIGN
-        Friend Const FULLWIDTH_HYPHEN_MINUS_STRING          As String = FULLWIDTH_HYPHEN_MINUS
-        Friend Const FULLWIDTH_ASTERISK_STRING              As String = ChrW(s_fullwidth + AscW("*"c))
-        Friend Const FULLWIDTH_SOLIDUS_STRING               As String = FULLWIDTH_SOLIDUS
-        Friend Const FULLWIDTH_REVERSE_SOLIDUS_STRING       As String = ChrW(s_fullwidth + AscW("\"c))
-        Friend Const FULLWIDTH_COLON_STRING                 As String = FULLWIDTH_COLON
-        Friend Const FULLWIDTH_CIRCUMFLEX_ACCENT_STRING     As String = ChrW(s_fullwidth + AscW("^"c))
-        Friend Const FULLWIDTH_AMPERSAND_STRING             As String = FULLWIDTH_AMPERSAND
-        Friend Const FULLWIDTH_NUMBER_SIGN_STRING           As String = FULLWIDTH_NUMBER_SIGN
-        Friend Const FULLWIDTH_EXCLAMATION_MARK_STRING      As String = ChrW(s_fullwidth + AscW("!"c))
-        Friend Const FULLWIDTH_QUESTION_MARK_STRING         As String = FULLWIDTH_QUESTION_MARK
-        Friend Const FULLWIDTH_COMMERCIAL_AT_STRING         As String = ChrW(s_fullwidth + AscW("@"c))
-        Friend Const FULLWIDTH_LESS_THAN_SIGN_STRING        As String = FULLWIDTH_LESS_THAN_SIGN
-        Friend Const FULLWIDTH_GREATER_THAN_SIGN_STRING     As String = FULLWIDTH_GREATER_THAN_SIGN
 
         ''' <summary>
         ''' Determines if the Unicode character is a newline character.

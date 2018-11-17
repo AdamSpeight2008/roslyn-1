@@ -6549,7 +6549,7 @@ Label:::
 End Module
 ]]>.Value
         ConsecutiveColonsTriviaCore(source, ":")
-        ConsecutiveColonsTriviaCore(source.Replace(":"c, FULLWIDTH_COLON), FULLWIDTH_COLON_STRING)
+        ConsecutiveColonsTriviaCore(source.Replace(":"c, FULLWIDTH_COLON), FULLWIDTH_COLON)
     End Sub
 
     Private Sub ConsecutiveColonsTriviaCore(source As String, singleColon As String)
