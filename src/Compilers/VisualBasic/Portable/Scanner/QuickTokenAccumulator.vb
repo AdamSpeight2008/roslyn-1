@@ -14,6 +14,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
+
     '' The QuickTokenAccumulator is a small mini-tokenizer that may fail. It consumes characters and
     '' eventually either decides that either it found a complete token (including the trivia on either
     '' side), or it gives up and says that the full scanner should take an attempt. It also accumulates the 
@@ -30,9 +31,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     '' tokenization. For example "REM" begins a comment, so it can't be tokenized as a keyword or identifier.
     '' Similar problems arise with multi-character punctuation tokens, which can have embedded spaces.
     Partial Friend Class Scanner
-        ''' <summary>
-        ''' The possible states that the mini scanning can be in.
-        ''' </summary>
+
+        ''' <summary> The possible states that the mini scanning can be in. </summary>
         Private Enum AccumulatorState
             Initial
             InitialAllowLeadingMultilineTrivia
@@ -47,18 +47,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Enum
 
         ' Flags used to classify characters.
-        <Flags()>
+        <Flags>
         Private Enum CharFlags As UShort
-            White = 1 << 0   ' simple whitespace (space/tab)
-            Letter = 1 << 1    ' letter, except for "R" (because of REM) and "_"
-            IdentOnly = 1 << 2  ' allowed only in identifiers (cannot start one) - letter "R" (because of REM), "_"
-            TypeChar = 1 << 3  ' legal type character (except !, which is contextually dictionary lookup
-            Punct = 1 << 4     ' some simple punctuation (parens, braces, dot, comma, equals, question)
-            CompoundPunctStart = 1 << 5 ' may be a part of compound punctuation. will be used only if followed by (not white) && (not punct)
-            CR = 1 << 6  ' CR
-            LF = 1 << 7  ' LF
-            Digit = 1 << 8    ' digit 0-9
-            Complex = 1 << 9  ' complex - causes scanning to abort
+            White               = 1 << 0 ' simple whitespace (space/tab)
+            Letter              = 1 << 1 ' letter, except for "R" (because of REM) and "_"
+            IdentOnly           = 1 << 2 ' allowed only in identifiers (cannot start one) - letter "R" (because of REM), "_"
+            TypeChar            = 1 << 3 ' legal type character (except !, which is contextually dictionary lookup
+            Punct               = 1 << 4 ' some simple punctuation (parens, braces, dot, comma, equals, question)
+            CompoundPunctStart  = 1 << 5 ' may be a part of compound punctuation. will be used only if followed by (not white) && (not punct)
+            CR                  = 1 << 6 ' CR
+            LF                  = 1 << 7 ' LF
+            Digit               = 1 << 8 ' digit 0-9
+            Complex             = 1 << 9 ' complex - causes scanning to abort
         End Enum
 
         'TODO: why : and ; are complex?  (8th row, 3 and 4)
@@ -346,5 +346,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Return Nothing
             End If
         End Function
+
     End Class
+
 End Namespace

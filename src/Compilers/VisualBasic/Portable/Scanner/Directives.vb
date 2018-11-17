@@ -20,7 +20,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private _isScanningDirective As Boolean = False
         Protected _scannerPreprocessorState As PreprocessorState
 
-        Private Function TryScanDirective(tList As SyntaxListBuilder) As Boolean
+        Private Function TryScanDirective(
+                                           tList As SyntaxListBuilder
+                                         ) As Boolean
             Debug.Assert(IsAtNewLine())
 
             ' leading whitespace until we see # should be regular whitespace
@@ -76,8 +78,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim disabledCode As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode) = Nothing
             Dim statement As DirectiveTriviaSyntax = directiveTrivia
 
-            Dim newState = ApplyDirective(_scannerPreprocessorState,
-                                            statement)
+            Dim newState = ApplyDirective(_scannerPreprocessorState, statement)
 
             _scannerPreprocessorState = newState
 
@@ -98,24 +99,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             ' processing statement could add an error to it, 
             ' so we may need to rebuild the trivia node
-            If statement IsNot directiveTrivia Then
-                directiveTrivia = statement
-            End If
+            If statement IsNot directiveTrivia Then directiveTrivia = statement
 
             ' add the directive trivia to the list
             tList.Add(directiveTrivia)
 
             ' if had disabled code, add that too
-            If disabledCode.Node IsNot Nothing Then
-                tList.AddRange(disabledCode)
-            End If
+            If disabledCode.Node IsNot Nothing Then tList.AddRange(disabledCode)
         End Sub
 
         ''' <summary>
         ''' Gets an initial preprocessor state and applies all directives from a given node.
         ''' Entry point for blender
         ''' </summary>
-        Protected Shared Function ApplyDirectives(preprocessorState As PreprocessorState, node As VisualBasicSyntaxNode) As PreprocessorState
+        Protected Shared Function ApplyDirectives(
+                                                   preprocessorState As PreprocessorState,
+                                                   node As VisualBasicSyntaxNode
+                                                 ) As PreprocessorState
             If node.ContainsDirectives Then
                 preprocessorState = ApplyDirectivesRecursive(preprocessorState, node)
             End If
@@ -168,8 +168,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 
         ' takes a preprocessor state and applies a directive statement to it
-        Friend Shared Function ApplyDirective(preprocessorState As PreprocessorState,
-                                          ByRef statement As DirectiveTriviaSyntax) As PreprocessorState
+        Friend Shared Function ApplyDirective(
+                                               preprocessorState As PreprocessorState,
+                                         ByRef statement As DirectiveTriviaSyntax
+                                             ) As PreprocessorState
 
             Select Case statement.Kind
                 Case SyntaxKind.ConstDirectiveTrivia
@@ -183,35 +185,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         preprocessorState = preprocessorState.InterpretConstDirective(statement)
                     End If
 
-                Case SyntaxKind.IfDirectiveTrivia
-                    preprocessorState = preprocessorState.InterpretIfDirective(statement)
-
-                Case SyntaxKind.ElseIfDirectiveTrivia
-                    preprocessorState = preprocessorState.InterpretElseIfDirective(statement)
-
-                Case SyntaxKind.ElseDirectiveTrivia
-                    preprocessorState = preprocessorState.InterpretElseDirective(statement)
-
-                Case SyntaxKind.EndIfDirectiveTrivia
-                    preprocessorState = preprocessorState.InterpretEndIfDirective(statement)
-
-                Case SyntaxKind.RegionDirectiveTrivia
-                    preprocessorState = preprocessorState.InterpretRegionDirective(statement)
-
-                Case SyntaxKind.EndRegionDirectiveTrivia
-                    preprocessorState = preprocessorState.InterpretEndRegionDirective(statement)
-
-                Case SyntaxKind.ExternalSourceDirectiveTrivia
-                    preprocessorState = preprocessorState.InterpretExternalSourceDirective(statement)
-
-                Case SyntaxKind.EndExternalSourceDirectiveTrivia
-                    preprocessorState = preprocessorState.InterpretEndExternalSourceDirective(statement)
-
+                Case SyntaxKind.IfDirectiveTrivia                   : preprocessorState = preprocessorState.InterpretIfDirective(statement)
+                Case SyntaxKind.ElseIfDirectiveTrivia               : preprocessorState = preprocessorState.InterpretElseIfDirective(statement)   
+                Case SyntaxKind.ElseDirectiveTrivia                 : preprocessorState = preprocessorState.InterpretElseDirective(statement)
+                Case SyntaxKind.EndIfDirectiveTrivia                : preprocessorState = preprocessorState.InterpretEndIfDirective(statement)
+                Case SyntaxKind.RegionDirectiveTrivia               : preprocessorState = preprocessorState.InterpretRegionDirective(statement)
+                Case SyntaxKind.EndRegionDirectiveTrivia            : preprocessorState = preprocessorState.InterpretEndRegionDirective(statement)
+                Case SyntaxKind.ExternalSourceDirectiveTrivia       : preprocessorState = preprocessorState.InterpretExternalSourceDirective(statement)
+                Case SyntaxKind.EndExternalSourceDirectiveTrivia    : preprocessorState = preprocessorState.InterpretEndExternalSourceDirective(statement)
                 Case SyntaxKind.ExternalChecksumDirectiveTrivia,
-                    SyntaxKind.BadDirectiveTrivia,
-                    SyntaxKind.EnableWarningDirectiveTrivia, 'TODO: Add support for processing #Enable and #Disable
-                    SyntaxKind.DisableWarningDirectiveTrivia,
-                    SyntaxKind.ReferenceDirectiveTrivia
+                     SyntaxKind.BadDirectiveTrivia,
+                     SyntaxKind.EnableWarningDirectiveTrivia, 'TODO: Add support for processing #Enable and #Disable
+                     SyntaxKind.DisableWarningDirectiveTrivia,
+                     SyntaxKind.ReferenceDirectiveTrivia
 
                     ' These directives require no processing
 
@@ -225,171 +211,145 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' represents states of a single conditional frame
         ' immutable as PreprocessorState so requires
         Friend Class ConditionalState
+
             Public Enum BranchTakenState As Byte
                 NotTaken
                 Taken
                 AlreadyTaken
             End Enum
 
-            Private ReadOnly _branchTaken As BranchTakenState
-            Private ReadOnly _elseSeen As Boolean
-            Private ReadOnly _ifDirective As IfDirectiveTriviaSyntax
-
             ' branch can be taken only once.
             ' this state transitions NotTaken -> Taken -> AlreadyTaken...
             Friend ReadOnly Property BranchTaken As BranchTakenState
-                Get
-                    Return _branchTaken
-                End Get
-            End Property
 
             Friend ReadOnly Property ElseSeen As Boolean
-                Get
-                    Return _elseSeen
-                End Get
-            End Property
 
             Friend ReadOnly Property IfDirective As IfDirectiveTriviaSyntax
-                Get
-                    Return _ifDirective
-                End Get
-            End Property
 
-            Friend Sub New(branchTaken As BranchTakenState, elseSeen As Boolean, ifDirective As IfDirectiveTriviaSyntax)
-                _branchTaken = branchTaken
-                _elseSeen = elseSeen
-                _ifDirective = ifDirective
+            Friend Sub New(
+                            branchTaken As BranchTakenState,
+                            elseSeen As Boolean,
+                            ifDirective As IfDirectiveTriviaSyntax
+                          )
+                Me.BranchTaken = branchTaken
+                Me.ElseSeen = elseSeen
+                Me.IfDirective = ifDirective
             End Sub
         End Class
 
         ' The class needs to be immutable
         ' as its instances can get associated with multiple tokens.
         Friend NotInheritable Class PreprocessorState
-            Private ReadOnly _symbols As ImmutableDictionary(Of String, CConst)
-            Private ReadOnly _conditionals As ImmutableStack(Of ConditionalState)
-            Private ReadOnly _regionDirectives As ImmutableStack(Of RegionDirectiveTriviaSyntax)
-            Private ReadOnly _haveSeenRegionDirectives As Boolean
-            Private ReadOnly _externalSourceDirective As ExternalSourceDirectiveTriviaSyntax
-
-            Friend Sub New(symbols As ImmutableDictionary(Of String, CConst))
-                _symbols = symbols
-                _conditionals = ImmutableStack.Create(Of ConditionalState)()
-                _regionDirectives = ImmutableStack.Create(Of RegionDirectiveTriviaSyntax)()
+            Friend Sub New(
+                            symbols As ImmutableDictionary(Of String, CConst)
+                          )
+                SymbolsMap = symbols
+                ConditionalStack = ImmutableStack.Create(Of ConditionalState)()
+                RegionDirectiveStack = ImmutableStack.Create(Of RegionDirectiveTriviaSyntax)()
             End Sub
 
-            Private Sub New(symbols As ImmutableDictionary(Of String, CConst),
-                    conditionals As ImmutableStack(Of ConditionalState),
-                    regionDirectives As ImmutableStack(Of RegionDirectiveTriviaSyntax),
-                    haveSeenRegionDirectives As Boolean,
-                    externalSourceDirective As ExternalSourceDirectiveTriviaSyntax)
+            Private Sub New(
+                             symbols As ImmutableDictionary(Of String, CConst),
+                             conditionals As ImmutableStack(Of ConditionalState),
+                             regionDirectives As ImmutableStack(Of RegionDirectiveTriviaSyntax),
+                             haveSeenRegionDirectives As Boolean,
+                             externalSourceDirective As ExternalSourceDirectiveTriviaSyntax
+                           )
 
-                Me._symbols = symbols
-                Me._conditionals = conditionals
-                Me._regionDirectives = regionDirectives
-                Me._haveSeenRegionDirectives = haveSeenRegionDirectives
-                Me._externalSourceDirective = externalSourceDirective
+                SymbolsMap = symbols
+                ConditionalStack = conditionals
+                RegionDirectiveStack = regionDirectives
+                Me.HaveSeenRegionDirectives = haveSeenRegionDirectives
+                Me.ExternalSourceDirective = externalSourceDirective
             End Sub
 
             Friend ReadOnly Property SymbolsMap As ImmutableDictionary(Of String, CConst)
-                Get
-                    Return _symbols
-                End Get
-            End Property
 
-            Private Function SetSymbol(name As String, value As CConst) As PreprocessorState
-                Dim symbols = Me._symbols
+            Private Function SetSymbol(
+                                        name As String,
+                                        value As CConst
+                                      ) As PreprocessorState
+                Dim symbols = SymbolsMap
                 symbols = symbols.SetItem(name, value)
-                Return New PreprocessorState(symbols, Me._conditionals, Me._regionDirectives, Me._haveSeenRegionDirectives, Me._externalSourceDirective)
+                Return New PreprocessorState(symbols, ConditionalStack, RegionDirectiveStack, HaveSeenRegionDirectives, ExternalSourceDirective)
             End Function
 
             Friend ReadOnly Property ConditionalStack As ImmutableStack(Of ConditionalState)
-                Get
-                    Return _conditionals
-                End Get
-            End Property
 
-            Private Function WithConditionals(conditionals As ImmutableStack(Of ConditionalState)) As PreprocessorState
-                Return New PreprocessorState(Me._symbols, conditionals, Me._regionDirectives, Me._haveSeenRegionDirectives, Me._externalSourceDirective)
+            Private Function WithConditionals(
+                                               conditionals As ImmutableStack(Of ConditionalState)
+                                             ) As PreprocessorState
+                Return New PreprocessorState(SymbolsMap, conditionals, RegionDirectiveStack, HaveSeenRegionDirectives, ExternalSourceDirective)
             End Function
 
             Friend ReadOnly Property RegionDirectiveStack As ImmutableStack(Of RegionDirectiveTriviaSyntax)
-                Get
-                    Return _regionDirectives
-                End Get
-            End Property
 
             Friend ReadOnly Property HaveSeenRegionDirectives As Boolean
-                Get
-                    Return _haveSeenRegionDirectives
-                End Get
-            End Property
 
-            Private Function WithRegions(regions As ImmutableStack(Of RegionDirectiveTriviaSyntax)) As PreprocessorState
-                Return New PreprocessorState(Me._symbols, Me._conditionals, regions, Me._haveSeenRegionDirectives OrElse regions.Count > 0, Me._externalSourceDirective)
+            Private Function WithRegions(
+                                          regions As ImmutableStack(Of RegionDirectiveTriviaSyntax)
+                                        ) As PreprocessorState
+                Return New PreprocessorState(SymbolsMap, ConditionalStack, regions, HaveSeenRegionDirectives OrElse regions.Count > 0, ExternalSourceDirective)
             End Function
 
             Friend ReadOnly Property ExternalSourceDirective As ExternalSourceDirectiveTriviaSyntax
-                Get
-                    Return _externalSourceDirective
-                End Get
-            End Property
 
-            Private Function WithExternalSource(externalSource As ExternalSourceDirectiveTriviaSyntax) As PreprocessorState
-                Return New PreprocessorState(Me._symbols, Me._conditionals, Me._regionDirectives, Me._haveSeenRegionDirectives, externalSource)
+            Private Function WithExternalSource(
+                                                 externalSource As ExternalSourceDirectiveTriviaSyntax
+                                               ) As PreprocessorState
+                Return New PreprocessorState(SymbolsMap, ConditionalStack, RegionDirectiveStack, HaveSeenRegionDirectives, externalSource)
             End Function
 
-            Friend Function InterpretConstDirective(ByRef statement As DirectiveTriviaSyntax) As PreprocessorState
-                Debug.Assert(statement.Kind = SyntaxKind.ConstDirectiveTrivia)
+            Friend Function InterpretConstDirective(
+                                               ByRef statement As DirectiveTriviaSyntax
+                                                   ) As PreprocessorState
 
+                Debug.Assert(statement.Kind = SyntaxKind.ConstDirectiveTrivia)
                 Dim constDirective = DirectCast(statement, ConstDirectiveTriviaSyntax)
-                Dim value = ExpressionEvaluator.EvaluateExpression(constDirective.Value, _symbols)
+                Dim value = ExpressionEvaluator.EvaluateExpression(constDirective.Value, SymbolsMap)
 
                 Dim err = value.ErrorId
-                If err <> 0 Then
-                    statement = Parser.ReportSyntaxError(statement, err, value.ErrorArgs)
-                End If
-
+                If err <> 0 Then statement = Parser.ReportSyntaxError(statement, err, value.ErrorArgs)
                 Return SetSymbol(constDirective.Name.IdentifierText, value)
             End Function
 
-            Friend Function InterpretExternalSourceDirective(ByRef statement As DirectiveTriviaSyntax) As PreprocessorState
+            Friend Function InterpretExternalSourceDirective(
+                                                        ByRef statement As DirectiveTriviaSyntax
+                                                            ) As PreprocessorState
                 Dim externalSourceDirective = DirectCast(statement, ExternalSourceDirectiveTriviaSyntax)
-
-                If _externalSourceDirective IsNot Nothing Then
-                    statement = Parser.ReportSyntaxError(statement, ERRID.ERR_NestedExternalSource)
-                    Return Me
-                Else
-                    Return WithExternalSource(externalSourceDirective)
-                End If
+                                If Me.ExternalSourceDirective Is Nothing Then Return WithExternalSource(externalSourceDirective)
+                statement = Parser.ReportSyntaxError(statement, ERRID.ERR_NestedExternalSource)
+                Return Me
             End Function
 
-            Friend Function InterpretEndExternalSourceDirective(ByRef statement As DirectiveTriviaSyntax) As PreprocessorState
-                If _externalSourceDirective Is Nothing Then
-                    statement = Parser.ReportSyntaxError(statement, ERRID.ERR_EndExternalSource)
-                    Return Me
-                Else
-                    Return WithExternalSource(Nothing)
-                End If
+            Friend Function InterpretEndExternalSourceDirective(
+                                                           ByRef statement As DirectiveTriviaSyntax
+                                                               ) As PreprocessorState
+                If ExternalSourceDirective IsNot Nothing Then Return WithExternalSource(Nothing)
+                statement = Parser.ReportSyntaxError(statement, ERRID.ERR_EndExternalSource)
+                Return Me
             End Function
 
-            Friend Function InterpretRegionDirective(ByRef statement As DirectiveTriviaSyntax) As PreprocessorState
+            Friend Function InterpretRegionDirective(
+                                                ByRef statement As DirectiveTriviaSyntax
+                                                    ) As PreprocessorState
                 Dim regionDirective = DirectCast(statement, RegionDirectiveTriviaSyntax)
-
-                Return WithRegions(_regionDirectives.Push(regionDirective))
+                Return WithRegions(RegionDirectiveStack.Push(regionDirective))
             End Function
 
-            Friend Function InterpretEndRegionDirective(ByRef statement As DirectiveTriviaSyntax) As PreprocessorState
-                If _regionDirectives.Count = 0 Then
-                    statement = Parser.ReportSyntaxError(statement, ERRID.ERR_EndRegionNoRegion)
-                    Return Me
-                Else
-                    Return WithRegions(_regionDirectives.Pop())
-                End If
+            Friend Function InterpretEndRegionDirective(
+                                                   ByRef statement As DirectiveTriviaSyntax
+                                                       ) As PreprocessorState
+                If RegionDirectiveStack.Count <> 0 Then Return WithRegions(RegionDirectiveStack.Pop())
+                statement = Parser.ReportSyntaxError(statement, ERRID.ERR_EndRegionNoRegion)
+                Return Me
             End Function
 
             ' // Interpret a conditional compilation #if or #elseif.
 
-            Friend Function InterpretIfDirective(ByRef statement As DirectiveTriviaSyntax) As PreprocessorState
+            Friend Function InterpretIfDirective(
+                                            ByRef statement As DirectiveTriviaSyntax
+                                                ) As PreprocessorState
                 Debug.Assert(statement.Kind = SyntaxKind.IfDirectiveTrivia)
 
                 Dim ifDirective = DirectCast(statement, IfDirectiveTriviaSyntax)
@@ -397,24 +357,30 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 ' TODO - Is the following comment still relevant? How should the error be reported?
                 ' Evaluate the expression to detect errors, whether or not
                 ' its result is needed.
-                Dim value = ExpressionEvaluator.EvaluateCondition(ifDirective.Condition, _symbols)
+                Dim value = ExpressionEvaluator.EvaluateCondition(ifDirective.Condition, SymbolsMap)
 
-                Dim err = value.ErrorId
-                If err <> 0 Then
-                    statement = Parser.ReportSyntaxError(statement, err, value.ErrorArgs)
-                End If
+                ReportIfHasError(Statement,value)
 
-                Dim takeThisBranch = If(value.IsBad OrElse value.IsBooleanTrue,
-                                        ConditionalState.BranchTakenState.Taken,
-                                        ConditionalState.BranchTakenState.NotTaken)
+                Dim takeThisBranch = If(value.IsBad OrElse value.IsBooleanTrue, ConditionalState.BranchTakenState.Taken, ConditionalState.BranchTakenState.NotTaken)
 
-                Return WithConditionals(_conditionals.Push(New ConditionalState(takeThisBranch, False, DirectCast(statement, IfDirectiveTriviaSyntax))))
+                Return WithConditionals(ConditionalStack.Push(New ConditionalState(takeThisBranch, False, DirectCast(statement, IfDirectiveTriviaSyntax))))
             End Function
 
-            Friend Function InterpretElseIfDirective(ByRef statement As DirectiveTriviaSyntax) As PreprocessorState
+            Public Sub ReportIfHasError(of T As VisualBasicSyntaxNode)(
+                                                                  Byref statement as T,
+                                                                        value as CConst
+                                                                      )
+                Dim err = value.ErrorId
+                If err <> ERRID.ERR_None Then statement = Parser.ReportSyntaxError(statement, err, value.ErrorArgs)
+            End Sub
+
+
+            Friend Function InterpretElseIfDirective(
+                                                ByRef statement As DirectiveTriviaSyntax
+                                                    ) As PreprocessorState
 
                 Dim condition As ConditionalState
-                Dim conditionals = Me._conditionals
+                Dim conditionals = Me.ConditionalStack
 
                 If conditionals.Count = 0 Then
                     statement = Parser.ReportSyntaxError(statement, ERRID.ERR_LbBadElseif)
@@ -423,9 +389,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     condition = conditionals.Peek
                     conditionals = conditionals.Pop
 
-                    If condition.ElseSeen Then
-                        statement = Parser.ReportSyntaxError(statement, ERRID.ERR_LbElseifAfterElse)
-                    End If
+                    If condition.ElseSeen Then statement = Parser.ReportSyntaxError(statement, ERRID.ERR_LbElseifAfterElse)
                 End If
 
                 ' TODO - Is the following comment still relevant? How should the error be reported?
@@ -433,30 +397,26 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 ' its result is needed.
                 Dim ifDirective = DirectCast(statement, IfDirectiveTriviaSyntax)
 
-                Dim value = ExpressionEvaluator.EvaluateCondition(ifDirective.Condition, _symbols)
+                Dim value = ExpressionEvaluator.EvaluateCondition(ifDirective.Condition, SymbolsMap)
 
-                Dim err = value.ErrorId
-                If err <> 0 Then
-                    statement = Parser.ReportSyntaxError(statement, err, value.ErrorArgs)
-                End If
+                ReportIfHasError(statement,value)
 
                 Dim takeThisBranch = condition.BranchTaken
-
-                If takeThisBranch = ConditionalState.BranchTakenState.Taken Then
-                    takeThisBranch = ConditionalState.BranchTakenState.AlreadyTaken
-
-                ElseIf takeThisBranch = ConditionalState.BranchTakenState.NotTaken AndAlso Not value.IsBad AndAlso value.IsBooleanTrue Then
-                    takeThisBranch = ConditionalState.BranchTakenState.Taken
-
-                End If
+                Select Case takeThisBranch
+                    Case ConditionalState.BranchTakenState.Taken    : takeThisBranch = ConditionalState.BranchTakenState.AlreadyTaken
+                    Case ConditionalState.BranchTakenState.NotTaken 
+                        If Not value.IsBad AndAlso value.IsBooleanTrue Then takeThisBranch = ConditionalState.BranchTakenState.Taken
+                End Select
 
                 condition = New ConditionalState(takeThisBranch, condition.ElseSeen, DirectCast(statement, IfDirectiveTriviaSyntax))
 
                 Return WithConditionals(conditionals.Push(condition))
             End Function
 
-            Friend Function InterpretElseDirective(ByRef statement As DirectiveTriviaSyntax) As PreprocessorState
-                Dim conditionals = Me._conditionals
+            Friend Function InterpretElseDirective(
+                                              ByRef statement As DirectiveTriviaSyntax
+                                                  ) As PreprocessorState
+                Dim conditionals = ConditionalStack
 
                 If conditionals.Count = 0 Then
                     ' If there has been no preceding #If, give an error and pretend that there
@@ -468,52 +428,41 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Dim condition = conditionals.Peek
                 conditionals = conditionals.Pop
 
-                If condition.ElseSeen Then
-                    statement = Parser.ReportSyntaxError(statement, ERRID.ERR_LbElseNoMatchingIf)
-                End If
+                If condition.ElseSeen Then statement = Parser.ReportSyntaxError(statement, ERRID.ERR_LbElseNoMatchingIf)
 
                 Dim takeThisBranch = condition.BranchTaken
-
-                If takeThisBranch = ConditionalState.BranchTakenState.Taken Then
-                    takeThisBranch = ConditionalState.BranchTakenState.AlreadyTaken
-
-                ElseIf takeThisBranch = ConditionalState.BranchTakenState.NotTaken Then
-                    takeThisBranch = ConditionalState.BranchTakenState.Taken
-
-                End If
+                Select Case takeThisBranch
+                    Case ConditionalState.BranchTakenState.Taken    : takeThisBranch = ConditionalState.BranchTakenState.AlreadyTaken
+                    Case ConditionalState.BranchTakenState.NotTaken : takeThisBranch = ConditionalState.BranchTakenState.Taken
+                End Select
 
                 condition = New ConditionalState(takeThisBranch, True, condition.IfDirective)
                 Return WithConditionals(conditionals.Push(condition))
             End Function
 
-            Friend Function InterpretEndIfDirective(ByRef statement As DirectiveTriviaSyntax) As PreprocessorState
-                If _conditionals.Count = 0 Then
-                    statement = Parser.ReportSyntaxError(statement, ERRID.ERR_LbNoMatchingIf)
-                    Return Me
-                Else
-                    Return WithConditionals(_conditionals.Pop())
-                End If
+            Friend Function InterpretEndIfDirective(
+                                               ByRef statement As DirectiveTriviaSyntax
+                                                   ) As PreprocessorState
+                If ConditionalStack.Count <> 0 Then Return WithConditionals(ConditionalStack.Pop())
+                statement = Parser.ReportSyntaxError(statement, ERRID.ERR_LbNoMatchingIf)
+                Return Me
             End Function
 
-            Friend Function IsEquivalentTo(other As PreprocessorState) As Boolean
+            Friend Function IsEquivalentTo(
+                                            other As PreprocessorState
+                                          ) As Boolean
                 ' for now, we will only consider two are equivalents when there are only regions but no other directives
-                If Me._conditionals.Count > 0 OrElse
-                   Me._symbols.Count > 0 OrElse
-                   Me._externalSourceDirective IsNot Nothing OrElse
-                   other._conditionals.Count > 0 OrElse
-                   other._symbols.Count > 0 OrElse
-                   other._externalSourceDirective IsNot Nothing Then
+                If ConditionalStack.Count > 0 OrElse
+                   SymbolsMap.Count > 0 OrElse
+                   ExternalSourceDirective IsNot Nothing OrElse
+                   other.ConditionalStack.Count > 0 OrElse
+                   other.SymbolsMap.Count > 0 OrElse
+                   other.ExternalSourceDirective IsNot Nothing Then
                     Return False
                 End If
 
-                If Me._regionDirectives.Count <> other._regionDirectives.Count Then
-                    Return False
-                End If
-
-                If Me._haveSeenRegionDirectives <> other._haveSeenRegionDirectives Then
-                    Return False
-                End If
-
+                If RegionDirectiveStack.Count <> other.RegionDirectiveStack.Count Then Return False
+                If HaveSeenRegionDirectives <> other.HaveSeenRegionDirectives     Then Return False
                 Return True
             End Function
 
@@ -533,23 +482,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim NestedConditionalsToSkip As Integer = 0
 
             ' Accumulate span of text we're skipping.
-            Dim startSkipped As Integer = -1 ' Start location of skipping
-            Dim lengthSkipped As Integer = 0 ' Length of skipped text.
+            Dim startSkipped  As Integer = -1 ' Start location of skipping
+            Dim lengthSkipped As Integer =  0 ' Length of skipped text.
 
             While True
-                Dim skippedSpan = Me.SkipToNextConditionalLine()
+                Dim skippedSpan = SkipToNextConditionalLine()
+                If startSkipped < 0 Then startSkipped = skippedSpan.Start
 
-                If startSkipped < 0 Then
-                    startSkipped = skippedSpan.Start
-                End If
                 lengthSkipped += skippedSpan.Length
 
                 Dim curToken = GetCurrentToken()
 
                 Select Case curToken.Kind
                     Case SyntaxKind.HashToken
-                        Dim nextKind = Me.PeekToken(1, ScannerState.VB).Kind
-                        Dim nextNextToken = Me.PeekToken(2, ScannerState.VB)
+                        Dim nextKind = PeekToken(1, ScannerState.VB).Kind
+                        Dim nextNextToken = PeekToken(2, ScannerState.VB)
 
                         If NestedConditionalsToSkip = 0 AndAlso
                             ((nextKind = SyntaxKind.EndKeyword AndAlso
@@ -612,21 +559,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 End Select
             End While
 
-            If lengthSkipped > 0 Then
-                Return New CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)(Me.GetDisabledTextAt(New TextSpan(startSkipped, lengthSkipped)))
-            Else
-                Return New CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)(Nothing)
-            End If
+            Return New CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)(If(lengthSkipped>0, GetDisabledTextAt(New TextSpan(startSkipped, lengthSkipped)), Nothing))
+
         End Function
 
         ' // If compilation ends in the middle of a non-skipped conditional section,
         ' // produce appropriate diagnostics.
-
-        Friend Function RecoverFromMissingConditionalEnds(eof As PunctuationSyntax,
-                                                          <Out> ByRef notClosedIfDirectives As ArrayBuilder(Of IfDirectiveTriviaSyntax),
-                                                          <Out> ByRef notClosedRegionDirectives As ArrayBuilder(Of RegionDirectiveTriviaSyntax),
-                                                          <Out> ByRef haveRegionDirectives As Boolean,
-                                                          <Out> ByRef notClosedExternalSourceDirective As ExternalSourceDirectiveTriviaSyntax) As PunctuationSyntax
+        Friend Function RecoverFromMissingConditionalEnds(
+                                                           eof As PunctuationSyntax,
+                                               <Out> ByRef notClosedIfDirectives As ArrayBuilder(Of IfDirectiveTriviaSyntax),
+                                               <Out> ByRef notClosedRegionDirectives As ArrayBuilder(Of RegionDirectiveTriviaSyntax),
+                                               <Out> ByRef haveRegionDirectives As Boolean,
+                                               <Out> ByRef notClosedExternalSourceDirective As ExternalSourceDirectiveTriviaSyntax
+                                                        ) As PunctuationSyntax
 
             notClosedIfDirectives = Nothing
             notClosedRegionDirectives = Nothing
@@ -650,11 +595,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             If Me._scannerPreprocessorState.RegionDirectiveStack.Count > 0 Then
                 notClosedRegionDirectives = ArrayBuilder(Of RegionDirectiveTriviaSyntax).GetInstance()
-                notClosedRegionDirectives.AddRange(Me._scannerPreprocessorState.RegionDirectiveStack)
+                notClosedRegionDirectives.AddRange(_scannerPreprocessorState.RegionDirectiveStack)
             End If
 
-            haveRegionDirectives = Me._scannerPreprocessorState.HaveSeenRegionDirectives
-            notClosedExternalSourceDirective = Me._scannerPreprocessorState.ExternalSourceDirective
+            haveRegionDirectives = _scannerPreprocessorState.HaveSeenRegionDirectives
+            notClosedExternalSourceDirective = _scannerPreprocessorState.ExternalSourceDirective
 
             Return eof
         End Function

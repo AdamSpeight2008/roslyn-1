@@ -11,8 +11,11 @@ Imports Microsoft.CodeAnalysis.VisualBasic.SyntaxFacts
 Imports CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
+
     Partial Friend Class Scanner
+
         Private _IsScanningXmlDoc As Boolean = False
+
         Friend Property IsScanningXmlDoc As Boolean
             Get
                 Return _IsScanningXmlDoc
@@ -21,6 +24,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 _IsScanningXmlDoc = value
             End Set
         End Property
+
 
         ''' <remarks>See description in TryScanXmlDocComment(...)</remarks>
         Private _endOfXmlInsteadOfLastDocCommentLineBreak As Boolean
@@ -156,12 +160,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 End If
             End While
 
-            If StartsXmlDoc(Here) Then
-                len = Here + 3
-                Return True
-            Else
-                Return False
-            End If
+            If not StartsXmlDoc(Here) Then Return False
+            len = Here + 3
+            Return True
         End Function
 
         ' scans  (ws)'''
@@ -169,17 +170,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(IsAtNewLine() OrElse _isStartingFirstXmlDocLine)
 
             Dim len = 0
-            If TrySkipXmlDocMarker(len) Then
-                Return MakeDocumentationCommentExteriorTrivia(GetText(len))
-            Else
-                Return Nothing
-            End If
+            If TrySkipXmlDocMarker(len) Then Return MakeDocumentationCommentExteriorTrivia(GetText(len))
+            Return Nothing
         End Function
 
         ''' <summary>
         ''' Returns False if trivia ends line.
         ''' </summary>
-        Private Function ScanXmlTriviaInXmlDoc(c As Char, triviaList As SyntaxListBuilder(Of VisualBasicSyntaxNode)) As Boolean
+        Private Function ScanXmlTriviaInXmlDoc(
+                                                c As Char,
+                                                triviaList As SyntaxListBuilder(Of VisualBasicSyntaxNode)
+                                              ) As Boolean
             Debug.Assert(IsScanningXmlDoc)
             Debug.Assert(c = CARRIAGE_RETURN OrElse c = LINE_FEED OrElse c = " "c OrElse c = CHARACTER_TABULATION)
 
@@ -285,26 +286,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                             Dim ch As Char = Peek(1)
                             Select Case ch
                                 Case "!"c
-                                    If CanGet(2) Then
-                                        Select Case (Peek(2))
-                                            Case "-"c
-                                                If NextIs(3, "-"c) Then
-                                                    Return XmlMakeBeginCommentToken(precedingTrivia, s_scanNoTriviaFunc)
-                                                End If
-                                            Case "["c
-                                                If NextAre(3, "CDATA[") Then
-                                                    Return XmlMakeBeginCDataToken(precedingTrivia, s_scanNoTriviaFunc)
-                                                End If
-                                            Case "D"c
-                                                If NextAre(3, "OCTYPE") Then
-                                                    Return XmlMakeBeginDTDToken(precedingTrivia)
-                                                End If
-                                        End Select
-                                    End If
-                                Case "?"c
-                                    Return XmlMakeBeginProcessingInstructionToken(precedingTrivia, s_scanNoTriviaFunc)
-                                Case "/"c
-                                    Return XmlMakeBeginEndElementToken(precedingTrivia, s_scanNoTriviaFunc)
+                                    If Not CanGet(2) Then exit Select
+                                    Select Case (Peek(2))
+                                        Case "-"c   : If NextIs(3, "-"c)        Then Return XmlMakeBeginCommentToken(precedingTrivia, s_scanNoTriviaFunc)
+                                        Case "["c   : If NextAre(3, "CDATA[")   Then Return XmlMakeBeginCDataToken(precedingTrivia, s_scanNoTriviaFunc)
+                                        Case "D"c   : If NextAre(3, "OCTYPE")   Then Return XmlMakeBeginDTDToken(precedingTrivia)
+                                    End Select
+                                Case "?"c   : Return XmlMakeBeginProcessingInstructionToken(precedingTrivia, s_scanNoTriviaFunc)
+                                Case "/"c   : Return XmlMakeBeginEndElementToken(precedingTrivia, s_scanNoTriviaFunc)
                             End Select
                         End If
 
@@ -487,23 +476,15 @@ CleanUp:
                         End If
 
                     Case "/"c
-                        If NextIs(1, ">"c) Then
-                            Return XmlMakeEndEmptyElementToken(precedingTrivia)
-                        End If
+                        If NextIs(1, ">"c) Then Return XmlMakeEndEmptyElementToken(precedingTrivia)
                         Return XmlMakeDivToken(precedingTrivia)
 
-                    Case ">"c
-                        Return XmlMakeGreaterToken(precedingTrivia)
-
-                    Case "="c
-                        Return XmlMakeEqualsToken(precedingTrivia)
-
+                    Case ">"c   : Return XmlMakeGreaterToken(precedingTrivia)
+                    Case "="c   : Return XmlMakeEqualsToken(precedingTrivia)
                     Case "'"c, LEFT_SINGLE_QUOTATION_MARK, RIGHT_SINGLE_QUOTATION_MARK
                         Return XmlMakeSingleQuoteToken(precedingTrivia, c, isOpening:=True)
-
                     Case """"c, LEFT_DOUBLE_QUOTATION_MARK, RIGHT_DOUBLE_QUOTATION_MARK
                         Return XmlMakeDoubleQuoteToken(precedingTrivia, c, isOpening:=True)
-
                     Case "<"c
                         If CanGet(1) Then
                             Dim ch As Char = Peek(1)
@@ -511,25 +492,14 @@ CleanUp:
                                 Case "!"c
                                     If CanGet(2) Then
                                         Select Case (Peek(2))
-                                            Case "-"c
-                                                If NextIs(3, "-"c) Then
-                                                    Return XmlMakeBeginCommentToken(precedingTrivia, s_scanNoTriviaFunc)
-                                                End If
-                                            Case "["c
-                                                If NextAre(3, "CDATA[") Then
-                                                    Return XmlMakeBeginCDataToken(precedingTrivia, s_scanNoTriviaFunc)
-                                                End If
-                                            Case "D"c
-                                                If NextAre(3, "OCTYPE") Then
-                                                    Return XmlMakeBeginDTDToken(precedingTrivia)
-                                                End If
+                                            Case "-"c   : If NextIs(3, "-"c) Then Return XmlMakeBeginCommentToken(precedingTrivia, s_scanNoTriviaFunc)
+                                            Case "["c   : If NextAre(3, "CDATA[") Then Return XmlMakeBeginCDataToken(precedingTrivia, s_scanNoTriviaFunc)
+                                            Case "D"c   : If NextAre(3, "OCTYPE") Then Return XmlMakeBeginDTDToken(precedingTrivia)
                                         End Select
                                     End If
                                     Return XmlLessThanExclamationToken(state, precedingTrivia)
-                                Case "?"c
-                                    Return XmlMakeBeginProcessingInstructionToken(precedingTrivia, s_scanNoTriviaFunc)
-                                Case "/"c
-                                    Return XmlMakeBeginEndElementToken(precedingTrivia, s_scanNoTriviaFunc)
+                                Case "?"c   : Return XmlMakeBeginProcessingInstructionToken(precedingTrivia, s_scanNoTriviaFunc)
+                                Case "/"c   : Return XmlMakeBeginEndElementToken(precedingTrivia, s_scanNoTriviaFunc)
                             End Select
                         End If
 
@@ -543,27 +513,16 @@ CleanUp:
 
                         Return MakeQuestionToken(precedingTrivia, False)
 
-                    Case "("c
-                        Return XmlMakeLeftParenToken(precedingTrivia)
-
-                    Case ")"c
-                        Return XmlMakeRightParenToken(precedingTrivia)
-
+                    Case "("c   : Return XmlMakeLeftParenToken(precedingTrivia)
+                    Case ")"c   : Return XmlMakeRightParenToken(precedingTrivia)
                     Case "!"c,
-                        ";"c,
-                        "#"c,
-                        ","c,
-                        "}"c
-                        Return XmlMakeBadToken(precedingTrivia, 1, ERRID.ERR_IllegalXmlNameChar)
-
-                    Case ":"c
-                        Return XmlMakeColonToken(precedingTrivia)
-
-                    Case "["c
-                        Return XmlMakeOpenBracketToken(state, precedingTrivia)
-
-                    Case "]"c
-                        Return XmlMakeCloseBracketToken(state, precedingTrivia)
+                         ";"c,
+                         "#"c,
+                         ","c,
+                         "}"c   : Return XmlMakeBadToken(precedingTrivia, 1, ERRID.ERR_IllegalXmlNameChar)
+                    Case ":"c   : Return XmlMakeColonToken(precedingTrivia)
+                    Case "["c   : Return XmlMakeOpenBracketToken(state, precedingTrivia)
+                    Case "]"c   : Return XmlMakeCloseBracketToken(state, precedingTrivia)
 
                     Case Else
                         ' // Because of weak scanning of QName, this state must always handle
@@ -580,4 +539,5 @@ CleanUp:
         ' may actually make it a derived XmlDocScanner class (consider caches).
 
     End Class
+
 End Namespace
