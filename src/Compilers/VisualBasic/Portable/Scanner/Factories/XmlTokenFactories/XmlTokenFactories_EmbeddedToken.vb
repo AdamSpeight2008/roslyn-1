@@ -15,13 +15,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 #Region "EmbeddedToken"
 
-        Private Function XmlMakeBeginEmbeddedToken(precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)) As PunctuationSyntax
-            Debug.Assert(NextAre("<%="))
-            AdvanceChar(3)
-            Return MakePunctuationToken(SyntaxKind.LessThanPercentEqualsToken, "<%=", precedingTrivia, Nothing)
+        Private Function XmlMakeBeginEmbeddedToken( precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode) ) As PunctuationSyntax
+            Const _BeginEm_ = "<%="
+            Return Make_XmlToken(_BeginEm_, SyntaxKind.LessThanPercentEqualsToken, precedingTrivia)
         End Function
 
-        Private Function XmlMakeEndEmbeddedToken(precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode), scanTrailingTrivia As ScanTriviaFunc) As PunctuationSyntax
+        Private Function XmlMakeEndEmbeddedToken(
+                                                  precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode),
+                                                  scanTrailingTrivia As ScanTriviaFunc
+                                                ) As PunctuationSyntax
             Debug.Assert(Peek() = "%"c OrElse Peek() = FULLWIDTH_PERCENT_SIGN)
             Debug.Assert(Peek(1) = ">"c)
 

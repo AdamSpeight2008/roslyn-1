@@ -245,14 +245,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If IsFullWidth(Digit) Then Digit = MakeHalfWidth(Digit)
             Dim u As Integer = AscW(Digit)
 
-            If IsDecimalDigit(Digit)               Then Return CByte(u - AscW("0"c)))
-            If Digit >= "A"c AndAlso Digit <= "F"c Then Return CByte(u + (10 - AscW("A"c))))
+            If IsDecimalDigit(Digit)               Then Return CByte(u - AscW("0"c))
+            If Digit >= "A"c AndAlso Digit <= "F"c Then Return CByte(u + (10 - AscW("A"c)))
             Debug.Assert(Digit >= "a"c AndAlso Digit <= "f"c, "Surprising digit.")
-            Return CByte(u + (10 - AscW("a"c))))
+            Return CByte(u + (10 - AscW("a"c)))
           End Function
 
         Friend Shared Function BeginsBaseLiteral(c As Char) As Boolean
-            Return (c = "H"c Or c = "O"c Or c = "B"c Or c = "h"c Or c = "o"c Or c = "b"c)) OrElse
+            Return (c = "H"c Or c = "O"c Or c = "B"c Or c = "h"c Or c = "o"c Or c = "b"c) OrElse
                     (IsFullWidth(c) AndAlso (c = FULLWIDTH_LATIN_CAPITAL_LETTER_H Or c = FULLWIDTH_LATIN_SMALL_LETTER_H) Or
                                             (c = FULLWIDTH_LATIN_CAPITAL_LETTER_O Or c = FULLWIDTH_LATIN_SMALL_LETTER_O) Or
                                             (c = FULLWIDTH_LATIN_CAPITAL_LETTER_B Or c = FULLWIDTH_LATIN_SMALL_LETTER_B))
@@ -349,24 +349,24 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Friend Shared Function IsBinaryDigit(c As Char) As Boolean
-            Return (c >= "0"c And c <= "1"c)) Or
+            Return (c >= "0"c And c <= "1"c) Or
                    (c >= FULLWIDTH_DIGIT_ZERO And c <= FULLWIDTH_DIGIT_ONE)
         End Function
 
         Friend Shared Function IsOctalDigit(c As Char) As Boolean
-            Return (c >= "0"c And c <= "7"c)) Or
+            Return (c >= "0"c And c <= "7"c) Or
                    (c >= FULLWIDTH_DIGIT_ZERO And c <= FULLWIDTH_DIGIT_SEVEN)
         End Function
 
         Friend Shared Function IsDecimalDigit(c As Char) As Boolean
-            Return (c >= "0"c And c <= "9"c)) Or
+            Return (c >= "0"c And c <= "9"c) Or
                    (c >= FULLWIDTH_DIGIT_ZERO And c <= FULLWIDTH_DIGIT_NINE)
         End Function
 
         Friend Shared Function IsHexDigit(c As Char) As Boolean
             Return IsDecimalDigit(c) OrElse
-                    (c >= "a"c And c <= "f"c)) OrElse
-                    (c >= "A"c And c <= "F"c)) OrElse
+                    (c >= "a"c And c <= "f"c) OrElse
+                    (c >= "A"c And c <= "F"c) OrElse
                     (c >= FULLWIDTH_LATIN_SMALL_LETTER_A And c <= FULLWIDTH_LATIN_SMALL_LETTER_F) OrElse
                     (c >= FULLWIDTH_LATIN_CAPITAL_LETTER_A And c <= FULLWIDTH_LATIN_CAPITAL_LETTER_F)
         End Function

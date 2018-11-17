@@ -15,27 +15,31 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 #Region "ProcessingInstruction"
 
-        Private Function XmlMakeBeginProcessingInstructionToken(precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode), scanTrailingTrivia As ScanTriviaFunc) As PunctuationSyntax
-            Debug.Assert(NextAre("<?"))
-            AdvanceChar(2)
-            Dim followingTrivia = scanTrailingTrivia()
-            Return MakePunctuationToken(SyntaxKind.LessThanQuestionToken, "<?", precedingTrivia, followingTrivia)
+        Private Function XmlMakeBeginProcessingInstructionToken(
+                                                                 precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode),
+                                                                 scanTrailingTrivia As ScanTriviaFunc
+                                                               ) As PunctuationSyntax
+            Const _BeginPI_ = "<?"
+            Return Make_XmlToken(_BeginPI_, SyntaxKind.LessThanQuestionToken, precedingTrivia, scanTrailingTrivia)
         End Function
 
-        Private Function XmlMakeProcessingInstructionToken(precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode), TokenWidth As Integer) As XmlTextTokenSyntax
+        Private Function XmlMakeProcessingInstructionToken(
+                                                            precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode),
+                                                            TokenWidth As Integer
+                                                          ) As XmlTextTokenSyntax
             Debug.Assert(TokenWidth > 0)
-
             'TODO - Normalize new lines.
             Dim text = GetTextNotInterned(TokenWidth)
             Return SyntaxFactory.XmlTextLiteralToken(text, text, precedingTrivia.Node, Nothing)
-
         End Function
 
-        Private Function XmlMakeEndProcessingInstructionToken(precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)) As PunctuationSyntax
-            Debug.Assert(NextAre("?>"))
-            AdvanceChar(2)
-            Return MakePunctuationToken(SyntaxKind.QuestionGreaterThanToken, "?>", precedingTrivia, Nothing)
+        Private Function XmlMakeEndProcessingInstructionToken(
+                                                               precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)
+                                                             ) As PunctuationSyntax
+            Const _EndPI_ = "?>"
+            Return Make_XmlToken(_EndPi_, SyntaxKind.QuestionGreaterThanToken, precedingTrivia)
         End Function
+
 #End Region
 
     End Class
