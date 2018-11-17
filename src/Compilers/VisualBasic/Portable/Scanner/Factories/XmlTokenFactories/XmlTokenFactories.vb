@@ -168,18 +168,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                                                       precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode), 
                                                       scanTrailingTrivia As ScanTriviaFunc
                                                     ) As PunctuationSyntax
-            Debug.Assert(NextAre("</"))
-            AdvanceChar(2)
-            Dim followingTrivia = scanTrailingTrivia()
-            Return MakePunctuationToken(SyntaxKind.LessThanSlashToken, "</", precedingTrivia, followingTrivia)
+            Return Make_XmlToken("</", SyntaxKind.LessThanSlashToken, precedingTrivia, scanTrailingTrivia)
         End Function
 
         Private Function XmlMakeEndEmptyElementToken(
                                                       precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)
                                                     ) As PunctuationSyntax
-            Debug.Assert(NextAre("/>"))
-            AdvanceChar(2)
-            Return MakePunctuationToken(SyntaxKind.SlashGreaterThanToken, "/>", precedingTrivia, Nothing)
+            Return Make_XmlToken("/>", SyntaxKind.SlashGreaterThanToken, precedingTrivia)
         End Function
 
     End Class
