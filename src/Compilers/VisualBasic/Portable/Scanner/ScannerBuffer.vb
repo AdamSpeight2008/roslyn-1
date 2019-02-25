@@ -39,7 +39,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Private Shared ReadOnly s_poolInstance As ObjectPool(Of Page) = CreatePool()
 
             Private Shared Function CreatePool() As ObjectPool(Of Page)
-                Dim pool As objectpool(of Page) = New ObjectPool(Of Page)(Function() New Page(pool), 128)
+                Dim pool As objectpool(of Page) = Nothing
+                pool = New ObjectPool(Of Page)(Function() New Page(pool), 128)
                 Return pool
             End Function
 
