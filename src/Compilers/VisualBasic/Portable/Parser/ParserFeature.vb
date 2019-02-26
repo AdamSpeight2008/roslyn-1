@@ -36,6 +36,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         LeadingDigitSeparator
         NonTrailingNamedArguments
         PrivateProtected
+        EnumFlagOperators
         DefaultOptionalParameter
     End Enum
 
@@ -87,6 +88,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Feature.NonTrailingNamedArguments,
                     Feature.PrivateProtected
                     Return LanguageVersion.VisualBasic15_5
+                Case Feature.EnumFlagOperators
+                    Return LanguageVersion.VisualBasic15_5 '(PROTOTYPE)
                 Case Feature.DefaultOptionalParameter ' PROTOTYPE
                     Return LanguageVersion.VisualBasic15_5
                 Case Else
@@ -156,6 +159,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return ERRID.FEATURE_PrivateProtected
                 Case Feature.InterpolatedStrings
                     Return ERRID.FEATURE_InterpolatedStrings
+                Case Feature.EnumFlagOperators
+                    Return ERRID.FEATURE_EnumFlagOperators
                 Case Feature.DefaultOptionalParameter ' PROTOTYPE
                     Return ERRID.FEATURE_DefaultOptionalParameter
                 Case Else

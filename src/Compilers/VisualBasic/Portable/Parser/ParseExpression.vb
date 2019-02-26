@@ -231,6 +231,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                     term = ParseSimpleNameExpressionAllowingKeywordAndTypeArguments()
 
+                Case SyntaxKind.FlagsEnumOperatorSyntax, SyntaxKind.FlagsEnumClearToken,
+                     SyntaxKind.FlagsEnumSetToken, SyntaxKind.FlagsEnumIsAnyToken
+
+                    term = ParseSimpleNameExpressionAllowingKeywordAndTypeArguments()
+                    Dim op = DirectCast(start, FlagsEnumOperatorSyntax)
+                    Return ParseFlagsEnumExpr(DirectCast(term, IdentifierNameSyntax), op)
+
                 Case SyntaxKind.ExclamationToken
                     term = ParseQualifiedExpr(Nothing)
 
@@ -464,6 +471,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     End If
 
                     term = ParseQualifiedExpr(term)
+                ElseIf [Next].Kind = SyntaxKind.FlagsEnumClearToken OrElse
+                       [Next].Kind = SyntaxKind.FlagsEnumSetToken OrElse
+                       [Next].Kind = SyntaxKind.FlagsEnumIsAnyToken Then
+                    Dim op = DirectCast([Next], FlagsEnumOperatorSyntax)
+                    op = CheckFeatureAvailability(Feature.EnumFlagOperators, op)
+
+                    term = ParseFlagsEnumExpr(term, op)
 
                 ElseIf [Next].Kind = SyntaxKind.ExclamationToken Then
                     If isAfterSingleLineSub Then
@@ -501,6 +515,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     End If
 
                     term = SyntaxFactory.ConditionalAccessExpression(term, qToken, ParsePostFixExpression(RedimOrNewParent, term:=Nothing))
+
                 Else
                     ' We're done with the term.
                     Exit Do
@@ -979,6 +994,55 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return ParseExpressionCore(OperatorPrecedence.PrecedenceRelational)
         End Function
 
+        Private Function ParseFlagsEnumExpr(
+                                             term As ExpressionSyntax,
+                                             op As FlagsEnumOperatorSyntax
+                                           ) As ExpressionSyntax
+            Dim prevPrevToken = PrevToken
+            GetNextToken()
+            Select Case CurrentToken.Kind
+                Case SyntaxKind.IdentifierToken : Return ParseFlagsEnumExpr_WithIdentifier(term, op)
+                Case SyntaxKind.OpenParenToken  : Return ParseFlagsEnumExpr_WithParenthesisedExpression(term, op)
+            End Select
+            Dim expr = ParseExpression()
+            Return SyntaxFactory.FlagsEnumOperationExpression(term, op, expr)
+        End Function
+
+        Private Function ParseFlagsEnumExpr_WithIdentifier(term as ExpressionSyntax, op As FlagsEnumOperatorSyntax) As ExpressioNSyntax
+            ' Term FlagsEnumOper Identifier
+            Dim Name = ParseIdentifierNameAllowingKeyword(True)
+            If Name IsNot Nothing Then Return SyntaxFactory.FlagsEnumOperationExpression(term, op, Name)
+            Return SyntaxFactory.FlagsEnumOperationExpression(term, op, Name.AddError(ERRID.ERR_ExpectedIdentifier))
+        End Function
+
+        Private Function ParseFlagsEnumExpr_WithParenthesisedExpression(term as ExpressionSyntax, op As FlagsEnumOperatorSyntax) As ExpressionSyntax
+            ' Term FlagsEnumOper ( ParenthesizedExpression | TupleLiteral )
+            Dim pexpr As ExpressionSyntax = ParseParenthesizedExpressionOrTupleLiteral()
+            If pexpr Is Nothing Then Return SyntaxFactory.FlagsEnumOperationExpression(term, op, pexpr.AddError(ERRID.ERR_ExpectedExpression))
+            ' ( ParenthesizedExpression | TupleLiteral )
+            If pexpr.Kind <> SyntaxKind.ParenthesizedExpression Then pexpr = AddError(pexpr, ERRID.ERR_ExpectedExpression)
+            ' ParenthesisedExpresssion
+            Return SyntaxFactory.FlagsEnumOperationExpression(term, op, pexpr)
+        End function
+
+        Private Function TryParseFlagEnumExpr_Or_QualifiedExpr(
+                                                                term As ExpressionSyntax,
+                                                                op As PunctuationSyntax,
+                                                    <Out> ByRef output As ExpressionSyntax
+                                                              ) As Boolean
+            output = Nothing
+            If op.Kind <> SyntaxKind.ExclamationToken Then Return False
+            If PeekToken(0).Kind = SyntaxKind.IdentifierToken Then
+                Dim name = ParseIdentifierNameAllowingKeyword()
+                output = SyntaxFactory.DictionaryAccessExpression(term, op, name)
+            Else
+                Dim fop = SyntaxFactory.FlagsEnumIsSetToken(op.Text, op.GetLeadingTrivia, op.GetTrailingTrivia)
+                Dim expr = ParseExpression()
+                output = SyntaxFactory.FlagsEnumOperationExpression(term, fop, expr)
+            End If
+            Return output IsNot Nothing
+        End Function
+
         ' /*********************************************************************
         ' *
         ' * Function:
@@ -995,20 +1059,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 16211 - 16211
         ' Expression* .Parser::ParseQualifiedExpr( [ _In_ Token* Start ] [ _In_opt_ ParseTree::Expression* Term ] [ _Inout_ bool& ErrorInConstruct ] )
         Private Function ParseQualifiedExpr(
-            Term As ExpressionSyntax
-        ) As ExpressionSyntax
+                                             Term As ExpressionSyntax
+                                           ) As ExpressionSyntax
+
             Debug.Assert(CurrentToken.Kind = SyntaxKind.DotToken OrElse
-                  CurrentToken.Kind = SyntaxKind.ExclamationToken,
-                  "Must be on either a '.' or '!' when entering parseQualifiedExpr()")
+                         CurrentToken.Kind = SyntaxKind.ExclamationToken,
+                         "Must be on either a '.' or '!' when entering parseQualifiedExpr()")
 
             Dim DotOrBangToken As PunctuationSyntax = DirectCast(CurrentToken, PunctuationSyntax)
 
             Dim prevPrevToken = PrevToken
             GetNextToken()
 
-            If DotOrBangToken.Kind = SyntaxKind.ExclamationToken Then
-                Dim Name = ParseIdentifierNameAllowingKeyword()
-                Return SyntaxFactory.DictionaryAccessExpression(Term, DotOrBangToken, Name)
+            Dim output As ExpressionSyntax = Nothing
+            If TryParseFlagEnumExpr_Or_QualifiedExpr(Term, DotOrBangToken, output) Then
+                Return output
+
             Else
                 If (CurrentToken.IsEndOfLine() AndAlso Not CurrentToken.IsEndOfParse()) Then
 

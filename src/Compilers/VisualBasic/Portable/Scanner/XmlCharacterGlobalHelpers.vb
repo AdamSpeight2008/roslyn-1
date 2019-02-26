@@ -11,7 +11,9 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
+
     Friend Module XmlCharacterGlobalHelpers
+
         Friend Function isNameChar(ch As Char) As Boolean
             ' TODO: which of the following is correct?
             Return XmlCharType.IsNameCharXml4e(ch)
@@ -23,9 +25,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return XmlCharType.IsStartNameCharXml4e(ch)
             'Return XmlCharType.IsStartNameSingleChar(ch)
         End Function
+
         Friend Function isValidUtf16(wh As Char) As Boolean
             Return XmlCharType.InRange(wh, ChrW(&H20S), ChrW(&HFFFDS)) OrElse XmlCharType.IsCharData(wh)
         End Function
+
         Friend Function HexToUTF16(pwcText As StringBuilder) As Scanner.XmlCharResult
             Debug.Assert(pwcText IsNot Nothing)
 
@@ -150,5 +154,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Select
             Return 0
         End Function
+
     End Module
+
 End Namespace
