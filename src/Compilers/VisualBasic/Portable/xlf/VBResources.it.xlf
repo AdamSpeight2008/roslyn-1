@@ -7,6 +7,11 @@
         <target state="new">Default Optional Parameter</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_TypeOfMany">
+        <source>TypeOfMany feature</source>
+        <target state="new">TypeOfMany feature</target>
+        <note />
+      </trans-unit>
       <trans-unit id="Trees0">
         <source>trees({0})</source>
         <target state="translated">alberi ({0})</target>

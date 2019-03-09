@@ -936,6 +936,14 @@ Partial Public Class GeneratedTests
             return InternalSyntax.SyntaxFactory.TypeOfIsNotExpression(new InternalSyntax.KeywordSyntax(SyntaxKind.TypeOfKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer(), new InternalSyntax.KeywordSyntax(SyntaxKind.IsNotKeyword, String.Empty, Nothing, Nothing), GenerateGreenTupleType())
         End Function
 
+        Private Shared Function GenerateGreenTypeOfManyIsExpression() As InternalSyntax.TypeOfManyExpressionSyntax
+            return InternalSyntax.SyntaxFactory.TypeOfManyIsExpression(new InternalSyntax.KeywordSyntax(SyntaxKind.TypeOfKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer(), new InternalSyntax.KeywordSyntax(SyntaxKind.IsKeyword, String.Empty, Nothing, Nothing), new InternalSyntax.PunctuationSyntax(SyntaxKind.OpenBraceToken, String.Empty, Nothing, Nothing), New Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)(), new InternalSyntax.PunctuationSyntax(SyntaxKind.CloseBraceToken, String.Empty, Nothing, Nothing))
+        End Function
+
+        Private Shared Function GenerateGreenTypeOfManyIsNotExpression() As InternalSyntax.TypeOfManyExpressionSyntax
+            return InternalSyntax.SyntaxFactory.TypeOfManyIsNotExpression(new InternalSyntax.KeywordSyntax(SyntaxKind.TypeOfKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer(), new InternalSyntax.KeywordSyntax(SyntaxKind.IsKeyword, String.Empty, Nothing, Nothing), new InternalSyntax.PunctuationSyntax(SyntaxKind.OpenBraceToken, String.Empty, Nothing, Nothing), New Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)(), new InternalSyntax.PunctuationSyntax(SyntaxKind.CloseBraceToken, String.Empty, Nothing, Nothing))
+        End Function
+
         Private Shared Function GenerateGreenGetXmlNamespaceExpression() As InternalSyntax.GetXmlNamespaceExpressionSyntax
             return InternalSyntax.SyntaxFactory.GetXmlNamespaceExpression(new InternalSyntax.KeywordSyntax(SyntaxKind.GetXmlNamespaceKeyword, String.Empty, Nothing, Nothing), new InternalSyntax.PunctuationSyntax(SyntaxKind.OpenParenToken, String.Empty, Nothing, Nothing), Nothing, new InternalSyntax.PunctuationSyntax(SyntaxKind.CloseParenToken, String.Empty, Nothing, Nothing))
         End Function
@@ -2948,6 +2956,18 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenTypeOfIsNotExpression()
             dim objectUnderTest = GenerateGreenTypeOfIsNotExpression()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenTypeOfManyIsExpression()
+            dim objectUnderTest = GenerateGreenTypeOfManyIsExpression()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenTypeOfManyIsNotExpression()
+            dim objectUnderTest = GenerateGreenTypeOfManyIsNotExpression()
             AttachAndCheckDiagnostics(objectUnderTest)
         End Sub
 
@@ -5743,6 +5763,22 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestGreenTypeOfManyIsExpressionRewriter()
+            dim oldNode = GenerateGreenTypeOfManyIsExpression()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenTypeOfManyIsNotExpressionRewriter()
+            dim oldNode = GenerateGreenTypeOfManyIsNotExpression()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
         Public Sub TestGreenGetXmlNamespaceExpressionRewriter()
             dim oldNode = GenerateGreenGetXmlNamespaceExpression()
             Dim rewriter = New GreenIdentityRewriter()
@@ -8447,6 +8483,20 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenTypeOfIsNotExpressionVisitor()
             Dim oldNode = GenerateGreenTypeOfIsNotExpression()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenTypeOfManyIsExpressionVisitor()
+            Dim oldNode = GenerateGreenTypeOfManyIsExpression()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenTypeOfManyIsNotExpressionVisitor()
+            Dim oldNode = GenerateGreenTypeOfManyIsNotExpression()
             Dim visitor = New GreenNodeVisitor()
             visitor.Visit(oldNode)
         End Sub
@@ -14616,6 +14666,112 @@ Partial Public Class GeneratedTests
             return SyntaxFactory.TypeOfIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsNotKeyword), GenerateRedTupleType())
         End Function
 
+        Private Shared Function GenerateRedTypeOfManyIsExpression() As TypeOfManyExpressionSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.TypeOfManyIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), Nothing, SyntaxFactory.Token(SyntaxKind.IsKeyword), SyntaxFactory.Token(SyntaxKind.OpenBraceToken), New SeparatedSyntaxList(Of TypeSyntax)(), SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.TypeOfManyIsExpression(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsKeyword), SyntaxFactory.Token(SyntaxKind.OpenBraceToken), New SeparatedSyntaxList(Of TypeSyntax)(), SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.TypeOfManyIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), SyntaxFactory.Token(SyntaxKind.OpenBraceToken), New SeparatedSyntaxList(Of TypeSyntax)(), SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.TypeOfManyIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), SyntaxFactory.Token(SyntaxKind.OpenBraceToken), New SeparatedSyntaxList(Of TypeSyntax)(), SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.TypeOfManyIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), New SeparatedSyntaxList(Of TypeSyntax)(), SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.TypeOfManyIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsKeyword), SyntaxFactory.Token(SyntaxKind.OpenBraceToken), New SeparatedSyntaxList(Of TypeSyntax)(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.TypeOfManyIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsKeyword), SyntaxFactory.Token(SyntaxKind.OpenBraceToken), New SeparatedSyntaxList(Of TypeSyntax)(), SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
+        End Function
+
+        Private Shared Function GenerateRedTypeOfManyIsNotExpression() As TypeOfManyExpressionSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.TypeOfManyIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), Nothing, SyntaxFactory.Token(SyntaxKind.IsKeyword), SyntaxFactory.Token(SyntaxKind.OpenBraceToken), New SeparatedSyntaxList(Of TypeSyntax)(), SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.TypeOfManyIsNotExpression(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsKeyword), SyntaxFactory.Token(SyntaxKind.OpenBraceToken), New SeparatedSyntaxList(Of TypeSyntax)(), SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.TypeOfManyIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), SyntaxFactory.Token(SyntaxKind.OpenBraceToken), New SeparatedSyntaxList(Of TypeSyntax)(), SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.TypeOfManyIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), SyntaxFactory.Token(SyntaxKind.OpenBraceToken), New SeparatedSyntaxList(Of TypeSyntax)(), SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.TypeOfManyIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), New SeparatedSyntaxList(Of TypeSyntax)(), SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.TypeOfManyIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsKeyword), SyntaxFactory.Token(SyntaxKind.OpenBraceToken), New SeparatedSyntaxList(Of TypeSyntax)(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.TypeOfManyIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsKeyword), SyntaxFactory.Token(SyntaxKind.OpenBraceToken), New SeparatedSyntaxList(Of TypeSyntax)(), SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
+        End Function
+
         Private Shared Function GenerateRedGetXmlNamespaceExpression() As GetXmlNamespaceExpressionSyntax
             Dim exceptionTest as boolean = false
             Try
@@ -20613,6 +20769,32 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestRedTypeOfManyIsExpression()
+            dim objectUnderTest = GenerateRedTypeOfManyIsExpression()
+            Assert.NotNull(objectUnderTest.typeOfKeyword)
+            Assert.NotNull(objectUnderTest.expression)
+            Assert.NotNull(objectUnderTest.operatorToken)
+            Assert.NotNull(objectUnderTest.openingBrace)
+            Assert.NotNull(objectUnderTest.types)
+            Assert.NotNull(objectUnderTest.closingBrace)
+            Dim withObj = objectUnderTest.WithTypeOfKeyword(objectUnderTest.TypeOfKeyword).WithExpression(objectUnderTest.Expression).WithOperatorToken(objectUnderTest.OperatorToken).WithOpeningBrace(objectUnderTest.OpeningBrace).WithTypes(objectUnderTest.Types).WithClosingBrace(objectUnderTest.ClosingBrace)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedTypeOfManyIsNotExpression()
+            dim objectUnderTest = GenerateRedTypeOfManyIsNotExpression()
+            Assert.NotNull(objectUnderTest.typeOfKeyword)
+            Assert.NotNull(objectUnderTest.expression)
+            Assert.NotNull(objectUnderTest.operatorToken)
+            Assert.NotNull(objectUnderTest.openingBrace)
+            Assert.NotNull(objectUnderTest.types)
+            Assert.NotNull(objectUnderTest.closingBrace)
+            Dim withObj = objectUnderTest.WithTypeOfKeyword(objectUnderTest.TypeOfKeyword).WithExpression(objectUnderTest.Expression).WithOperatorToken(objectUnderTest.OperatorToken).WithOpeningBrace(objectUnderTest.OpeningBrace).WithTypes(objectUnderTest.Types).WithClosingBrace(objectUnderTest.ClosingBrace)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
         Public Sub TestRedGetXmlNamespaceExpression()
             dim objectUnderTest = GenerateRedGetXmlNamespaceExpression()
             Assert.NotNull(objectUnderTest.getXmlNamespaceKeyword)
@@ -23873,6 +24055,22 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestRedTypeOfIsNotExpressionRewriter()
             dim oldNode = GenerateRedTypeOfIsNotExpression()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedTypeOfManyIsExpressionRewriter()
+            dim oldNode = GenerateRedTypeOfManyIsExpression()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedTypeOfManyIsNotExpressionRewriter()
+            dim oldNode = GenerateRedTypeOfManyIsNotExpression()
             Dim rewriter = New RedIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)

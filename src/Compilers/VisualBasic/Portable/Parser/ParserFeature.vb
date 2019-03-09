@@ -38,6 +38,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         PrivateProtected
         EnumFlagOperators
         DefaultOptionalParameter
+        TypeOfMany
     End Enum
 
     Friend Module FeatureExtensions
@@ -92,6 +93,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return LanguageVersion.VisualBasic15_5 '(PROTOTYPE)
                 Case Feature.DefaultOptionalParameter ' PROTOTYPE
                     Return LanguageVersion.VisualBasic15_5
+                        Case Feature.TypeOfMany
+                    Return LanguageVersion.VisualBasic15_5 ' PROTOTYPE
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(feature)
             End Select
@@ -163,6 +166,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return ERRID.FEATURE_EnumFlagOperators
                 Case Feature.DefaultOptionalParameter ' PROTOTYPE
                     Return ERRID.FEATURE_DefaultOptionalParameter
+                            Case Feature.TypeOfMany
+                    Return ERRID.FEATURE_TypeOfMany ' PROTOTYPE
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(feature)
             End Select

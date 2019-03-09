@@ -5548,4 +5548,7 @@
   <data name="FEATURE_DefaultOptionalParameter" xml:space="preserve">
     <value>Default Optional Parameter</value>
   </data>
+  <data name="FEATURE_TypeOfMany" xml:space="preserve">
+    <value>TypeOfMany feature</value>
+  </data>
 </root>

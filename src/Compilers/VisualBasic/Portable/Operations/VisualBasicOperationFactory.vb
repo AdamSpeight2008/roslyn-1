@@ -108,6 +108,7 @@ Namespace Microsoft.CodeAnalysis.Operations
                 Case BoundKind.DelegateCreationExpression           : Return CreateBoundDelegateCreationExpressionOperation(DirectCast(boundNode, BoundDelegateCreationExpression))
                 Case BoundKind.TernaryConditionalExpression         : Return CreateBoundTernaryConditionalExpressionOperation(DirectCast(boundNode, BoundTernaryConditionalExpression))
                 Case BoundKind.TypeOf                               : Return CreateBoundTypeOfOperation(DirectCast(boundNode, BoundTypeOf))
+                Case BoundKind.TypeOfMany                           : Return CreateBoundTypeOfManyOperation(DirectCast(boundNode, BoundTypeOfMany))
                 Case BoundKind.GetType                              : Return CreateBoundGetTypeOperation(DirectCast(boundNode, BoundGetType))
                 Case BoundKind.ObjectCreationExpression             : Return CreateBoundObjectCreationExpressionOperation(DirectCast(boundNode, BoundObjectCreationExpression))
                 Case BoundKind.ObjectInitializerExpression          : Return CreateBoundObjectInitializerExpressionOperation(DirectCast(boundNode, BoundObjectInitializerExpression))
@@ -249,6 +250,16 @@ Namespace Microsoft.CodeAnalysis.Operations
             Next
 
             Return builder.ToImmutableAndFree()
+        End Function
+
+        Private Function CreateBoundTypeOfManyOperation(boundNode As BoundTypeOfMany) As IOperation
+            Dim constantValue = ConvertToOptional(TryCast(boundNode, BoundExpression)?.ConstantValueOpt)
+            Dim isImplicit As Boolean = boundNode.WasCompilerGenerated
+            Return Operation.CreateOperationNone(_semanticModel,
+                                                 boundNode.Syntax,
+                                                 constantValue,
+                                                 Function() GetIOperationChildren(boundNode),
+                                                 isImplicit)
         End Function
 
         Private Function CreateBoundAssignmentOperatorOperation(boundAssignmentOperator As BoundAssignmentOperator) As IOperation

@@ -23,7 +23,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     '''<summary>
     '''  A strongly-typed resource class, for looking up localized strings, etc.
     '''</summary>
-    <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0"),  _
+    <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0"),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
      Global.Microsoft.VisualBasic.HideModuleNameAttribute()>  _
@@ -12267,6 +12267,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend ReadOnly Property FEATURE_TypeOfIsNot() As String
             Get
                 Return ResourceManager.GetString("FEATURE_TypeOfIsNot", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to TypeOfMany feature.
+        '''</summary>
+        Friend ReadOnly Property FEATURE_TypeOfMany() As String
+            Get
+                Return ResourceManager.GetString("FEATURE_TypeOfMany", resourceCulture)
             End Get
         End Property
         

@@ -2023,5 +2023,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_EnumFlagOperators
         ERR_MissingEnumFlag
         FEATURE_DefaultOptionalParameter
+        FEATURE_TypeOfMany
+        ERR_InvalidTypeSyntax
     End Enum
 End Namespace
