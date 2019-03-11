@@ -945,121 +945,112 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             GetNextToken()
 
             Dim exp As ExpressionSyntax = ParseExpressionCore(OperatorPrecedence.PrecedenceRelational) 'Dev10 uses ParseVariable
-
-            If exp.ContainsDiagnostics Then
-                exp = ResyncAt(exp, SyntaxKind.IsKeyword, SyntaxKind.IsNotKeyword)
-            End If
+            If exp.ContainsDiagnostics Then exp = ResyncAt(exp, SyntaxKind.IsKeyword, SyntaxKind.IsNotKeyword)
 
             Dim operatorToken As KeywordSyntax = Nothing
 
             Dim current As SyntaxToken = CurrentToken
+            Select Case Current.Kind
+                   Case SyntaxKind.IsKeyword
+                        operatorToken = DirectCast(current, KeywordSyntax)
+                        GetNextToken()
+                        TryEatNewLine(ScannerState.VB)
 
-            If current.Kind = SyntaxKind.IsKeyword OrElse
-               current.Kind = SyntaxKind.IsNotKeyword Then
+                   Case SyntaxKind.IsNotKeyword
+                        operatorToken = CheckFeatureAvailability(Feature.TypeOfIsNot, DirectCast(current, KeywordSyntax))
+                        GetNextToken()
+                        TryEatNewLine(ScannerState.VB)
 
-                operatorToken = DirectCast(current, KeywordSyntax)
+                   Case Else
+                        operatorToken = DirectCast(HandleUnexpectedToken(SyntaxKind.IsKeyword), KeywordSyntax)
+                        ReportSyntaxError(operatorToken, ERRID.ERR_MissingIsInTypeOf)
+            End Select
 
-                If operatorToken.Kind = SyntaxKind.IsNotKeyword Then
-                    operatorToken = CheckFeatureAvailability(Feature.TypeOfIsNot, operatorToken)
-                End If
-
-                GetNextToken()
-
-                TryEatNewLine(ScannerState.VB)
-            Else
-                operatorToken = DirectCast(HandleUnexpectedToken(SyntaxKind.IsKeyword), KeywordSyntax)
-                ReportSyntaxError(operatorToken, ERRID.ERR_MissingIsInTypeOf)
-            End If
             current = CurrentToken
-            If current.Kind = SyntaxKind.OpenBraceToken Then
-                Return Parse_RestAs_TypeOfMany([typeOf], exp, operatorToken, current)
-            End If
-
+            If current.Kind = SyntaxKind.OpenBraceToken Then Return Parse_RestAs_TypeOfMany([typeOf], exp, operatorToken, current)
             Return Parse_RestAs_TypeOfSingle([typeOf], exp, operatorToken)
         End Function
 
-        Private Function Parse_RestAs_TypeOfSingle([typeOf] As KeywordSyntax, exp As ExpressionSyntax, operatorToken As KeywordSyntax) As TypeOfBaseExpressionSyntax
-            Dim typeName As TypeSyntax = ParseGeneralType()
+        Private Function Parse_RestAs_TypeOfSingle _
+            (
+                [typeOf]        As KeywordSyntax,
+                exp             As ExpressionSyntax,
+                operatorToken   As KeywordSyntax
+            ) As TypeOfBaseExpressionSyntax
 
-
-            Dim kind As SyntaxKind = If(operatorToken.Kind = SyntaxKind.IsNotKeyword,
-                                        SyntaxKind.TypeOfIsNotExpression,
-                                        SyntaxKind.TypeOfIsExpression)
-
+            Dim typeName = ParseGeneralType()
+            Dim kind     = If(operatorToken.Kind = SyntaxKind.IsNotKeyword,
+                              SyntaxKind.TypeOfIsNotExpression, SyntaxKind.TypeOfIsExpression)
             Return SyntaxFactory.TypeOfExpression(kind, [typeOf], exp, operatorToken, typeName)
         End Function
 
-        Private Function Parse_RestAs_TypeOfMany([typeOf] As KeywordSyntax, exp As ExpressionSyntax, operatorToken As KeywordSyntax, ByRef current As SyntaxToken) As TypeOfBaseExpressionSyntax
-            Dim openBrace As PunctuationSyntax = Nothing
-            Dim closeBrace As PunctuationSyntax = Nothing
-            Dim types = ParseTypeList(openBrace, closeBrace)
+        Private Function Parse_RestAs_TypeOfMany _ 
+            (
+                [typeOf]        As KeywordSyntax,
+                exp             As ExpressionSyntax,
+                operatorToken   As KeywordSyntax,
+          ByRef current         As SyntaxToken
+            ) As TypeOfBaseExpressionSyntax
 
+            Dim openingBrace As PunctuationSyntax = Nothing
+            Dim closingBrace As PunctuationSyntax = Nothing
+            Dim types = ParseTypeList(openingBrace, closingBrace)
             current = CheckFeatureAvailability(Feature.TypeOfMany, current)
             Dim mkind As SyntaxKind = If(operatorToken.Kind = SyntaxKind.IsNotKeyword,
-                                    SyntaxKind.TypeOfManyIsNotExpression,
-                                    SyntaxKind.TypeOfManyIsExpression)
-            Return SyntaxFactory.TypeOfManyExpression(mkind, [typeOf], exp, operatorToken, openBrace, types, closeBrace)
+                                         SyntaxKind.TypeOfManyIsNotExpression, SyntaxKind.TypeOfManyIsExpression)
+            Return SyntaxFactory.TypeOfManyExpression(mkind, [typeOf], exp, operatorToken, openingBrace, types, closingBrace)
         End Function
 
-        Private Function ParseTypeList(ByRef openBrace As PunctuationSyntax, ByRef closeBrace As PunctuationSyntax) As CoreInternalSyntax.SeparatedSyntaxList(Of TypeSyntax)
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.OpenBraceToken, "ParseTypeList list parsing confused.")
-            TryGetTokenAndEatNewLine(SyntaxKind.OpenBraceToken, openBrace, True)
+        Private Function ParseTypeList _ 
+            (
+        ByRef openingBrace  As PunctuationSyntax,
+        ByRef closingBrace  As PunctuationSyntax
+            ) As CoreInternalSyntax.SeparatedSyntaxList(Of TypeSyntax)
 
-            Dim typelist = _pool.AllocateSeparated(Of TypeSyntax)()
+          Debug.Assert(CurrentToken.Kind = SyntaxKind.OpenBraceToken, $"{NameOf(ParseTypeList)} list parsing confused.")
 
-            If CurrentToken.Kind <> SyntaxKind.CloseBraceToken Then
+          TryGetTokenAndEatNewLine(SyntaxKind.OpenBraceToken, openingBrace, True)
 
-                ' Loop through the list of parameters.
+          Dim typelist = _pool.AllocateSeparated(Of TypeSyntax)()
 
-                Do
-                    Dim typeName = ParseGeneralType()
+          If CurrentToken.Kind <> SyntaxKind.CloseBraceToken Then
+             ' Loop through the list of parameters.
+             Do
+               Dim typeName = ParseGeneralType()
+               If typeName.ContainsDiagnostics Then
+                  typeName = typeName.AddTrailingSyntax(ResyncAt({SyntaxKind.CommaToken, SyntaxKind.CloseBraceToken}))
+               End If
 
-                    If typeName.ContainsDiagnostics Then
-                        typeName = typeName.AddTrailingSyntax(ResyncAt({SyntaxKind.CommaToken, SyntaxKind.CloseBraceToken}))
-                    End If
+               Dim comma As PunctuationSyntax = Nothing
+               If Not TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma) Then
+                  If CurrentToken.Kind <> SyntaxKind.CloseBraceToken AndAlso Not MustEndStatement(CurrentToken) Then
+                     ' Check the '}' on the next line
+                     If IsContinuableEOL() AndAlso PeekToken(1).Kind = SyntaxKind.CloseBraceToken Then
+                        typelist.Add(typeName)
+                        Exit Do
+                     End If
 
-                    Dim comma As PunctuationSyntax = Nothing
-                    If Not TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma) Then
+                     typeName = typeName.AddTrailingSyntax(ResyncAt({SyntaxKind.CommaToken, SyntaxKind.CloseBraceToken}), ERRID.ERR_InvalidTypeSyntax)
 
-                        If CurrentToken.Kind <> SyntaxKind.CloseBraceToken AndAlso Not MustEndStatement(CurrentToken) Then
+                     If Not TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma) Then
+                        typelist.Add(typeName)
+                        Exit Do
+                     End If
 
-                            ' Check the '}' on the next line
-                            If IsContinuableEOL() Then
-                                If PeekToken(1).Kind = SyntaxKind.CloseBraceToken Then
-                                    typelist.Add(typeName)
-                                    Exit Do
-                                End If
-                            End If
+                  Else
+                     typelist.Add(typeName)
+                     Exit Do
+                  End If
+               End If
 
-                            typeName = typeName.AddTrailingSyntax(ResyncAt({SyntaxKind.CommaToken, SyntaxKind.CloseBraceToken}), ERRID.ERR_InvalidTypeSyntax)
+               typelist.Add(typeName).AddSeparator(comma)
+             Loop
+          End If
 
-                            If Not TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma) Then
-                                typelist.Add(typeName)
-                                Exit Do
-                            End If
+          ' Current token is left at either tkRParen, EOS
 
-                        Else
-                            typelist.Add(typeName)
-                            Exit Do
-
-                        End If
-                    End If
-
-                    typelist.Add(typeName)
-                    typelist.AddSeparator(comma)
-                Loop
-
-            End If
-
-            ' Current token is left at either tkRParen, EOS
-
-            Dim ok = TryEatNewLineAndGetToken(SyntaxKind.CloseBraceToken, closeBrace, createIfMissing:=True)
-
-            Dim result = typelist.ToList()
-
-            _pool.Free(typelist)
-            Return result
-
+          Dim ok = TryEatNewLineAndGetToken(SyntaxKind.CloseBraceToken, closingBrace, createIfMissing:=True)
+          Return typelist.ToListAndFree(_pool)
         End Function
         ' /*********************************************************************
         ' *

@@ -89,11 +89,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Feature.NonTrailingNamedArguments,
                     Feature.PrivateProtected
                     Return LanguageVersion.VisualBasic15_5
-                Case Feature.EnumFlagOperators
-                    Return LanguageVersion.VisualBasic15_5 '(PROTOTYPE)
-                Case Feature.DefaultOptionalParameter ' PROTOTYPE
-                    Return LanguageVersion.VisualBasic15_5
-                        Case Feature.TypeOfMany
+                '(PROTOTYPES)
+                Case Feature.EnumFlagOperators,
+                     Feature.DefaultOptionalParameter,
+                     Feature.TypeOfMany
                     Return LanguageVersion.VisualBasic15_5 ' PROTOTYPE
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(feature)

@@ -3,7 +3,7 @@
 Imports System.Runtime.InteropServices
 Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax
 Imports InternalSyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SyntaxFactory
-
+Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxListBuilderExtensions
 '
 '============ Methods for parsing portions of executable statements ==
 '
@@ -77,7 +77,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 End Select
 
                 If Not skipped.IsNull Then
-                    content = AddLeadingSyntax(content, _pool.ToListAndFree(skipped), ERRID.ERR_Syntax)
+                    content = AddLeadingSyntax(content,  _pool.ToListAndFree(skipped), ERRID.ERR_Syntax)
                     skipped = Nothing
                 End If
 
