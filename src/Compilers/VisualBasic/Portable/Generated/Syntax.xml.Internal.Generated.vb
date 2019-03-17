@@ -16343,6 +16343,125 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     End Class
 
     ''' <summary>
+    ''' Represents a when clause in a Case statement, such as "When expression".
+    ''' </summary>
+    Friend NotInheritable Class WhenCaseClauseSyntax
+        Inherits CaseClauseSyntax
+
+        Friend ReadOnly _whenKeyword as KeywordSyntax
+        Friend ReadOnly _expression as ExpressionSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, whenKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(whenKeyword)
+            Me._whenKeyword = whenKeyword
+            AdjustFlagsAndWidth(expression)
+            Me._expression = expression
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, whenKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(whenKeyword)
+            Me._whenKeyword = whenKeyword
+            AdjustFlagsAndWidth(expression)
+            Me._expression = expression
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), whenKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(whenKeyword)
+            Me._whenKeyword = whenKeyword
+            AdjustFlagsAndWidth(expression)
+            Me._expression = expression
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _whenKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
+          If _whenKeyword isnot Nothing 
+             AdjustFlagsAndWidth(_whenKeyword)
+             Me._whenKeyword = _whenKeyword
+          End If
+          Dim _expression = DirectCast(reader.ReadValue(), ExpressionSyntax)
+          If _expression isnot Nothing 
+             AdjustFlagsAndWidth(_expression)
+             Me._expression = _expression
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New WhenCaseClauseSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._whenKeyword)
+          writer.WriteValue(Me._expression)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(WhenCaseClauseSyntax), Function(r) New WhenCaseClauseSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenCaseClauseSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' The "When" keyword.
+        ''' </summary>
+        Friend  ReadOnly Property WhenKeyword As InternalSyntax.KeywordSyntax
+            Get
+                Return Me._whenKeyword
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' The expression that denotes the value being tested against.
+        ''' </summary>
+        Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
+            Get
+                Return Me._expression
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._whenKeyword
+                Case 1
+                    Return Me._expression
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new WhenCaseClauseSyntax(Me.Kind, newErrors, GetAnnotations, _whenKeyword, _expression)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new WhenCaseClauseSyntax(Me.Kind, GetDiagnostics, annotations, _whenKeyword, _expression)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitWhenCaseClause(Me)
+        End Function
+
+    End Class
+
+    ''' <summary>
     ''' Represents the "SyncLock" statement. This statement always occurs as the Begin
     ''' of a SyncLockBlock.
     ''' </summary>
@@ -37109,6 +37228,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(node IsNot Nothing)
             Return VisitCaseClause(node)
         End Function
+        Public Overridable Function VisitWhenCaseClause(ByVal node As WhenCaseClauseSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitCaseClause(node)
+        End Function
         Public Overridable Function VisitSyncLockStatement(ByVal node As SyncLockStatementSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
             Return VisitStatement(node)
@@ -39602,6 +39725,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
         End Function
 
+        Public Overrides Function VisitWhenCaseClause(ByVal node As WhenCaseClauseSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newWhenKeyword = DirectCast(Visit(node.WhenKeyword), KeywordSyntax)
+            If node._whenKeyword IsNot newWhenKeyword Then anyChanges = True
+            Dim newExpression = DirectCast(Visit(node._expression), ExpressionSyntax)
+            If node._expression IsNot newExpression Then anyChanges = True
+
+            If anyChanges Then
+                Return New WhenCaseClauseSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newWhenKeyword, newExpression)
+            Else
+                Return node
+            End If
+        End Function
+
         Public Overrides Function VisitSyncLockStatement(ByVal node As SyncLockStatementSyntax) As VisualBasicSyntaxNode
             Dim anyChanges As Boolean = False
 
@@ -42063,6 +42201,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
               GetType(SimpleCaseClauseSyntax),
               GetType(RangeCaseClauseSyntax),
               GetType(RelationalCaseClauseSyntax),
+              GetType(WhenCaseClauseSyntax),
               GetType(SyncLockStatementSyntax),
               GetType(DoLoopBlockSyntax),
               GetType(DoStatementSyntax),
@@ -47868,6 +48007,34 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim result = New RelationalCaseClauseSyntax(kind, isKeyword, operatorToken, value)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a when clause in a Case statement, such as "When expression".
+        ''' </summary>
+        ''' <param name="whenKeyword">
+        ''' The "When" keyword.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The expression that denotes the value being tested against.
+        ''' </param>
+        Friend Shared Function WhenCaseClause(whenKeyword As KeywordSyntax, expression As ExpressionSyntax) As WhenCaseClauseSyntax
+            Debug.Assert(whenKeyword IsNot Nothing AndAlso whenKeyword.Kind = SyntaxKind.WhenKeyword)
+            Debug.Assert(expression IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.WhenCaseClause, whenKeyword, expression, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, WhenCaseClauseSyntax)
+            End If
+
+            Dim result = New WhenCaseClauseSyntax(SyntaxKind.WhenCaseClause, whenKeyword, expression)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -59944,6 +60111,34 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim result = New RelationalCaseClauseSyntax(kind, isKeyword, operatorToken, value, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a when clause in a Case statement, such as "When expression".
+        ''' </summary>
+        ''' <param name="whenKeyword">
+        ''' The "When" keyword.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The expression that denotes the value being tested against.
+        ''' </param>
+        Friend Function WhenCaseClause(whenKeyword As KeywordSyntax, expression As ExpressionSyntax) As WhenCaseClauseSyntax
+            Debug.Assert(whenKeyword IsNot Nothing AndAlso whenKeyword.Kind = SyntaxKind.WhenKeyword)
+            Debug.Assert(expression IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.WhenCaseClause, whenKeyword, expression, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, WhenCaseClauseSyntax)
+            End If
+
+            Dim result = New WhenCaseClauseSyntax(SyntaxKind.WhenCaseClause, whenKeyword, expression, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If

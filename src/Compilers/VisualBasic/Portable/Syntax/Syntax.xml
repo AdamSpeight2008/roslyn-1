@@ -4041,8 +4041,32 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name="Value"></native-equiv>
       </child>
     </node-structure>
+    <!--****************
+      -  RelationalCaseClause
+      ******************-->
+    <node-structure name="WhenCaseClauseSyntax" parent="CaseClauseSyntax">
+      <description>Represents a when clause in a Case statement, such as "When expression".</description>
+      <lm-equiv name="WhenCaseNode"></lm-equiv>
+      <native-equiv name="WhenCase"></native-equiv>
+      <spec-section>10.8.2</spec-section>
+      <grammar>WhenCase</grammar>
 
+      <node-kind name="WhenCaseClause"/>
 
+      <child name="WhenKeyword" kind="WhenKeyword">
+        <description>The "When" keyword.</description>
+        <lm-equiv name="WhenKeyword"></lm-equiv>
+        <native-equiv name="When"></native-equiv>
+      </child>
+
+      <child name="Expression" kind="@ExpressionSyntax">
+        <description>The expression that denotes the value being tested against.</description>
+        <lm-equiv name="Expression"></lm-equiv>
+        <native-equiv name="Expression"></native-equiv>
+      </child>
+    </node-structure>
+
+    
     <!--****************
       -  SyncLockStatement
       ******************-->

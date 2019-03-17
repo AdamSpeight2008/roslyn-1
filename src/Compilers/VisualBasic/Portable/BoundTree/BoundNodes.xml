@@ -1175,8 +1175,11 @@
     <Node Name="BoundRelationalCaseClause" Base="BoundSingleValueCaseClause" HasValidate="true">
         <Field Name="OperatorKind" Type="BinaryOperatorKind"/>
     </Node>
-  
-    <AbstractNode Name="BoundLoopStatement" Base="BoundStatement">
+  <Node Name="BoundWhenCaseClause" Base="BoundSingleValueCaseClause" HasValidate="true">
+    <Field Name="Expression" Type="BoundExpression"/>
+  </Node>
+
+  <AbstractNode Name="BoundLoopStatement" Base="BoundStatement">
         <Field Name="ContinueLabel" Type="LabelSymbol"/>
         <Field Name="ExitLabel" Type="LabelSymbol"/>
     </AbstractNode>
