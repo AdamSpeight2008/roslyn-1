@@ -423,6 +423,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
               End If
               caseClauseBuilder.Clear()
               caseStatementCondition = ApplyImplicitConversion(caseStatementCondition.Syntax, booleanType, caseStatementCondition, diagnostics:=diagnostics, isOperandOfConditionalBranch:=True)
+              caseWhenCondition = CheckWhenCondition(caseWhenCondition, diagnostics)
               caseStatement = caseStatement.Update(newCaseClauses, caseStatementCondition, caseWhenCondition)
               caseBlockBuilder(index) = caseBlock.Update(caseStatement, caseBlock.Body)
             End If
@@ -430,6 +431,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
          caseClauseBuilder.Free()
       End If
       Return caseBlockBuilder.ToImmutableAndFree()
+    End Function
+    
+    Private Function CheckWhenCondition(whenExpr As BoundWhenCondition, diagnostics As CodeAnalysis.DiagnosticBag) As BoundWhenCondition
+      If whenExpr Is Nothing Then Return whenExpr
+      Dim IsBoolean = whenExpr.Condition.Type.IsBooleanType
+      If IsBoolean Then Return whenExpr
+      Dim booleanType =_compilation.GetSpecialType(SpecialType.System_Boolean)
+      ReportDiagnostic(diagnostics, whenExpr.Condition.Syntax, ERRID.ERR_TypeMismatch2, whenExpr.Condition.Type.ToString(), BooleanType.ToString())
+      Return New BoundWhenCondition(whenExpr.Syntax,whenExpr.Condition, hasErrors:= True)
     End Function
 
     Private Function ComputeCaseClauseCondition _ 
