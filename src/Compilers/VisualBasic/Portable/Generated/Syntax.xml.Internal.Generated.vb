@@ -15713,10 +15713,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend ReadOnly _caseKeyword as KeywordSyntax
         Friend ReadOnly _cases as GreenNode
+        Friend ReadOnly _whenClause as WhenCaseClauseSyntax
 
-        Friend Sub New(ByVal kind As SyntaxKind, caseKeyword As InternalSyntax.KeywordSyntax, cases As GreenNode)
+        Friend Sub New(ByVal kind As SyntaxKind, caseKeyword As InternalSyntax.KeywordSyntax, cases As GreenNode, whenClause As WhenCaseClauseSyntax)
             MyBase.New(kind)
-            MyBase._slotCount = 2
+            MyBase._slotCount = 3
 
             AdjustFlagsAndWidth(caseKeyword)
             Me._caseKeyword = caseKeyword
@@ -15724,12 +15725,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 AdjustFlagsAndWidth(cases)
                 Me._cases = cases
             End If
+            If whenClause IsNot Nothing Then
+                AdjustFlagsAndWidth(whenClause)
+                Me._whenClause = whenClause
+            End If
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, caseKeyword As InternalSyntax.KeywordSyntax, cases As GreenNode, context As ISyntaxFactoryContext)
+        Friend Sub New(ByVal kind As SyntaxKind, caseKeyword As InternalSyntax.KeywordSyntax, cases As GreenNode, whenClause As WhenCaseClauseSyntax, context As ISyntaxFactoryContext)
             MyBase.New(kind)
-            MyBase._slotCount = 2
+            MyBase._slotCount = 3
             Me.SetFactoryContext(context)
 
             AdjustFlagsAndWidth(caseKeyword)
@@ -15738,12 +15743,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 AdjustFlagsAndWidth(cases)
                 Me._cases = cases
             End If
+            If whenClause IsNot Nothing Then
+                AdjustFlagsAndWidth(whenClause)
+                Me._whenClause = whenClause
+            End If
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), caseKeyword As InternalSyntax.KeywordSyntax, cases As GreenNode)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), caseKeyword As InternalSyntax.KeywordSyntax, cases As GreenNode, whenClause As WhenCaseClauseSyntax)
             MyBase.New(kind, errors, annotations)
-            MyBase._slotCount = 2
+            MyBase._slotCount = 3
 
             AdjustFlagsAndWidth(caseKeyword)
             Me._caseKeyword = caseKeyword
@@ -15751,12 +15760,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 AdjustFlagsAndWidth(cases)
                 Me._cases = cases
             End If
+            If whenClause IsNot Nothing Then
+                AdjustFlagsAndWidth(whenClause)
+                Me._whenClause = whenClause
+            End If
 
         End Sub
 
         Friend Sub New(reader as ObjectReader)
           MyBase.New(reader)
-            MyBase._slotCount = 2
+            MyBase._slotCount = 3
           Dim _caseKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
           If _caseKeyword isnot Nothing 
              AdjustFlagsAndWidth(_caseKeyword)
@@ -15767,6 +15780,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
              AdjustFlagsAndWidth(_cases)
              Me._cases = _cases
           End If
+          Dim _whenClause = DirectCast(reader.ReadValue(), WhenCaseClauseSyntax)
+          If _whenClause isnot Nothing 
+             AdjustFlagsAndWidth(_whenClause)
+             Me._whenClause = _whenClause
+          End If
         End Sub
         Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New CaseStatementSyntax(o)
 
@@ -15775,6 +15793,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           MyBase.WriteTo(writer)
           writer.WriteValue(Me._caseKeyword)
           writer.WriteValue(Me._cases)
+          writer.WriteValue(Me._whenClause)
         End Sub
 
         Shared Sub New()
@@ -15804,12 +15823,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
+        Friend  ReadOnly Property WhenClause As InternalSyntax.WhenCaseClauseSyntax
+            Get
+                Return Me._whenClause
+            End Get
+        End Property
+
         Friend Overrides Function GetSlot(i as Integer) as GreenNode
             Select case i
                 Case 0
                     Return Me._caseKeyword
                 Case 1
                     Return Me._cases
+                Case 2
+                    Return Me._whenClause
                 Case Else
                      Debug.Assert(false, "child index out of range")
                      Return Nothing
@@ -15818,11 +15848,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 
         Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
-            Return new CaseStatementSyntax(Me.Kind, newErrors, GetAnnotations, _caseKeyword, _cases)
+            Return new CaseStatementSyntax(Me.Kind, newErrors, GetAnnotations, _caseKeyword, _cases, _whenClause)
         End Function
 
         Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
-            Return new CaseStatementSyntax(Me.Kind, GetDiagnostics, annotations, _caseKeyword, _cases)
+            Return new CaseStatementSyntax(Me.Kind, GetDiagnostics, annotations, _caseKeyword, _cases, _whenClause)
         End Function
 
         Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
@@ -16346,7 +16376,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     ''' Represents a when clause in a Case statement, such as "When expression".
     ''' </summary>
     Friend NotInheritable Class WhenCaseClauseSyntax
-        Inherits CaseClauseSyntax
+        Inherits VisualBasicSyntaxNode
 
         Friend ReadOnly _whenKeyword as KeywordSyntax
         Friend ReadOnly _expression as ExpressionSyntax
@@ -37230,7 +37260,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
         Public Overridable Function VisitWhenCaseClause(ByVal node As WhenCaseClauseSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
-            Return VisitCaseClause(node)
+            Return VisitVisualBasicSyntaxNode(node)
         End Function
         Public Overridable Function VisitSyncLockStatement(ByVal node As SyncLockStatementSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
@@ -39657,9 +39687,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             If node._caseKeyword IsNot newCaseKeyword Then anyChanges = True
             Dim newCases = VisitList(node.Cases)
             If node._cases IsNot newCases.Node Then anyChanges = True
+            Dim newWhenClause = DirectCast(Visit(node._whenClause), WhenCaseClauseSyntax)
+            If node._whenClause IsNot newWhenClause Then anyChanges = True
 
             If anyChanges Then
-                Return New CaseStatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newCaseKeyword, newCases.Node)
+                Return New CaseStatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newCaseKeyword, newCases.Node, newWhenClause)
             Else
                 Return node
             End If
@@ -47656,16 +47688,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of clauses associated with this Case. If Kind=CaseElse, then this list
         ''' has exactly one child, which is a ElseCaseClause.
         ''' </param>
-        Friend Shared Function CaseStatement(caseKeyword As KeywordSyntax, cases As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)) As CaseStatementSyntax
+        Friend Shared Function CaseStatement(caseKeyword As KeywordSyntax, cases As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode), whenClause As WhenCaseClauseSyntax) As CaseStatementSyntax
             Debug.Assert(caseKeyword IsNot Nothing AndAlso caseKeyword.Kind = SyntaxKind.CaseKeyword)
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.CaseStatement, caseKeyword, cases.Node, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.CaseStatement, caseKeyword, cases.Node, whenClause, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, CaseStatementSyntax)
             End If
 
-            Dim result = New CaseStatementSyntax(SyntaxKind.CaseStatement, caseKeyword, cases.Node)
+            Dim result = New CaseStatementSyntax(SyntaxKind.CaseStatement, caseKeyword, cases.Node, whenClause)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -47686,16 +47718,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of clauses associated with this Case. If Kind=CaseElse, then this list
         ''' has exactly one child, which is a ElseCaseClause.
         ''' </param>
-        Friend Shared Function CaseElseStatement(caseKeyword As KeywordSyntax, cases As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)) As CaseStatementSyntax
+        Friend Shared Function CaseElseStatement(caseKeyword As KeywordSyntax, cases As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode), whenClause As WhenCaseClauseSyntax) As CaseStatementSyntax
             Debug.Assert(caseKeyword IsNot Nothing AndAlso caseKeyword.Kind = SyntaxKind.CaseKeyword)
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.CaseElseStatement, caseKeyword, cases.Node, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.CaseElseStatement, caseKeyword, cases.Node, whenClause, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, CaseStatementSyntax)
             End If
 
-            Dim result = New CaseStatementSyntax(SyntaxKind.CaseElseStatement, caseKeyword, cases.Node)
+            Dim result = New CaseStatementSyntax(SyntaxKind.CaseElseStatement, caseKeyword, cases.Node, whenClause)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -59760,16 +59792,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of clauses associated with this Case. If Kind=CaseElse, then this list
         ''' has exactly one child, which is a ElseCaseClause.
         ''' </param>
-        Friend Function CaseStatement(caseKeyword As KeywordSyntax, cases As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)) As CaseStatementSyntax
+        Friend Function CaseStatement(caseKeyword As KeywordSyntax, cases As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode), whenClause As WhenCaseClauseSyntax) As CaseStatementSyntax
             Debug.Assert(caseKeyword IsNot Nothing AndAlso caseKeyword.Kind = SyntaxKind.CaseKeyword)
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.CaseStatement, caseKeyword, cases.Node, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.CaseStatement, caseKeyword, cases.Node, whenClause, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, CaseStatementSyntax)
             End If
 
-            Dim result = New CaseStatementSyntax(SyntaxKind.CaseStatement, caseKeyword, cases.Node, _factoryContext)
+            Dim result = New CaseStatementSyntax(SyntaxKind.CaseStatement, caseKeyword, cases.Node, whenClause, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -59790,16 +59822,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of clauses associated with this Case. If Kind=CaseElse, then this list
         ''' has exactly one child, which is a ElseCaseClause.
         ''' </param>
-        Friend Function CaseElseStatement(caseKeyword As KeywordSyntax, cases As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)) As CaseStatementSyntax
+        Friend Function CaseElseStatement(caseKeyword As KeywordSyntax, cases As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode), whenClause As WhenCaseClauseSyntax) As CaseStatementSyntax
             Debug.Assert(caseKeyword IsNot Nothing AndAlso caseKeyword.Kind = SyntaxKind.CaseKeyword)
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.CaseElseStatement, caseKeyword, cases.Node, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.CaseElseStatement, caseKeyword, cases.Node, whenClause, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, CaseStatementSyntax)
             End If
 
-            Dim result = New CaseStatementSyntax(SyntaxKind.CaseElseStatement, caseKeyword, cases.Node, _factoryContext)
+            Dim result = New CaseStatementSyntax(SyntaxKind.CaseElseStatement, caseKeyword, cases.Node, whenClause, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If

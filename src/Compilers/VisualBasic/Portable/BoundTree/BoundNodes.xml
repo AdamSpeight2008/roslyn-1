@@ -1152,6 +1152,10 @@
     <Node Name="BoundCaseStatement" Base="BoundStatement">
         <Field Name="CaseClauses" Type="ImmutableArray(Of BoundCaseClause)"/>
         <Field Name="ConditionOpt" Type="BoundExpression" Null="allow"/>
+        <Field Name="WhenCondition" Type="BoundWhenCondition" Null="allow"/>
+    </Node>
+    <Node Name="BoundWhenCondition" Base="BoundStatement">
+      <Field Name="Condition" Type="BoundExpression"/>
     </Node>
   
     <AbstractNode Name="BoundCaseClause" Base="BoundNode">
@@ -1175,9 +1179,6 @@
     <Node Name="BoundRelationalCaseClause" Base="BoundSingleValueCaseClause" HasValidate="true">
         <Field Name="OperatorKind" Type="BinaryOperatorKind"/>
     </Node>
-  <Node Name="BoundWhenCaseClause" Base="BoundSingleValueCaseClause" HasValidate="true">
-    <Field Name="Expression" Type="BoundExpression"/>
-  </Node>
 
   <AbstractNode Name="BoundLoopStatement" Base="BoundStatement">
         <Field Name="ContinueLabel" Type="LabelSymbol"/>

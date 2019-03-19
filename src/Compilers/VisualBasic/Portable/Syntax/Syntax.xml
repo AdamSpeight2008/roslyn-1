@@ -3903,7 +3903,42 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="Cases"></lm-equiv>
         <native-equiv name="Cases"></native-equiv>
       </child>
+      <child name="WhenClause" kind="@WhenCaseClauseSyntax" optional="true" />
+
     </node-structure>
+    <!--****************
+      -  Clause Prefixes
+      ******************--><!--
+    <node-structure name="ClausePrefix" abstract="true" parent="VisualBasicSyntaxNode">
+      
+    </node-structure>
+    <node-structure name="Case_ClausePrefix" parent="ClausePrefix">
+      <node-kind name="Case_ClausePrefix" />
+      <child name="CaseKeyword" kind="CaseKeyword">
+        <description>The "Case" keyword.</description>
+      </child>
+    </node-structure>
+    <node-structure name="Else_ClausePrefix" parent="ClausePrefix">
+      <node-kind name="Else_ClausePrefix" />
+      <child name="ElseKeyword" kind="ElseKeyword">
+        <description>The "Else" keyword.</description>
+      </child>
+    </node-structure>
+    --><!--****************
+      -  Clause Postfixes
+      ******************--><!--
+    <node-structure name="ClausePostfix" abstract="true" parent="VisualBasicSyntaxNode">
+      
+    </node-structure>
+    <node-structure name="When_ClausePostfix" parent="ClausePostfix">
+      <node-kind name="When_ClausePostfix" />
+      <child name="WhenKeyword" kind="WhenKeyword">
+        <description>The "When" keyword.</description>
+      </child>
+      <child name="Expression" kind="ExpressionSyntax">
+        <description>The expression used as a guard.</description>
+      </child>
+    </node-structure>-->
 
     <!--****************
       -  CaseClause
@@ -4042,9 +4077,9 @@ Unify Enum declarations with other block type declarations.
       </child>
     </node-structure>
     <!--****************
-      -  RelationalCaseClause
+      -  WhenCaseClauseSyntax
       ******************-->
-    <node-structure name="WhenCaseClauseSyntax" parent="CaseClauseSyntax">
+    <node-structure name="WhenCaseClauseSyntax" parent="VisualBasicSyntaxNode">
       <description>Represents a when clause in a Case statement, such as "When expression".</description>
       <lm-equiv name="WhenCaseNode"></lm-equiv>
       <native-equiv name="WhenCase"></native-equiv>

@@ -113,10 +113,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         SelectStatement
         CaseBlock
         CaseStatement
+        WhenCondition
         SimpleCaseClause
         RangeCaseClause
         RelationalCaseClause
-        WhenCaseClause
         DoLoopStatement
         WhileStatement
         ForToUserDefinedOperators
@@ -4938,13 +4938,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Friend NotInheritable Partial Class BoundCaseStatement
         Inherits BoundStatement
 
-        Public Sub New(syntax As SyntaxNode, caseClauses As ImmutableArray(Of BoundCaseClause), conditionOpt As BoundExpression, Optional hasErrors As Boolean = False)
-            MyBase.New(BoundKind.CaseStatement, syntax, hasErrors OrElse caseClauses.NonNullAndHasErrors() OrElse conditionOpt.NonNullAndHasErrors())
+        Public Sub New(syntax As SyntaxNode, caseClauses As ImmutableArray(Of BoundCaseClause), conditionOpt As BoundExpression, whenCondition As BoundWhenCondition, Optional hasErrors As Boolean = False)
+            MyBase.New(BoundKind.CaseStatement, syntax, hasErrors OrElse caseClauses.NonNullAndHasErrors() OrElse conditionOpt.NonNullAndHasErrors() OrElse whenCondition.NonNullAndHasErrors())
 
             Debug.Assert(Not (caseClauses.IsDefault), "Field 'caseClauses' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
 
             Me._CaseClauses = caseClauses
             Me._ConditionOpt = conditionOpt
+            Me._WhenCondition = whenCondition
         End Sub
 
 
@@ -4962,13 +4963,53 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Get
         End Property
 
+        Private ReadOnly _WhenCondition As BoundWhenCondition
+        Public ReadOnly Property WhenCondition As BoundWhenCondition
+            Get
+                Return _WhenCondition
+            End Get
+        End Property
+
         Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
             Return visitor.VisitCaseStatement(Me)
         End Function
 
-        Public Function Update(caseClauses As ImmutableArray(Of BoundCaseClause), conditionOpt As BoundExpression) As BoundCaseStatement
-            If caseClauses <> Me.CaseClauses OrElse conditionOpt IsNot Me.ConditionOpt Then
-                Dim result = New BoundCaseStatement(Me.Syntax, caseClauses, conditionOpt, Me.HasErrors)
+        Public Function Update(caseClauses As ImmutableArray(Of BoundCaseClause), conditionOpt As BoundExpression, whenCondition As BoundWhenCondition) As BoundCaseStatement
+            If caseClauses <> Me.CaseClauses OrElse conditionOpt IsNot Me.ConditionOpt OrElse whenCondition IsNot Me.WhenCondition Then
+                Dim result = New BoundCaseStatement(Me.Syntax, caseClauses, conditionOpt, whenCondition, Me.HasErrors)
+                result.CopyAttributes(Me)
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
+    Friend NotInheritable Partial Class BoundWhenCondition
+        Inherits BoundStatement
+
+        Public Sub New(syntax As SyntaxNode, condition As BoundExpression, Optional hasErrors As Boolean = False)
+            MyBase.New(BoundKind.WhenCondition, syntax, hasErrors OrElse condition.NonNullAndHasErrors())
+
+            Debug.Assert(condition IsNot Nothing, "Field 'condition' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+            Me._Condition = condition
+        End Sub
+
+
+        Private ReadOnly _Condition As BoundExpression
+        Public ReadOnly Property Condition As BoundExpression
+            Get
+                Return _Condition
+            End Get
+        End Property
+
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitWhenCondition(Me)
+        End Function
+
+        Public Function Update(condition As BoundExpression) As BoundWhenCondition
+            If condition IsNot Me.Condition Then
+                Dim result = New BoundWhenCondition(Me.Syntax, condition, Me.HasErrors)
                 result.CopyAttributes(Me)
                 Return result
             End If
@@ -5128,44 +5169,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Function Update(operatorKind As BinaryOperatorKind, valueOpt As BoundExpression, conditionOpt As BoundExpression) As BoundRelationalCaseClause
             If operatorKind <> Me.OperatorKind OrElse valueOpt IsNot Me.ValueOpt OrElse conditionOpt IsNot Me.ConditionOpt Then
                 Dim result = New BoundRelationalCaseClause(Me.Syntax, operatorKind, valueOpt, conditionOpt, Me.HasErrors)
-                result.CopyAttributes(Me)
-                Return result
-            End If
-            Return Me
-        End Function
-    End Class
-
-    Friend NotInheritable Partial Class BoundWhenCaseClause
-        Inherits BoundSingleValueCaseClause
-
-        Public Sub New(syntax As SyntaxNode, expression As BoundExpression, valueOpt As BoundExpression, conditionOpt As BoundExpression, Optional hasErrors As Boolean = False)
-            MyBase.New(BoundKind.WhenCaseClause, syntax, valueOpt, conditionOpt, hasErrors OrElse expression.NonNullAndHasErrors() OrElse valueOpt.NonNullAndHasErrors() OrElse conditionOpt.NonNullAndHasErrors())
-
-            Debug.Assert(expression IsNot Nothing, "Field 'expression' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
-
-            Me._Expression = expression
-
-            Validate()
-        End Sub
-
-        Private Partial Sub Validate()
-        End Sub
-
-
-        Private ReadOnly _Expression As BoundExpression
-        Public ReadOnly Property Expression As BoundExpression
-            Get
-                Return _Expression
-            End Get
-        End Property
-
-        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
-            Return visitor.VisitWhenCaseClause(Me)
-        End Function
-
-        Public Function Update(expression As BoundExpression, valueOpt As BoundExpression, conditionOpt As BoundExpression) As BoundWhenCaseClause
-            If expression IsNot Me.Expression OrElse valueOpt IsNot Me.ValueOpt OrElse conditionOpt IsNot Me.ConditionOpt Then
-                Dim result = New BoundWhenCaseClause(Me.Syntax, expression, valueOpt, conditionOpt, Me.HasErrors)
                 result.CopyAttributes(Me)
                 Return result
             End If
@@ -9336,14 +9339,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Return VisitCaseBlock(CType(node, BoundCaseBlock), arg)
                 Case BoundKind.CaseStatement: 
                     Return VisitCaseStatement(CType(node, BoundCaseStatement), arg)
+                Case BoundKind.WhenCondition: 
+                    Return VisitWhenCondition(CType(node, BoundWhenCondition), arg)
                 Case BoundKind.SimpleCaseClause: 
                     Return VisitSimpleCaseClause(CType(node, BoundSimpleCaseClause), arg)
                 Case BoundKind.RangeCaseClause: 
                     Return VisitRangeCaseClause(CType(node, BoundRangeCaseClause), arg)
                 Case BoundKind.RelationalCaseClause: 
                     Return VisitRelationalCaseClause(CType(node, BoundRelationalCaseClause), arg)
-                Case BoundKind.WhenCaseClause: 
-                    Return VisitWhenCaseClause(CType(node, BoundWhenCaseClause), arg)
                 Case BoundKind.DoLoopStatement: 
                     Return VisitDoLoopStatement(CType(node, BoundDoLoopStatement), arg)
                 Case BoundKind.WhileStatement: 
@@ -9885,6 +9888,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return Me.DefaultVisit(node, arg)
         End Function
 
+        Public Overridable Function VisitWhenCondition(node As BoundWhenCondition, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
         Public Overridable Function VisitSimpleCaseClause(node As BoundSimpleCaseClause, arg As A) As R
             Return Me.DefaultVisit(node, arg)
         End Function
@@ -9894,10 +9901,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overridable Function VisitRelationalCaseClause(node As BoundRelationalCaseClause, arg As A) As R
-            Return Me.DefaultVisit(node, arg)
-        End Function
-
-        Public Overridable Function VisitWhenCaseClause(node As BoundWhenCaseClause, arg As A) As R
             Return Me.DefaultVisit(node, arg)
         End Function
 
@@ -10592,6 +10595,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return Me.DefaultVisit(node)
         End Function
 
+        Public Overridable Function VisitWhenCondition(node As BoundWhenCondition) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
         Public Overridable Function VisitSimpleCaseClause(node As BoundSimpleCaseClause) As BoundNode
             Return Me.DefaultVisit(node)
         End Function
@@ -10601,10 +10608,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overridable Function VisitRelationalCaseClause(node As BoundRelationalCaseClause) As BoundNode
-            Return Me.DefaultVisit(node)
-        End Function
-
-        Public Overridable Function VisitWhenCaseClause(node As BoundWhenCaseClause) As BoundNode
             Return Me.DefaultVisit(node)
         End Function
 
@@ -11415,6 +11418,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overrides Function VisitCaseStatement(node as BoundCaseStatement) As BoundNode
             Me.VisitList(node.CaseClauses)
             Me.Visit(node.ConditionOpt)
+            Me.Visit(node.WhenCondition)
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitWhenCondition(node as BoundWhenCondition) As BoundNode
+            Me.Visit(node.Condition)
             Return Nothing
         End Function
 
@@ -11433,13 +11442,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overrides Function VisitRelationalCaseClause(node as BoundRelationalCaseClause) As BoundNode
-            Me.Visit(node.ValueOpt)
-            Me.Visit(node.ConditionOpt)
-            Return Nothing
-        End Function
-
-        Public Overrides Function VisitWhenCaseClause(node as BoundWhenCaseClause) As BoundNode
-            Me.Visit(node.Expression)
             Me.Visit(node.ValueOpt)
             Me.Visit(node.ConditionOpt)
             Return Nothing
@@ -12450,7 +12452,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overrides Function VisitCaseStatement(node As BoundCaseStatement) As BoundNode
             Dim caseClauses As ImmutableArray(Of BoundCaseClause) = Me.VisitList(node.CaseClauses)
             Dim conditionOpt As BoundExpression = DirectCast(Me.Visit(node.ConditionOpt), BoundExpression)
-            Return node.Update(caseClauses, conditionOpt)
+            Dim whenCondition As BoundWhenCondition = DirectCast(Me.Visit(node.WhenCondition), BoundWhenCondition)
+            Return node.Update(caseClauses, conditionOpt, whenCondition)
+        End Function
+
+        Public Overrides Function VisitWhenCondition(node As BoundWhenCondition) As BoundNode
+            Dim condition As BoundExpression = DirectCast(Me.Visit(node.Condition), BoundExpression)
+            Return node.Update(condition)
         End Function
 
         Public Overrides Function VisitSimpleCaseClause(node As BoundSimpleCaseClause) As BoundNode
@@ -12471,13 +12479,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim valueOpt As BoundExpression = DirectCast(Me.Visit(node.ValueOpt), BoundExpression)
             Dim conditionOpt As BoundExpression = DirectCast(Me.Visit(node.ConditionOpt), BoundExpression)
             Return node.Update(node.OperatorKind, valueOpt, conditionOpt)
-        End Function
-
-        Public Overrides Function VisitWhenCaseClause(node As BoundWhenCaseClause) As BoundNode
-            Dim expression As BoundExpression = DirectCast(Me.Visit(node.Expression), BoundExpression)
-            Dim valueOpt As BoundExpression = DirectCast(Me.Visit(node.ValueOpt), BoundExpression)
-            Dim conditionOpt As BoundExpression = DirectCast(Me.Visit(node.ConditionOpt), BoundExpression)
-            Return node.Update(expression, valueOpt, conditionOpt)
         End Function
 
         Public Overrides Function VisitDoLoopStatement(node As BoundDoLoopStatement) As BoundNode
@@ -13753,7 +13754,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overrides Function VisitCaseStatement(node As BoundCaseStatement, arg As Object) As TreeDumperNode
             Return New TreeDumperNode("caseStatement", Nothing, New TreeDumperNode() {
                 New TreeDumperNode("caseClauses", Nothing, From x In node.CaseClauses Select Visit(x, Nothing)),
-                New TreeDumperNode("conditionOpt", Nothing, new TreeDumperNode() { Visit(node.ConditionOpt, Nothing) })
+                New TreeDumperNode("conditionOpt", Nothing, new TreeDumperNode() { Visit(node.ConditionOpt, Nothing) }),
+                New TreeDumperNode("whenCondition", Nothing, new TreeDumperNode() { Visit(node.WhenCondition, Nothing) })
+            })
+        End Function
+
+        Public Overrides Function VisitWhenCondition(node As BoundWhenCondition, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("whenCondition", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("condition", Nothing, new TreeDumperNode() { Visit(node.Condition, Nothing) })
             })
         End Function
 
@@ -13776,14 +13784,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overrides Function VisitRelationalCaseClause(node As BoundRelationalCaseClause, arg As Object) As TreeDumperNode
             Return New TreeDumperNode("relationalCaseClause", Nothing, New TreeDumperNode() {
                 New TreeDumperNode("operatorKind", node.OperatorKind, Nothing),
-                New TreeDumperNode("valueOpt", Nothing, new TreeDumperNode() { Visit(node.ValueOpt, Nothing) }),
-                New TreeDumperNode("conditionOpt", Nothing, new TreeDumperNode() { Visit(node.ConditionOpt, Nothing) })
-            })
-        End Function
-
-        Public Overrides Function VisitWhenCaseClause(node As BoundWhenCaseClause, arg As Object) As TreeDumperNode
-            Return New TreeDumperNode("whenCaseClause", Nothing, New TreeDumperNode() {
-                New TreeDumperNode("expression", Nothing, new TreeDumperNode() { Visit(node.Expression, Nothing) }),
                 New TreeDumperNode("valueOpt", Nothing, new TreeDumperNode() { Visit(node.ValueOpt, Nothing) }),
                 New TreeDumperNode("conditionOpt", Nothing, new TreeDumperNode() { Visit(node.ConditionOpt, Nothing) })
             })

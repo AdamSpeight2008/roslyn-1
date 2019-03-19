@@ -645,11 +645,11 @@ Partial Public Class GeneratedTests
         End Function
 
         Private Shared Function GenerateGreenCaseStatement() As InternalSyntax.CaseStatementSyntax
-            return InternalSyntax.SyntaxFactory.CaseStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.CaseKeyword, String.Empty, Nothing, Nothing), New Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)())
+            return InternalSyntax.SyntaxFactory.CaseStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.CaseKeyword, String.Empty, Nothing, Nothing), New Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)(), Nothing)
         End Function
 
         Private Shared Function GenerateGreenCaseElseStatement() As InternalSyntax.CaseStatementSyntax
-            return InternalSyntax.SyntaxFactory.CaseElseStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.CaseKeyword, String.Empty, Nothing, Nothing), New Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)())
+            return InternalSyntax.SyntaxFactory.CaseElseStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.CaseKeyword, String.Empty, Nothing, Nothing), New Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)(), Nothing)
         End Function
 
         Private Shared Function GenerateGreenElseCaseClause() As InternalSyntax.ElseCaseClauseSyntax
@@ -12838,27 +12838,27 @@ Partial Public Class GeneratedTests
         Private Shared Function GenerateRedCaseStatement() As CaseStatementSyntax
             Dim exceptionTest as boolean = false
             Try
-            SyntaxFactory.CaseStatement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), New SeparatedSyntaxList(Of CaseClauseSyntax)())
+            SyntaxFactory.CaseStatement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), New SeparatedSyntaxList(Of CaseClauseSyntax)(), Nothing)
             catch e as ArgumentException
             exceptionTest = true
             End Try
             Debug.Assert(exceptionTest)
             exceptionTest = false
 
-            return SyntaxFactory.CaseStatement(SyntaxFactory.Token(SyntaxKind.CaseKeyword), New SeparatedSyntaxList(Of CaseClauseSyntax)())
+            return SyntaxFactory.CaseStatement(SyntaxFactory.Token(SyntaxKind.CaseKeyword), New SeparatedSyntaxList(Of CaseClauseSyntax)(), Nothing)
         End Function
 
         Private Shared Function GenerateRedCaseElseStatement() As CaseStatementSyntax
             Dim exceptionTest as boolean = false
             Try
-            SyntaxFactory.CaseElseStatement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), New SeparatedSyntaxList(Of CaseClauseSyntax)())
+            SyntaxFactory.CaseElseStatement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), New SeparatedSyntaxList(Of CaseClauseSyntax)(), Nothing)
             catch e as ArgumentException
             exceptionTest = true
             End Try
             Debug.Assert(exceptionTest)
             exceptionTest = false
 
-            return SyntaxFactory.CaseElseStatement(SyntaxFactory.Token(SyntaxKind.CaseKeyword), New SeparatedSyntaxList(Of CaseClauseSyntax)())
+            return SyntaxFactory.CaseElseStatement(SyntaxFactory.Token(SyntaxKind.CaseKeyword), New SeparatedSyntaxList(Of CaseClauseSyntax)(), Nothing)
         End Function
 
         Private Shared Function GenerateRedElseCaseClause() As ElseCaseClauseSyntax
@@ -19901,7 +19901,7 @@ Partial Public Class GeneratedTests
             dim objectUnderTest = GenerateRedCaseStatement()
             Assert.NotNull(objectUnderTest.caseKeyword)
             Assert.NotNull(objectUnderTest.cases)
-            Dim withObj = objectUnderTest.WithCaseKeyword(objectUnderTest.CaseKeyword).WithCases(objectUnderTest.Cases)
+            Dim withObj = objectUnderTest.WithCaseKeyword(objectUnderTest.CaseKeyword).WithCases(objectUnderTest.Cases).WithWhenClause(objectUnderTest.WhenClause)
             Assert.Equal(withobj, objectUnderTest)
         End Sub
 
@@ -19910,7 +19910,7 @@ Partial Public Class GeneratedTests
             dim objectUnderTest = GenerateRedCaseElseStatement()
             Assert.NotNull(objectUnderTest.caseKeyword)
             Assert.NotNull(objectUnderTest.cases)
-            Dim withObj = objectUnderTest.WithCaseKeyword(objectUnderTest.CaseKeyword).WithCases(objectUnderTest.Cases)
+            Dim withObj = objectUnderTest.WithCaseKeyword(objectUnderTest.CaseKeyword).WithCases(objectUnderTest.Cases).WithWhenClause(objectUnderTest.WhenClause)
             Assert.Equal(withobj, objectUnderTest)
         End Sub
 

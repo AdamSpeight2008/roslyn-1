@@ -16471,11 +16471,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, caseStatement, Me.Statements)
         End Function
 
-        Public Shadows Function AddCaseStatementCases(ParamArray items As CaseClauseSyntax()) As CaseBlockSyntax
-            Dim _child = If (Me.CaseStatement IsNot Nothing, Me.CaseStatement, SyntaxFactory.CaseStatement())
-            Return Me.WithCaseStatement(_child.AddCases(items))
-        End Function
-
         ''' <summary>
         ''' The statements contained in the case block. This might be an empty list.
         ''' </summary>
@@ -16569,6 +16564,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         Inherits StatementSyntax
 
         Friend _cases as SyntaxNode
+        Friend _whenClause as WhenCaseClauseSyntax
 
         Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
             MyBase.New(green, parent, startLocation)
@@ -16576,8 +16572,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), caseKeyword As InternalSyntax.KeywordSyntax, cases As SyntaxNode)
-            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CaseStatementSyntax(kind, errors, annotations, caseKeyword, if(cases IsNot Nothing, cases.Green, Nothing)), Nothing, 0)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), caseKeyword As InternalSyntax.KeywordSyntax, cases As SyntaxNode, whenClause As WhenCaseClauseSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CaseStatementSyntax(kind, errors, annotations, caseKeyword, if(cases IsNot Nothing, cases.Green, Nothing), if(whenClause IsNot Nothing , DirectCast(whenClause.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WhenCaseClauseSyntax), Nothing) ), Nothing, 0)
         End Sub
 
         ''' <summary>
@@ -16595,7 +16591,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value.
         ''' </summary>
         Public Shadows Function WithCaseKeyword(caseKeyword as SyntaxToken) As CaseStatementSyntax
-            return Update(Me.Kind, caseKeyword, Me.Cases)
+            return Update(Me.Kind, caseKeyword, Me.Cases, Me.WhenClause)
         End Function
 
         ''' <summary>
@@ -16617,17 +16613,37 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' Returns this instance if the specified value is the same as the current value.
         ''' </summary>
         Public Shadows Function WithCases(cases as SeparatedSyntaxList(Of CaseClauseSyntax)) As CaseStatementSyntax
-            return Update(Me.Kind, Me.CaseKeyword, cases)
+            return Update(Me.Kind, Me.CaseKeyword, cases, Me.WhenClause)
         End Function
 
         Public Shadows Function AddCases(ParamArray items As CaseClauseSyntax()) As CaseStatementSyntax
             Return Me.WithCases(Me.Cases.AddRange(items))
         End Function
 
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
+        Public  ReadOnly Property WhenClause As WhenCaseClauseSyntax
+            Get
+                Return GetRed(_whenClause, 2)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the WhenClause property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithWhenClause(whenClause as WhenCaseClauseSyntax) As CaseStatementSyntax
+            return Update(Me.Kind, Me.CaseKeyword, Me.Cases, whenClause)
+        End Function
+
         Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
             Select case i
                 Case 1
                     Return Me._cases
+                Case 2
+                    Return Me._whenClause
                 Case Else
                      Return Nothing
             End Select
@@ -16637,6 +16653,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Select case i
                 Case 1
                     Return GetRed(_cases, 1)
+                Case 2
+                    Return Me.WhenClause
                 Case Else
                      Return Nothing
             End Select
@@ -16664,9 +16682,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <param name="cases">
         ''' The value for the Cases property.
         ''' </param>
-        Public Function Update(kind As SyntaxKind, caseKeyword As SyntaxToken, cases As SeparatedSyntaxList(Of CaseClauseSyntax)) As CaseStatementSyntax
-            If kind <> Me.Kind OrElse caseKeyword <> Me.CaseKeyword OrElse cases <> Me.Cases Then
-                Dim newNode = SyntaxFactory.CaseStatement(kind, caseKeyword, cases)
+        ''' <param name="whenClause">
+        ''' The value for the WhenClause property.
+        ''' </param>
+        Public Function Update(kind As SyntaxKind, caseKeyword As SyntaxToken, cases As SeparatedSyntaxList(Of CaseClauseSyntax), whenClause As WhenCaseClauseSyntax) As CaseStatementSyntax
+            If kind <> Me.Kind OrElse caseKeyword <> Me.CaseKeyword OrElse cases <> Me.Cases OrElse whenClause IsNot Me.WhenClause Then
+                Dim newNode = SyntaxFactory.CaseStatement(kind, caseKeyword, cases, whenClause)
                 Dim annotations = Me.GetAnnotations()
                 If annotations IsNot Nothing AndAlso annotations.Length > 0
                     return newNode.WithAnnotations(annotations)
@@ -17123,7 +17144,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
     ''' Represents a when clause in a Case statement, such as "When expression".
     ''' </summary>
     Public NotInheritable Class WhenCaseClauseSyntax
-        Inherits CaseClauseSyntax
+        Inherits VisualBasicSyntaxNode
 
         Friend _expression as ExpressionSyntax
 

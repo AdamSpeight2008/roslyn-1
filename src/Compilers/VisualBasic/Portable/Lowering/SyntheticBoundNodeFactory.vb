@@ -755,7 +755,7 @@ nextm:
                 builder.Add(boundCaseClause)
             Next
 
-            Dim boundCaseStatement = New BoundCaseStatement(_syntax, builder.ToImmutableAndFree(), Nothing)
+            Dim boundCaseStatement = New BoundCaseStatement(_syntax, builder.ToImmutableAndFree(), Nothing, Nothing)
             boundCaseStatement.SetWasCompilerGenerated()
             Dim boundCaseBlock = New BoundCaseBlock(_syntax, boundCaseStatement, Block(ImmutableArray.Create(Of BoundStatement)(statements)))
             boundCaseBlock.SetWasCompilerGenerated()

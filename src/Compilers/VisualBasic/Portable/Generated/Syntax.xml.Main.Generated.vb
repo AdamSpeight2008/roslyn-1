@@ -3285,9 +3285,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If node.CaseKeyword.Node IsNot newCaseKeyword Then anyChanges = True
             Dim newCases = VisitList(node.Cases)
             If node._cases IsNot newCases.Node Then anyChanges = True
+            Dim newWhenClause = DirectCast(Visit(node.WhenClause), WhenCaseClauseSyntax)
+            If node.WhenClause IsNot newWhenClause Then anyChanges = True
 
             If anyChanges Then
-                Return New CaseStatementSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newCaseKeyword, newCases.Node)
+                Return New CaseStatementSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newCaseKeyword, newCases.Node, newWhenClause)
             Else
                 Return node
             End If
@@ -15995,13 +15997,27 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' A list of clauses associated with this Case. If Kind=CaseElse, then this list
         ''' has exactly one child, which is a ElseCaseClause.
         ''' </param>
-        Public Shared Function CaseStatement(caseKeyword As SyntaxToken, cases As SeparatedSyntaxList(Of CaseClauseSyntax)) As CaseStatementSyntax
+        Public Shared Function CaseStatement(caseKeyword As SyntaxToken, cases As SeparatedSyntaxList(Of CaseClauseSyntax), whenClause As WhenCaseClauseSyntax) As CaseStatementSyntax
             Select Case caseKeyword.Kind()
                 Case SyntaxKind.CaseKeyword
                 Case Else
                     Throw new ArgumentException("caseKeyword")
              End Select
-            Return New CaseStatementSyntax(SyntaxKind.CaseStatement, Nothing, Nothing, DirectCast(caseKeyword.Node, InternalSyntax.KeywordSyntax), cases.Node)
+            Return New CaseStatementSyntax(SyntaxKind.CaseStatement, Nothing, Nothing, DirectCast(caseKeyword.Node, InternalSyntax.KeywordSyntax), cases.Node, whenClause)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a Case or Case Else statement. This statement is always the Begin of
+        ''' a CaseBlock. If this is a Case Else statement, the Kind=CaseElse, otherwise the
+        ''' Kind=Case.
+        ''' </summary>
+        ''' <param name="cases">
+        ''' A list of clauses associated with this Case. If Kind=CaseElse, then this list
+        ''' has exactly one child, which is a ElseCaseClause.
+        ''' </param>
+        Public Shared Function CaseStatement(cases As SeparatedSyntaxList(Of CaseClauseSyntax), whenClause As WhenCaseClauseSyntax) As CaseStatementSyntax
+            Return SyntaxFactory.CaseStatement(SyntaxKind.CaseStatement, SyntaxFactory.Token(SyntaxKind.CaseKeyword), cases, whenClause)
         End Function
 
 
@@ -16015,7 +16031,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' has exactly one child, which is a ElseCaseClause.
         ''' </param>
         Public Shared Function CaseStatement(cases As SeparatedSyntaxList(Of CaseClauseSyntax)) As CaseStatementSyntax
-            Return SyntaxFactory.CaseStatement(SyntaxKind.CaseStatement, SyntaxFactory.Token(SyntaxKind.CaseKeyword), cases)
+            Return SyntaxFactory.CaseStatement(SyntaxKind.CaseStatement, SyntaxFactory.Token(SyntaxKind.CaseKeyword), cases, Nothing)
         End Function
 
 
@@ -16029,7 +16045,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' has exactly one child, which is a ElseCaseClause.
         ''' </param>
         Public Shared Function CaseStatement(ParamArray cases As CaseClauseSyntax()) As CaseStatementSyntax
-            Return SyntaxFactory.CaseStatement(SyntaxKind.CaseStatement, SyntaxFactory.Token(SyntaxKind.CaseKeyword), SyntaxFactory.SeparatedList(Of CaseClauseSyntax)().AddRange(cases))
+            Return SyntaxFactory.CaseStatement(SyntaxKind.CaseStatement, SyntaxFactory.Token(SyntaxKind.CaseKeyword), SyntaxFactory.SeparatedList(Of CaseClauseSyntax)().AddRange(cases), Nothing)
         End Function
 
 
@@ -16045,13 +16061,27 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' A list of clauses associated with this Case. If Kind=CaseElse, then this list
         ''' has exactly one child, which is a ElseCaseClause.
         ''' </param>
-        Public Shared Function CaseElseStatement(caseKeyword As SyntaxToken, cases As SeparatedSyntaxList(Of CaseClauseSyntax)) As CaseStatementSyntax
+        Public Shared Function CaseElseStatement(caseKeyword As SyntaxToken, cases As SeparatedSyntaxList(Of CaseClauseSyntax), whenClause As WhenCaseClauseSyntax) As CaseStatementSyntax
             Select Case caseKeyword.Kind()
                 Case SyntaxKind.CaseKeyword
                 Case Else
                     Throw new ArgumentException("caseKeyword")
              End Select
-            Return New CaseStatementSyntax(SyntaxKind.CaseElseStatement, Nothing, Nothing, DirectCast(caseKeyword.Node, InternalSyntax.KeywordSyntax), cases.Node)
+            Return New CaseStatementSyntax(SyntaxKind.CaseElseStatement, Nothing, Nothing, DirectCast(caseKeyword.Node, InternalSyntax.KeywordSyntax), cases.Node, whenClause)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a Case or Case Else statement. This statement is always the Begin of
+        ''' a CaseBlock. If this is a Case Else statement, the Kind=CaseElse, otherwise the
+        ''' Kind=Case.
+        ''' </summary>
+        ''' <param name="cases">
+        ''' A list of clauses associated with this Case. If Kind=CaseElse, then this list
+        ''' has exactly one child, which is a ElseCaseClause.
+        ''' </param>
+        Public Shared Function CaseElseStatement(cases As SeparatedSyntaxList(Of CaseClauseSyntax), whenClause As WhenCaseClauseSyntax) As CaseStatementSyntax
+            Return SyntaxFactory.CaseElseStatement(SyntaxFactory.Token(SyntaxKind.CaseKeyword), cases, whenClause)
         End Function
 
 
@@ -16065,7 +16095,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' has exactly one child, which is a ElseCaseClause.
         ''' </param>
         Public Shared Function CaseElseStatement(cases As SeparatedSyntaxList(Of CaseClauseSyntax)) As CaseStatementSyntax
-            Return SyntaxFactory.CaseElseStatement(SyntaxFactory.Token(SyntaxKind.CaseKeyword), cases)
+            Return SyntaxFactory.CaseElseStatement(SyntaxFactory.Token(SyntaxKind.CaseKeyword), cases, Nothing)
         End Function
 
 
@@ -16079,7 +16109,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' has exactly one child, which is a ElseCaseClause.
         ''' </param>
         Public Shared Function CaseElseStatement(ParamArray cases As CaseClauseSyntax()) As CaseStatementSyntax
-            Return SyntaxFactory.CaseElseStatement(SyntaxFactory.Token(SyntaxKind.CaseKeyword), SyntaxFactory.SeparatedList(Of CaseClauseSyntax)().AddRange(cases))
+            Return SyntaxFactory.CaseElseStatement(SyntaxFactory.Token(SyntaxKind.CaseKeyword), SyntaxFactory.SeparatedList(Of CaseClauseSyntax)().AddRange(cases), Nothing)
         End Function
 
 
@@ -16099,7 +16129,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' A list of clauses associated with this Case. If Kind=CaseElse, then this list
         ''' has exactly one child, which is a ElseCaseClause.
         ''' </param>
-        Public Shared Function CaseStatement(ByVal kind As SyntaxKind, caseKeyword As SyntaxToken, cases As SeparatedSyntaxList(Of CaseClauseSyntax)) As CaseStatementSyntax
+        Public Shared Function CaseStatement(ByVal kind As SyntaxKind, caseKeyword As SyntaxToken, cases As SeparatedSyntaxList(Of CaseClauseSyntax), whenClause As WhenCaseClauseSyntax) As CaseStatementSyntax
             If Not SyntaxFacts.IsCaseStatement(kind) Then
                 Throw New ArgumentException("kind")
             End If
@@ -16108,7 +16138,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("caseKeyword")
              End Select
-            Return New CaseStatementSyntax(kind, Nothing, Nothing, DirectCast(caseKeyword.Node, InternalSyntax.KeywordSyntax), cases.Node)
+            Return New CaseStatementSyntax(kind, Nothing, Nothing, DirectCast(caseKeyword.Node, InternalSyntax.KeywordSyntax), cases.Node, whenClause)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a Case or Case Else statement. This statement is always the Begin of
+        ''' a CaseBlock. If this is a Case Else statement, the Kind=CaseElse, otherwise the
+        ''' Kind=Case.
+        ''' </summary>
+        ''' <param name="kind">
+        ''' A <cref c="SyntaxKind"/> representing the specific kind of CaseStatementSyntax.
+        ''' One of CaseStatement, CaseElseStatement.
+        ''' </param>
+        ''' <param name="cases">
+        ''' A list of clauses associated with this Case. If Kind=CaseElse, then this list
+        ''' has exactly one child, which is a ElseCaseClause.
+        ''' </param>
+        Public Shared Function CaseStatement(ByVal kind As SyntaxKind, cases As SeparatedSyntaxList(Of CaseClauseSyntax), whenClause As WhenCaseClauseSyntax) As CaseStatementSyntax
+            Return SyntaxFactory.CaseStatement(kind, SyntaxFactory.Token(SyntaxKind.CaseKeyword), cases, whenClause)
         End Function
 
 
@@ -16126,7 +16174,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' has exactly one child, which is a ElseCaseClause.
         ''' </param>
         Public Shared Function CaseStatement(ByVal kind As SyntaxKind, cases As SeparatedSyntaxList(Of CaseClauseSyntax)) As CaseStatementSyntax
-            Return SyntaxFactory.CaseStatement(kind, SyntaxFactory.Token(SyntaxKind.CaseKeyword), cases)
+            Return SyntaxFactory.CaseStatement(kind, SyntaxFactory.Token(SyntaxKind.CaseKeyword), cases, Nothing)
         End Function
 
 
@@ -16144,7 +16192,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' has exactly one child, which is a ElseCaseClause.
         ''' </param>
         Public Shared Function CaseStatement(ByVal kind As SyntaxKind, ParamArray cases As CaseClauseSyntax()) As CaseStatementSyntax
-            Return SyntaxFactory.CaseStatement(kind, SyntaxFactory.Token(SyntaxKind.CaseKeyword), SyntaxFactory.SeparatedList(Of CaseClauseSyntax)().AddRange(cases))
+            Return SyntaxFactory.CaseStatement(kind, SyntaxFactory.Token(SyntaxKind.CaseKeyword), SyntaxFactory.SeparatedList(Of CaseClauseSyntax)().AddRange(cases), Nothing)
         End Function
 
 

@@ -1120,5 +1120,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ' By default mark submissions as invalid since there's at least one error.
             Return True
         End Function
+
+        Shared Public Function CaseElseStatement(
+                                           caseKeyword  As Microsoft.CodeAnalysis.SyntaxToken,
+                                           cases        As Microsoft.CodeAnalysis.SeparatedSyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.CaseClauseSyntax)
+                                         ) AS Microsoft.CodeAnalysis.VisualBasic.Syntax.CaseStatementSyntax
+            Return SyntaxFactory.CaseElseStatement(caseKeyword, cases, nothing)
+        End Function
+
+        Shared Public Function CaseStatement(
+                                       caseKeyword  As Microsoft.CodeAnalysis.SyntaxToken,
+                                       cases        As Microsoft.CodeAnalysis.SeparatedSyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.CaseClauseSyntax)
+                                     ) AS Microsoft.CodeAnalysis.VisualBasic.Syntax.CaseStatementSyntax
+            Return SyntaxFactory.CaseStatement(caseKeyword, cases, nothing)
+        End Function
+
     End Class
 End Namespace

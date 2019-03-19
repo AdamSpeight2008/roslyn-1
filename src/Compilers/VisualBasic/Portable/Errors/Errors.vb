@@ -1741,7 +1741,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ERR_NamedArgumentSpecificationBeforeFixedArgumentInLateboundInvocation = 37304
 
         ERR_ValueTupleResolutionAmbiguous3 = 37305
-
+        ERR_ExpectedWhenKeyword = 37306
         '// WARNINGS BEGIN HERE
         WRN_UseOfObsoleteSymbol2 = 40000
         WRN_InvalidOverrideDueToTupleNames2 = 40001

@@ -9,26 +9,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     Partial Public Class CaseBlockSyntax
 
-        <EditorBrowsable(EditorBrowsableState.Never)>
-        <Obsolete("This member is obsolete. Use CaseStatement instead.", True)>
-        Public ReadOnly Property Begin As CaseStatementSyntax
-            Get
-                Return CaseStatement
-            End Get
-        End Property
+        '<EditorBrowsable(EditorBrowsableState.Never)>
+        '<Obsolete("This member is obsolete. Use CaseStatement instead.", True)>
+        'Public ReadOnly Property Begin As CaseStatementSyntax
+        '    Get
+        '        Return CaseStatement
+        '    End Get
+        'End Property
 
-        <EditorBrowsable(EditorBrowsableState.Never)>
-        <Obsolete("This member is obsolete. Use WithCaseStatement instead.", True)>
-        Public Function WithBegin(begin As CaseStatementSyntax) As CaseBlockSyntax
-            Return WithCaseStatement(begin)
-        End Function
+        '<EditorBrowsable(EditorBrowsableState.Never)>
+        '<Obsolete("This member is obsolete. Use WithCaseStatement instead.", True)>
+        'Public Function WithBegin(begin As CaseStatementSyntax) As CaseBlockSyntax
+        '    Return WithCaseStatement(begin)
+        'End Function
 
-        <EditorBrowsable(EditorBrowsableState.Never)>
-        <Obsolete("This member is obsolete. Use AddCaseStatementCases instead.", True)>
-        Public Function AddBeginCases(ParamArray items As CaseClauseSyntax()) As CaseBlockSyntax
-            Return AddCaseStatementCases(items)
-        End Function
-
+        '<EditorBrowsable(EditorBrowsableState.Never)>
+        '<Obsolete("This member is obsolete. Use AddCaseStatementCases instead.", True)>
+        'Public Function AddBeginCases(ParamArray items As CaseClauseSyntax()) As CaseBlockSyntax
+        '    Return AddCaseStatementCases(items)
+        'End Function
+        'Public Shadows Function AddCaseStatementCases(ParamArray items As CaseClauseSyntax()) As CaseBlockSyntax
+        '    Dim _child = If(Me.CaseStatement IsNot Nothing, Me.CaseStatement, SyntaxFactory.CaseStatement())
+        '    Return Me.WithCaseStatement(_child.AddCases(items))
+        'End Function
     End Class
 
 End Namespace
