@@ -182,8 +182,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Visit(node.EndSelectStatement)
         End Sub
 
+        Public Overrides Sub VisitCaseStatement(node As CaseStatementSyntax)
+            VisitList(node.Cases)
+            VisitWhenCaseClause(node.WhenClause)
+        End Sub
+
+        Public Overrides Sub VisitWhenCaseClause(node As WhenCaseClauseSyntax)
+            Visit(node.Expression)
+        End Sub
+
         Public Overrides Sub VisitCaseBlock(ByVal node As CaseBlockSyntax)
-            Visit(node.CaseStatement)
+            VisitCaseStatement(node.CaseStatement)
             VisitList(node.Statements)
         End Sub
 

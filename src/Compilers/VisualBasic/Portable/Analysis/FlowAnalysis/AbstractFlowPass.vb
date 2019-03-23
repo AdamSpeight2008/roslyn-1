@@ -1811,7 +1811,6 @@ lUnsplitAndFinish:
                 ' However, conditionOpt cannot be a compile time constant expression.
                 ' VisitCaseStatement must have unsplit the states into a non-conditional state for this scenario.
                 Debug.Assert(Not Me.IsConditionalState)
-
                 ' save the current state for next case block.
                 Dim savedState As LocalState = Me.State.Clone()
 
@@ -1862,6 +1861,9 @@ lUnsplitAndFinish:
                             Throw ExceptionUtilities.UnexpectedValue(clause.Kind)
                     End Select
                 Next
+            End If
+            If node.WhenCondition IsNot Nothing Then
+                VisitWhenCondition(node.WhenCondition)
             End If
 
             Return Nothing

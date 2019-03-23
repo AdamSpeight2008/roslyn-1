@@ -40,7 +40,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Partial Friend Class BoundCaseStatement
         Protected Overrides ReadOnly Property Children As ImmutableArray(Of BoundNode)
             Get
-                Return StaticCast(Of BoundNode).From(Me.CaseClauses).Add(Me.ConditionOpt)
+                Return StaticCast(Of BoundNode).From(Me.CaseClauses).Add(Me.WhenCondition).Add(Me.ConditionOpt)
             End Get
         End Property
     End Class
