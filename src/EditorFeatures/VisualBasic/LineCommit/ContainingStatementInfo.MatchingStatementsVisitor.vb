@@ -5,111 +5,123 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
     Partial Friend Class ContainingStatementInfo
         Private Class MatchingStatementsVisitor
-            Inherits VisualBasicSyntaxVisitor(Of IList(Of StatementSyntax))
+            Inherits VisualBasicSyntaxVisitor(Of IEnumerable(Of StatementSyntax))
 
             Public Shared ReadOnly Instance As MatchingStatementsVisitor = New MatchingStatementsVisitor()
 
             Private Sub New()
             End Sub
 
-            Public Overrides Function VisitClassBlock(node As ClassBlockSyntax) As IList(Of StatementSyntax)
-                Return New StatementSyntax() {node.BlockStatement, node.EndBlockStatement}
+            Public Overrides Iterator Function VisitClassBlock(node As ClassBlockSyntax) As IEnumerable(Of StatementSyntax)
+                Yield node.BlockStatement
+                Yield node.EndBlockStatement
             End Function
 
-            Public Overrides Function VisitMethodBlock(node As MethodBlockSyntax) As IList(Of StatementSyntax)
-                Return New StatementSyntax() {node.BlockStatement, node.EndBlockStatement}
+            Public Overrides Iterator Function VisitMethodBlock(node As MethodBlockSyntax) As IEnumerable(Of StatementSyntax)
+                yield node.BlockStatement
+                Yield node.EndBlockStatement
             End Function
 
-            Public Overrides Function VisitConstructorBlock(node As ConstructorBlockSyntax) As IList(Of StatementSyntax)
-                Return New StatementSyntax() {node.BlockStatement, node.EndBlockStatement}
+            Public Overrides Iterator Function VisitConstructorBlock(node As ConstructorBlockSyntax) As IEnumerable(Of StatementSyntax)
+               Yield node.BlockStatement
+               Yield node.EndBlockStatement
             End Function
 
-            Public Overrides Function VisitOperatorBlock(node As OperatorBlockSyntax) As IList(Of StatementSyntax)
-                Return New StatementSyntax() {node.BlockStatement, node.EndBlockStatement}
+            Public Overrides Iterator Function VisitOperatorBlock(node As OperatorBlockSyntax) As IEnumerable(Of StatementSyntax)
+                Yield node.BlockStatement
+                Yield node.EndBlockStatement
             End Function
 
-            Public Overrides Function VisitAccessorBlock(node As AccessorBlockSyntax) As IList(Of StatementSyntax)
-                Return New StatementSyntax() {node.BlockStatement, node.EndBlockStatement}
+            Public Overrides Iterator Function VisitAccessorBlock(node As AccessorBlockSyntax) As IEnumerable(Of StatementSyntax)
+                Yield node.BlockStatement
+                yield node.EndBlockStatement
             End Function
 
-            Public Overrides Function VisitDoLoopBlock(node As DoLoopBlockSyntax) As IList(Of StatementSyntax)
-                Return New StatementSyntax() {node.DoStatement, node.LoopStatement}
+            Public Overrides Iterator Function VisitDoLoopBlock(node As DoLoopBlockSyntax) As IEnumerable(Of StatementSyntax)
+                Yield node.DoStatement
+                Yield node.LoopStatement
             End Function
 
-            Public Overrides Function VisitEnumBlock(node As EnumBlockSyntax) As IList(Of StatementSyntax)
-                Return New StatementSyntax() {node.EnumStatement, node.EndEnumStatement}
+            Public Overrides Iterator Function VisitEnumBlock(node As EnumBlockSyntax) As IEnumerable(Of StatementSyntax)
+                Yield node.EnumStatement
+                Yield node.EndEnumStatement
             End Function
 
-            Public Overrides Function VisitForBlock(node As ForBlockSyntax) As IList(Of StatementSyntax)
+            Public Overrides Iterator Function VisitForBlock(node As ForBlockSyntax) As IEnumerable(Of StatementSyntax)
                 ' TODO: evilness around ending multiple statements at once with a single "next"
-                Return New StatementSyntax() {node.ForStatement, node.NextStatement}
+                Yield node.ForStatement
+                Yield node.NextStatement
             End Function
 
-            Public Overrides Function VisitForEachBlock(node As ForEachBlockSyntax) As IList(Of StatementSyntax)
+            Public Overrides Iterator Function VisitForEachBlock(node As ForEachBlockSyntax) As IEnumerable(Of StatementSyntax)
                 ' TODO: evilness around ending multiple statements at once with a single "next"
-                Return New StatementSyntax() {node.ForEachStatement, node.NextStatement}
+                Yield node.ForEachStatement
+                Yield node.NextStatement
             End Function
 
-            Public Overrides Function VisitMultiLineIfBlock(node As MultiLineIfBlockSyntax) As IList(Of StatementSyntax)
-                ' TODO: just use Yield Return once we have it in VB
-                Dim parts As New List(Of StatementSyntax) From {node.IfStatement, node.EndIfStatement}
+            Public Overrides Iterator Function VisitMultiLineIfBlock(node As MultiLineIfBlockSyntax) As IEnumerable(Of StatementSyntax)
 
-                parts.AddRange(node.ElseIfBlocks.Select(Function(elseIfBlock) elseIfBlock.ElseIfStatement))
+                Yield node.IfStatement
+                Yield node.EndIfStatement
+                For Each n in node.ElseIfBlocks.Select(Function(elseIfBlock) elseIfBlock.ElseIfStatement)
+                    Yield n
+                Next
 
-                If node.ElseBlock IsNot Nothing Then
-                    parts.Add(node.ElseBlock.ElseStatement)
-                End If
-
-                Return parts
+                If node.ElseBlock IsNot Nothing Then Yield node.ElseBlock.ElseStatement
             End Function
 
-            Public Overrides Function VisitInterfaceBlock(node As InterfaceBlockSyntax) As IList(Of StatementSyntax)
-                Return New StatementSyntax() {node.BlockStatement, node.EndBlockStatement}
+            Public Overrides Iterator Function VisitInterfaceBlock(node As InterfaceBlockSyntax) As IEnumerable(Of StatementSyntax)
+                Yield node.BlockStatement
+                Yield node.EndBlockStatement
             End Function
 
-            Public Overrides Function VisitModuleBlock(node As ModuleBlockSyntax) As IList(Of StatementSyntax)
-                Return New StatementSyntax() {node.BlockStatement, node.EndBlockStatement}
+            Public Overrides Iterator Function VisitModuleBlock(node As ModuleBlockSyntax) As IEnumerable(Of StatementSyntax)
+                Yield node.BlockStatement
+                Yield node.EndBlockStatement
             End Function
 
-            Public Overrides Function VisitNamespaceBlock(node As NamespaceBlockSyntax) As IList(Of StatementSyntax)
-                Return New StatementSyntax() {node.NamespaceStatement, node.EndNamespaceStatement}
+            Public Overrides Iterator Function VisitNamespaceBlock(node As NamespaceBlockSyntax) As IEnumerable(Of StatementSyntax)
+                Yield node.NamespaceStatement
+                Yield node.EndNamespaceStatement
             End Function
 
-            Public Overrides Function VisitPropertyBlock(node As PropertyBlockSyntax) As IList(Of StatementSyntax)
-                Return New StatementSyntax() {node.PropertyStatement, node.EndPropertyStatement}
+            Public Overrides Iterator Function VisitPropertyBlock(node As PropertyBlockSyntax) As IEnumerable(Of StatementSyntax)
+                Yield node.PropertyStatement
+                Yield node.EndPropertyStatement
             End Function
 
-            Public Overrides Function VisitSelectBlock(node As SelectBlockSyntax) As IList(Of StatementSyntax)
-                Return New StatementSyntax() {node.SelectStatement, node.EndSelectStatement}
+            Public Overrides Iterator Function VisitSelectBlock(node As SelectBlockSyntax) As IEnumerable(Of StatementSyntax)
+                Yield node.SelectStatement
+                Yield node.EndSelectStatement
             End Function
 
-            Public Overrides Function VisitSyncLockBlock(node As SyncLockBlockSyntax) As IList(Of StatementSyntax)
-                Return New StatementSyntax() {node.SyncLockStatement, node.EndSyncLockStatement}
+            Public Overrides Iterator Function VisitSyncLockBlock(node As SyncLockBlockSyntax) As IEnumerable(Of StatementSyntax)
+                Yield node.SyncLockStatement
+                Yield node.EndSyncLockStatement
             End Function
 
-            Public Overrides Function VisitTryBlock(node As TryBlockSyntax) As IList(Of StatementSyntax)
-                ' TODO: just use Yield Return once we have it in VB
-                Dim parts As New List(Of StatementSyntax) From {node.TryStatement, node.EndTryStatement}
-
-                parts.AddRange(node.CatchBlocks.Select(Function(catchBlock) catchBlock.CatchStatement))
-
-                If node.FinallyBlock IsNot Nothing Then
-                    parts.Add(node.FinallyBlock.FinallyStatement)
-                End If
-
-                Return parts
+            Public Overrides Iterator Function VisitTryBlock(node As TryBlockSyntax) As IEnumerable(Of StatementSyntax)
+                yield node.TryStatement
+                Yield node.EndTryStatement
+                for Each n in node.CatchBlocks.Select(Function(catchBlock) catchBlock.CatchStatement)
+                    yield n
+                Next
+                If node.FinallyBlock IsNot Nothing Then yield node.FinallyBlock.FinallyStatement
             End Function
 
-            Public Overrides Function VisitStructureBlock(node As StructureBlockSyntax) As IList(Of StatementSyntax)
-                Return New StatementSyntax() {node.BlockStatement, node.EndBlockStatement}
+            Public Overrides Iterator Function VisitStructureBlock(node As StructureBlockSyntax) As IEnumerable(Of StatementSyntax)
+                Yield node.BlockStatement
+                Yield node.EndBlockStatement
             End Function
 
-            Public Overrides Function VisitUsingBlock(node As UsingBlockSyntax) As IList(Of StatementSyntax)
-                Return New StatementSyntax() {node.UsingStatement, node.EndUsingStatement}
+            Public Overrides Iterator Function VisitUsingBlock(node As UsingBlockSyntax) As IEnumerable(Of StatementSyntax)
+                Yield node.UsingStatement
+                Yield node.EndUsingStatement
             End Function
 
-            Public Overrides Function VisitWithBlock(node As WithBlockSyntax) As IList(Of StatementSyntax)
-                Return New StatementSyntax() {node.WithStatement, node.EndWithStatement}
+            Public Overrides Iterator Function VisitWithBlock(node As WithBlockSyntax) As IEnumerable(Of StatementSyntax)
+                Yield node.WithStatement
+                Yield node.EndWithStatement
             End Function
         End Class
     End Class

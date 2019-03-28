@@ -6,50 +6,43 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
-    <ExportHighlighter(LanguageNames.VisualBasic)>
-    Friend Class SelectBlockHighlighter
-        Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-        Protected Overloads Overrides Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
-            If node.IsIncorrectExitStatement(SyntaxKind.ExitSelectStatement) Then
-                Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
+  <ExportHighlighter(LanguageNames.VisualBasic)>
+  Friend Class SelectBlockHighlighter
+    Inherits AbstractKeywordHighlighter(Of SyntaxNode)
+
+    Protected Overloads Overrides Iterator Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+      If cancellationToken.IsCancellationRequested Then Return
+      If node.IsIncorrectExitStatement(SyntaxKind.ExitSelectStatement) Then Return
+    
+      Dim selectBlock = node.GetAncestor(Of SelectBlockSyntax)()
+      If selectBlock Is Nothing Then Return
+      With selectBlock
+        With .SelectStatement
+          Yield TextSpan.FromBounds(.SelectKeyword.SpanStart, If(.CaseKeyword.Kind <> SyntaxKind.None, .CaseKeyword, .SelectKeyword).Span.End)
+        End With
+
+        For Each caseBlock In .CaseBlocks.AsParallel
+          If cancellationToken.IsCancellationRequested Then Return
+          With caseBlock.CaseStatement
+            If caseBlock.Kind = SyntaxKind.CaseElseBlock Then
+               Dim elseKeyword = DirectCast(.Cases.First(), ElseCaseClauseSyntax).ElseKeyword
+               Yield TextSpan.FromBounds(.CaseKeyword.SpanStart, elseKeyword.Span.End)
+            Else
+               Yield .CaseKeyword.Span
             End If
+          End With
 
-            Dim selectBlock = node.GetAncestor(Of SelectBlockSyntax)()
-            If selectBlock Is Nothing Then
-                Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
-            End If
+          For Each highlight In caseBlock.GetRelatedStatementHighlights(blockKind:=SyntaxKind.SelectKeyword)
+            If cancellationToken.IsCancellationRequested Then                            Return
+            Yield highlight
+          Next
+        Next
 
-            Dim highlights As New List(Of TextSpan)
+        Yield .EndSelectStatement.Span
+      End With
+    End Function
 
-            With selectBlock
-                With .SelectStatement
-                    highlights.Add(
-                        TextSpan.FromBounds(
-                            .SelectKeyword.SpanStart,
-                            If(.CaseKeyword.Kind <> SyntaxKind.None, .CaseKeyword, .SelectKeyword).Span.End))
-                End With
+  End Class
 
-                For Each caseBlock In .CaseBlocks
-                    With caseBlock.CaseStatement
-                        If caseBlock.Kind = SyntaxKind.CaseElseBlock Then
-                            Dim elseKeyword = DirectCast(.Cases.First(), ElseCaseClauseSyntax).ElseKeyword
-                            highlights.Add(TextSpan.FromBounds(.CaseKeyword.SpanStart, elseKeyword.Span.End))
-                        Else
-                            highlights.Add(.CaseKeyword.Span)
-                        End If
-                    End With
-
-                    highlights.AddRange(
-                        caseBlock.GetRelatedStatementHighlights(
-                            blockKind:=SyntaxKind.SelectKeyword))
-                Next
-
-                highlights.Add(.EndSelectStatement.Span)
-            End With
-
-            Return highlights
-        End Function
-
-    End Class
 End Namespace

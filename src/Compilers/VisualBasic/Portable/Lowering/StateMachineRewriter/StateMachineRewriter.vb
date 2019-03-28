@@ -258,7 +258,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Protected Function CaptureLocalSymbol(typeMap As TypeSubstitution,
                                               local As LocalSymbol,
-                                              initializers As Dictionary(Of LocalSymbol, BoundExpression)) As TProxy
+                                              initializers As Immutable.ImmutableDictionary(Of LocalSymbol, BoundExpression)) As TProxy
 
             Dim proxy As TProxy = Nothing
             If nonReusableLocalProxies.TryGetValue(local, proxy) Then
@@ -271,11 +271,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ' We'll create proxies for these variable later:
                 ' TODO: so, we have to check if it is already in or not. See the early impl.
 
-                Debug.Assert(initializers.ContainsKey(local))
-                proxy = CreateByRefLocalCapture(typeMap, local, initializers)
-                nonReusableLocalProxies.Add(local, proxy)
+                If initializers.ContainsKey(local) Then
+                    Debug.Assert(initializers.ContainsKey(local))
+                    proxy = CreateByRefLocalCapture(typeMap, local, initializers)
+                    nonReusableLocalProxies.Add(local, proxy)
 
-                Return proxy
+                    Return proxy
+                End If
             End If
 
             ' Variable needs to be hoisted.
@@ -325,7 +327,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Protected Overridable Function CreateByRefLocalCapture(typeMap As TypeSubstitution,
                                                                local As LocalSymbol,
-                                                               initializers As Dictionary(Of LocalSymbol, BoundExpression)) As TProxy
+                                                               initializers As Immutable.ImmutableDictionary(Of LocalSymbol, BoundExpression)) As TProxy
 
             ' This is only supposed to be reachable in Async rewriter
             Throw ExceptionUtilities.Unreachable

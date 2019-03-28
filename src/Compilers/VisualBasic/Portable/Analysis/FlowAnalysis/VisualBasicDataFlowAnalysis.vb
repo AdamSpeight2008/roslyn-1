@@ -20,20 +20,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Friend Class VisualBasicDataFlowAnalysis
         Inherits DataFlowAnalysis
 
-        Private ReadOnly _context As RegionAnalysisContext
-
-        Private _variablesDeclared As ImmutableArray(Of ISymbol)
-        Private _unassignedVariables As HashSet(Of Symbol)
-        Private _dataFlowsIn As ImmutableArray(Of ISymbol)
-        Private _dataFlowsOut As ImmutableArray(Of ISymbol)
-        Private _alwaysAssigned As ImmutableArray(Of ISymbol)
-        Private _readInside As ImmutableArray(Of ISymbol)
-        Private _writtenInside As ImmutableArray(Of ISymbol)
-        Private _readOutside As ImmutableArray(Of ISymbol)
-        Private _writtenOutside As ImmutableArray(Of ISymbol)
-        Private _captured As ImmutableArray(Of ISymbol)
-        Private _capturedInside As ImmutableArray(Of ISymbol)
-        Private _capturedOutside As ImmutableArray(Of ISymbol)
+        Private ReadOnly _context    As RegionAnalysisContext
+        Private _unassignedVariables As PooledHashSet(Of Symbol)
+#Region "ImutableArray(Of ISymbol)"
+        Private _variablesDeclared   As ImmutableArray(Of ISymbol)
+        Private _dataFlowsIn         As ImmutableArray(Of ISymbol)
+        Private _dataFlowsOut        As ImmutableArray(Of ISymbol)
+        Private _alwaysAssigned      As ImmutableArray(Of ISymbol)
+        Private _readInside          As ImmutableArray(Of ISymbol)
+        Private _writtenInside       As ImmutableArray(Of ISymbol)
+        Private _readOutside         As ImmutableArray(Of ISymbol)
+        Private _writtenOutside      As ImmutableArray(Of ISymbol)
+        Private _captured            As ImmutableArray(Of ISymbol)
+        Private _capturedInside      As ImmutableArray(Of ISymbol)
+        Private _capturedOutside     As ImmutableArray(Of ISymbol)
+#End Region
         Private _succeeded As Boolean?
         Private _invalidRegionDetected As Boolean
 
@@ -48,7 +49,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overrides ReadOnly Property VariablesDeclared As ImmutableArray(Of ISymbol)
             Get
                 If _variablesDeclared.IsDefault Then
-                    Dim result = If(Me._context.Failed, ImmutableArray(Of ISymbol).Empty,
+                    Dim result As ImmutableArray(Of ISymbol) = If(Me._context.Failed, ImmutableArray(Of ISymbol).Empty,
                                     Normalize(VariablesDeclaredWalker.Analyze(_context.AnalysisInfo, _context.RegionInfo)))
                     ImmutableInterlocked.InterlockedCompareExchange(_variablesDeclared, result, Nothing)
                 End If
@@ -56,10 +57,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Get
         End Property
 
-        Private ReadOnly Property UnassignedVariables As HashSet(Of Symbol)
+        Private ReadOnly Property UnassignedVariables As PooledObjects.PooledHashSet(Of Symbol)
             Get
                 If _unassignedVariables Is Nothing Then
-                    Dim result = If(Me._context.Failed, New HashSet(Of Symbol)(),
+                    Dim result As PooledHashSet(Of Symbol) = If(Me._context.Failed, PooledObjects.PooledHashSet(Of Symbol).GetInstance,
                                     UnassignedVariablesWalker.Analyze(_context.AnalysisInfo))
                     Interlocked.CompareExchange(_unassignedVariables, result, Nothing)
                 End If
@@ -89,8 +90,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Get
                 Dim discarded = DataFlowsIn
                 If _dataFlowsOut.IsDefault Then
-                    Dim result = If(Me._context.Failed, ImmutableArray(Of ISymbol).Empty,
-                                    Normalize(DataFlowsOutWalker.Analyze(_context.AnalysisInfo, _context.RegionInfo, UnassignedVariables, _dataFlowsIn)))
+                    Dim result As ImmutableArray(Of ISymbol)
+                    If Me._context.Failed Then
+                        result = ImmutableArray(Of ISymbol).Empty
+                    Else
+                        Dim preNormalised = DataFlowsOutWalker.Analyze(_context.AnalysisInfo, _context.RegionInfo, UnassignedVariables.ToImmutableArrayOrEmpty, _dataFlowsIn)
+                        result = Normalize(preNormalised)
+                    End If
                     ImmutableInterlocked.InterlockedCompareExchange(_dataFlowsOut, result, Nothing)
                 End If
                 Return _dataFlowsOut
@@ -160,20 +166,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Property
 
         Private Sub AnalyzeReadWrite()
-            Dim readInside As IEnumerable(Of Symbol) = Nothing
-            Dim writtenInside As IEnumerable(Of Symbol) = Nothing
-            Dim readOutside As IEnumerable(Of Symbol) = Nothing
-            Dim writtenOutside As IEnumerable(Of Symbol) = Nothing
-            Dim captured As IEnumerable(Of Symbol) = Nothing
-            Dim capturedInside As IEnumerable(Of Symbol) = Nothing
+            Dim readInside      As IEnumerable(Of Symbol) = Nothing
+            Dim writtenInside   As IEnumerable(Of Symbol) = Nothing
+            Dim readOutside     As IEnumerable(Of Symbol) = Nothing
+            Dim writtenOutside  As IEnumerable(Of Symbol) = Nothing
+            Dim captured        As IEnumerable(Of Symbol) = Nothing
+            Dim capturedInside  As IEnumerable(Of Symbol) = Nothing
             Dim capturedOutside As IEnumerable(Of Symbol) = Nothing
 
             If Not Me.Succeeded Then
-                readInside = Enumerable.Empty(Of Symbol)()
-                writtenInside = readInside
-                readOutside = readInside
-                writtenOutside = readInside
-                captured = readInside
+                readInside      = Enumerable.Empty(Of Symbol)()
+                writtenInside   = readInside
+                readOutside     = readInside
+                writtenOutside  = readInside
+                captured        = readInside
 
             Else
                 ReadWriteWalker.Analyze(

@@ -24,13 +24,16 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
                        p.Name <> PredefinedCodeCleanupProviderNames.Format
             End Function
 
-        Public Sub CommitRegion(spanToFormat As SnapshotSpan,
-                                isExplicitFormat As Boolean,
-                                useSemantics As Boolean,
-                                dirtyRegion As SnapshotSpan,
-                                baseSnapshot As ITextSnapshot,
-                                baseTree As SyntaxTree,
-                                cancellationToken As CancellationToken) Implements ICommitFormatter.CommitRegion
+        Public Sub CommitRegion _
+            (
+              spanToFormat      As SnapshotSpan,
+              isExplicitFormat  As Boolean,
+              useSemantics      As Boolean,
+              dirtyRegion       As SnapshotSpan,
+              baseSnapshot      As ITextSnapshot,
+              baseTree          As SyntaxTree,
+              cancellationToken As CancellationToken
+            ) Implements ICommitFormatter.CommitRegion
 
             Using (Logger.LogBlock(FunctionId.LineCommit_CommitRegion, cancellationToken))
                 Dim buffer = spanToFormat.Snapshot.TextBuffer
@@ -97,7 +100,12 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
             End Using
         End Sub
 
-        Private Function AbortForDiagnostics(document As Document, textSpanToFormat As TextSpan, cancellationToken As CancellationToken) As Boolean
+        Private Function AbortForDiagnostics _
+            (
+              document          As Document,
+              textSpanToFormat  As TextSpan,
+              cancellationToken As CancellationToken
+            ) As Boolean
             Const UnterminatedStringId = "BC30648"
 
             Dim tree = document.GetSyntaxTreeSynchronously(cancellationToken)
@@ -111,15 +119,17 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
             Return diagnostics.Any()
         End Function
 
-        Private Function GetCommitFormattingCleanupProvider(
-            document As Document,
-            documentOptions As DocumentOptionSet,
-            spanToFormat As SnapshotSpan,
-            oldSnapshot As ITextSnapshot,
-            oldTree As SyntaxTree,
-            newDirtySpan As SnapshotSpan,
-            newTree As SyntaxTree,
-            cancellationToken As CancellationToken) As ICodeCleanupProvider
+        Private Function GetCommitFormattingCleanupProvider _
+            (
+              document          As Document,
+              documentOptions   As DocumentOptionSet,
+              spanToFormat      As SnapshotSpan,
+              oldSnapshot       As ITextSnapshot,
+              oldTree           As SyntaxTree,
+              newDirtySpan      As SnapshotSpan,
+              newTree           As SyntaxTree,
+              cancellationToken As CancellationToken
+            ) As ICodeCleanupProvider
 
             Dim oldDirtySpan = newDirtySpan.TranslateTo(oldSnapshot, SpanTrackingMode.EdgeInclusive)
 
@@ -131,7 +141,13 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
                                                  Function(r, spans, w, c) Format(r, spans, w, document.GetOptionsAsync(c).WaitAndGetResult(c), rules, c))
         End Function
 
-        Private Async Function FormatAsync(document As Document, spans As ImmutableArray(Of TextSpan), rules As IEnumerable(Of AbstractFormattingRule), cancellationToken As CancellationToken) As Task(Of Document)
+        Private Async Function FormatAsync _ 
+            (
+              document          As Document,
+              spans             As ImmutableArray(Of TextSpan),
+              rules             As IEnumerable(Of AbstractFormattingRule),
+              cancellationToken As CancellationToken
+            ) As Task(Of Document)
             ' if old text already exist, use fast path for formatting
             Dim oldText As SourceText = Nothing
 
@@ -146,7 +162,15 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
             Return Await Formatter.FormatAsync(document, spans, documentOptions, rules, cancellationToken).ConfigureAwait(False)
         End Function
 
-        Private Function Format(root As SyntaxNode, spans As ImmutableArray(Of TextSpan), workspace As Workspace, options As OptionSet, rules As IEnumerable(Of AbstractFormattingRule), cancellationToken As CancellationToken) As SyntaxNode
+        Private Function Format _
+            (
+              root              As SyntaxNode,
+              spans             As ImmutableArray(Of TextSpan),
+              workspace         As Workspace,
+              options           As OptionSet,
+              rules             As IEnumerable(Of AbstractFormattingRule),
+              cancellationToken As CancellationToken
+            ) As SyntaxNode
             ' if old text already exist, use fast path for formatting
             Dim oldText As SourceText = Nothing
 
@@ -164,15 +188,17 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
             Return Formatter.Format(root, spans, workspace, options, rules, cancellationToken)
         End Function
 
-        Private Function GetFormattingRules(
-            document As Document,
-            documentOptions As DocumentOptionSet,
-            spanToFormat As SnapshotSpan,
-            oldDirtySpan As SnapshotSpan,
-            oldTree As SyntaxTree,
-            newDirtySpan As SnapshotSpan,
-            newTree As SyntaxTree,
-            cancellationToken As CancellationToken) As IEnumerable(Of AbstractFormattingRule)
+        Private Function GetFormattingRules _
+            (
+              document          As Document,
+              documentOptions   As DocumentOptionSet,
+              spanToFormat      As SnapshotSpan,
+              oldDirtySpan      As SnapshotSpan,
+              oldTree           As SyntaxTree,
+              newDirtySpan      As SnapshotSpan,
+              newTree           As SyntaxTree,
+              cancellationToken As CancellationToken
+            ) As IEnumerable(Of AbstractFormattingRule)
 
             ' if the span we are going to format is same as the span that got changed, don't bother to do anything special.
             ' just do full format of the span.
@@ -226,11 +252,14 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
             Return Formatter.GetDefaultFormattingRules(document)
         End Function
 
-        Private Function GetNumberOfIndentOperations(document As Document,
-                                                     documentOptions As DocumentOptionSet,
-                                                     SyntaxTree As SyntaxTree,
-                                                     Span As SnapshotSpan,
-                                                     CancellationToken As CancellationToken) As Integer
+        Private Function GetNumberOfIndentOperations _
+            (
+              document          As Document,
+              documentOptions   As DocumentOptionSet,
+              SyntaxTree        As SyntaxTree,
+              Span              As SnapshotSpan,
+              CancellationToken As CancellationToken
+            ) As Integer
 
             ' find containing statement of the end point, and use its end point as position to get indent operation
             Dim containingStatement = ContainingStatementInfo.GetInfo(Span.End, SyntaxTree, CancellationToken)
@@ -256,7 +285,13 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
         Private Class NoAnchorFormatterRule
             Inherits CompatAbstractFormattingRule
 
-            Public Overrides Sub AddAnchorIndentationOperationsSlow(list As List(Of AnchorIndentationOperation), node As SyntaxNode, optionSet As OptionSet, ByRef nextOperation As NextAnchorIndentationOperationAction)
+            Public Overrides Sub AddAnchorIndentationOperationsSlow _
+                (
+                  list          As List(Of AnchorIndentationOperation),
+                  node          As SyntaxNode,
+                  optionSet     As OptionSet,
+            ByRef nextOperation As NextAnchorIndentationOperationAction
+                )
                 ' no anchor/relative formatting
                 Return
             End Sub

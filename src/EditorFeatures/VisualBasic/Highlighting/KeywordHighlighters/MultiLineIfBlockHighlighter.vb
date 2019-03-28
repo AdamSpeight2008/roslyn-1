@@ -6,44 +6,32 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
-    <ExportHighlighter(LanguageNames.VisualBasic)>
-    Friend Class MultiLineIfBlockHighlighter
-        Inherits AbstractKeywordHighlighter(Of MultiLineIfBlockSyntax)
 
-        Protected Overloads Overrides Function GetHighlights(ifBlock As MultiLineIfBlockSyntax, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
-            Dim highlights As New List(Of TextSpan)
+  <ExportHighlighter(LanguageNames.VisualBasic)>
+  Friend Class MultiLineIfBlockHighlighter
+      Inherits AbstractKeywordHighlighter(Of MultiLineIfBlockSyntax)
 
-            With ifBlock.IfStatement
-                ' ElseIf case
-                highlights.Add(.IfKeyword.Span)
+    Protected Overloads Overrides Iterator Function GetHighlights(ifBlock As MultiLineIfBlockSyntax, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+      If cancellationToken.IsCancellationRequested Then Return
 
-                If .ThenKeyword.Kind <> SyntaxKind.None Then
-                    highlights.Add(.ThenKeyword.Span)
-                End If
-            End With
+      With ifBlock.IfStatement
+        ' ElseIf case
+        Yield .IfKeyword.Span
+        If .ThenKeyword.Kind <> SyntaxKind.None Then Yield .ThenKeyword.Span
+      End With
 
-            Dim highlightElseIfPart = Sub(elseIfBlock As ElseIfBlockSyntax)
-                                          With elseIfBlock.ElseIfStatement
-                                              ' ElseIf case
-                                              highlights.Add(.ElseIfKeyword.Span)
+      For Each elseIfBlock In ifBlock.ElseIfBlocks
+        If cancellationToken.IsCancellationRequested Then Return
+        With elseIfBlock.ElseIfStatement
+          ' ElseIf case
+          Yield .ElseIfKeyword.Span
+          If .ThenKeyword.Kind <> SyntaxKind.None Then Yield .ThenKeyword.Span
+        End With
+      Next
+      If ifBlock.ElseBlock IsNot Nothing Then  Yield ifBlock.ElseBlock.ElseStatement.ElseKeyword.Span
+      Yield ifBlock.EndIfStatement.Span
+    End Function
 
-                                              If .ThenKeyword.Kind <> SyntaxKind.None Then
-                                                  highlights.Add(.ThenKeyword.Span)
-                                              End If
-                                          End With
-                                      End Sub
+  End Class
 
-            For Each elseIfBlock In ifBlock.ElseIfBlocks
-                highlightElseIfPart(elseIfBlock)
-            Next
-
-            If ifBlock.ElseBlock IsNot Nothing Then
-                highlights.Add(ifBlock.ElseBlock.ElseStatement.ElseKeyword.Span)
-            End If
-
-            highlights.Add(ifBlock.EndIfStatement.Span)
-
-            Return highlights
-        End Function
-    End Class
 End Namespace

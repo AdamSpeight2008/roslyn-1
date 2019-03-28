@@ -9,35 +9,42 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.Formatting.Indentation
-    Friend Class SmartTokenFormatter
-        Implements ISmartTokenFormatter
 
-        Private ReadOnly _optionSet As OptionSet
-        Private ReadOnly _formattingRules As IEnumerable(Of AbstractFormattingRule)
+  Friend Class SmartTokenFormatter
+    Implements ISmartTokenFormatter
 
-        Private ReadOnly _root As CompilationUnitSyntax
+    Private ReadOnly _optionSet         As OptionSet
+    Private ReadOnly _formattingRules   As IEnumerable(Of AbstractFormattingRule)
+    Private ReadOnly _root              As CompilationUnitSyntax
 
-        Public Sub New(optionSet As OptionSet,
-                       formattingRules As IEnumerable(Of AbstractFormattingRule),
-                       root As CompilationUnitSyntax)
-            Contract.ThrowIfNull(optionSet)
-            Contract.ThrowIfNull(formattingRules)
-            Contract.ThrowIfNull(root)
+    Public Sub New(
+                    optionSet As OptionSet,
+                    formattingRules As IEnumerable(Of AbstractFormattingRule),
+                    root As CompilationUnitSyntax
+                  )
+      Contract.ThrowIfNull(optionSet)
+      Contract.ThrowIfNull(formattingRules)
+      Contract.ThrowIfNull(root)
+      _optionSet = optionSet
+      _formattingRules = formattingRules
+      _root = root
+    End Sub
 
-            Me._optionSet = optionSet
-            Me._formattingRules = formattingRules
+    Public Function FormatTokenAsync _
+            (
+              workspace         As Workspace,
+              token             As SyntaxToken,
+              cancellationToken As CancellationToken
+            ) As Tasks.Task(Of IList(Of TextChange)) Implements ISmartTokenFormatter.FormatTokenAsync
+      Contract.ThrowIfTrue(token.Kind = SyntaxKind.None OrElse token.Kind = SyntaxKind.EndOfFileToken)
 
-            Me._root = root
-        End Sub
+      ' get previous token
+      Dim previousToken = token.GetPreviousToken()
 
-        Public Function FormatTokenAsync(workspace As Workspace, token As SyntaxToken, cancellationToken As CancellationToken) As Tasks.Task(Of IList(Of TextChange)) Implements ISmartTokenFormatter.FormatTokenAsync
-            Contract.ThrowIfTrue(token.Kind = SyntaxKind.None OrElse token.Kind = SyntaxKind.EndOfFileToken)
+      Dim spans = SpecializedCollections.SingletonEnumerable(TextSpan.FromBounds(previousToken.SpanStart, token.Span.End))
+      Return Task.FromResult(Formatter.GetFormattedTextChanges(_root, spans, workspace, _optionSet, _formattingRules, cancellationToken))
+    End Function
 
-            ' get previous token
-            Dim previousToken = token.GetPreviousToken()
+  End Class
 
-            Dim spans = SpecializedCollections.SingletonEnumerable(TextSpan.FromBounds(previousToken.SpanStart, token.Span.End))
-            Return Task.FromResult(Formatter.GetFormattedTextChanges(_root, spans, workspace, _optionSet, _formattingRules, cancellationToken))
-        End Function
-    End Class
 End Namespace

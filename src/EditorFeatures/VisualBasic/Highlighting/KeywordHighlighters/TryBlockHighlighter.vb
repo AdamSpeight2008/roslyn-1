@@ -6,63 +6,59 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
-    <ExportHighlighter(LanguageNames.VisualBasic)>
-    Friend Class TryBlockHighlighter
-        Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-        Protected Overloads Overrides Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
-            If TypeOf node Is ExitStatementSyntax AndAlso node.Kind <> SyntaxKind.ExitTryStatement Then
-                Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
-            End If
+  <ExportHighlighter(LanguageNames.VisualBasic)>
+  Friend Class TryBlockHighlighter
+    Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-            Dim tryBlock = node.GetAncestor(Of TryBlockSyntax)()
-            If tryBlock Is Nothing Then
-                Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
-            End If
+    Protected Overloads Overrides Iterator Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+      If cancellationToken.IsCancellationRequested Then Return
+      If TypeOf node Is ExitStatementSyntax AndAlso node.Kind <> SyntaxKind.ExitTryStatement Then  Return
 
-            Dim highlights As New List(Of TextSpan)
+      Dim tryBlock = node.GetAncestor(Of TryBlockSyntax)()
+      If tryBlock Is Nothing Then  Return
+      
+      With tryBlock
+        Yield .TryStatement.TryKeyword.Span
 
-            With tryBlock
-                highlights.Add(.TryStatement.TryKeyword.Span)
+        For Each highlight In HighlightRelatedStatements(tryBlock, cancellationToken)
+          If cancellationToken.IsCancellationRequested Then Return
+          Yield highlight
+        Next
 
-                HighlightRelatedStatements(tryBlock, highlights)
+        For Each catchBlock In .CatchBlocks.AsParallel
+          If cancellationToken.IsCancellationRequested Then REturn
+          With catchBlock.CatchStatement
+            Yield .CatchKeyword.Span
+            If .WhenClause IsNot Nothing Then Yield .WhenClause.WhenKeyword.Span
+          End With
+          For Each highlight In HighlightRelatedStatements(catchBlock, cancellationToken)
+            If cancellationToken.IsCancellationRequested Then Return
+            Yield highlight
+          Next
+        Next
+        If .FinallyBlock IsNot Nothing Then Yield .FinallyBlock.FinallyStatement.FinallyKeyword.Span
+        Yield .EndTryStatement.Span
+      End With
+    End Function
 
-                For Each catchBlock In .CatchBlocks
-                    With catchBlock.CatchStatement
-                        highlights.Add(.CatchKeyword.Span)
+    Private Iterator Function HighlightRelatedStatements(thisnode As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+      Dim nodes As New LinkedList(Of SyntaxNode)
+      nodes.AddFirst(thisnode)
+      While nodes.Count > 0
+        Dim node = nodes(0) : nodes.RemoveFirst()
+        If cancellationToken.IsCancellationRequested Then Continue While
+        If node.Kind = SyntaxKind.ExitTryStatement Then
+           Yield node.Span
+        Else
+           Dim children = node.ChildNodes.Where(Function(child) TypeOf child IsNot TryBlockSyntax AndAlso TypeOf child IsNot LambdaExpressionSyntax)
+           nodes.AddRangeAtHead(children)
+        End If
+      End While
+      nodes.Clear
+      nodes = nothing
+    End Function
 
-                        If .WhenClause IsNot Nothing Then
-                            highlights.Add(.WhenClause.WhenKeyword.Span)
-                        End If
-                    End With
-                    HighlightRelatedStatements(catchBlock, highlights)
-                Next
+  End Class
 
-                If .FinallyBlock IsNot Nothing Then
-                    highlights.Add(.FinallyBlock.FinallyStatement.FinallyKeyword.Span)
-                End If
-
-                highlights.Add(.EndTryStatement.Span)
-
-                Return highlights
-            End With
-        End Function
-
-        Private Sub HighlightRelatedStatements(node As SyntaxNode, highlights As List(Of TextSpan))
-            If node.Kind = SyntaxKind.ExitTryStatement Then
-                highlights.Add(node.Span)
-            Else
-                For Each childNodeOrToken In node.ChildNodesAndTokens()
-                    If childNodeOrToken.IsToken Then
-                        Continue For
-                    End If
-
-                    Dim child = childNodeOrToken.AsNode()
-                    If Not TypeOf child Is TryBlockSyntax AndAlso Not TypeOf child Is LambdaExpressionSyntax Then
-                        HighlightRelatedStatements(child, highlights)
-                    End If
-                Next
-            End If
-        End Sub
-    End Class
 End Namespace

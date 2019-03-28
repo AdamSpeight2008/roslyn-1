@@ -17,6 +17,7 @@ Imports Microsoft.VisualStudio.Utilities
 Imports VSCommanding = Microsoft.VisualStudio.Commanding
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
+
     ''' <summary>
     ''' Watches for the enter key being pressed, and triggers a commit in response.
     ''' </summary>
@@ -30,11 +31,9 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
     <Order(Before:=PredefinedCommandHandlerNames.Completion)>
     <Order(Before:=PredefinedCompletionNames.CompletionCommandHandler)>
     Friend Class CommitCommandHandler
-        Implements IChainedCommandHandler(Of ReturnKeyCommandArgs)
-        Implements IChainedCommandHandler(Of PasteCommandArgs)
-        Implements IChainedCommandHandler(Of SaveCommandArgs)
-        Implements IChainedCommandHandler(Of FormatDocumentCommandArgs)
-        Implements IChainedCommandHandler(Of FormatSelectionCommandArgs)
+        Implements IChainedCommandHandler(Of ReturnKeyCommandArgs), IChainedCommandHandler(Of PasteCommandArgs),
+                   IChainedCommandHandler(Of SaveCommandArgs), IChainedCommandHandler(Of FormatDocumentCommandArgs),
+                   IChainedCommandHandler(Of FormatSelectionCommandArgs)
 
         Private ReadOnly _bufferManagerFactory As CommitBufferManagerFactory
         Private ReadOnly _editorOperationsFactoryService As IEditorOperationsFactoryService

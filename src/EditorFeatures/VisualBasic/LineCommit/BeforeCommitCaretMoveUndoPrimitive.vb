@@ -4,6 +4,7 @@ Imports Microsoft.VisualStudio.Text
 Imports Microsoft.VisualStudio.Text.Editor
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
+
     Friend Class BeforeCommitCaretMoveUndoPrimitive
         Inherits AbstractCommitCaretMoveUndoPrimitive
 
@@ -35,16 +36,14 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
 
         Public Overrides Sub Undo()
             ' Sometimes we cancel the transaction, in this case don't do anything.
-            If Not _active Then
-                Return
-            End If
-
+            If Not _active Then Exit Sub
             Dim view = TryGetView()
 
-            If view IsNot Nothing Then
-                view.Caret.MoveTo(New VirtualSnapshotPoint(New SnapshotPoint(view.TextSnapshot, _oldPosition), _oldVirtualSpaces))
-                view.Caret.EnsureVisible()
-            End If
+            If view Is Nothing Then Exit Sub
+            view.Caret.MoveTo(New VirtualSnapshotPoint(New SnapshotPoint(view.TextSnapshot, _oldPosition), _oldVirtualSpaces))
+            view.Caret.EnsureVisible()
         End Sub
+
     End Class
+
 End Namespace

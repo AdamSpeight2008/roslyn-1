@@ -4,6 +4,7 @@ Imports Microsoft.VisualStudio.Text
 Imports Microsoft.VisualStudio.Text.Editor
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
+
     Friend Class AfterCommitCaretMoveUndoPrimitive
         Inherits AbstractCommitCaretMoveUndoPrimitive
 
@@ -22,15 +23,16 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
         Public Overrides Sub [Do]()
             Dim view = TryGetView()
 
-            If view IsNot Nothing Then
-                view.Caret.MoveTo(New VirtualSnapshotPoint(New SnapshotPoint(view.TextSnapshot, _newPosition), _newVirtualSpaces))
-                view.Caret.EnsureVisible()
-            End If
+            If view Is Nothing Then Exit Sub
+            view.Caret.MoveTo(New VirtualSnapshotPoint(New SnapshotPoint(view.TextSnapshot, _newPosition), _newVirtualSpaces))
+            view.Caret.EnsureVisible()
         End Sub
 
         Public Overrides Sub Undo()
             ' When we are going forward, we do nothing here since the BeforeCommitCaretMoveUndoPrimitive
             ' will take care of it
         End Sub
+
     End Class
+
 End Namespace

@@ -131,11 +131,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Protected Overrides Sub VisitCatchBlock(node As BoundCatchBlock, ByRef finallyState As LocalState)
-            Dim oldPendings As SavedPending = Me.SavePending()
+            Dim oldPendings As SavedPending = SavePending()
             MyBase.VisitCatchBlock(node, finallyState)
 
             For Each branch In Me.PendingBranches
-                if branch.Branch.Kind = BoundKind.YieldStatement
+                If branch.Branch.Kind = BoundKind.YieldStatement Then
                     Me.diagnostics.Add(ERRID.ERR_BadYieldInTryHandler, branch.Branch.Syntax.GetLocation)
                 End If
             Next
@@ -157,12 +157,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Dim errorLocation As SyntaxNodeOrToken
                 Dim errId As ERRID
 
-                If branch.Branch.Kind = BoundKind.YieldStatement
-                    errId = errId.ERR_BadYieldInTryHandler
+                If branch.Branch.Kind = BoundKind.YieldStatement Then
+                    errId = ERRID.ERR_BadYieldInTryHandler
                     errorLocation = syntax
 
-                else
-                    errId = errId.ERR_BranchOutOfFinally
+                Else
+                    errId = ERRID.ERR_BranchOutOfFinally
 
                     If syntax.Kind = SyntaxKind.GoToStatement Then
                         errorLocation = DirectCast(syntax, GoToStatementSyntax).Label

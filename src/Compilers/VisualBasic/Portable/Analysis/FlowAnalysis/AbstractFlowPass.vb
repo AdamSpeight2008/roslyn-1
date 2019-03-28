@@ -49,12 +49,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' performance in unlikely but possible code such as this: "int x; if (cond) goto l1; x =
         ''' 3; l5: print x; l4: goto l5; l3: goto l4; l2: goto l3; l1: goto l2;"
         ''' </summary>
-        Private ReadOnly _labels As New Dictionary(Of LabelSymbol, LabelStateAndNesting)
+        Private ReadOnly _labels As PooledDictionary(Of LabelSymbol, LabelStateAndNesting) = PooledDictionary(Of LabelSymbol, LabelStateAndNesting).GetInstance
 
         ''' <summary> All of the labels seen so far in this forward scan of the body </summary>
-        Private _labelsSeen As New HashSet(Of LabelSymbol)
+        Private _labelsSeen As PooledHashSet(Of LabelSymbol) = PooledHashSet(Of LabelSymbol).GetInstance
 
-        Private _placeholderReplacementMap As Dictionary(Of BoundValuePlaceholderBase, BoundExpression)
+        Private _placeholderReplacementMap As PooledDictionary(Of BoundValuePlaceholderBase, BoundExpression)
 
         ''' <summary>
         ''' Set to true after an analysis scan if the analysis was incomplete due to a backward
@@ -128,7 +128,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me._region = _region.Region
 
             Me.TrackUnassignments = trackUnassignments
-            Me._loopHeadState = If(trackUnassignments, New Dictionary(Of BoundLoopStatement, LocalState)(), Nothing)
+            Me._loopHeadState = If(trackUnassignments, PooledDictionary(Of BoundLoopStatement, LocalState).GetInstance, Nothing)
             Me._suppressConstantExpressions = suppressConstExpressionsSupport
         End Sub
 
@@ -200,9 +200,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.SetState(ReachableState())
             Me.backwardBranchChanged = False
 
-            If Me._nesting IsNot Nothing Then
-                Me._nesting.Free()
-            End If
+            Me._nesting?.Free()
             Me._nesting = ArrayBuilder(Of Integer).GetInstance()
 
             InitForScan()
@@ -229,11 +227,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Protected Overridable Sub Free()
-            If Me._nesting IsNot Nothing Then
-                Me._nesting.Free()
-            End If
-            Me.diagnostics.Free()
-            Me._pendingBranches.Free()
+            Me._nesting?.Free()
+            Me.diagnostics?.Free()
+            Me._pendingBranches?.Free()
+            Me._loopHeadState?.Free()
+            Me._labelsSeen?.Free()
+            Me._labels?.Free()
+            Me._placeholderReplacementMap?.Free()
         End Sub
 
         ''' <summary>
@@ -516,14 +516,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Protected Class SavedPending
             Public ReadOnly PendingBranches As ArrayBuilder(Of PendingBranch)
-            Public ReadOnly LabelsSeen As HashSet(Of LabelSymbol)
+            Public ReadOnly LabelsSeen As PooledHashSet(Of LabelSymbol)
 
-            Public Sub New(ByRef _pendingBranches As ArrayBuilder(Of PendingBranch), ByRef _labelsSeen As HashSet(Of LabelSymbol))
+            Public Sub New(ByRef _pendingBranches As ArrayBuilder(Of PendingBranch), ByRef _labelsSeen As PooledHashSet(Of LabelSymbol))
                 Me.PendingBranches = _pendingBranches
                 Me.LabelsSeen = _labelsSeen
 
                 _pendingBranches = ArrayBuilder(Of PendingBranch).GetInstance()
-                _labelsSeen = New HashSet(Of LabelSymbol)
+                _labelsSeen = PooledHashSet(Of LabelSymbol).GetInstance
             End Sub
         End Class
 
@@ -630,9 +630,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Protected Sub SetPlaceholderSubstitute(placeholder As BoundValuePlaceholderBase, newSubstitute As BoundExpression)
             Debug.Assert(placeholder IsNot Nothing)
 
-            If _placeholderReplacementMap Is Nothing Then
-                _placeholderReplacementMap = New Dictionary(Of BoundValuePlaceholderBase, BoundExpression)()
-            End If
+            _placeholderReplacementMap = If(_placeholderReplacementMap, PooledDictionary(Of BoundValuePlaceholderBase, BoundExpression).GetInstance)
 
             Debug.Assert(Not _placeholderReplacementMap.ContainsKey(placeholder))
             _placeholderReplacementMap(placeholder) = newSubstitute

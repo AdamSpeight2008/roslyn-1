@@ -14,33 +14,30 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
-    Partial Friend MustInherit Class AbstractFlowPass(Of LocalState As AbstractLocalState)
-        Inherits BoundTreeVisitor
+  Partial Friend MustInherit Class AbstractFlowPass(Of LocalState As AbstractLocalState)
+    Inherits BoundTreeVisitor
 
-        ''' <summary>
-        ''' Mutate 'self' flow analysis state to reflect the fact that there is a control-flow
-        ''' convergence with the 'other' flow analysis state.  Return true if and only if the
-        ''' state has changed as a result of the Join.
-        ''' </summary>
-        Protected MustOverride Function IntersectWith(ByRef self As LocalState, ByRef other As LocalState) As Boolean
+    ''' <summary>
+    ''' Mutate 'self' flow analysis state to reflect the fact that there is a control-flow
+    ''' convergence with the 'other' flow analysis state.  Return true if and only if the
+    ''' state has changed as a result of the Join.
+    ''' </summary>
+    Protected MustOverride Function IntersectWith(ByRef self As LocalState, ByRef other As LocalState) As Boolean
 
-        ''' <summary>
-        ''' Mutate 'self' flow analysis state to reflect the fact that there is a control-flow
-        ''' sequence with the 'other' flow analysis state - in other words, this occurs and then
-        ''' the other.
-        ''' </summary>
-        Protected MustOverride Sub UnionWith(ByRef self As LocalState, ByRef other As LocalState)
+    ''' <summary>
+    ''' Mutate 'self' flow analysis state to reflect the fact that there is a control-flow
+    ''' sequence with the 'other' flow analysis state - in other words, this occurs and then
+    ''' the other.
+    ''' </summary>
+    Protected MustOverride Sub UnionWith(ByRef self As LocalState, ByRef other As LocalState)
 
-        Friend Interface AbstractLocalState
+    Friend Interface AbstractLocalState
 
-            ''' <summary>
-            ''' Produce a duplicate of this flow analysis state.
-            ''' </summary>
-            ''' <returns></returns>
-            ''' <remarks></remarks>
-            Function Clone() As LocalState
+      ''' <summary> Produce a duplicate of this flow analysis state. </summary>
+      Function Clone() As LocalState
 
-        End Interface
+    End Interface
 
-    End Class
+  End Class
+
 End Namespace

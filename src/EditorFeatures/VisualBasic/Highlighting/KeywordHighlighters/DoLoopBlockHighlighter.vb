@@ -6,47 +6,35 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
-    <ExportHighlighter(LanguageNames.VisualBasic)>
-    Friend Class DoLoopBlockHighlighter
-        Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-        Protected Overloads Overrides Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
-            If node.IsIncorrectContinueStatement(SyntaxKind.ContinueDoStatement) Then
-                Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
-            End If
+  <ExportHighlighter(LanguageNames.VisualBasic)>
+  Friend Class DoLoopBlockHighlighter
+    Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-            If node.IsIncorrectExitStatement(SyntaxKind.ExitDoStatement) Then
-                Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
-            End If
+    Protected Overloads Overrides Iterator Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+      If cancellationToken.IsCancellationRequested OrElse
+         node.IsIncorrectContinueStatement(SyntaxKind.ContinueDoStatement) OrElse
+         node.IsIncorrectExitStatement(SyntaxKind.ExitDoStatement) Then
+         Return
+      End If
 
-            Dim doLoop = node.GetAncestor(Of DoLoopBlockSyntax)()
-            If doLoop Is Nothing Then
-                Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
-            End If
+      Dim doLoop = node.GetAncestor(Of DoLoopBlockSyntax)()
+      If doLoop Is Nothing Then Return
 
-            Dim highlights As New List(Of TextSpan)
+      With doLoop.DoStatement
+        Yield If(.WhileOrUntilClause Is Nothing, .DoKeyword.Span, TextSpan.FromBounds(.DoKeyword.SpanStart, .WhileOrUntilClause.WhileOrUntilKeyword.Span.End))
+      End With
 
-            With doLoop.DoStatement
-                If .WhileOrUntilClause IsNot Nothing Then
-                    highlights.Add(TextSpan.FromBounds(.DoKeyword.SpanStart, .WhileOrUntilClause.WhileOrUntilKeyword.Span.End))
-                Else
-                    highlights.Add(.DoKeyword.Span)
-                End If
-            End With
+      For Each highlight In doLoop.GetRelatedStatementHighlights(blockKind:=SyntaxKind.DoKeyword)
+        If cancellationToken.IsCancellationRequested Then Return
+        Yield highlight
+      Next
 
-            highlights.AddRange(
-                doLoop.GetRelatedStatementHighlights(
-                    blockKind:=SyntaxKind.DoKeyword))
+      With doLoop.LoopStatement
+        Yield If(.WhileOrUntilClause Is Nothing, .LoopKeyword.Span, TextSpan.FromBounds(.LoopKeyword.SpanStart, .WhileOrUntilClause.WhileOrUntilKeyword.Span.End))
+      End With
+    End Function
 
-            With doLoop.LoopStatement
-                If .WhileOrUntilClause IsNot Nothing Then
-                    highlights.Add(TextSpan.FromBounds(.LoopKeyword.SpanStart, .WhileOrUntilClause.WhileOrUntilKeyword.Span.End))
-                Else
-                    highlights.Add(.LoopKeyword.Span)
-                End If
-            End With
+  End Class
 
-            Return highlights
-        End Function
-    End Class
 End Namespace

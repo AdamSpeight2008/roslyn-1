@@ -120,33 +120,33 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         End Class
 
-        ''' <summary>
-        ''' Gets the referenced symbol of the bound expression.
-        ''' Used for matching variables between For and Next statements.
-        ''' </summary>
-        ''' <param name="expression">The bound expression.</param>
-        Friend Shared Function ReferencedSymbol(expression As BoundExpression) As Symbol
+    ''' <summary>
+    ''' Gets the referenced symbol of the bound expression.
+    ''' Used for matching variables between For and Next statements.
+    ''' </summary>
+    ''' <param name="expression">The bound expression.</param>
+    Friend Shared Function ReferencedSymbol(expression As BoundExpression) As Symbol
+      Select Case expression.Kind
+             Case BoundKind.ArrayAccess
+                  Return ReferencedSymbol(DirectCast(expression, BoundArrayAccess).Expression)
+             Case BoundKind.PropertyAccess
+                  Return DirectCast(expression, BoundPropertyAccess).PropertySymbol
+             Case BoundKind.Call
+                  Return DirectCast(expression, BoundCall).Method
+             Case BoundKind.Local
+                  Return DirectCast(expression, BoundLocal).LocalSymbol
+             Case BoundKind.RangeVariable
+                  Return DirectCast(expression, BoundRangeVariable).RangeVariable
+             Case BoundKind.FieldAccess
+                  Return DirectCast(expression, BoundFieldAccess).FieldSymbol
+             Case BoundKind.Parameter
+                  Return DirectCast(expression, BoundParameter).ParameterSymbol
+             Case BoundKind.Parenthesized
+                  Return ReferencedSymbol(DirectCast(expression, BoundParenthesized).Expression)
+      End Select
+      Return Nothing
+    End Function
 
-            Select Case expression.Kind
-                Case BoundKind.ArrayAccess
-                    Return ReferencedSymbol(DirectCast(expression, BoundArrayAccess).Expression)
-                Case BoundKind.PropertyAccess
-                    Return DirectCast(expression, BoundPropertyAccess).PropertySymbol
-                Case BoundKind.Call
-                    Return DirectCast(expression, BoundCall).Method
-                Case BoundKind.Local
-                    Return DirectCast(expression, BoundLocal).LocalSymbol
-                Case BoundKind.RangeVariable
-                    Return DirectCast(expression, BoundRangeVariable).RangeVariable
-                Case BoundKind.FieldAccess
-                    Return DirectCast(expression, BoundFieldAccess).FieldSymbol
-                Case BoundKind.Parameter
-                    Return DirectCast(expression, BoundParameter).ParameterSymbol
-                Case BoundKind.Parenthesized
-                    Return ReferencedSymbol(DirectCast(expression, BoundParenthesized).Expression)
-            End Select
+  End Class
 
-            Return Nothing
-        End Function
-    End Class
 End Namespace

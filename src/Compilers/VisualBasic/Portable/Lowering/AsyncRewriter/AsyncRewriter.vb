@@ -371,12 +371,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Debug.Assert(compilation IsNot Nothing)
 
             Dim returnType As TypeSymbol = method.ReturnType
-            If TypeSymbol.Equals(returnType, compilation.GetWellKnownType(WellKnownType.System_Threading_Tasks_Task), TypeCompareKind.ConsiderEverything) Then
+            If returnType.Equals(compilation.GetWellKnownType(WellKnownType.System_Threading_Tasks_Task)) Then
                 Return AsyncMethodKind.TaskFunction
             End If
 
             If returnType.Kind = SymbolKind.NamedType AndAlso
-                    TypeSymbol.Equals(returnType.OriginalDefinition, compilation.GetWellKnownType(WellKnownType.System_Threading_Tasks_Task_T), TypeCompareKind.ConsiderEverything) Then
+               returnType.OriginalDefinition.Equals(compilation.GetWellKnownType(WellKnownType.System_Threading_Tasks_Task_T)) Then
                 Return AsyncMethodKind.GenericTaskFunction
             End If
 
@@ -386,7 +386,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Protected Overrides Function CreateByRefLocalCapture(typeMap As TypeSubstitution,
                                                              local As LocalSymbol,
-                                                             initializers As Dictionary(Of LocalSymbol, BoundExpression)) As CapturedSymbolOrExpression
+                                                             initializers As Immutable.ImmutableDictionary(Of LocalSymbol, BoundExpression)) As CapturedSymbolOrExpression
 
             Debug.Assert(local.IsByRef)
             Return CaptureExpression(typeMap, initializers(local), initializers)
@@ -394,7 +394,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private Function CaptureExpression(typeMap As TypeSubstitution,
                                            expression As BoundExpression,
-                                           initializers As Dictionary(Of LocalSymbol, BoundExpression)) As CapturedSymbolOrExpression
+                                           initializers As Immutable.ImmutableDictionary(Of LocalSymbol, BoundExpression)) As CapturedSymbolOrExpression
 
             If expression Is Nothing Then
                 Return Nothing

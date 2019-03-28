@@ -246,19 +246,17 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
         End Function
 
         Private Sub OnTextBufferChanging(sender As Object, e As TextContentChangingEventArgs)
-            If _dirtyState Is Nothing Then
-                ' Grab the current document for the text buffer before it changes so we can get any
-                ' cached versions
-                Dim documentBeforePreviousEdit = e.Before.GetOpenDocumentInCurrentContextWithChanges()
-                If documentBeforePreviousEdit IsNot Nothing Then
-                    _documentBeforePreviousEdit = documentBeforePreviousEdit
-                    ' Kick off a task to eagerly force compute InternalsVisibleTo semantics for all the references.
-                    ' This provides a noticeable perf improvement when code cleanup is subsequently invoked on this document.
-                    Task.Run(Async Function()
-                                 Await ForceComputeInternalsVisibleToAsync(documentBeforePreviousEdit, CancellationToken.None).ConfigureAwait(False)
-                             End Function)
-                End If
-            End If
+            If _dirtyState IsNot Nothing Then Exit Sub
+            ' Grab the current document for the text buffer before it changes so we can get any
+            ' cached versions
+            Dim documentBeforePreviousEdit = e.Before.GetOpenDocumentInCurrentContextWithChanges()
+            If documentBeforePreviousEdit Is Nothing Then Exit Sub
+            _documentBeforePreviousEdit = documentBeforePreviousEdit
+            ' Kick off a task to eagerly force compute InternalsVisibleTo semantics for all the references.
+            ' This provides a noticeable perf improvement when code cleanup is subsequently invoked on this document.
+            Task.Run(Async Function()
+                         Await ForceComputeInternalsVisibleToAsync(documentBeforePreviousEdit, CancellationToken.None).ConfigureAwait(False)
+                     End Function)
         End Sub
 
         Private Sub OnTextBufferChanged(sender As Object, e As TextContentChangedEventArgs)
@@ -266,14 +264,10 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
             Dim documentBeforePreviousEdit = _documentBeforePreviousEdit
             _documentBeforePreviousEdit = Nothing
 
-            If e.Changes.Count = 0 Then
-                Return
-            End If
+            If e.Changes.Count = 0 Then Return
 
             ' If this is a reiterated version, then it's part of undo/redo and we should ignore it
-            If e.AfterVersion.ReiteratedVersionNumber <> e.AfterVersion.VersionNumber Then
-                Return
-            End If
+            If e.AfterVersion.ReiteratedVersionNumber <> e.AfterVersion.VersionNumber Then Return
 
             ' Add this region into our dirty region
             Dim encompassingNewSpan = New SnapshotSpan(e.After, Span.FromBounds(e.Changes.First().NewPosition, e.Changes.Last().NewEnd))
@@ -294,7 +288,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
             Dim project = document.Project
             Dim compilation = Await project.GetCompilationAsync(cancellationToken).ConfigureAwait(False)
 
-            For Each reference In project.ProjectReferences
+            For Each reference In project.ProjectReferences.AsParallel.AsOrdered
                 Dim refProject = project.Solution.GetProject(reference.ProjectId)
                 If refProject IsNot Nothing Then
                     Dim refCompilation = Await refProject.GetCompilationAsync(cancellationToken).ConfigureAwait(False)
@@ -302,7 +296,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
                 End If
             Next
 
-            For Each reference In project.MetadataReferences
+            For Each reference In project.MetadataReferences.AsParallel.AsOrdered
                 Dim refAssemblyOrModule = compilation.GetAssemblyOrModuleSymbol(reference)
                 If refAssemblyOrModule.MatchesKind(SymbolKind.Assembly) Then
                     Dim refAssembly = DirectCast(refAssemblyOrModule, IAssemblySymbol)

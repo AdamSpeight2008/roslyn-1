@@ -6,55 +6,55 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
-    <ExportHighlighter(LanguageNames.VisualBasic)>
-    Friend Class MethodDeclarationHighlighter
-        Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-        Protected Overloads Overrides Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
-            Dim methodBlock = node.GetAncestor(Of MethodBlockBaseSyntax)()
-            If methodBlock Is Nothing OrElse Not TypeOf methodBlock.BlockStatement Is MethodStatementSyntax Then
-                Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
-            End If
+  <ExportHighlighter(LanguageNames.VisualBasic)>
+  Friend Class MethodDeclarationHighlighter
+    Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-            Dim highlights As New List(Of TextSpan)()
+    Protected Overloads Overrides Iterator Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+      If cancellationToken.IsCancellationRequested Then Return
 
-            With methodBlock
-                Dim isAsync = False
-                Dim isIterator = False
+      Dim methodBlock = node.GetAncestor(Of MethodBlockBaseSyntax)()
+      If methodBlock Is Nothing OrElse TypeOf methodBlock.BlockStatement IsNot MethodStatementSyntax Then Return
 
-                With DirectCast(.BlockStatement, MethodStatementSyntax)
-                    isAsync = .Modifiers.Any(SyntaxKind.AsyncKeyword)
-                    isIterator = .Modifiers.Any(SyntaxKind.IteratorKeyword)
+      With methodBlock
+        Dim isAsync    = False
+        Dim isIterator = False
 
-                    Dim firstKeyword = If(.Modifiers.Count > 0, .Modifiers.First(), .DeclarationKeyword)
-                    highlights.Add(TextSpan.FromBounds(firstKeyword.SpanStart, .DeclarationKeyword.Span.End))
+        With DirectCast(.BlockStatement, MethodStatementSyntax)
+          isAsync    = .Modifiers.Any(SyntaxKind.AsyncKeyword)
+          isIterator = .Modifiers.Any(SyntaxKind.IteratorKeyword)
 
-                    If .HandlesClause IsNot Nothing Then
-                        highlights.Add(.HandlesClause.HandlesKeyword.Span)
-                    End If
+          Dim firstKeyword = If(.Modifiers.Count > 0, .Modifiers.First(), .DeclarationKeyword)
+          Yield TextSpan.FromBounds(firstKeyword.SpanStart, .DeclarationKeyword.Span.End)
 
-                    If .ImplementsClause IsNot Nothing Then
-                        highlights.Add(.ImplementsClause.ImplementsKeyword.Span)
-                    End If
-                End With
+          If .HandlesClause     IsNot Nothing Then Yield .HandlesClause.HandlesKeyword.Span
+          If .ImplementsClause  IsNot Nothing Then Yield .ImplementsClause.ImplementsKeyword.Span
+        End With
 
-                highlights.AddRange(
-                    .GetRelatedStatementHighlights(
-                        blockKind:= .BlockStatement.DeclarationKeyword.Kind,
-                        checkReturns:=True))
+        For Each highlight In .GetRelatedStatementHighlights(blockKind:= .BlockStatement.DeclarationKeyword.Kind, checkReturns:=True)
+          If cancellationToken.IsCancellationRequested Then Return
+          Yield highlight
+        Next
 
-                If isIterator Then
-                    highlights.AddRange(.GetRelatedYieldStatementHighlights())
-                End If
+        If isIterator Then
+           For Each highlight In .GetRelatedYieldStatementHighlights()
+              If cancellationToken.IsCancellationRequested Then Return
+              Yield highlight
+           Next
+        End If
 
-                If isAsync Then
-                    HighlightRelatedAwaits(methodBlock, highlights, cancellationToken)
-                End If
+        If isAsync Then
+           For Each highlight In HighlightRelatedAwaits(methodBlock, cancellationToken)
+             If cancellationToken.IsCancellationRequested Then Return
+             Yield highlight
+           Next
+        End If
+        Yield .EndBlockStatement.Span
+      End With
 
-                highlights.Add(.EndBlockStatement.Span)
-            End With
+    End Function
 
-            Return highlights
-        End Function
-    End Class
+  End Class
+
 End Namespace

@@ -6,35 +6,28 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
-    <ExportHighlighter(LanguageNames.VisualBasic)>
-    Friend Class EnumBlockHighlighter
-        Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-        Protected Overloads Overrides Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
-            Dim endBlockStatement = TryCast(node, EndBlockStatementSyntax)
-            If endBlockStatement IsNot Nothing Then
-                If endBlockStatement.Kind <> SyntaxKind.EndEnumStatement Then
-                    Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
-                End If
-            End If
+  <ExportHighlighter(LanguageNames.VisualBasic)>
+  Friend Class EnumBlockHighlighter
+    Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-            Dim enumBlock = node.GetAncestor(Of EnumBlockSyntax)()
-            If enumBlock Is Nothing Then
-                Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
-            End If
+    Protected Overloads Overrides Iterator Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+      If cancellationToken.IsCancellationRequested Then Return
 
-            Dim highlights As New List(Of TextSpan)
+      Dim endBlockStatement = TryCast(node, EndBlockStatementSyntax)
+      If endBlockStatement IsNot Nothing AndAlso endBlockStatement.Kind <> SyntaxKind.EndEnumStatement Then Return
 
-            With enumBlock
-                With .EnumStatement
-                    Dim firstKeyword = If(.Modifiers.Count > 0, .Modifiers.First(), .EnumKeyword)
-                    highlights.Add(TextSpan.FromBounds(firstKeyword.SpanStart, .EnumKeyword.Span.End))
-                End With
+      Dim enumBlock = node.GetAncestor(Of EnumBlockSyntax)()
+      If enumBlock Is Nothing Then Return
+      With enumBlock
+        With .EnumStatement
+          Dim firstKeyword = If(.Modifiers.Count > 0, .Modifiers.First(), .EnumKeyword)
+          Yield TextSpan.FromBounds(firstKeyword.SpanStart, .EnumKeyword.Span.End)
+        End With
+        Yield .EndEnumStatement.Span
+      End With
+    End Function
 
-                highlights.Add(.EndEnumStatement.Span)
-            End With
+  End Class
 
-            Return highlights
-        End Function
-    End Class
 End Namespace

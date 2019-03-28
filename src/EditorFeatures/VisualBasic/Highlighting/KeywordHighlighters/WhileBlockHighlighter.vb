@@ -10,33 +10,28 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
     Friend Class WhileBlockHighlighter
         Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-        Protected Overloads Overrides Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
-            If node.IsIncorrectContinueStatement(SyntaxKind.ContinueWhileStatement) Then
-                Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
-            End If
-
-            If node.IsIncorrectExitStatement(SyntaxKind.ExitWhileStatement) Then
-                Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
+        Protected Overloads Overrides Iterator Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+            If cancellationToken.IsCancellationRequested OrElse
+               node.IsIncorrectContinueStatement(SyntaxKind.ContinueWhileStatement) OrElse
+               node.IsIncorrectExitStatement(SyntaxKind.ExitWhileStatement) Then
+                Return
             End If
 
             Dim whileBlock = node.GetAncestor(Of WhileBlockSyntax)()
             If whileBlock Is Nothing Then
-                Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
+                Return
             End If
 
-            Dim highlights As New List(Of TextSpan)
-
             With whileBlock
-                highlights.Add(.WhileStatement.WhileKeyword.Span)
-
-                highlights.AddRange(
-                    whileBlock.GetRelatedStatementHighlights(
-                        blockKind:=SyntaxKind.WhileKeyword))
-
-                highlights.Add(.EndWhileStatement.Span)
+                Yield .WhileStatement.WhileKeyword.Span
+                For Each highlight In .GetRelatedStatementHighlights(blockKind:=SyntaxKind.WhileKeyword)
+                    If cancellationToken.IsCancellationRequested Then
+                        Return
+                    End If
+                    Yield highlight
+                Next
+                Yield .EndWhileStatement.Span
             End With
-
-            Return highlights
         End Function
 
     End Class

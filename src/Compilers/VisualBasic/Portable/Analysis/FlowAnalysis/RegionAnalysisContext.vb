@@ -56,7 +56,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me._region = region
             Me._firstInRegion = firstInRegion
             Me._lastInRegion = lastInRegion
-            Me.Failed = Me._symbol Is Nothing OrElse Me._boundNode Is Nothing OrElse Me._firstInRegion Is Nothing OrElse Me._lastInRegion Is Nothing
+            Failed = (Me._symbol Is Nothing) OrElse (Me._boundNode Is Nothing) OrElse (Me._firstInRegion Is Nothing) OrElse (Me._lastInRegion Is Nothing)
 
             If Not Me.Failed AndAlso Me._firstInRegion Is Me._lastInRegion Then
 
@@ -65,7 +65,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                          BoundKind.TypeExpression
 
                         ' Some bound nodes are still considered to be invalid for flow analysis
-                        Me.Failed = True
+                        Failed = True
                 End Select
 
             End If
@@ -100,4 +100,3 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
     End Structure
 End Namespace
-

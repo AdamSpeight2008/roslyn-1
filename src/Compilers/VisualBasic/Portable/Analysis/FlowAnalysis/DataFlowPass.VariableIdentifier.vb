@@ -16,7 +16,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Protected Structure VariableIdentifier
             Implements IEquatable(Of VariableIdentifier)
 
-            Public Shared None As VariableIdentifier = New VariableIdentifier()
+            Public Shared ReadOnly None As New VariableIdentifier()
 
             Public Sub New(symbol As Symbol, containingSlot As Integer)
                 Debug.Assert(symbol IsNot Nothing)

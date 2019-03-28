@@ -10,15 +10,19 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
     Friend Class WithBlockHighlighter
         Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-        Protected Overloads Overrides Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+        Protected Overloads Overrides Iterator Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+            If cancellationToken.IsCancellationRequested Then
+                Return
+            End If
+
             Dim withBlock = node.GetAncestor(Of WithBlockSyntax)()
             If withBlock Is Nothing Then
-                Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
+                Return
             End If
 
             With withBlock
-                Return { .WithStatement.WithKeyword.Span,
-                        .EndWithStatement.Span}
+                Yield .WithStatement.WithKeyword.Span
+                Yield .EndWithStatement.Span
             End With
         End Function
     End Class

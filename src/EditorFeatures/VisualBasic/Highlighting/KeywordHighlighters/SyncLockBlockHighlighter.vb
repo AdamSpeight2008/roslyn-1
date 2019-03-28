@@ -6,20 +6,22 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
-    <ExportHighlighter(LanguageNames.VisualBasic)>
-    Friend Class SyncLockBlockHighlighter
-        Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-        Protected Overloads Overrides Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
-            Dim syncLockBlock = node.GetAncestor(Of SyncLockBlockSyntax)()
-            If syncLockBlock Is Nothing Then
-                Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
-            End If
+  <ExportHighlighter(LanguageNames.VisualBasic)>
+  Friend Class SyncLockBlockHighlighter
+    Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-            With syncLockBlock
-                Return { .SyncLockStatement.SyncLockKeyword.Span,
-                        .EndSyncLockStatement.Span}
-            End With
-        End Function
-    End Class
+    Protected Overloads Overrides Iterator Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+      If cancellationToken.IsCancellationRequested Then Return
+      Dim syncLockBlock = node.GetAncestor(Of SyncLockBlockSyntax)()
+      If syncLockBlock Is Nothing Then Return
+    
+      With syncLockBlock
+        Yield .SyncLockStatement.SyncLockKeyword.Span
+        Yield .EndSyncLockStatement.Span
+      End With
+    End Function
+
+  End Class
+
 End Namespace

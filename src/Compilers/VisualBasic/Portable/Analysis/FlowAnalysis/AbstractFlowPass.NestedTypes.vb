@@ -16,99 +16,96 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
-    Partial Friend MustInherit Class AbstractFlowPass(Of LocalState As AbstractLocalState)
-        Inherits BoundTreeVisitor
+  Partial Friend MustInherit Class AbstractFlowPass(Of LocalState As AbstractLocalState)
+    Inherits BoundTreeVisitor
 
-        ''' <summary>
-        ''' BlockLevel is used to keep track of the lexical nesting level of label and goto statements. 
-        ''' The other most block has a path of {}
-        ''' </summary>
-        ''' <remarks></remarks>
-        Friend Structure BlockNesting
-            Private ReadOnly _path As ImmutableArray(Of Integer)
+    ''' <summary>
+    ''' BlockLevel is used to keep track of the lexical nesting level of label and goto statements. 
+    ''' The other most block has a path of {}
+    ''' </summary>
+    ''' <remarks></remarks>
+    Friend Structure BlockNesting
+      Private ReadOnly _path As ImmutableArray(Of Integer)
 
-            Public Function IsPrefixedBy(other As ArrayBuilder(Of Integer), ignoreLast As Boolean) As Boolean
-                Dim count As Integer = other.Count
-                If ignoreLast Then
-                    count -= 1
+      Public Function IsPrefixedBy(other As ArrayBuilder(Of Integer), ignoreLast As Boolean) As Boolean
+        Dim count As Integer = other.Count
+        If ignoreLast Then
+            count -= 1
+        End If
+
+        If count <= Me._path.Length Then
+            For i = 0 To count - 1
+                If Me._path(i) <> other(i) Then
+                    Return False
                 End If
+            Next
 
-                If count <= Me._path.Length Then
-                    For i = 0 To count - 1
-                        If Me._path(i) <> other(i) Then
-                            Return False
-                        End If
-                    Next
+            Return True
+        End If
 
-                    Return True
-                End If
+        Return False
+      End Function
 
-                Return False
-            End Function
+      Private Sub New(builder As ArrayBuilder(Of Integer))
+        _path = builder.ToImmutable()
+      End Sub
 
-            Private Sub New(builder As ArrayBuilder(Of Integer))
-                Me._path = builder.ToImmutable()
-            End Sub
+      Public Shared Widening Operator CType(builder As ArrayBuilder(Of Integer)) As BlockNesting
+        Return New BlockNesting(builder)
+      End Operator
 
-            Public Shared Widening Operator CType(builder As ArrayBuilder(Of Integer)) As BlockNesting
-                Return New BlockNesting(builder)
-            End Operator
+    End Structure
 
-        End Structure
+    ''' <summary>
+    ''' The state associated with a label includes the statement itself, the local state and the nesting.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Protected Structure LabelStateAndNesting
+      Public ReadOnly Target As BoundLabelStatement
+      Public ReadOnly State As LocalState
+      Public ReadOnly Nesting As BlockNesting
 
-        ''' <summary>
-        ''' The state associated with a label includes the statement itself, the local state and the nesting.
-        ''' </summary>
-        ''' <remarks></remarks>
-        Protected Structure LabelStateAndNesting
-            Public ReadOnly Target As BoundLabelStatement
-            Public ReadOnly State As LocalState
-            Public ReadOnly Nesting As BlockNesting
+      Public Sub New(target As BoundLabelStatement, state As LocalState, nesting As BlockNesting)
+        Me.Target = target
+        Me.State = state
+        Me.Nesting = nesting
+      End Sub
+    End Structure
 
-            Public Sub New(target As BoundLabelStatement, state As LocalState, nesting As BlockNesting)
-                Me.Target = target
-                Me.State = state
-                Me.Nesting = nesting
-            End Sub
-        End Structure
+    ''' <summary>
+    ''' A pending branch.  There are created for a return, break, continue, or goto statement.  The
+    ''' idea is that we don't know if the branch will eventually reach its destination because of an
+    ''' intervening finally block that cannot complete normally.  So we store them up and handle them
+    ''' as we complete processing each construct.  At the end of a block, if there are any pending
+    ''' branches to a label in that block we process the branch.  Otherwise we relay it up to the
+    ''' enclosing construct as a pending branch of the enclosing construct.
+    ''' </summary>
+    Friend Class PendingBranch
+      Public ReadOnly Branch As BoundStatement
+      Public State As LocalState
+      Public Nesting As BlockNesting
 
-        ''' <summary>
-        ''' A pending branch.  There are created for a return, break, continue, or goto statement.  The
-        ''' idea is that we don't know if the branch will eventually reach its destination because of an
-        ''' intervening finally block that cannot complete normally.  So we store them up and handle them
-        ''' as we complete processing each construct.  At the end of a block, if there are any pending
-        ''' branches to a label in that block we process the branch.  Otherwise we relay it up to the
-        ''' enclosing construct as a pending branch of the enclosing construct.
-        ''' </summary>
-        Friend Class PendingBranch
-            Public ReadOnly Branch As BoundStatement
-            Public State As LocalState
-            Public Nesting As BlockNesting
+      Public ReadOnly Property Label As LabelSymbol
+        Get
+          Select Case Branch.Kind
+                 Case BoundKind.ConditionalGoto     : Return CType(Branch, BoundConditionalGoto).Label
+                 Case BoundKind.GotoStatement       : Return CType(Branch, BoundGotoStatement).Label
+                 Case BoundKind.ExitStatement       : Return CType(Branch, BoundExitStatement).Label
+                 Case BoundKind.ContinueStatement   : Return CType(Branch, BoundContinueStatement).Label
+                 Case Else
+                      Return Nothing
+          End Select
+        End Get
+      End Property
 
-            Public ReadOnly Property Label As LabelSymbol
-                Get
-                    Select Case Branch.Kind
-                        Case BoundKind.ConditionalGoto
-                            Return CType(Branch, BoundConditionalGoto).Label
-                        Case BoundKind.GotoStatement
-                            Return CType(Branch, BoundGotoStatement).Label
-                        Case BoundKind.ExitStatement
-                            Return CType(Branch, BoundExitStatement).Label
-                        Case BoundKind.ContinueStatement
-                            Return CType(Branch, BoundContinueStatement).Label
-                        Case Else
-                            Return Nothing
-                    End Select
-                End Get
-            End Property
-
-            Public Sub New(branch As BoundStatement, state As LocalState, nesting As BlockNesting)
-                Me.Branch = branch
-                Me.State = state.Clone()
-                Me.Nesting = nesting
-            End Sub
-        End Class
+      Public Sub New(branch As BoundStatement, state As LocalState, nesting As BlockNesting)
+        Me.Branch = branch
+        Me.State = state.Clone()
+        Me.Nesting = nesting
+      End Sub
 
     End Class
+
+  End Class
 
 End Namespace

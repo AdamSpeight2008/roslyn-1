@@ -10,7 +10,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
 
         Private ReadOnly _textBuffer As ITextBuffer
         Private ReadOnly _textBufferAssociatedViewService As ITextBufferAssociatedViewService
-        Private _parent As ITextUndoTransaction
+        Public Property Parent As ITextUndoTransaction Implements ITextUndoPrimitive.Parent
 
         Public Sub New(textBuffer As ITextBuffer, textBufferAssociatedViewService As ITextBufferAssociatedViewService)
             _textBuffer = textBuffer
@@ -35,17 +35,9 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
             Return False
         End Function
 
-        Public ReadOnly Property CanRedo As Boolean Implements ITextUndoPrimitive.CanRedo
-            Get
-                Return True
-            End Get
-        End Property
+        Public ReadOnly Property CanRedo As Boolean = True Implements ITextUndoPrimitive.CanRedo
 
-        Public ReadOnly Property CanUndo As Boolean Implements ITextUndoPrimitive.CanUndo
-            Get
-                Return True
-            End Get
-        End Property
+        Public ReadOnly Property CanUndo As Boolean = True Implements ITextUndoPrimitive.CanUndo
 
         Public MustOverride Sub [Do]() Implements ITextUndoPrimitive.Do
         Public MustOverride Sub Undo() Implements ITextUndoPrimitive.Undo
@@ -54,13 +46,5 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
             Throw New NotSupportedException()
         End Function
 
-        Public Property Parent As ITextUndoTransaction Implements ITextUndoPrimitive.Parent
-            Get
-                Return _parent
-            End Get
-            Set(value As ITextUndoTransaction)
-                _parent = value
-            End Set
-        End Property
     End Class
 End Namespace

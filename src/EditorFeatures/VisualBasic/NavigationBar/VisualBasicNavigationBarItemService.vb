@@ -107,7 +107,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.NavigationBar
             End Try
         End Function
 
-        Private Function CreateItemsForType(type As INamedTypeSymbol,
+        Private Iterator Function CreateItemsForType(type As INamedTypeSymbol,
                                             position As Integer,
                                             typeSymbolIdIndex As Integer,
                                             semanticModel As SemanticModel,
@@ -116,9 +116,9 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.NavigationBar
                                             cancellationToken As CancellationToken) As IEnumerable(Of NavigationBarItem)
             Dim items As New List(Of NavigationBarItem)
             If type.TypeKind = TypeKind.Enum Then
-                items.Add(CreateItemForEnum(type, typeSymbolIdIndex, semanticModel.SyntaxTree, symbolDeclarationService, cancellationToken))
+                Yield CreateItemForEnum(type, typeSymbolIdIndex, semanticModel.SyntaxTree, symbolDeclarationService, cancellationToken)
             Else
-                items.Add(CreatePrimaryItemForType(type, typeSymbolIdIndex, semanticModel.SyntaxTree, workspaceSupportsDocumentChanges, symbolDeclarationService, cancellationToken))
+                Yield CreatePrimaryItemForType(type, typeSymbolIdIndex, semanticModel.SyntaxTree, workspaceSupportsDocumentChanges, symbolDeclarationService, cancellationToken)
 
                 If type.TypeKind <> TypeKind.Interface Then
                     Dim typeEvents = CreateItemForEvents(
@@ -133,15 +133,14 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.NavigationBar
 
                     ' Add the (<ClassName> Events) item only if it actually has things within it
                     If typeEvents.ChildItems.Count > 0 Then
-                        items.Add(typeEvents)
+                        Yield typeEvents
                     End If
 
                     For Each member In type.GetMembers().OrderBy(Function(m) m.Name)
                         ' If this is a WithEvents property, then we should also add items for it
                         Dim propertySymbol = TryCast(member, IPropertySymbol)
                         If propertySymbol IsNot Nothing AndAlso propertySymbol.IsWithEvents Then
-                            items.Add(
-                                CreateItemForEvents(
+                            Yield CreateItemForEvents(
                                     type,
                                     position,
                                     propertySymbol.Type,
@@ -149,13 +148,11 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.NavigationBar
                                     semanticModel,
                                     workspaceSupportsDocumentChanges,
                                     symbolDeclarationService,
-                                    cancellationToken))
+                                    cancellationToken)
                         End If
                     Next
                 End If
             End If
-
-            Return items
         End Function
 
         Private Function CreateItemForEnum(type As INamedTypeSymbol,
@@ -516,12 +513,12 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.NavigationBar
 
         Private Sub GenerateCodeForItem(document As Document, generateCodeItem As AbstractGenerateCodeItem, textView As ITextView, cancellationToken As CancellationToken)
             ' We'll compute everything up front before we go mutate state
-            Dim text = document.GetTextSynchronously(cancellationToken)
-            Dim newDocument = generateCodeItem.GetGeneratedDocumentAsync(document, cancellationToken).WaitAndGetResult(cancellationToken)
-            Dim generatedTree = newDocument.GetSyntaxRootSynchronously(cancellationToken)
-            Dim generatedNode = generatedTree.GetAnnotatedNodes(AbstractGenerateCodeItem.GeneratedSymbolAnnotation).Single().FirstAncestorOrSelf(Of MethodBlockBaseSyntax)
+            Dim text            = document.GetTextSynchronously(cancellationToken)
+            Dim newDocument     = generateCodeItem.GetGeneratedDocumentAsync(document, cancellationToken).WaitAndGetResult(cancellationToken)
+            Dim generatedTree   = newDocument.GetSyntaxRootSynchronously(cancellationToken)
+            Dim generatedNode   = generatedTree.GetAnnotatedNodes(AbstractGenerateCodeItem.GeneratedSymbolAnnotation).Single().FirstAncestorOrSelf(Of MethodBlockBaseSyntax)
             Dim documentOptions = document.GetOptionsAsync(cancellationToken).WaitAndGetResult(cancellationToken)
-            Dim indentSize = documentOptions.GetOption(FormattingOptions.IndentationSize)
+            Dim indentSize      = documentOptions.GetOption(FormattingOptions.IndentationSize)
             Dim navigationPoint = NavigationPointHelpers.GetNavigationPoint(generatedTree.GetText(text.Encoding), indentSize, generatedNode)
 
             Using transaction = New CaretPreservingEditTransaction(VBEditorResources.Generate_Member, textView, _textUndoHistoryRegistry, _editorOperationsFactoryService)

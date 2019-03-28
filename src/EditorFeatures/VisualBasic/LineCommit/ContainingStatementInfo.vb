@@ -6,7 +6,9 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Microsoft.VisualStudio.Text
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
+
     Partial Friend Class ContainingStatementInfo
+
         Public ReadOnly IsIncomplete As Boolean
         Public ReadOnly TextSpan As TextSpan
         Public ReadOnly MatchingBlockConstruct As StatementSyntax
@@ -37,9 +39,12 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
         ''' this case means "the smallest unit the user probably thinks as a statement", or "the
         ''' thing we should format when you leave it."
         ''' </summary>
-        Public Shared Function GetInfo(point As SnapshotPoint,
-                                       syntaxTree As SyntaxTree,
-                                       cancellationToken As CancellationToken) As ContainingStatementInfo
+        Public Shared Function GetInfo _
+            (
+              point             As SnapshotPoint,
+              syntaxTree        As SyntaxTree,
+              cancellationToken As CancellationToken
+            ) As ContainingStatementInfo
 
             Dim snapshot = point.Snapshot
             Dim pointLineNumber = snapshot.GetLineNumberFromPosition(point)
@@ -62,7 +67,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
                 trivia = syntaxTree.FindTriviaToLeft(point, cancellationToken)
             End If
 
-            If trivia.Kind = SyntaxKind.CommentTrivia OrElse trivia.Kind = SyntaxKind.DocumentationCommentTrivia Then
+            If trivia.IsKind(SyntaxKind.CommentTrivia, SyntaxKind.DocumentationCommentTrivia) Then
                 Return GetContainingStatementInfoForTrivia(trivia, snapshot, pointLineNumber)
             End If
 
@@ -126,7 +131,13 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
             Return Nothing
         End Function
 
-        Private Shared Function GetContainingStatementInfoForTrivia(trivia As SyntaxTrivia, snapshot As ITextSnapshot, pointLineNumber As Integer) As ContainingStatementInfo
+        Private Shared Function GetContainingStatementInfoForTrivia _
+            (
+              trivia            As SyntaxTrivia,
+              snapshot          As ITextSnapshot,
+              pointLineNumber   As Integer
+            ) As ContainingStatementInfo
+
             Dim triviaStatement = trivia.Token.GetAncestor(Of StatementSyntax)()
 
             ' If the trivia is on a different line then the actual token, we consider this
@@ -139,13 +150,15 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
             End If
         End Function
 
-        Private Function FindExpansionStatement(node As StatementSyntax) As StatementSyntax
-            For Each ancestor In node.Ancestors()
-                Dim matchingStatements = MatchingStatementsVisitor.Instance.Visit(ancestor)
+        Private Function FindExpansionStatement _
+            (
+              node As StatementSyntax
+            ) As StatementSyntax
 
-                If matchingStatements Is Nothing Then
-                    Continue For
-                End If
+            For Each ancestor In node.Ancestors().AsParallel.AsOrdered
+                Dim matchingStatements = MatchingStatementsVisitor.Instance.Visit(ancestor).AsImmutableOrEmpty 
+
+                If matchingStatements.IsDefaultOrEmpty Then Continue For
 
                 Dim indexOfNode = matchingStatements.IndexOf(node)
 
@@ -166,22 +179,24 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
             Return Nothing
         End Function
 
-        Private Shared Function GetContainingStatementInfoForAttributedStatement(node As StatementSyntax, attributes As SyntaxList(Of AttributeListSyntax), position As Integer) As ContainingStatementInfo
-            If Not attributes.Any Then
-                Return New ContainingStatementInfo(node)
-            End If
+        Private Shared Function GetContainingStatementInfoForAttributedStatement _
+            (
+              node          As StatementSyntax,
+              attributes    As SyntaxList(Of AttributeListSyntax),
+              position      As Integer
+            ) As ContainingStatementInfo
 
-            ' If we're inside a attribute of the statement, then we should count that as it's own
-            ' statement
+            If Not attributes.Any Then Return New ContainingStatementInfo(node)
+ 
+            ' If we're inside a attribute of the statement, then we should count that as it's own statement
             Dim containingAttribute = attributes.FirstOrDefault(Function(a) a.Span.Contains(position) OrElse a.Span.End = position)
 
-            If containingAttribute IsNot Nothing Then
-                Return New ContainingStatementInfo(containingAttribute)
-            End If
+            If containingAttribute IsNot Nothing Then Return New ContainingStatementInfo(containingAttribute)
 
-            ' We're outside all the attributes, so we'll return just the span that ignores the
-            ' attributes
+            ' We're outside all the attributes, so we'll return just the span that ignores the attributes
             Return New ContainingStatementInfo(node, TextSpan.FromBounds(attributes.Last.Span.End, node.Span.End))
         End Function
+
     End Class
+
 End Namespace

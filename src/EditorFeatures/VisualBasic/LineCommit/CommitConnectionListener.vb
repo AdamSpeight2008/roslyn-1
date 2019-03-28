@@ -9,6 +9,7 @@ Imports Microsoft.VisualStudio.Text.Operations
 Imports Microsoft.VisualStudio.Utilities
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
+
     <Export(GetType(ITextViewConnectionListener))>
     <ContentType(ContentTypeNames.VisualBasicContentType)>
     <TextViewRole(PredefinedTextViewRoles.Editable)>
@@ -21,29 +22,43 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
         Private ReadOnly _waitIndicator As IWaitIndicator
 
         <ImportingConstructor()>
-        Public Sub New(commitBufferManagerFactory As CommitBufferManagerFactory,
-                       textBufferAssociatedViewService As ITextBufferAssociatedViewService,
-                       textUndoHistoryRegistry As ITextUndoHistoryRegistry,
-                       waitIndicator As IWaitIndicator)
+        Public Sub New(
+                        commitBufferManagerFactory      As CommitBufferManagerFactory,
+                        textBufferAssociatedViewService As ITextBufferAssociatedViewService,
+                        textUndoHistoryRegistry         As ITextUndoHistoryRegistry,
+                        waitIndicator                   As IWaitIndicator
+                      )
             _commitBufferManagerFactory = commitBufferManagerFactory
             _textBufferAssociatedViewService = textBufferAssociatedViewService
             _textUndoHistoryRegistry = textUndoHistoryRegistry
             _waitIndicator = waitIndicator
         End Sub
 
-        Public Sub SubjectBuffersConnected(view As ITextView, reason As ConnectionReason, subjectBuffers As IReadOnlyCollection(Of ITextBuffer)) Implements ITextViewConnectionListener.SubjectBuffersConnected
+        Public Sub SubjectBuffersConnected _
+            (
+              view              As ITextView,
+              reason            As ConnectionReason,
+              subjectBuffers    As IReadOnlyCollection(Of ITextBuffer)
+            ) Implements ITextViewConnectionListener.SubjectBuffersConnected
+
             ' Make sure we have a view manager
             view.Properties.GetOrCreateSingletonProperty(
                 Function() New CommitViewManager(view, _commitBufferManagerFactory, _textBufferAssociatedViewService, _textUndoHistoryRegistry, _waitIndicator))
 
             ' Connect to each of these buffers, and increment their ref count
-            For Each buffer In subjectBuffers
+            For Each buffer In subjectBuffers.AsImmutableOrEmpty.AsParallel.AsOrdered
                 _commitBufferManagerFactory.CreateForBuffer(buffer).AddReferencingView()
             Next
         End Sub
 
-        Public Sub SubjectBuffersDisconnected(view As ITextView, reason As ConnectionReason, subjectBuffers As IReadOnlyCollection(Of ITextBuffer)) Implements ITextViewConnectionListener.SubjectBuffersDisconnected
-            For Each buffer In subjectBuffers
+        Public Sub SubjectBuffersDisconnected _
+            (
+              view              As ITextView,
+              reason            As ConnectionReason,
+              subjectBuffers    As IReadOnlyCollection(Of ITextBuffer)
+            ) Implements ITextViewConnectionListener.SubjectBuffersDisconnected
+
+            For Each buffer In subjectBuffers.AsImmutableOrEmpty.AsParallel.AsOrdered
                 _commitBufferManagerFactory.CreateForBuffer(buffer).RemoveReferencingView()
             Next
 
@@ -53,5 +68,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LineCommit
                 view.Properties.RemoveProperty(GetType(CommitViewManager))
             End If
         End Sub
+
     End Class
+
 End Namespace

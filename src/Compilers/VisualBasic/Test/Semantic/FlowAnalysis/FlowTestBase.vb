@@ -64,8 +64,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
             Return CompileAndGetModelAndSpan(program, Function(binding, startNodes, endNodes) AnalyzeDataFlow(binding, startNodes, endNodes), ilSource, errors)
         End Function
 
-        Protected Function CompileAndAnalyzeControlAndDataFlow(program As XElement, Optional ilSource As XCData = Nothing, Optional errors As XElement = Nothing) As Tuple(Of ControlFlowAnalysis, DataFlowAnalysis)
-            Return CompileAndGetModelAndSpan(program, Function(binding, startNodes, endNodes) Tuple.Create(AnalyzeControlFlow(binding, startNodes, endNodes), AnalyzeDataFlow(binding, startNodes, endNodes)), ilSource, errors)
+        Protected Function CompileAndAnalyzeControlAndDataFlow(program As XElement, Optional ilSource As XCData = Nothing, Optional errors As XElement = Nothing) As (ControlFlowAnalysis As ControlFlowAnalysis, DataFlowAnalysis As DataFlowAnalysis)
+            Return CompileAndGetModelAndSpan(program,
+                                             Function(binding, startNodes, endNodes) (AnalyzeControlFlow(binding, startNodes, endNodes),
+                                                                                      AnalyzeDataFlow(binding, startNodes, endNodes)), ilSource, errors)
         End Function
 
         Private Function CompileAndGetModelAndSpan(Of T)(program As XElement, analysisDelegate As Func(Of SemanticModel, List(Of VisualBasicSyntaxNode), List(Of VisualBasicSyntaxNode), T), ilSource As XCData, errors As XElement) As T
@@ -205,19 +207,20 @@ tryAgain:
 
 #End Region
 
-        Protected Sub VerifyDataFlowAnalysis(
-                code As XElement,
-                Optional alwaysAssigned() As String = Nothing,
-                Optional captured() As String = Nothing,
-                Optional dataFlowsIn() As String = Nothing,
-                Optional dataFlowsOut() As String = Nothing,
-                Optional readInside() As String = Nothing,
-                Optional readOutside() As String = Nothing,
-                Optional variablesDeclared() As String = Nothing,
-                Optional writtenInside() As String = Nothing,
-                Optional writtenOutside() As String = Nothing,
-                Optional capturedInside() As String = Nothing,
-                Optional capturedOutside() As String = Nothing)
+        Protected Sub VerifyDataFlowAnalysis _
+            (
+              code As XElement,
+     Optional alwaysAssigned    As String() = Nothing,
+     Optional captured          As String() = Nothing,
+     Optional dataFlowsIn       As String() = Nothing,
+     Optional dataFlowsOut      As String() = Nothing,
+     Optional readInside        As String() = Nothing,
+     Optional readOutside       As String() = Nothing,
+     Optional variablesDeclared As String() = Nothing,
+     Optional writtenInside     As String() = Nothing,
+     Optional writtenOutside    As String() = Nothing,
+     Optional capturedInside    As String() = Nothing,
+     Optional capturedOutside   As String() = Nothing)
             Dim analysis = CompileAndAnalyzeDataFlow(code)
 
             Assert.True(analysis.Succeeded)

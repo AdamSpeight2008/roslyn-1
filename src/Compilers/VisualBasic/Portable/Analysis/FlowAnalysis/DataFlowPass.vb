@@ -55,7 +55,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' Some variables that should be considered initially assigned.  Used for region analysis.
         ''' </summary>
-        Protected ReadOnly initiallyAssignedVariables As HashSet(Of Symbol)
+        Protected ReadOnly _initiallyAssignedVariables As ImmutableArray(Of Symbol)
 
         ''' <summary>
         ''' Defines whether or not fields of intrinsic type should be tracked. Such fields should 
@@ -66,19 +66,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' Variables that were used anywhere, in the sense required to suppress warnings about unused variables.
         ''' </summary>
-        Private ReadOnly _unusedVariables As HashSet(Of LocalSymbol) = New HashSet(Of LocalSymbol)()
+        Private ReadOnly _unusedVariables As PooledHashSet(Of LocalSymbol) = PooledHashSet(Of LocalSymbol).GetInstance
 
         ''' <summary>
         ''' Variables that were initialized or written anywhere.
         ''' </summary>
-        Private ReadOnly _writtenVariables As HashSet(Of Symbol) = New HashSet(Of Symbol)()
+        Private ReadOnly _writtenVariables As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
 
         ''' <summary> 
         ''' A mapping from local variables to the index of their slot in a flow analysis local state. 
         ''' WARNING: if variable identifier maps into SlotKind.NotTracked, it may mean that VariableIdentifier 
         '''          is a structure without traceable fields. This mapping is created in MakeSlotImpl(...)
         ''' </summary>
-        Private ReadOnly _variableSlot As Dictionary(Of VariableIdentifier, Integer) = New Dictionary(Of VariableIdentifier, Integer)()
+        Private ReadOnly _variableSlot As PooledDictionary(Of VariableIdentifier, Integer) = PooledDictionary(Of VariableIdentifier, Integer).GetInstance
 
         ''' <summary>
         ''' A mapping from the local variable slot to the symbol for the local variable itself.  This is used in the
@@ -108,19 +108,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Friend Sub New(info As FlowAnalysisInfo, suppressConstExpressionsSupport As Boolean, Optional trackStructsWithIntrinsicTypedFields As Boolean = False)
             MyBase.New(info, suppressConstExpressionsSupport)
-            Me.initiallyAssignedVariables = Nothing
+            Me._initiallyAssignedVariables = Nothing
             Me._trackStructsWithIntrinsicTypedFields = trackStructsWithIntrinsicTypedFields
         End Sub
 
         Friend Sub New(info As FlowAnalysisInfo, region As FlowAnalysisRegionInfo,
                        suppressConstExpressionsSupport As Boolean,
-                       Optional initiallyAssignedVariables As HashSet(Of Symbol) = Nothing,
+                       Optional initiallyAssignedVariables As ImmutableArray(Of Symbol) = Nothing,
                        Optional trackUnassignments As Boolean = False,
                        Optional trackStructsWithIntrinsicTypedFields As Boolean = False)
 
             MyBase.New(info, region, suppressConstExpressionsSupport, trackUnassignments)
-            Me.initiallyAssignedVariables = initiallyAssignedVariables
-            Me._trackStructsWithIntrinsicTypedFields = trackStructsWithIntrinsicTypedFields
+            Me._initiallyAssignedVariables = initiallyAssignedVariables
+            _trackStructsWithIntrinsicTypedFields = trackStructsWithIntrinsicTypedFields
+        End Sub
+
+        Protected Overrides Sub Free()
+            _isEmptyStructType?.Free()
+            _typeToMembersCache?.Free()
+            _variableSlot?.Free()
+            _writtenVariables?.Free()
+            _unusedVariables?.Free()
+            _alreadyReported = BitVector.Null
+            MyBase.Free()
         End Sub
 
         Protected Overrides Sub InitForScan()
@@ -154,8 +164,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ' This can only happen in VB because the labels are visible in the whole method. In C# the labels are not visible
             ' this case.            
             '
-            If initiallyAssignedVariables IsNot Nothing Then
-                For Each local In initiallyAssignedVariables
+            If _initiallyAssignedVariables.IsDefaultOrEmpty = False Then
+                For Each local In _initiallyAssignedVariables
                     SetSlotAssigned(GetOrCreateSlot(local))
                 Next
             End If
@@ -234,17 +244,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return _convertInsufficientExecutionStackExceptionToCancelledByStackGuardException
         End Function
 
-        Protected Overrides Sub Free()
-            Me._alreadyReported = BitVector.Null
-            MyBase.Free()
-        End Sub
 
         Protected Overrides Function Dump(state As LocalState) As String
-            Dim builder As New StringBuilder()
-            builder.Append("[assigned ")
-            AppendBitNames(state.Assigned, builder)
-            builder.Append("]")
-            Return builder.ToString()
+            Dim builder As PooledStringBuilder = PooledStringBuilder.GetInstance
+            With builder
+                .Builder.Append("[assigned ")
+                AppendBitNames(state.Assigned, builder)
+                .Builder.Append("]")
+                Return builder.ToStringAndFree
+            End With
         End Function
 
         Protected Sub AppendBitNames(a As BitVector, builder As StringBuilder)
@@ -536,7 +544,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 ' descend through Rest fields
                 ' force corresponding slots if do not exist
-                While Not TypeSymbol.Equals(containingType, symbol.ContainingType, TypeCompareKind.ConsiderEverything)
+                While Not containingType.Equals(symbol.ContainingType)
                     Dim restField = TryCast(containingType.GetMembers(TupleTypeSymbol.RestFieldName).FirstOrDefault(), FieldSymbol)
                     If restField Is Nothing Then
                         Return -1
@@ -565,7 +573,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ' struct, and we'd need two different caches depending on _trackStructsWithIntrinsicTypedFields.
         ' So this optimization is not done for now in VB.
 
-        Private ReadOnly _isEmptyStructType As New Dictionary(Of NamedTypeSymbol, Boolean)()
+        Private ReadOnly _isEmptyStructType As PooledDictionary(Of NamedTypeSymbol, Boolean) = PooledDictionary(Of NamedTypeSymbol, Boolean).GetInstance
 
         Protected Overridable Function IsEmptyStructType(type As TypeSymbol) As Boolean
             Dim namedType = TryCast(type, NamedTypeSymbol)
@@ -795,7 +803,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         ''' <summary> Hash structure fields as we may query them many times </summary>
-        Private _typeToMembersCache As Dictionary(Of TypeSymbol, ImmutableArray(Of FieldSymbol)) = Nothing
+        Private _typeToMembersCache As PooledDictionary(Of TypeSymbol, ImmutableArray(Of FieldSymbol)) = Nothing
 
         Private Function ShouldIgnoreStructField(field As FieldSymbol) As Boolean
             If field.IsShared Then
@@ -879,7 +887,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 result = builder.ToImmutableAndFree()
 
                 If _typeToMembersCache Is Nothing Then
-                    _typeToMembersCache = New Dictionary(Of TypeSymbol, ImmutableArray(Of FieldSymbol))
+                    _typeToMembersCache = PooledDictionary(Of TypeSymbol, ImmutableArray(Of FieldSymbol)).GetInstance
                 End If
                 _typeToMembersCache.Add(type, result)
             End If
@@ -1594,7 +1602,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ' assigned variables, or else the current state is not reachable.
         Protected Function ConsiderLocalInitiallyAssigned(variable As LocalSymbol) As Boolean
             Return Not Me.State.Reachable OrElse
-                   initiallyAssignedVariables IsNot Nothing AndAlso initiallyAssignedVariables.Contains(variable)
+                   _initiallyAssignedVariables.IsDefaultOrEmpty = False AndAlso _initiallyAssignedVariables.Contains(variable)
         End Function
 
         Public Overrides Function VisitLocalDeclaration(node As BoundLocalDeclaration) As BoundNode
@@ -1686,12 +1694,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overrides Function VisitLambda(node As BoundLambda) As BoundNode
+            ' Pending
             Dim oldPending As SavedPending = SavePending()
+            ' Symbol
             Dim oldSymbol = Me.symbol
             Me.symbol = node.LambdaSymbol
+            ' Final State
             Dim finalState As LocalState = Me.State
             Me.SetState(If(finalState.Reachable, finalState.Clone(), Me.AllBitsSet()))
             Me.State.Assigned(SlotKind.FunctionValue) = False
+            ' Already Reported
             Dim save_alreadyReportedFunctionValue = _alreadyReported(SlotKind.FunctionValue)
             _alreadyReported(SlotKind.FunctionValue) = False
             EnterParameters(node.LambdaSymbol.Parameters)
@@ -2011,8 +2023,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' is a value type. The reason is that in this case the initialization happens in place (not in a temporary) and 
         ''' the variable already got the object creation expression assigned.
         ''' </summary>
-        Private Function DeclaredVariableIsAlwaysAssignedBeforeInitializer(syntax As SyntaxNode, boundInitializer As BoundExpression,
-                                                                           <Out> ByRef placeholder As BoundValuePlaceholderBase) As Boolean
+        Private Function DeclaredVariableIsAlwaysAssignedBeforeInitializer(
+                                                                            syntax As SyntaxNode,
+                                                                            boundInitializer As BoundExpression,
+                                                                <Out> ByRef placeholder As BoundValuePlaceholderBase
+                                                                          ) As Boolean
             placeholder = Nothing
             If boundInitializer IsNot Nothing AndAlso
                 (boundInitializer.Kind = BoundKind.ObjectCreationExpression OrElse boundInitializer.Kind = BoundKind.NewT) Then

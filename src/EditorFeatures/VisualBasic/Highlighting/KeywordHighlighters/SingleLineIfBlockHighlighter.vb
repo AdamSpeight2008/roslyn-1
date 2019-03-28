@@ -6,22 +6,20 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
-    <ExportHighlighter(LanguageNames.VisualBasic)>
-    Friend Class SingleLineIfBlockHighlighter
-        Inherits AbstractKeywordHighlighter(Of SingleLineIfStatementSyntax)
 
-        Protected Overloads Overrides Function GetHighlights(ifStatement As SingleLineIfStatementSyntax, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
-            Dim highlights As New List(Of TextSpan)
+  <ExportHighlighter(LanguageNames.VisualBasic)>
+  Friend Class SingleLineIfBlockHighlighter
+    Inherits AbstractKeywordHighlighter(Of SingleLineIfStatementSyntax)
 
-            highlights.Add(ifStatement.IfKeyword.Span)
+    Protected Overloads Overrides Iterator Function GetHighlights(ifStatement As SingleLineIfStatementSyntax, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+      If cancellationToken.IsCancellationRequested Then Return
+      With ifStatement
+        Yield .IfKeyword.Span
+        Yield .ThenKeyword.Span
+        If .ElseClause IsNot Nothing Then Yield .ElseClause.ElseKeyword.Span
+      End With
+    End Function
 
-            highlights.Add(ifStatement.ThenKeyword.Span)
+  End Class
 
-            If ifStatement.ElseClause IsNot Nothing Then
-                highlights.Add(ifStatement.ElseClause.ElseKeyword.Span)
-            End If
-
-            Return highlights
-        End Function
-    End Class
 End Namespace

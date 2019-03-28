@@ -36,5 +36,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ValidateFormatString
         Protected Overrides Function GetArgumentExpression(syntaxNode As SyntaxNode) As SyntaxNode
             Return DirectCast(syntaxNode, ArgumentSyntax).GetArgumentExpression
         End Function
+
     End Class
 End Namespace

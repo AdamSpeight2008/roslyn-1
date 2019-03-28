@@ -6,33 +6,29 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
-    <ExportHighlighter(LanguageNames.VisualBasic)>
-    Friend Class ConstructorDeclarationHighlighter
-        Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-        Protected Overloads Overrides Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
-            Dim methodBlock = node.GetAncestor(Of MethodBlockBaseSyntax)()
-            If methodBlock Is Nothing OrElse Not TypeOf methodBlock.BlockStatement Is SubNewStatementSyntax Then
-                Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
-            End If
+  <ExportHighlighter(LanguageNames.VisualBasic)>
+  Friend Class ConstructorDeclarationHighlighter
+    Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-            Dim highlights As New List(Of TextSpan)()
+    Protected Overloads Overrides Iterator Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+      If cancellationToken.IsCancellationRequested Then Return
+        Dim methodBlock = node.GetAncestor(Of MethodBlockBaseSyntax)()
+        If methodBlock Is Nothing OrElse Not TypeOf methodBlock.BlockStatement Is SubNewStatementSyntax Then Return
 
-            With methodBlock
-                With DirectCast(.BlockStatement, SubNewStatementSyntax)
-                    Dim firstKeyword = If(.Modifiers.Count > 0, .Modifiers.First(), .DeclarationKeyword)
-                    highlights.Add(TextSpan.FromBounds(firstKeyword.SpanStart, .NewKeyword.Span.End))
-                End With
+        With methodBlock
+          With DirectCast(.BlockStatement, SubNewStatementSyntax)
+          Dim firstKeyword = If(.Modifiers.Count > 0, .Modifiers.First(), .DeclarationKeyword)
+          Yield TextSpan.FromBounds(firstKeyword.SpanStart, .NewKeyword.Span.End)
+        End With
+        For Each highlight In .GetRelatedStatementHighlights(blockKind:=SyntaxKind.SubKeyword, checkReturns:=True)
+          If cancellationToken.IsCancellationRequested Then Return
+          Yield highlight
+        Next
+        Yield .EndBlockStatement.Span
+      End With
+    End Function
 
-                highlights.AddRange(
-                    methodBlock.GetRelatedStatementHighlights(
-                        blockKind:=SyntaxKind.SubKeyword,
-                        checkReturns:=True))
+  End Class
 
-                highlights.Add(.EndBlockStatement.Span)
-            End With
-
-            Return highlights
-        End Function
-    End Class
 End Namespace

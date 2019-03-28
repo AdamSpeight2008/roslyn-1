@@ -46,7 +46,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Structure
 
         Protected Overrides Function Dump(state As LocalState) As String
-            Return "[alive: " & state.Alive & "; reported: " & state.Reported & "]"
+            Return $"[alive: {state.Alive}; reported: {state.Reported}]"
         End Function
     End Class
 

@@ -6,33 +6,28 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
-    <ExportHighlighter(LanguageNames.VisualBasic)>
-    Friend Class EventBlockHighlighter
-        Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-        Protected Overrides Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
-            Dim eventBlock = node.GetAncestor(Of EventBlockSyntax)()
-            If eventBlock Is Nothing Then
-                Return SpecializedCollections.EmptyEnumerable(Of TextSpan)()
-            End If
+  <ExportHighlighter(LanguageNames.VisualBasic)>
+  Friend Class EventBlockHighlighter
+      Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-            Dim highlights As New List(Of TextSpan)()
+    Protected Overrides Iterator Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+      If cancellationToken.IsCancellationRequested Then Return
 
-            With eventBlock
-                With .EventStatement
-                    ' This span calculation should also capture the Custom keyword
-                    Dim firstKeyword = If(.Modifiers.Count > 0, .Modifiers.First(), .DeclarationKeyword)
-                    highlights.Add(TextSpan.FromBounds(firstKeyword.SpanStart, .DeclarationKeyword.Span.End))
+      Dim eventBlock = node.GetAncestor(Of EventBlockSyntax)()
+      If eventBlock Is Nothing Then Return
 
-                    If .ImplementsClause IsNot Nothing Then
-                        highlights.Add(.ImplementsClause.ImplementsKeyword.Span)
-                    End If
-                End With
+      With eventBlock
+        With .EventStatement
+          ' This span calculation should also capture the Custom keyword
+          Dim firstKeyword = If(.Modifiers.Count > 0, .Modifiers.First(), .DeclarationKeyword)
+          Yield TextSpan.FromBounds(firstKeyword.SpanStart, .DeclarationKeyword.Span.End)
+          If .ImplementsClause IsNot Nothing Then Yield .ImplementsClause.ImplementsKeyword.Span
+        End With
+        Yield .EndEventStatement.Span
+      End With
+    End Function
 
-                highlights.Add(.EndEventStatement.Span)
-            End With
+  End Class
 
-            Return highlights
-        End Function
-    End Class
 End Namespace

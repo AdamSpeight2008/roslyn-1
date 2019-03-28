@@ -12,112 +12,119 @@ Imports Microsoft.CodeAnalysis.Text.Shared.Extensions
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.Formatting.Indentation
-    <ExportLanguageService(GetType(ISynchronousIndentationService), LanguageNames.VisualBasic), [Shared]>
-    Partial Friend NotInheritable Class VisualBasicIndentationService
-        Inherits AbstractIndentationService(Of CompilationUnitSyntax)
 
-        Public Shared ReadOnly DefaultInstance As New VisualBasicIndentationService()
-        Public Shared ReadOnly WithoutParameterAlignmentInstance As New VisualBasicIndentationService(NoOpFormattingRule.Instance)
+  <ExportLanguageService(GetType(ISynchronousIndentationService), LanguageNames.VisualBasic), [Shared]>
+  Partial Friend NotInheritable Class VisualBasicIndentationService
+    Inherits AbstractIndentationService(Of CompilationUnitSyntax)
 
-        Private ReadOnly _specializedIndentationRule As AbstractFormattingRule
+      Public Shared ReadOnly DefaultInstance As New VisualBasicIndentationService()
+      Public Shared ReadOnly WithoutParameterAlignmentInstance As New VisualBasicIndentationService(NoOpFormattingRule.Instance)
 
-        Public Sub New()
-            Me.New(New SpecialFormattingRule())
-        End Sub
+      Private ReadOnly _specializedIndentationRule As AbstractFormattingRule
 
-        Private Sub New(specializedIndentationRule As AbstractFormattingRule)
-            _specializedIndentationRule = specializedIndentationRule
-        End Sub
+      Public Sub New()
+        Me.New(New SpecialFormattingRule())
+      End Sub
 
-        Protected Overrides Function GetSpecializedIndentationFormattingRule() As AbstractFormattingRule
-            Return _specializedIndentationRule
-        End Function
+      Private Sub New(specializedIndentationRule As AbstractFormattingRule)
+        _specializedIndentationRule = specializedIndentationRule
+      End Sub
 
-        Protected Overrides Function GetIndenter(syntaxFacts As ISyntaxFactsService,
-                                                 syntaxTree As SyntaxTree,
-                                                 lineToBeIndented As TextLine,
-                                                 formattingRules As IEnumerable(Of AbstractFormattingRule),
-                                                 optionSet As OptionSet,
-                                                 cancellationToken As CancellationToken) As AbstractIndenter
-            Return New Indenter(syntaxFacts, syntaxTree, formattingRules, optionSet, lineToBeIndented, cancellationToken)
-        End Function
+      Protected Overrides Function GetSpecializedIndentationFormattingRule() As AbstractFormattingRule
+        Return _specializedIndentationRule
+      End Function
 
-        Public Overloads Shared Function ShouldUseSmartTokenFormatterInsteadOfIndenter(
-                formattingRules As IEnumerable(Of AbstractFormattingRule),
-                root As CompilationUnitSyntax,
-                line As TextLine,
-                optionSet As OptionSet,
-                CancellationToken As CancellationToken,
-                Optional neverUseWhenHavingMissingToken As Boolean = True) As Boolean
+      Protected Overrides Function GetIndenter _
+            (
+              syntaxFacts       As ISyntaxFactsService,
+              syntaxTree        As SyntaxTree,
+              lineToBeIndented  As TextLine,
+              formattingRules   As IEnumerable(Of AbstractFormattingRule),
+              optionSet         As OptionSet,
+              cancellationToken As CancellationToken
+            ) As AbstractIndenter
+        Return New Indenter(syntaxFacts, syntaxTree, formattingRules, optionSet, lineToBeIndented, cancellationToken)
+      End Function
 
-            ' find first text on line
-            Dim firstNonWhitespacePosition = line.GetFirstNonWhitespacePosition()
-            If Not firstNonWhitespacePosition.HasValue Then
-                Return False
-            End If
+      Public Overloads Shared Function ShouldUseSmartTokenFormatterInsteadOfIndenter _
+            (
+              formattingRules                   As IEnumerable(Of AbstractFormattingRule),
+              root                              As CompilationUnitSyntax,
+              line                              As TextLine,
+              optionSet                         As OptionSet,
+              CancellationToken                 As CancellationToken,
+     Optional neverUseWhenHavingMissingToken    As Boolean = True
+            ) As Boolean
 
-            ' enter on token only works when first token on line is first text on line
-            Dim token = root.FindToken(firstNonWhitespacePosition.Value)
-            If token.Kind = SyntaxKind.None OrElse token.SpanStart <> firstNonWhitespacePosition Then
-                Return False
-            End If
+      ' find first text on line
+      Dim firstNonWhitespacePosition = line.GetFirstNonWhitespacePosition()
+      If Not firstNonWhitespacePosition.HasValue Then
+         Return False
+      End If
 
-            ' now try to gather various token information to see whether we are at an applicable position.
-            ' all these are heuristic based
-            ' 
-            ' we need at least current and previous tokens to ask about existing line break formatting rules 
-            Dim previousToken = token.GetPreviousToken(includeZeroWidth:=True)
+      ' enter on token only works when first token on line is first text on line
+      Dim token = root.FindToken(firstNonWhitespacePosition.Value)
+      If token.Kind = SyntaxKind.None OrElse token.SpanStart <> firstNonWhitespacePosition Then
+         Return False
+      End If
 
-            ' only use smart token formatter when we have at least two visible tokens.
-            If previousToken.Kind = SyntaxKind.None Then
-                Return False
-            End If
+      ' now try to gather various token information to see whether we are at an applicable position.
+      ' all these are heuristic based
+      ' 
+      ' we need at least current and previous tokens to ask about existing line break formatting rules 
+      Dim previousToken = token.GetPreviousToken(includeZeroWidth:=True)
 
-            ' check special case 
-            ' if previous token (or one before previous token if the previous token is statement terminator token) is missing, make sure
-            ' we are a first token of a statement
-            If previousToken.IsMissing AndAlso neverUseWhenHavingMissingToken Then
-                Return False
-            ElseIf previousToken.IsMissing Then
-                Dim statement = token.GetAncestor(Of StatementSyntax)()
-                If statement Is Nothing Then
-                    Return False
-                End If
+      ' only use smart token formatter when we have at least two visible tokens.
+      If previousToken.Kind = SyntaxKind.None Then
+          Return False
+      End If
 
-                ' check whether current token is first token of a statement
-                Return statement.GetFirstToken() = token
-            End If
+      ' check special case 
+      ' if previous token (or one before previous token if the previous token is statement terminator token) is missing, make sure
+      ' we are a first token of a statement
+      If previousToken.IsMissing AndAlso neverUseWhenHavingMissingToken Then
+          Return False
+      ElseIf previousToken.IsMissing Then
+          Dim statement = token.GetAncestor(Of StatementSyntax)()
+          If statement Is Nothing Then
+              Return False
+          End If
 
-            ' now, regular case. ask formatting rule to see whether we should use token formatter or not
+          ' check whether current token is first token of a statement
+          Return statement.GetFirstToken() = token
+      End If
+
+      ' now, regular case. ask formatting rule to see whether we should use token formatter or not
             Dim lineOperation = FormattingOperations.GetAdjustNewLinesOperation(formattingRules, previousToken, token, optionSet)
-            If lineOperation IsNot Nothing AndAlso lineOperation.Option <> AdjustNewLinesOption.ForceLinesIfOnSingleLine Then
-                Return True
-            End If
+      If lineOperation IsNot Nothing AndAlso lineOperation.Option <> AdjustNewLinesOption.ForceLinesIfOnSingleLine Then
+         Return True
+      End If
 
-            ' check whether there is an alignment operation
-            Dim startNode = token.Parent
+      ' check whether there is an alignment operation
+      Dim startNode = token.Parent
+      Dim currentNode = startNode
+      Do While currentNode IsNot Nothing
+        Dim operations = FormattingOperations.GetAlignTokensOperations(
+        formattingRules, currentNode, optionSet:=optionSet)
 
-            Dim currentNode = startNode
-            Do While currentNode IsNot Nothing
-                Dim operations = FormattingOperations.GetAlignTokensOperations(
-                    formattingRules, currentNode, optionSet:=optionSet)
+        If Not operations.Any() Then
+           currentNode = currentNode.Parent
+           Continue Do
+        End If
 
-                If Not operations.Any() Then
-                    currentNode = currentNode.Parent
-                    Continue Do
-                End If
+        ' make sure we have the given token as one of tokens to be aligned to the base token
+        Dim match = operations.FirstOrDefault(Function(o) o.Tokens.Contains(token))
+        If match IsNot Nothing Then
+           Return True
+        End If
 
-                ' make sure we have the given token as one of tokens to be aligned to the base token
-                Dim match = operations.FirstOrDefault(Function(o) o.Tokens.Contains(token))
-                If match IsNot Nothing Then
-                    Return True
-                End If
+        currentNode = currentNode.Parent
+      Loop
 
-                currentNode = currentNode.Parent
-            Loop
+      ' no indentation operation, nothing to do for smart token formatter
+      Return False
+    End Function
 
-            ' no indentation operation, nothing to do for smart token formatter
-            Return False
-        End Function
-    End Class
+  End Class
+
 End Namespace
