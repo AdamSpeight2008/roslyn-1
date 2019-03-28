@@ -365,7 +365,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim inferredType As TupleTypeSymbol = Nothing
             If hasInferredType Then
-                Dim disallowInferredNames = Me.Compilation.LanguageVersion.DisallowInferredTupleElementNames()
+                Dim disallowInferredNames = Not LanguageFeatures.IsAvailable(InternalSyntax.Feature.InferredTupleNames, Compilation)
 
                 inferredType = TupleTypeSymbol.Create(node.GetLocation, elements, locations, elementNames, Me.Compilation,
                                                       shouldCheckConstraints:=True,
@@ -2103,10 +2103,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ' VB 16 changed the requirements on the first operand to permit unconstrained type parameters. If we're in that scenario,
                 ' ensure that the feature is enabled and report an error if it is not
                 If Not boundFirstArg.Type.IsValueType Then
-                    InternalSyntax.Parser.CheckFeatureAvailability(diagnostics,
-                                                                   node.Location,
-                                                                   DirectCast(node.SyntaxTree.Options, VisualBasicParseOptions).LanguageVersion,
-                                                                   InternalSyntax.Feature.UnconstrainedTypeParameterInConditional)
+                    LanguageFeatures.CheckFeatureAvailability.CheckFeatureAvailability(InternalSyntax.Feature.UnconstrainedTypeParameterInConditional, DirectCast(node.SyntaxTree.Options, VisualBasicParseOptions),
+                                                                   node.Location,diagnostics)
                 Else
                     ReportDiagnostic(diagnostics, node.FirstExpression, ERRID.ERR_IllegalCondTypeInIIF)
                     hasErrors = True

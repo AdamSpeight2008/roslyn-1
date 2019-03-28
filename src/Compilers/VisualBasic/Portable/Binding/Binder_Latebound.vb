@@ -237,7 +237,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return
             End If
 
-            If Not Compilation.LanguageVersion.AllowNonTrailingNamedArguments() Then
+            If Not LanguageFeatures.IsAvailable(InternalSyntax.Feature.NonTrailingNamedArguments, Compilation) Then
                 Return
             End If
 

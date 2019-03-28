@@ -40,12 +40,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     End Enum
 
     Friend Module FeatureExtensions
+
         <Extension>
         Friend Function GetFeatureFlag(feature As Feature) As String
-            Select Case feature
-                Case Else
-                    Return Nothing
-            End Select
+            Return Nothing
         End Function
 
         <Extension>
@@ -94,9 +92,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Feature.NonTrailingNamedArguments,
                     Feature.PrivateProtected
                     Return LanguageVersion.VisualBasic15_5
-
-                Case Feature.UnconstrainedTypeParameterInConditional
-                    Return LanguageVersion.VisualBasic16
 
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(feature)
@@ -163,10 +158,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return ERRID.FEATURE_LeadingDigitSeparator
                 Case Feature.PrivateProtected
                     Return ERRID.FEATURE_PrivateProtected
-                Case Feature.InterpolatedStrings
-                    Return ERRID.FEATURE_InterpolatedStrings
-                Case Feature.UnconstrainedTypeParameterInConditional
-                    Return ERRID.FEATURE_UnconstrainedTypeParameterInConditional
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(feature)
             End Select
