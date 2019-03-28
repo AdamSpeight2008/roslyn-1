@@ -46,7 +46,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         '    bool BailIfFirstTokenRejected                 // bail (return NULL) if the first token isn't a valid expression-starter, rather than reporting an error or setting ErrorInConstruct
         Private Function ParseExpressionCore(
             Optional pendingPrecedence As OperatorPrecedence = OperatorPrecedence.PrecedenceNone,
-            Optional bailIfFirstTokenRejected As Boolean = False
+            Optional bailIfFirstTokenRejected As Boolean = False,
+            Optional prevTerm As ExpressionSyntax = Nothing
         ) As ExpressionSyntax
 
             Try
@@ -107,7 +108,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         expression = SyntaxFactory.AddressOfExpression(startToken, Operand)
 
                     Case Else
-                        expression = ParseTerm(bailIfFirstTokenRejected)
+                        expression = ParseTerm(bailIfFirstTokenRejected, prevTerm:=prevTerm)
 
                         If expression Is Nothing Then
                             Return Nothing
@@ -157,7 +158,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         'Binary.Opcode = Opcode
 
                         'Binary.Left = Expr
-                        Dim rightOperand As ExpressionSyntax = ParseExpressionCore(precedence)
+                        Dim rightOperand As ExpressionSyntax = ParseExpressionCore(precedence,prevTerm:=prevTerm)
 
                         expression = SyntaxFactory.BinaryExpression(GetBinaryOperatorHelper([operator]), expression, [operator], rightOperand)
 
@@ -172,7 +173,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ParseTerm(
             Optional BailIfFirstTokenRejected As Boolean = False,
-            Optional RedimOrNewParent As Boolean = False
+            Optional RedimOrNewParent As Boolean = False,
+            Optional PrevTerm AS ExpressionSyntax = Nothing
         ) As ExpressionSyntax
 
             '// Note: this function will only ever return NULL if the flag "BailIfFirstTokenIsRejected" is set,
@@ -229,10 +231,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     term = ParseSimpleNameExpressionAllowingKeywordAndTypeArguments()
 
                 Case SyntaxKind.ExclamationToken
-                    term = ParseQualifiedExpr(Nothing)
+                    term = ParseQualifiedExpr(PrevTerm)
 
                 Case SyntaxKind.DotToken
-                    term = ParseQualifiedExpr(Nothing)
+                    term = ParseQualifiedExpr(PrevTerm)
 
                 Case SyntaxKind.GlobalKeyword
                     ' NB. GetNextToken has the side-effect of advancing CurrentToken.
@@ -417,8 +419,26 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         qToken = CheckFeatureAvailability(Feature.NullPropagatingOperator, qToken)
 
                         GetNextToken()
-                        term = SyntaxFactory.ConditionalAccessExpression(term, qToken, ParsePostFixExpression(RedimOrNewParent, term:=Nothing))
+                        term = SyntaxFactory.ConditionalAccessExpression(prevTerm, qToken, ParsePostFixExpression(redimOrNewParent, term:=Nothing))
                     Else
+                         If start.IsKeyword Then
+
+                            ' Is it in the form : [keyword] [qualifier] [identifier]
+                            ' If so treat the keyword as an identifier and continue to parse.
+                            Dim nextToken = PeekNextToken()
+
+                            Select Case nextToken.Kind
+                                Case SyntaxKind.DotToken,
+                                     SyntaxKind.QuestionToken,
+                                     SyntaxKind.ExclamationToken
+
+                                    Dim keywordAsIdentifier = ParseSimpleNameExpressionAllowingKeywordAndTypeArguments()
+                                    keywordAsIdentifier = ReportSyntaxError(keywordAsIdentifier, ERRID.ERR_InvalidUseOfKeyword)
+                                    term = ParseExpressionCore(prevTerm:=keywordAsIdentifier)
+                                    Return term
+                            End Select
+                        End If
+
                         If BailIfFirstTokenRejected Then
                             Return Nothing
                         End If
