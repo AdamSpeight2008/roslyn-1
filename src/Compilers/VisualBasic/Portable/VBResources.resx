@@ -5537,4 +5537,22 @@
   <data name="FEATURE_UnconstrainedTypeParameterInConditional" xml:space="preserve">
     <value>unconstrained type parameters in binary conditional expressions</value>
   </data>
+  <data name="ERR_MissingFlagsAttributeOnEnum" xml:space="preserve">
+    <value>Enum '{0}' requires &lt;Flags&gt; attribute.</value>
+  </data>
+  <data name="FEATURE_EnumFlagOperators" xml:space="preserve">
+    <value>Enum Flag Operators</value>
+  </data>
+  <data name="ERR_MissingEnumFlag" xml:space="preserve">
+    <value>Missing Enum Flag.</value>
+  </data>
+  <data name="ERR_ExpectedParenthesizedExpression" xml:space="preserve">
+    <value>Expected Parenthesized Expression.</value>
+  </data>
+  <data name="FEATURE_DefaultOptionalParameter" xml:space="preserve">
+    <value>Default Optional Parameter</value>
+  </data>
+  <data name="FEATURE_TypeOfMany" xml:space="preserve">
+    <value>TypeOfMany feature</value>
+  </data>
 </root>

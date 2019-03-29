@@ -35,6 +35,7 @@
     <ValueType Name="NoOpStatementFlavor"/>
     <ValueType Name="BoundTypeOrValueData"/>
     <ValueType Name="BitVector" />
+    <ValueType Name="FlagsEnumOperatorKind"/>
 
   <AbstractNode Name="BoundExpression" Base="BoundNode">
     <Field Name="Type" Type="TypeSymbol" Null="allow"/>
@@ -530,14 +531,14 @@
         <Field Name="RelaxationLambdaOpt" Type="BoundLambda" Null="allow" />
     </Node>
 
-    <Node Name="BoundTypeOf" Base="BoundExpression">
-      <!-- Non-null type is required for this node kind -->
+    <!--<Node Name="BoundTypeOf" Base="BoundExpression">
+      --><!-- Non-null type is required for this node kind --><!--
       <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
 
       <Field Name="Operand" Type="BoundExpression"/>
       <Field Name="IsTypeOfIsNotExpression" Type="Boolean"/>
       <Field Name="TargetType" Type="TypeSymbol"/>
-    </Node>
+    </Node>-->
 
     <AbstractNode Name="BoundStatement" Base="BoundNode"/>
 
@@ -1928,5 +1929,31 @@
     <Field Name="AlignmentOpt" Type="BoundExpression" Null="allow"/>
     <Field Name="FormatStringOpt" Type="BoundLiteral" Null="allow"/>
   </Node>
+  
+  <Node Name="BoundFlagsEnumOperationExpressionSyntax" Base="BoundExpression" HasValidate="true">
+    <!-- Type is always Object. -->
+    <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
+
+    <!--What we are invoking. BoundLateMemberAccess or BoundBadExpression -->
+    <Field Name="EnumFlags" Type="BoundExpression" Null="disallow"/>
+    <Field Name="Op"        Type="FlagsEnumOperatorKind" Null="NotApplicable"/>
+    <Field Name="EnumFlag"  Type="BoundExpression" Null ="disallow"/>
+  </Node>
+
+   <AbstractNode Name="BoundTypeOfBase" Base="BoundExpression">
+   <!-- Non-null type is required for this node kind -->
+    <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
+    <Field Name="Operand" Type="BoundExpression"/>
+    <Field Name="IsTypeOfIsNotExpression" Type="Boolean"/>
+    </AbstractNode>
+
+     <Node Name="BoundTypeOf" Base="BoundTypeOfBase">
+      <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
+      <Field Name="TargetType" Type="TypeSymbol" />
+    </Node>
+   <Node Name="BoundTypeOfMany" Base="BoundTypeOfBase" HasValidate="true">
+      <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
+      <Field Name="TargetTypes" Type="ImmutableArray(Of BoundTypeOf)"/>
+    </Node>
 
 </Tree>

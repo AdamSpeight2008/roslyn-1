@@ -2,6 +2,16 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
   <file datatype="xml" source-language="en" target-language="ko" original="../VBResources.resx">
     <body>
+      <trans-unit id="FEATURE_DefaultOptionalParameter">
+        <source>Default Optional Parameter</source>
+        <target state="new">Default Optional Parameter</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_TypeOfMany">
+        <source>TypeOfMany feature</source>
+        <target state="new">TypeOfMany feature</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_UnconstrainedTypeParameterInConditional">
         <source>unconstrained type parameters in binary conditional expressions</source>
         <target state="translated">이진 조건식의 비제한 형식 매개 변수</target>
@@ -9091,6 +9101,26 @@
       <trans-unit id="FTL_InvalidInputFileName">
         <source>File name '{0}' is empty, contains invalid characters, has a drive specification without an absolute path, or is too long</source>
         <target state="translated">{0}' 파일 이름이 비어 있거나, 잘못된 문자가 있거나, 절대 경로가 없는 드라이브 사양이 있거나, 너무 깁니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_MissingFlagsAttributeOnEnum">
+        <source>Enum '{0}' requires &lt;Flags&gt; attribute.</source>
+        <target state="new">Enum '{0}' requires &lt;Flags&gt; attribute.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_EnumFlagOperators">
+        <source>Enum Flag Operators</source>
+        <target state="new">Enum Flag Operators</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_MissingEnumFlag">
+        <source>Missing Enum Flag.</source>
+        <target state="new">Missing Enum Flag.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_ExpectedParenthesizedExpression">
+        <source>Expected Parenthesized Expression.</source>
+        <target state="new">Expected Parenthesized Expression.</target>
         <note />
       </trans-unit>
     </body>

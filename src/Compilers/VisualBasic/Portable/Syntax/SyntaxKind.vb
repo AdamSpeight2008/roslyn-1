@@ -3199,5 +3199,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ConflictMarkerTrivia = 792
 
+        ' FlagsEnum Operators
+        FlagsEnumOperationExpression = 793
+        FlagsEnumIsSetToken = 794
+        FlagsEnumSetToken = 795
+        FlagsEnumClearToken = 796
+        FlagsEnumOperatorSyntax = 797
+        FlagsEnumIsAnyToken = 798
+        ' TypeOfMany
+        TypeOfManyIsExpression = 799
+        TypeOfManyIsNotExpression = 800
     End Enum
 End Namespace

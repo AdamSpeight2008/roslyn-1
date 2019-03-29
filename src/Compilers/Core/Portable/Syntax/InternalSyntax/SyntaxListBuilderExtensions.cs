@@ -18,5 +18,19 @@ namespace Microsoft.CodeAnalysis.Syntax.InternalSyntax
 
             return new SyntaxList<TNode>(builder.ToListNode());
         }
+
+        public static SyntaxList<TNode> ToListAndFree<TNode>(this SyntaxListBuilder<TNode> item, SyntaxListPool pool) where TNode : GreenNode
+        {
+            var list = item.ToList();
+            pool.Free(item);
+            return list;
+        }
+
+        public static SeparatedSyntaxList<TNode> ToListAndFree<TNode>(this SeparatedSyntaxListBuilder<TNode> item, SyntaxListPool pool) where TNode : GreenNode
+        {
+            var list = item.ToList();
+            pool.Free(item);
+            return list;
+        }
     }
 }

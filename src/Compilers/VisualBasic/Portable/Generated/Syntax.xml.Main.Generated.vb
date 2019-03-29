@@ -437,6 +437,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Function VisitTypeOfExpression(ByVal node As TypeOfExpressionSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
+        Public Overridable Function VisitTypeOfManyExpression(ByVal node As TypeOfManyExpressionSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
         Public Overridable Function VisitGetXmlNamespaceExpression(ByVal node As GetXmlNamespaceExpressionSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
@@ -741,6 +744,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return Me.DefaultVisit(node)
         End Function
         Public Overridable Function VisitBadDirectiveTrivia(ByVal node As BadDirectiveTriviaSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
+        Public Overridable Function VisitFlagsEnumOperationExpression(ByVal node As FlagsEnumOperationExpressionSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
     End Class
@@ -1172,6 +1178,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Sub VisitTypeOfExpression(ByVal node As TypeOfExpressionSyntax)
             Me.DefaultVisit(node): Return
         End Sub
+        Public Overridable Sub VisitTypeOfManyExpression(ByVal node As TypeOfManyExpressionSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
         Public Overridable Sub VisitGetXmlNamespaceExpression(ByVal node As GetXmlNamespaceExpressionSyntax)
             Me.DefaultVisit(node): Return
         End Sub
@@ -1476,6 +1485,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitBadDirectiveTrivia(ByVal node As BadDirectiveTriviaSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitFlagsEnumOperationExpression(ByVal node As FlagsEnumOperationExpressionSyntax)
             Me.DefaultVisit(node): Return
         End Sub
     End Class
@@ -3895,6 +3907,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
         End Function
 
+        Public Overrides Function VisitTypeOfManyExpression(ByVal node As TypeOfManyExpressionSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newTypeOfKeyword = DirectCast(VisitToken(node.TypeOfKeyword).Node, InternalSyntax.KeywordSyntax)
+            If node.TypeOfKeyword.Node IsNot newTypeOfKeyword Then anyChanges = True
+            Dim newExpression = DirectCast(Visit(node.Expression), ExpressionSyntax)
+            If node.Expression IsNot newExpression Then anyChanges = True
+            Dim newOperatorToken = DirectCast(VisitToken(node.OperatorToken).Node, InternalSyntax.KeywordSyntax)
+            If node.OperatorToken.Node IsNot newOperatorToken Then anyChanges = True
+            Dim newOpeningBrace = DirectCast(VisitToken(node.OpeningBrace).Node, InternalSyntax.PunctuationSyntax)
+            If node.OpeningBrace.Node IsNot newOpeningBrace Then anyChanges = True
+            Dim newTypes = VisitList(node.Types)
+            If node._types IsNot newTypes.Node Then anyChanges = True
+            Dim newClosingBrace = DirectCast(VisitToken(node.ClosingBrace).Node, InternalSyntax.PunctuationSyntax)
+            If node.ClosingBrace.Node IsNot newClosingBrace Then anyChanges = True
+
+            If anyChanges Then
+                Return New TypeOfManyExpressionSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newTypeOfKeyword, newExpression, newOperatorToken, newOpeningBrace, newTypes.Node, newClosingBrace)
+            Else
+                Return node
+            End If
+        End Function
+
         Public Overrides Function VisitGetXmlNamespaceExpression(ByVal node As GetXmlNamespaceExpressionSyntax) As SyntaxNode
             Dim anyChanges As Boolean = False
 
@@ -3921,7 +3956,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If node.Expression IsNot newExpression Then anyChanges = True
             Dim newOperatorToken = DirectCast(VisitToken(node.OperatorToken).Node, InternalSyntax.PunctuationSyntax)
             If node.OperatorToken.Node IsNot newOperatorToken Then anyChanges = True
-            Dim newName = DirectCast(Visit(node.Name), SimpleNameSyntax)
+            Dim newName = DirectCast(Visit(node.Name), ExpressionSyntax)
             If node.Name IsNot newName Then anyChanges = True
 
             If anyChanges Then
@@ -5668,6 +5703,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If anyChanges Then
                 Return New BadDirectiveTriviaSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newHashToken)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitFlagsEnumOperationExpression(ByVal node As FlagsEnumOperationExpressionSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newEnumFlags = DirectCast(Visit(node.EnumFlags), ExpressionSyntax)
+            If node.EnumFlags IsNot newEnumFlags Then anyChanges = True
+            Dim newOperatorToken = DirectCast(VisitToken(node.OperatorToken).Node, InternalSyntax.FlagsEnumOperatorSyntax)
+            If node.OperatorToken.Node IsNot newOperatorToken Then anyChanges = True
+            Dim newEnumFlag = DirectCast(Visit(node.EnumFlag), ExpressionSyntax)
+            If node.EnumFlag IsNot newEnumFlag Then anyChanges = True
+
+            If anyChanges Then
+                Return New FlagsEnumOperationExpressionSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newEnumFlags, newOperatorToken, newEnumFlag)
             Else
                 Return node
             End If
@@ -11963,6 +12015,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -12044,7 +12098,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -12110,6 +12165,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -12191,7 +12248,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("value")
              End Select
@@ -12546,6 +12604,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -12627,7 +12687,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -12677,6 +12738,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -12758,7 +12821,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -13982,6 +14046,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -14063,7 +14129,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("condition")
              End Select
@@ -14269,6 +14336,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -14350,7 +14419,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("condition")
              End Select
@@ -14448,6 +14518,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -14529,7 +14601,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("condition")
              End Select
@@ -14831,6 +14904,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -14912,7 +14987,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("filter")
              End Select
@@ -15038,6 +15114,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -15119,7 +15197,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("errorNumber")
              End Select
@@ -15748,6 +15827,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -15829,7 +15910,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -16185,6 +16267,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -16266,7 +16350,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("value")
              End Select
@@ -16314,6 +16399,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -16395,7 +16482,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("lowerBound")
              End Select
@@ -16431,6 +16519,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -16512,7 +16602,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("upperBound")
              End Select
@@ -16585,6 +16676,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -16666,7 +16759,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("value")
              End Select
@@ -16731,6 +16825,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -16812,7 +16908,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("value")
              End Select
@@ -16877,6 +16974,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -16958,7 +17057,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("value")
              End Select
@@ -17023,6 +17123,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -17104,7 +17206,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("value")
              End Select
@@ -17169,6 +17272,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -17250,7 +17355,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("value")
              End Select
@@ -17315,6 +17421,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -17396,7 +17504,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("value")
              End Select
@@ -17468,6 +17577,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -17549,7 +17660,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("value")
              End Select
@@ -17639,6 +17751,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -17720,7 +17834,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -18493,6 +18608,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -18574,7 +18691,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("condition")
              End Select
@@ -18639,6 +18757,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -18720,7 +18840,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("condition")
              End Select
@@ -18790,6 +18911,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -18871,7 +18994,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("condition")
              End Select
@@ -18932,6 +19056,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -19013,7 +19139,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("condition")
              End Select
@@ -19182,6 +19309,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -19264,6 +19393,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
                      SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression,
                      SyntaxKind.VariableDeclarator
                 Case Else
                     Throw new ArgumentException("controlVariable")
@@ -19300,6 +19430,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -19381,7 +19513,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("fromValue")
              End Select
@@ -19417,6 +19550,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -19498,7 +19633,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("toValue")
              End Select
@@ -19601,6 +19737,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -19682,7 +19820,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("stepValue")
              End Select
@@ -19766,6 +19905,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -19848,6 +19989,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
                      SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression,
                      SyntaxKind.VariableDeclarator
                 Case Else
                     Throw new ArgumentException("controlVariable")
@@ -19884,6 +20026,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -19965,7 +20109,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -20177,6 +20322,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -20258,7 +20405,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -20303,6 +20451,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -20384,7 +20534,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -20449,6 +20600,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -20530,7 +20683,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -20566,6 +20720,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -20647,7 +20803,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -20712,6 +20869,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -20793,7 +20952,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -20829,6 +20989,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -20910,7 +21072,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -20975,6 +21138,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -21056,7 +21221,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -21092,6 +21258,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -21173,7 +21341,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -21238,6 +21407,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -21319,7 +21490,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -21355,6 +21527,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -21436,7 +21610,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -21501,6 +21676,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -21582,7 +21759,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -21618,6 +21796,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -21699,7 +21879,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -21764,6 +21945,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -21845,7 +22028,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -21881,6 +22065,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -21962,7 +22148,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -22027,6 +22214,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -22108,7 +22297,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -22144,6 +22334,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -22225,7 +22417,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -22290,6 +22483,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -22371,7 +22566,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -22407,6 +22603,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -22488,7 +22686,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -22553,6 +22752,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -22634,7 +22835,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -22670,6 +22872,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -22751,7 +22955,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -22816,6 +23021,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -22897,7 +23104,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -22933,6 +23141,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -23014,7 +23224,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -23091,6 +23302,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -23172,7 +23385,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -23206,6 +23420,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -23287,7 +23503,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -23455,6 +23672,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -23536,7 +23755,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("eventExpression")
              End Select
@@ -23572,6 +23792,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -23653,7 +23875,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("delegateExpression")
              End Select
@@ -23725,6 +23948,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -23806,7 +24031,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("eventExpression")
              End Select
@@ -23842,6 +24068,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -23923,7 +24151,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("delegateExpression")
              End Select
@@ -24001,6 +24230,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -24082,7 +24313,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("eventExpression")
              End Select
@@ -24118,6 +24350,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -24199,7 +24433,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("delegateExpression")
              End Select
@@ -24339,6 +24574,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -24420,7 +24657,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -24628,6 +24866,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -24709,7 +24949,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -25108,6 +25349,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -25189,7 +25432,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -25568,6 +25812,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -25649,7 +25895,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -25742,6 +25989,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -25823,7 +26072,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -25922,6 +26172,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -26003,7 +26255,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -26063,6 +26316,541 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
 
         ''' <summary>
+        ''' Represents a TypeOf...Is or IsNot expression.
+        ''' </summary>
+        ''' <param name="typeOfKeyword">
+        ''' The "TypeOf" keyword.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The expression being tested.
+        ''' </param>
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="types">
+        ''' The name of the type being tested against.
+        ''' </param>
+        Public Shared Function TypeOfManyIsExpression(typeOfKeyword As SyntaxToken, expression As ExpressionSyntax, operatorToken As SyntaxToken, openingBrace As SyntaxToken, types As SeparatedSyntaxList(Of TypeSyntax), closingBrace As SyntaxToken) As TypeOfManyExpressionSyntax
+            Select Case typeOfKeyword.Kind()
+                Case SyntaxKind.TypeOfKeyword
+                Case Else
+                    Throw new ArgumentException("typeOfKeyword")
+             End Select
+            if expression Is Nothing Then
+                Throw New ArgumentNullException(NameOf(expression))
+            End If
+            Select Case expression.Kind()
+                Case SyntaxKind.KeywordEventContainer,
+                     SyntaxKind.WithEventsEventContainer,
+                     SyntaxKind.WithEventsPropertyEventContainer,
+                     SyntaxKind.IdentifierLabel,
+                     SyntaxKind.NumericLabel,
+                     SyntaxKind.NextLabel,
+                     SyntaxKind.MidExpression,
+                     SyntaxKind.CharacterLiteralExpression,
+                     SyntaxKind.TrueLiteralExpression,
+                     SyntaxKind.FalseLiteralExpression,
+                     SyntaxKind.NumericLiteralExpression,
+                     SyntaxKind.DateLiteralExpression,
+                     SyntaxKind.StringLiteralExpression,
+                     SyntaxKind.NothingLiteralExpression,
+                     SyntaxKind.ParenthesizedExpression,
+                     SyntaxKind.TupleExpression,
+                     SyntaxKind.TupleType,
+                     SyntaxKind.MeExpression,
+                     SyntaxKind.MyBaseExpression,
+                     SyntaxKind.MyClassExpression,
+                     SyntaxKind.GetTypeExpression,
+                     SyntaxKind.TypeOfIsExpression,
+                     SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
+                     SyntaxKind.GetXmlNamespaceExpression,
+                     SyntaxKind.SimpleMemberAccessExpression,
+                     SyntaxKind.DictionaryAccessExpression,
+                     SyntaxKind.XmlElementAccessExpression,
+                     SyntaxKind.XmlDescendantAccessExpression,
+                     SyntaxKind.XmlAttributeAccessExpression,
+                     SyntaxKind.InvocationExpression,
+                     SyntaxKind.ObjectCreationExpression,
+                     SyntaxKind.AnonymousObjectCreationExpression,
+                     SyntaxKind.ArrayCreationExpression,
+                     SyntaxKind.CollectionInitializer,
+                     SyntaxKind.CTypeExpression,
+                     SyntaxKind.DirectCastExpression,
+                     SyntaxKind.TryCastExpression,
+                     SyntaxKind.PredefinedCastExpression,
+                     SyntaxKind.AddExpression,
+                     SyntaxKind.SubtractExpression,
+                     SyntaxKind.MultiplyExpression,
+                     SyntaxKind.DivideExpression,
+                     SyntaxKind.IntegerDivideExpression,
+                     SyntaxKind.ExponentiateExpression,
+                     SyntaxKind.LeftShiftExpression,
+                     SyntaxKind.RightShiftExpression,
+                     SyntaxKind.ConcatenateExpression,
+                     SyntaxKind.ModuloExpression,
+                     SyntaxKind.EqualsExpression,
+                     SyntaxKind.NotEqualsExpression,
+                     SyntaxKind.LessThanExpression,
+                     SyntaxKind.LessThanOrEqualExpression,
+                     SyntaxKind.GreaterThanOrEqualExpression,
+                     SyntaxKind.GreaterThanExpression,
+                     SyntaxKind.IsExpression,
+                     SyntaxKind.IsNotExpression,
+                     SyntaxKind.LikeExpression,
+                     SyntaxKind.OrExpression,
+                     SyntaxKind.ExclusiveOrExpression,
+                     SyntaxKind.AndExpression,
+                     SyntaxKind.OrElseExpression,
+                     SyntaxKind.AndAlsoExpression,
+                     SyntaxKind.UnaryPlusExpression,
+                     SyntaxKind.UnaryMinusExpression,
+                     SyntaxKind.NotExpression,
+                     SyntaxKind.AddressOfExpression,
+                     SyntaxKind.BinaryConditionalExpression,
+                     SyntaxKind.TernaryConditionalExpression,
+                     SyntaxKind.SingleLineFunctionLambdaExpression,
+                     SyntaxKind.SingleLineSubLambdaExpression,
+                     SyntaxKind.MultiLineFunctionLambdaExpression,
+                     SyntaxKind.MultiLineSubLambdaExpression,
+                     SyntaxKind.QueryExpression,
+                     SyntaxKind.FunctionAggregation,
+                     SyntaxKind.GroupAggregation,
+                     SyntaxKind.XmlDocument,
+                     SyntaxKind.XmlElement,
+                     SyntaxKind.XmlText,
+                     SyntaxKind.XmlElementStartTag,
+                     SyntaxKind.XmlElementEndTag,
+                     SyntaxKind.XmlEmptyElement,
+                     SyntaxKind.XmlAttribute,
+                     SyntaxKind.XmlString,
+                     SyntaxKind.XmlPrefixName,
+                     SyntaxKind.XmlName,
+                     SyntaxKind.XmlBracketedName,
+                     SyntaxKind.XmlComment,
+                     SyntaxKind.XmlProcessingInstruction,
+                     SyntaxKind.XmlCDataSection,
+                     SyntaxKind.XmlEmbeddedExpression,
+                     SyntaxKind.ArrayType,
+                     SyntaxKind.NullableType,
+                     SyntaxKind.PredefinedType,
+                     SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference,
+                     SyntaxKind.AwaitExpression,
+                     SyntaxKind.XmlCrefAttribute,
+                     SyntaxKind.XmlNameAttribute,
+                     SyntaxKind.ConditionalAccessExpression,
+                     SyntaxKind.NameOfExpression,
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
+                Case Else
+                    Throw new ArgumentException("expression")
+             End Select
+            Select Case operatorToken.Kind()
+                Case SyntaxKind.IsKeyword:
+                Case SyntaxKind.IsNotKeyword
+                Case Else
+                    Throw new ArgumentException("operatorToken")
+             End Select
+            Select Case openingBrace.Kind()
+                Case SyntaxKind.OpenBraceToken
+                Case Else
+                    Throw new ArgumentException("openingBrace")
+             End Select
+            Select Case closingBrace.Kind()
+                Case SyntaxKind.CloseBraceToken
+                Case Else
+                    Throw new ArgumentException("closingBrace")
+             End Select
+            Return New TypeOfManyExpressionSyntax(SyntaxKind.TypeOfManyIsExpression, Nothing, Nothing, DirectCast(typeOfKeyword.Node, InternalSyntax.KeywordSyntax), expression, DirectCast(operatorToken.Node, InternalSyntax.KeywordSyntax), DirectCast(openingBrace.Node, InternalSyntax.PunctuationSyntax), types.Node, DirectCast(closingBrace.Node, InternalSyntax.PunctuationSyntax))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a TypeOf...Is or IsNot expression.
+        ''' </summary>
+        ''' <param name="expression">
+        ''' The expression being tested.
+        ''' </param>
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="types">
+        ''' The name of the type being tested against.
+        ''' </param>
+        Public Shared Function TypeOfManyIsExpression(expression As ExpressionSyntax, operatorToken As SyntaxToken, types As SeparatedSyntaxList(Of TypeSyntax)) As TypeOfManyExpressionSyntax
+            Return SyntaxFactory.TypeOfManyIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), expression, operatorToken, SyntaxFactory.Token(SyntaxKind.OpenBraceToken), types, SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a TypeOf...Is or IsNot expression.
+        ''' </summary>
+        ''' <param name="typeOfKeyword">
+        ''' The "TypeOf" keyword.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The expression being tested.
+        ''' </param>
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="types">
+        ''' The name of the type being tested against.
+        ''' </param>
+        Public Shared Function TypeOfManyIsNotExpression(typeOfKeyword As SyntaxToken, expression As ExpressionSyntax, operatorToken As SyntaxToken, openingBrace As SyntaxToken, types As SeparatedSyntaxList(Of TypeSyntax), closingBrace As SyntaxToken) As TypeOfManyExpressionSyntax
+            Select Case typeOfKeyword.Kind()
+                Case SyntaxKind.TypeOfKeyword
+                Case Else
+                    Throw new ArgumentException("typeOfKeyword")
+             End Select
+            if expression Is Nothing Then
+                Throw New ArgumentNullException(NameOf(expression))
+            End If
+            Select Case expression.Kind()
+                Case SyntaxKind.KeywordEventContainer,
+                     SyntaxKind.WithEventsEventContainer,
+                     SyntaxKind.WithEventsPropertyEventContainer,
+                     SyntaxKind.IdentifierLabel,
+                     SyntaxKind.NumericLabel,
+                     SyntaxKind.NextLabel,
+                     SyntaxKind.MidExpression,
+                     SyntaxKind.CharacterLiteralExpression,
+                     SyntaxKind.TrueLiteralExpression,
+                     SyntaxKind.FalseLiteralExpression,
+                     SyntaxKind.NumericLiteralExpression,
+                     SyntaxKind.DateLiteralExpression,
+                     SyntaxKind.StringLiteralExpression,
+                     SyntaxKind.NothingLiteralExpression,
+                     SyntaxKind.ParenthesizedExpression,
+                     SyntaxKind.TupleExpression,
+                     SyntaxKind.TupleType,
+                     SyntaxKind.MeExpression,
+                     SyntaxKind.MyBaseExpression,
+                     SyntaxKind.MyClassExpression,
+                     SyntaxKind.GetTypeExpression,
+                     SyntaxKind.TypeOfIsExpression,
+                     SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
+                     SyntaxKind.GetXmlNamespaceExpression,
+                     SyntaxKind.SimpleMemberAccessExpression,
+                     SyntaxKind.DictionaryAccessExpression,
+                     SyntaxKind.XmlElementAccessExpression,
+                     SyntaxKind.XmlDescendantAccessExpression,
+                     SyntaxKind.XmlAttributeAccessExpression,
+                     SyntaxKind.InvocationExpression,
+                     SyntaxKind.ObjectCreationExpression,
+                     SyntaxKind.AnonymousObjectCreationExpression,
+                     SyntaxKind.ArrayCreationExpression,
+                     SyntaxKind.CollectionInitializer,
+                     SyntaxKind.CTypeExpression,
+                     SyntaxKind.DirectCastExpression,
+                     SyntaxKind.TryCastExpression,
+                     SyntaxKind.PredefinedCastExpression,
+                     SyntaxKind.AddExpression,
+                     SyntaxKind.SubtractExpression,
+                     SyntaxKind.MultiplyExpression,
+                     SyntaxKind.DivideExpression,
+                     SyntaxKind.IntegerDivideExpression,
+                     SyntaxKind.ExponentiateExpression,
+                     SyntaxKind.LeftShiftExpression,
+                     SyntaxKind.RightShiftExpression,
+                     SyntaxKind.ConcatenateExpression,
+                     SyntaxKind.ModuloExpression,
+                     SyntaxKind.EqualsExpression,
+                     SyntaxKind.NotEqualsExpression,
+                     SyntaxKind.LessThanExpression,
+                     SyntaxKind.LessThanOrEqualExpression,
+                     SyntaxKind.GreaterThanOrEqualExpression,
+                     SyntaxKind.GreaterThanExpression,
+                     SyntaxKind.IsExpression,
+                     SyntaxKind.IsNotExpression,
+                     SyntaxKind.LikeExpression,
+                     SyntaxKind.OrExpression,
+                     SyntaxKind.ExclusiveOrExpression,
+                     SyntaxKind.AndExpression,
+                     SyntaxKind.OrElseExpression,
+                     SyntaxKind.AndAlsoExpression,
+                     SyntaxKind.UnaryPlusExpression,
+                     SyntaxKind.UnaryMinusExpression,
+                     SyntaxKind.NotExpression,
+                     SyntaxKind.AddressOfExpression,
+                     SyntaxKind.BinaryConditionalExpression,
+                     SyntaxKind.TernaryConditionalExpression,
+                     SyntaxKind.SingleLineFunctionLambdaExpression,
+                     SyntaxKind.SingleLineSubLambdaExpression,
+                     SyntaxKind.MultiLineFunctionLambdaExpression,
+                     SyntaxKind.MultiLineSubLambdaExpression,
+                     SyntaxKind.QueryExpression,
+                     SyntaxKind.FunctionAggregation,
+                     SyntaxKind.GroupAggregation,
+                     SyntaxKind.XmlDocument,
+                     SyntaxKind.XmlElement,
+                     SyntaxKind.XmlText,
+                     SyntaxKind.XmlElementStartTag,
+                     SyntaxKind.XmlElementEndTag,
+                     SyntaxKind.XmlEmptyElement,
+                     SyntaxKind.XmlAttribute,
+                     SyntaxKind.XmlString,
+                     SyntaxKind.XmlPrefixName,
+                     SyntaxKind.XmlName,
+                     SyntaxKind.XmlBracketedName,
+                     SyntaxKind.XmlComment,
+                     SyntaxKind.XmlProcessingInstruction,
+                     SyntaxKind.XmlCDataSection,
+                     SyntaxKind.XmlEmbeddedExpression,
+                     SyntaxKind.ArrayType,
+                     SyntaxKind.NullableType,
+                     SyntaxKind.PredefinedType,
+                     SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference,
+                     SyntaxKind.AwaitExpression,
+                     SyntaxKind.XmlCrefAttribute,
+                     SyntaxKind.XmlNameAttribute,
+                     SyntaxKind.ConditionalAccessExpression,
+                     SyntaxKind.NameOfExpression,
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
+                Case Else
+                    Throw new ArgumentException("expression")
+             End Select
+            Select Case operatorToken.Kind()
+                Case SyntaxKind.IsKeyword:
+                Case SyntaxKind.IsNotKeyword
+                Case Else
+                    Throw new ArgumentException("operatorToken")
+             End Select
+            Select Case openingBrace.Kind()
+                Case SyntaxKind.OpenBraceToken
+                Case Else
+                    Throw new ArgumentException("openingBrace")
+             End Select
+            Select Case closingBrace.Kind()
+                Case SyntaxKind.CloseBraceToken
+                Case Else
+                    Throw new ArgumentException("closingBrace")
+             End Select
+            Return New TypeOfManyExpressionSyntax(SyntaxKind.TypeOfManyIsNotExpression, Nothing, Nothing, DirectCast(typeOfKeyword.Node, InternalSyntax.KeywordSyntax), expression, DirectCast(operatorToken.Node, InternalSyntax.KeywordSyntax), DirectCast(openingBrace.Node, InternalSyntax.PunctuationSyntax), types.Node, DirectCast(closingBrace.Node, InternalSyntax.PunctuationSyntax))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a TypeOf...Is or IsNot expression.
+        ''' </summary>
+        ''' <param name="expression">
+        ''' The expression being tested.
+        ''' </param>
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="types">
+        ''' The name of the type being tested against.
+        ''' </param>
+        Public Shared Function TypeOfManyIsNotExpression(expression As ExpressionSyntax, operatorToken As SyntaxToken, types As SeparatedSyntaxList(Of TypeSyntax)) As TypeOfManyExpressionSyntax
+            Return SyntaxFactory.TypeOfManyIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), expression, operatorToken, SyntaxFactory.Token(SyntaxKind.OpenBraceToken), types, SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a TypeOf...Is or IsNot expression.
+        ''' </summary>
+        ''' <param name="kind">
+        ''' A <cref c="SyntaxKind"/> representing the specific kind of
+        ''' TypeOfManyExpressionSyntax. One of TypeOfManyIsExpression,
+        ''' TypeOfManyIsNotExpression.
+        ''' </param>
+        ''' <param name="typeOfKeyword">
+        ''' The "TypeOf" keyword.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The expression being tested.
+        ''' </param>
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="types">
+        ''' The name of the type being tested against.
+        ''' </param>
+        Public Shared Function TypeOfManyExpression(ByVal kind As SyntaxKind, typeOfKeyword As SyntaxToken, expression As ExpressionSyntax, operatorToken As SyntaxToken, openingBrace As SyntaxToken, types As SeparatedSyntaxList(Of TypeSyntax), closingBrace As SyntaxToken) As TypeOfManyExpressionSyntax
+            If Not SyntaxFacts.IsTypeOfManyExpression(kind) Then
+                Throw New ArgumentException("kind")
+            End If
+            Select Case typeOfKeyword.Kind()
+                Case SyntaxKind.TypeOfKeyword
+                Case Else
+                    Throw new ArgumentException("typeOfKeyword")
+             End Select
+            if expression Is Nothing Then
+                Throw New ArgumentNullException(NameOf(expression))
+            End If
+            Select Case expression.Kind()
+                Case SyntaxKind.KeywordEventContainer,
+                     SyntaxKind.WithEventsEventContainer,
+                     SyntaxKind.WithEventsPropertyEventContainer,
+                     SyntaxKind.IdentifierLabel,
+                     SyntaxKind.NumericLabel,
+                     SyntaxKind.NextLabel,
+                     SyntaxKind.MidExpression,
+                     SyntaxKind.CharacterLiteralExpression,
+                     SyntaxKind.TrueLiteralExpression,
+                     SyntaxKind.FalseLiteralExpression,
+                     SyntaxKind.NumericLiteralExpression,
+                     SyntaxKind.DateLiteralExpression,
+                     SyntaxKind.StringLiteralExpression,
+                     SyntaxKind.NothingLiteralExpression,
+                     SyntaxKind.ParenthesizedExpression,
+                     SyntaxKind.TupleExpression,
+                     SyntaxKind.TupleType,
+                     SyntaxKind.MeExpression,
+                     SyntaxKind.MyBaseExpression,
+                     SyntaxKind.MyClassExpression,
+                     SyntaxKind.GetTypeExpression,
+                     SyntaxKind.TypeOfIsExpression,
+                     SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
+                     SyntaxKind.GetXmlNamespaceExpression,
+                     SyntaxKind.SimpleMemberAccessExpression,
+                     SyntaxKind.DictionaryAccessExpression,
+                     SyntaxKind.XmlElementAccessExpression,
+                     SyntaxKind.XmlDescendantAccessExpression,
+                     SyntaxKind.XmlAttributeAccessExpression,
+                     SyntaxKind.InvocationExpression,
+                     SyntaxKind.ObjectCreationExpression,
+                     SyntaxKind.AnonymousObjectCreationExpression,
+                     SyntaxKind.ArrayCreationExpression,
+                     SyntaxKind.CollectionInitializer,
+                     SyntaxKind.CTypeExpression,
+                     SyntaxKind.DirectCastExpression,
+                     SyntaxKind.TryCastExpression,
+                     SyntaxKind.PredefinedCastExpression,
+                     SyntaxKind.AddExpression,
+                     SyntaxKind.SubtractExpression,
+                     SyntaxKind.MultiplyExpression,
+                     SyntaxKind.DivideExpression,
+                     SyntaxKind.IntegerDivideExpression,
+                     SyntaxKind.ExponentiateExpression,
+                     SyntaxKind.LeftShiftExpression,
+                     SyntaxKind.RightShiftExpression,
+                     SyntaxKind.ConcatenateExpression,
+                     SyntaxKind.ModuloExpression,
+                     SyntaxKind.EqualsExpression,
+                     SyntaxKind.NotEqualsExpression,
+                     SyntaxKind.LessThanExpression,
+                     SyntaxKind.LessThanOrEqualExpression,
+                     SyntaxKind.GreaterThanOrEqualExpression,
+                     SyntaxKind.GreaterThanExpression,
+                     SyntaxKind.IsExpression,
+                     SyntaxKind.IsNotExpression,
+                     SyntaxKind.LikeExpression,
+                     SyntaxKind.OrExpression,
+                     SyntaxKind.ExclusiveOrExpression,
+                     SyntaxKind.AndExpression,
+                     SyntaxKind.OrElseExpression,
+                     SyntaxKind.AndAlsoExpression,
+                     SyntaxKind.UnaryPlusExpression,
+                     SyntaxKind.UnaryMinusExpression,
+                     SyntaxKind.NotExpression,
+                     SyntaxKind.AddressOfExpression,
+                     SyntaxKind.BinaryConditionalExpression,
+                     SyntaxKind.TernaryConditionalExpression,
+                     SyntaxKind.SingleLineFunctionLambdaExpression,
+                     SyntaxKind.SingleLineSubLambdaExpression,
+                     SyntaxKind.MultiLineFunctionLambdaExpression,
+                     SyntaxKind.MultiLineSubLambdaExpression,
+                     SyntaxKind.QueryExpression,
+                     SyntaxKind.FunctionAggregation,
+                     SyntaxKind.GroupAggregation,
+                     SyntaxKind.XmlDocument,
+                     SyntaxKind.XmlElement,
+                     SyntaxKind.XmlText,
+                     SyntaxKind.XmlElementStartTag,
+                     SyntaxKind.XmlElementEndTag,
+                     SyntaxKind.XmlEmptyElement,
+                     SyntaxKind.XmlAttribute,
+                     SyntaxKind.XmlString,
+                     SyntaxKind.XmlPrefixName,
+                     SyntaxKind.XmlName,
+                     SyntaxKind.XmlBracketedName,
+                     SyntaxKind.XmlComment,
+                     SyntaxKind.XmlProcessingInstruction,
+                     SyntaxKind.XmlCDataSection,
+                     SyntaxKind.XmlEmbeddedExpression,
+                     SyntaxKind.ArrayType,
+                     SyntaxKind.NullableType,
+                     SyntaxKind.PredefinedType,
+                     SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference,
+                     SyntaxKind.AwaitExpression,
+                     SyntaxKind.XmlCrefAttribute,
+                     SyntaxKind.XmlNameAttribute,
+                     SyntaxKind.ConditionalAccessExpression,
+                     SyntaxKind.NameOfExpression,
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
+                Case Else
+                    Throw new ArgumentException("expression")
+             End Select
+            If (Not operatorToken.IsKind(GetTypeOfManyExpressionOperatorTokenKind(kind))) Then
+                Throw new ArgumentException("operatorToken")
+            End If
+            Select Case openingBrace.Kind()
+                Case SyntaxKind.OpenBraceToken
+                Case Else
+                    Throw new ArgumentException("openingBrace")
+             End Select
+            Select Case closingBrace.Kind()
+                Case SyntaxKind.CloseBraceToken
+                Case Else
+                    Throw new ArgumentException("closingBrace")
+             End Select
+            Return New TypeOfManyExpressionSyntax(kind, Nothing, Nothing, DirectCast(typeOfKeyword.Node, InternalSyntax.KeywordSyntax), expression, DirectCast(operatorToken.Node, InternalSyntax.KeywordSyntax), DirectCast(openingBrace.Node, InternalSyntax.PunctuationSyntax), types.Node, DirectCast(closingBrace.Node, InternalSyntax.PunctuationSyntax))
+        End Function
+
+        Private Shared Function GetTypeOfManyExpressionOperatorTokenKind(kind As SyntaxKind) As SyntaxKind
+            Select Case kind
+                Case Else
+                    Throw New ArgumentException("OperatorToken")
+            End Select
+        End Function
+
+        ''' <summary>
+        ''' Represents a TypeOf...Is or IsNot expression.
+        ''' </summary>
+        ''' <param name="kind">
+        ''' A <cref c="SyntaxKind"/> representing the specific kind of
+        ''' TypeOfManyExpressionSyntax. One of TypeOfManyIsExpression,
+        ''' TypeOfManyIsNotExpression.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The expression being tested.
+        ''' </param>
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="types">
+        ''' The name of the type being tested against.
+        ''' </param>
+        Public Shared Function TypeOfManyExpression(ByVal kind As SyntaxKind, expression As ExpressionSyntax, operatorToken As SyntaxToken, types As SeparatedSyntaxList(Of TypeSyntax)) As TypeOfManyExpressionSyntax
+            Return SyntaxFactory.TypeOfManyExpression(kind, SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), expression, operatorToken, SyntaxFactory.Token(SyntaxKind.OpenBraceToken), types, SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
+        End Function
+
+
+        ''' <summary>
         ''' Represents a GetXmlNamespace expression.
         ''' </summary>
         ''' <param name="getXmlNamespaceKeyword">
@@ -26118,7 +26906,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="name">
         ''' The identifier after the "." or "!" token.
         ''' </param>
-        Public Shared Function SimpleMemberAccessExpression(expression As ExpressionSyntax, operatorToken As SyntaxToken, name As SimpleNameSyntax) As MemberAccessExpressionSyntax
+        Public Shared Function SimpleMemberAccessExpression(expression As ExpressionSyntax, operatorToken As SyntaxToken, name As ExpressionSyntax) As MemberAccessExpressionSyntax
             Select Case operatorToken.Kind()
                 Case SyntaxKind.DotToken:
                 Case SyntaxKind.ExclamationToken
@@ -26129,8 +26917,114 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Throw New ArgumentNullException(NameOf(name))
             End If
             Select Case name.Kind()
-                Case SyntaxKind.IdentifierName,
-                     SyntaxKind.GenericName
+                Case SyntaxKind.KeywordEventContainer,
+                     SyntaxKind.WithEventsEventContainer,
+                     SyntaxKind.WithEventsPropertyEventContainer,
+                     SyntaxKind.IdentifierLabel,
+                     SyntaxKind.NumericLabel,
+                     SyntaxKind.NextLabel,
+                     SyntaxKind.MidExpression,
+                     SyntaxKind.CharacterLiteralExpression,
+                     SyntaxKind.TrueLiteralExpression,
+                     SyntaxKind.FalseLiteralExpression,
+                     SyntaxKind.NumericLiteralExpression,
+                     SyntaxKind.DateLiteralExpression,
+                     SyntaxKind.StringLiteralExpression,
+                     SyntaxKind.NothingLiteralExpression,
+                     SyntaxKind.ParenthesizedExpression,
+                     SyntaxKind.TupleExpression,
+                     SyntaxKind.TupleType,
+                     SyntaxKind.MeExpression,
+                     SyntaxKind.MyBaseExpression,
+                     SyntaxKind.MyClassExpression,
+                     SyntaxKind.GetTypeExpression,
+                     SyntaxKind.TypeOfIsExpression,
+                     SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
+                     SyntaxKind.GetXmlNamespaceExpression,
+                     SyntaxKind.SimpleMemberAccessExpression,
+                     SyntaxKind.DictionaryAccessExpression,
+                     SyntaxKind.XmlElementAccessExpression,
+                     SyntaxKind.XmlDescendantAccessExpression,
+                     SyntaxKind.XmlAttributeAccessExpression,
+                     SyntaxKind.InvocationExpression,
+                     SyntaxKind.ObjectCreationExpression,
+                     SyntaxKind.AnonymousObjectCreationExpression,
+                     SyntaxKind.ArrayCreationExpression,
+                     SyntaxKind.CollectionInitializer,
+                     SyntaxKind.CTypeExpression,
+                     SyntaxKind.DirectCastExpression,
+                     SyntaxKind.TryCastExpression,
+                     SyntaxKind.PredefinedCastExpression,
+                     SyntaxKind.AddExpression,
+                     SyntaxKind.SubtractExpression,
+                     SyntaxKind.MultiplyExpression,
+                     SyntaxKind.DivideExpression,
+                     SyntaxKind.IntegerDivideExpression,
+                     SyntaxKind.ExponentiateExpression,
+                     SyntaxKind.LeftShiftExpression,
+                     SyntaxKind.RightShiftExpression,
+                     SyntaxKind.ConcatenateExpression,
+                     SyntaxKind.ModuloExpression,
+                     SyntaxKind.EqualsExpression,
+                     SyntaxKind.NotEqualsExpression,
+                     SyntaxKind.LessThanExpression,
+                     SyntaxKind.LessThanOrEqualExpression,
+                     SyntaxKind.GreaterThanOrEqualExpression,
+                     SyntaxKind.GreaterThanExpression,
+                     SyntaxKind.IsExpression,
+                     SyntaxKind.IsNotExpression,
+                     SyntaxKind.LikeExpression,
+                     SyntaxKind.OrExpression,
+                     SyntaxKind.ExclusiveOrExpression,
+                     SyntaxKind.AndExpression,
+                     SyntaxKind.OrElseExpression,
+                     SyntaxKind.AndAlsoExpression,
+                     SyntaxKind.UnaryPlusExpression,
+                     SyntaxKind.UnaryMinusExpression,
+                     SyntaxKind.NotExpression,
+                     SyntaxKind.AddressOfExpression,
+                     SyntaxKind.BinaryConditionalExpression,
+                     SyntaxKind.TernaryConditionalExpression,
+                     SyntaxKind.SingleLineFunctionLambdaExpression,
+                     SyntaxKind.SingleLineSubLambdaExpression,
+                     SyntaxKind.MultiLineFunctionLambdaExpression,
+                     SyntaxKind.MultiLineSubLambdaExpression,
+                     SyntaxKind.QueryExpression,
+                     SyntaxKind.FunctionAggregation,
+                     SyntaxKind.GroupAggregation,
+                     SyntaxKind.XmlDocument,
+                     SyntaxKind.XmlElement,
+                     SyntaxKind.XmlText,
+                     SyntaxKind.XmlElementStartTag,
+                     SyntaxKind.XmlElementEndTag,
+                     SyntaxKind.XmlEmptyElement,
+                     SyntaxKind.XmlAttribute,
+                     SyntaxKind.XmlString,
+                     SyntaxKind.XmlPrefixName,
+                     SyntaxKind.XmlName,
+                     SyntaxKind.XmlBracketedName,
+                     SyntaxKind.XmlComment,
+                     SyntaxKind.XmlProcessingInstruction,
+                     SyntaxKind.XmlCDataSection,
+                     SyntaxKind.XmlEmbeddedExpression,
+                     SyntaxKind.ArrayType,
+                     SyntaxKind.NullableType,
+                     SyntaxKind.PredefinedType,
+                     SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference,
+                     SyntaxKind.AwaitExpression,
+                     SyntaxKind.XmlCrefAttribute,
+                     SyntaxKind.XmlNameAttribute,
+                     SyntaxKind.ConditionalAccessExpression,
+                     SyntaxKind.NameOfExpression,
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("name")
              End Select
@@ -26148,7 +27042,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="name">
         ''' The identifier after the "." or "!" token.
         ''' </param>
-        Public Shared Function SimpleMemberAccessExpression(expression As ExpressionSyntax, name As SimpleNameSyntax) As MemberAccessExpressionSyntax
+        Public Shared Function SimpleMemberAccessExpression(expression As ExpressionSyntax, name As ExpressionSyntax) As MemberAccessExpressionSyntax
             Return SyntaxFactory.SimpleMemberAccessExpression(expression, SyntaxFactory.Token(SyntaxKind.DotToken), name)
         End Function
 
@@ -26160,7 +27054,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="name">
         ''' The identifier after the "." or "!" token.
         ''' </param>
-        Public Shared Function SimpleMemberAccessExpression(name As SimpleNameSyntax) As MemberAccessExpressionSyntax
+        Public Shared Function SimpleMemberAccessExpression(name As ExpressionSyntax) As MemberAccessExpressionSyntax
             Return SyntaxFactory.SimpleMemberAccessExpression(Nothing, SyntaxFactory.Token(SyntaxKind.DotToken), name)
         End Function
 
@@ -26178,7 +27072,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="name">
         ''' The identifier after the "." or "!" token.
         ''' </param>
-        Public Shared Function DictionaryAccessExpression(expression As ExpressionSyntax, operatorToken As SyntaxToken, name As SimpleNameSyntax) As MemberAccessExpressionSyntax
+        Public Shared Function DictionaryAccessExpression(expression As ExpressionSyntax, operatorToken As SyntaxToken, name As ExpressionSyntax) As MemberAccessExpressionSyntax
             Select Case operatorToken.Kind()
                 Case SyntaxKind.ExclamationToken
                 Case Else
@@ -26188,8 +27082,114 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Throw New ArgumentNullException(NameOf(name))
             End If
             Select Case name.Kind()
-                Case SyntaxKind.IdentifierName,
-                     SyntaxKind.GenericName
+                Case SyntaxKind.KeywordEventContainer,
+                     SyntaxKind.WithEventsEventContainer,
+                     SyntaxKind.WithEventsPropertyEventContainer,
+                     SyntaxKind.IdentifierLabel,
+                     SyntaxKind.NumericLabel,
+                     SyntaxKind.NextLabel,
+                     SyntaxKind.MidExpression,
+                     SyntaxKind.CharacterLiteralExpression,
+                     SyntaxKind.TrueLiteralExpression,
+                     SyntaxKind.FalseLiteralExpression,
+                     SyntaxKind.NumericLiteralExpression,
+                     SyntaxKind.DateLiteralExpression,
+                     SyntaxKind.StringLiteralExpression,
+                     SyntaxKind.NothingLiteralExpression,
+                     SyntaxKind.ParenthesizedExpression,
+                     SyntaxKind.TupleExpression,
+                     SyntaxKind.TupleType,
+                     SyntaxKind.MeExpression,
+                     SyntaxKind.MyBaseExpression,
+                     SyntaxKind.MyClassExpression,
+                     SyntaxKind.GetTypeExpression,
+                     SyntaxKind.TypeOfIsExpression,
+                     SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
+                     SyntaxKind.GetXmlNamespaceExpression,
+                     SyntaxKind.SimpleMemberAccessExpression,
+                     SyntaxKind.DictionaryAccessExpression,
+                     SyntaxKind.XmlElementAccessExpression,
+                     SyntaxKind.XmlDescendantAccessExpression,
+                     SyntaxKind.XmlAttributeAccessExpression,
+                     SyntaxKind.InvocationExpression,
+                     SyntaxKind.ObjectCreationExpression,
+                     SyntaxKind.AnonymousObjectCreationExpression,
+                     SyntaxKind.ArrayCreationExpression,
+                     SyntaxKind.CollectionInitializer,
+                     SyntaxKind.CTypeExpression,
+                     SyntaxKind.DirectCastExpression,
+                     SyntaxKind.TryCastExpression,
+                     SyntaxKind.PredefinedCastExpression,
+                     SyntaxKind.AddExpression,
+                     SyntaxKind.SubtractExpression,
+                     SyntaxKind.MultiplyExpression,
+                     SyntaxKind.DivideExpression,
+                     SyntaxKind.IntegerDivideExpression,
+                     SyntaxKind.ExponentiateExpression,
+                     SyntaxKind.LeftShiftExpression,
+                     SyntaxKind.RightShiftExpression,
+                     SyntaxKind.ConcatenateExpression,
+                     SyntaxKind.ModuloExpression,
+                     SyntaxKind.EqualsExpression,
+                     SyntaxKind.NotEqualsExpression,
+                     SyntaxKind.LessThanExpression,
+                     SyntaxKind.LessThanOrEqualExpression,
+                     SyntaxKind.GreaterThanOrEqualExpression,
+                     SyntaxKind.GreaterThanExpression,
+                     SyntaxKind.IsExpression,
+                     SyntaxKind.IsNotExpression,
+                     SyntaxKind.LikeExpression,
+                     SyntaxKind.OrExpression,
+                     SyntaxKind.ExclusiveOrExpression,
+                     SyntaxKind.AndExpression,
+                     SyntaxKind.OrElseExpression,
+                     SyntaxKind.AndAlsoExpression,
+                     SyntaxKind.UnaryPlusExpression,
+                     SyntaxKind.UnaryMinusExpression,
+                     SyntaxKind.NotExpression,
+                     SyntaxKind.AddressOfExpression,
+                     SyntaxKind.BinaryConditionalExpression,
+                     SyntaxKind.TernaryConditionalExpression,
+                     SyntaxKind.SingleLineFunctionLambdaExpression,
+                     SyntaxKind.SingleLineSubLambdaExpression,
+                     SyntaxKind.MultiLineFunctionLambdaExpression,
+                     SyntaxKind.MultiLineSubLambdaExpression,
+                     SyntaxKind.QueryExpression,
+                     SyntaxKind.FunctionAggregation,
+                     SyntaxKind.GroupAggregation,
+                     SyntaxKind.XmlDocument,
+                     SyntaxKind.XmlElement,
+                     SyntaxKind.XmlText,
+                     SyntaxKind.XmlElementStartTag,
+                     SyntaxKind.XmlElementEndTag,
+                     SyntaxKind.XmlEmptyElement,
+                     SyntaxKind.XmlAttribute,
+                     SyntaxKind.XmlString,
+                     SyntaxKind.XmlPrefixName,
+                     SyntaxKind.XmlName,
+                     SyntaxKind.XmlBracketedName,
+                     SyntaxKind.XmlComment,
+                     SyntaxKind.XmlProcessingInstruction,
+                     SyntaxKind.XmlCDataSection,
+                     SyntaxKind.XmlEmbeddedExpression,
+                     SyntaxKind.ArrayType,
+                     SyntaxKind.NullableType,
+                     SyntaxKind.PredefinedType,
+                     SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference,
+                     SyntaxKind.AwaitExpression,
+                     SyntaxKind.XmlCrefAttribute,
+                     SyntaxKind.XmlNameAttribute,
+                     SyntaxKind.ConditionalAccessExpression,
+                     SyntaxKind.NameOfExpression,
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("name")
              End Select
@@ -26207,7 +27207,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="name">
         ''' The identifier after the "." or "!" token.
         ''' </param>
-        Public Shared Function DictionaryAccessExpression(expression As ExpressionSyntax, name As SimpleNameSyntax) As MemberAccessExpressionSyntax
+        Public Shared Function DictionaryAccessExpression(expression As ExpressionSyntax, name As ExpressionSyntax) As MemberAccessExpressionSyntax
             Return SyntaxFactory.DictionaryAccessExpression(expression, SyntaxFactory.Token(SyntaxKind.ExclamationToken), name)
         End Function
 
@@ -26219,7 +27219,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="name">
         ''' The identifier after the "." or "!" token.
         ''' </param>
-        Public Shared Function DictionaryAccessExpression(name As SimpleNameSyntax) As MemberAccessExpressionSyntax
+        Public Shared Function DictionaryAccessExpression(name As ExpressionSyntax) As MemberAccessExpressionSyntax
             Return SyntaxFactory.DictionaryAccessExpression(Nothing, SyntaxFactory.Token(SyntaxKind.ExclamationToken), name)
         End Function
 
@@ -26242,7 +27242,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="name">
         ''' The identifier after the "." or "!" token.
         ''' </param>
-        Public Shared Function MemberAccessExpression(ByVal kind As SyntaxKind, expression As ExpressionSyntax, operatorToken As SyntaxToken, name As SimpleNameSyntax) As MemberAccessExpressionSyntax
+        Public Shared Function MemberAccessExpression(ByVal kind As SyntaxKind, expression As ExpressionSyntax, operatorToken As SyntaxToken, name As ExpressionSyntax) As MemberAccessExpressionSyntax
             If Not SyntaxFacts.IsMemberAccessExpression(kind) Then
                 Throw New ArgumentException("kind")
             End If
@@ -26253,8 +27253,114 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Throw New ArgumentNullException(NameOf(name))
             End If
             Select Case name.Kind()
-                Case SyntaxKind.IdentifierName,
-                     SyntaxKind.GenericName
+                Case SyntaxKind.KeywordEventContainer,
+                     SyntaxKind.WithEventsEventContainer,
+                     SyntaxKind.WithEventsPropertyEventContainer,
+                     SyntaxKind.IdentifierLabel,
+                     SyntaxKind.NumericLabel,
+                     SyntaxKind.NextLabel,
+                     SyntaxKind.MidExpression,
+                     SyntaxKind.CharacterLiteralExpression,
+                     SyntaxKind.TrueLiteralExpression,
+                     SyntaxKind.FalseLiteralExpression,
+                     SyntaxKind.NumericLiteralExpression,
+                     SyntaxKind.DateLiteralExpression,
+                     SyntaxKind.StringLiteralExpression,
+                     SyntaxKind.NothingLiteralExpression,
+                     SyntaxKind.ParenthesizedExpression,
+                     SyntaxKind.TupleExpression,
+                     SyntaxKind.TupleType,
+                     SyntaxKind.MeExpression,
+                     SyntaxKind.MyBaseExpression,
+                     SyntaxKind.MyClassExpression,
+                     SyntaxKind.GetTypeExpression,
+                     SyntaxKind.TypeOfIsExpression,
+                     SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
+                     SyntaxKind.GetXmlNamespaceExpression,
+                     SyntaxKind.SimpleMemberAccessExpression,
+                     SyntaxKind.DictionaryAccessExpression,
+                     SyntaxKind.XmlElementAccessExpression,
+                     SyntaxKind.XmlDescendantAccessExpression,
+                     SyntaxKind.XmlAttributeAccessExpression,
+                     SyntaxKind.InvocationExpression,
+                     SyntaxKind.ObjectCreationExpression,
+                     SyntaxKind.AnonymousObjectCreationExpression,
+                     SyntaxKind.ArrayCreationExpression,
+                     SyntaxKind.CollectionInitializer,
+                     SyntaxKind.CTypeExpression,
+                     SyntaxKind.DirectCastExpression,
+                     SyntaxKind.TryCastExpression,
+                     SyntaxKind.PredefinedCastExpression,
+                     SyntaxKind.AddExpression,
+                     SyntaxKind.SubtractExpression,
+                     SyntaxKind.MultiplyExpression,
+                     SyntaxKind.DivideExpression,
+                     SyntaxKind.IntegerDivideExpression,
+                     SyntaxKind.ExponentiateExpression,
+                     SyntaxKind.LeftShiftExpression,
+                     SyntaxKind.RightShiftExpression,
+                     SyntaxKind.ConcatenateExpression,
+                     SyntaxKind.ModuloExpression,
+                     SyntaxKind.EqualsExpression,
+                     SyntaxKind.NotEqualsExpression,
+                     SyntaxKind.LessThanExpression,
+                     SyntaxKind.LessThanOrEqualExpression,
+                     SyntaxKind.GreaterThanOrEqualExpression,
+                     SyntaxKind.GreaterThanExpression,
+                     SyntaxKind.IsExpression,
+                     SyntaxKind.IsNotExpression,
+                     SyntaxKind.LikeExpression,
+                     SyntaxKind.OrExpression,
+                     SyntaxKind.ExclusiveOrExpression,
+                     SyntaxKind.AndExpression,
+                     SyntaxKind.OrElseExpression,
+                     SyntaxKind.AndAlsoExpression,
+                     SyntaxKind.UnaryPlusExpression,
+                     SyntaxKind.UnaryMinusExpression,
+                     SyntaxKind.NotExpression,
+                     SyntaxKind.AddressOfExpression,
+                     SyntaxKind.BinaryConditionalExpression,
+                     SyntaxKind.TernaryConditionalExpression,
+                     SyntaxKind.SingleLineFunctionLambdaExpression,
+                     SyntaxKind.SingleLineSubLambdaExpression,
+                     SyntaxKind.MultiLineFunctionLambdaExpression,
+                     SyntaxKind.MultiLineSubLambdaExpression,
+                     SyntaxKind.QueryExpression,
+                     SyntaxKind.FunctionAggregation,
+                     SyntaxKind.GroupAggregation,
+                     SyntaxKind.XmlDocument,
+                     SyntaxKind.XmlElement,
+                     SyntaxKind.XmlText,
+                     SyntaxKind.XmlElementStartTag,
+                     SyntaxKind.XmlElementEndTag,
+                     SyntaxKind.XmlEmptyElement,
+                     SyntaxKind.XmlAttribute,
+                     SyntaxKind.XmlString,
+                     SyntaxKind.XmlPrefixName,
+                     SyntaxKind.XmlName,
+                     SyntaxKind.XmlBracketedName,
+                     SyntaxKind.XmlComment,
+                     SyntaxKind.XmlProcessingInstruction,
+                     SyntaxKind.XmlCDataSection,
+                     SyntaxKind.XmlEmbeddedExpression,
+                     SyntaxKind.ArrayType,
+                     SyntaxKind.NullableType,
+                     SyntaxKind.PredefinedType,
+                     SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference,
+                     SyntaxKind.AwaitExpression,
+                     SyntaxKind.XmlCrefAttribute,
+                     SyntaxKind.XmlNameAttribute,
+                     SyntaxKind.ConditionalAccessExpression,
+                     SyntaxKind.NameOfExpression,
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("name")
              End Select
@@ -26287,7 +27393,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="name">
         ''' The identifier after the "." or "!" token.
         ''' </param>
-        Public Shared Function MemberAccessExpression(ByVal kind As SyntaxKind, operatorToken As SyntaxToken, name As SimpleNameSyntax) As MemberAccessExpressionSyntax
+        Public Shared Function MemberAccessExpression(ByVal kind As SyntaxKind, operatorToken As SyntaxToken, name As ExpressionSyntax) As MemberAccessExpressionSyntax
             Return SyntaxFactory.MemberAccessExpression(kind, Nothing, operatorToken, name)
         End Function
 
@@ -26958,6 +28064,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -27039,7 +28147,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -27141,6 +28250,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -27222,7 +28333,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -27324,6 +28436,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -27405,7 +28519,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -27520,6 +28635,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -27601,7 +28718,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -27668,6 +28786,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -27749,7 +28869,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -27808,6 +28929,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -27889,7 +29012,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -27952,6 +29076,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -28033,7 +29159,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -28069,6 +29196,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -28150,7 +29279,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -28213,6 +29343,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -28294,7 +29426,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -28330,6 +29463,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -28411,7 +29546,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -28474,6 +29610,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -28555,7 +29693,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -28591,6 +29730,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -28672,7 +29813,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -28735,6 +29877,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -28816,7 +29960,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -28852,6 +29997,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -28933,7 +30080,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -28996,6 +30144,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -29077,7 +30227,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -29113,6 +30264,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -29194,7 +30347,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -29257,6 +30411,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -29338,7 +30494,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -29374,6 +30531,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -29455,7 +30614,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -29518,6 +30678,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -29599,7 +30761,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -29635,6 +30798,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -29716,7 +30881,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -29779,6 +30945,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -29860,7 +31028,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -29896,6 +31065,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -29977,7 +31148,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -30040,6 +31212,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -30121,7 +31295,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -30157,6 +31332,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -30238,7 +31415,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -30301,6 +31479,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -30382,7 +31562,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -30418,6 +31599,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -30499,7 +31682,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -30562,6 +31746,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -30643,7 +31829,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -30679,6 +31866,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -30760,7 +31949,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -30823,6 +32013,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -30904,7 +32096,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -30940,6 +32133,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -31021,7 +32216,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -31084,6 +32280,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -31165,7 +32363,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -31201,6 +32400,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -31282,7 +32483,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -31345,6 +32547,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -31426,7 +32630,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -31462,6 +32667,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -31543,7 +32750,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -31606,6 +32814,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -31687,7 +32897,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -31723,6 +32934,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -31804,7 +33017,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -31867,6 +33081,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -31948,7 +33164,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -31984,6 +33201,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -32065,7 +33284,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -32128,6 +33348,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -32209,7 +33431,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -32245,6 +33468,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -32326,7 +33551,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -32389,6 +33615,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -32470,7 +33698,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -32506,6 +33735,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -32587,7 +33818,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -32650,6 +33882,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -32731,7 +33965,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -32767,6 +34002,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -32848,7 +34085,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -32911,6 +34149,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -32992,7 +34232,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -33028,6 +34269,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -33109,7 +34352,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -33172,6 +34416,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -33253,7 +34499,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -33289,6 +34536,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -33370,7 +34619,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -33433,6 +34683,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -33514,7 +34766,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -33550,6 +34803,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -33631,7 +34886,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -33694,6 +34950,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -33775,7 +35033,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -33811,6 +35070,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -33892,7 +35153,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -33969,6 +35231,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -34050,7 +35314,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -34084,6 +35349,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -34165,7 +35432,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -34272,6 +35540,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -34353,7 +35623,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("operand")
              End Select
@@ -34414,6 +35685,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -34495,7 +35768,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("operand")
              End Select
@@ -34556,6 +35830,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -34637,7 +35913,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("operand")
              End Select
@@ -34698,6 +35975,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -34779,7 +36058,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("operand")
              End Select
@@ -34846,6 +36126,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -34927,7 +36209,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("operand")
              End Select
@@ -35009,6 +36292,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -35090,7 +36375,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("firstExpression")
              End Select
@@ -35126,6 +36412,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -35207,7 +36495,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("secondExpression")
              End Select
@@ -35301,400 +36590,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
-                     SyntaxKind.GetXmlNamespaceExpression,
-                     SyntaxKind.SimpleMemberAccessExpression,
-                     SyntaxKind.DictionaryAccessExpression,
-                     SyntaxKind.XmlElementAccessExpression,
-                     SyntaxKind.XmlDescendantAccessExpression,
-                     SyntaxKind.XmlAttributeAccessExpression,
-                     SyntaxKind.InvocationExpression,
-                     SyntaxKind.ObjectCreationExpression,
-                     SyntaxKind.AnonymousObjectCreationExpression,
-                     SyntaxKind.ArrayCreationExpression,
-                     SyntaxKind.CollectionInitializer,
-                     SyntaxKind.CTypeExpression,
-                     SyntaxKind.DirectCastExpression,
-                     SyntaxKind.TryCastExpression,
-                     SyntaxKind.PredefinedCastExpression,
-                     SyntaxKind.AddExpression,
-                     SyntaxKind.SubtractExpression,
-                     SyntaxKind.MultiplyExpression,
-                     SyntaxKind.DivideExpression,
-                     SyntaxKind.IntegerDivideExpression,
-                     SyntaxKind.ExponentiateExpression,
-                     SyntaxKind.LeftShiftExpression,
-                     SyntaxKind.RightShiftExpression,
-                     SyntaxKind.ConcatenateExpression,
-                     SyntaxKind.ModuloExpression,
-                     SyntaxKind.EqualsExpression,
-                     SyntaxKind.NotEqualsExpression,
-                     SyntaxKind.LessThanExpression,
-                     SyntaxKind.LessThanOrEqualExpression,
-                     SyntaxKind.GreaterThanOrEqualExpression,
-                     SyntaxKind.GreaterThanExpression,
-                     SyntaxKind.IsExpression,
-                     SyntaxKind.IsNotExpression,
-                     SyntaxKind.LikeExpression,
-                     SyntaxKind.OrExpression,
-                     SyntaxKind.ExclusiveOrExpression,
-                     SyntaxKind.AndExpression,
-                     SyntaxKind.OrElseExpression,
-                     SyntaxKind.AndAlsoExpression,
-                     SyntaxKind.UnaryPlusExpression,
-                     SyntaxKind.UnaryMinusExpression,
-                     SyntaxKind.NotExpression,
-                     SyntaxKind.AddressOfExpression,
-                     SyntaxKind.BinaryConditionalExpression,
-                     SyntaxKind.TernaryConditionalExpression,
-                     SyntaxKind.SingleLineFunctionLambdaExpression,
-                     SyntaxKind.SingleLineSubLambdaExpression,
-                     SyntaxKind.MultiLineFunctionLambdaExpression,
-                     SyntaxKind.MultiLineSubLambdaExpression,
-                     SyntaxKind.QueryExpression,
-                     SyntaxKind.FunctionAggregation,
-                     SyntaxKind.GroupAggregation,
-                     SyntaxKind.XmlDocument,
-                     SyntaxKind.XmlElement,
-                     SyntaxKind.XmlText,
-                     SyntaxKind.XmlElementStartTag,
-                     SyntaxKind.XmlElementEndTag,
-                     SyntaxKind.XmlEmptyElement,
-                     SyntaxKind.XmlAttribute,
-                     SyntaxKind.XmlString,
-                     SyntaxKind.XmlPrefixName,
-                     SyntaxKind.XmlName,
-                     SyntaxKind.XmlBracketedName,
-                     SyntaxKind.XmlComment,
-                     SyntaxKind.XmlProcessingInstruction,
-                     SyntaxKind.XmlCDataSection,
-                     SyntaxKind.XmlEmbeddedExpression,
-                     SyntaxKind.ArrayType,
-                     SyntaxKind.NullableType,
-                     SyntaxKind.PredefinedType,
-                     SyntaxKind.IdentifierName,
-                     SyntaxKind.GenericName,
-                     SyntaxKind.QualifiedName,
-                     SyntaxKind.GlobalName,
-                     SyntaxKind.CrefOperatorReference,
-                     SyntaxKind.QualifiedCrefOperatorReference,
-                     SyntaxKind.AwaitExpression,
-                     SyntaxKind.XmlCrefAttribute,
-                     SyntaxKind.XmlNameAttribute,
-                     SyntaxKind.ConditionalAccessExpression,
-                     SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
-                Case Else
-                    Throw new ArgumentException("condition")
-             End Select
-            Select Case firstCommaToken.Kind()
-                Case SyntaxKind.CommaToken
-                Case Else
-                    Throw new ArgumentException("firstCommaToken")
-             End Select
-            if whenTrue Is Nothing Then
-                Throw New ArgumentNullException(NameOf(whenTrue))
-            End If
-            Select Case whenTrue.Kind()
-                Case SyntaxKind.KeywordEventContainer,
-                     SyntaxKind.WithEventsEventContainer,
-                     SyntaxKind.WithEventsPropertyEventContainer,
-                     SyntaxKind.IdentifierLabel,
-                     SyntaxKind.NumericLabel,
-                     SyntaxKind.NextLabel,
-                     SyntaxKind.MidExpression,
-                     SyntaxKind.CharacterLiteralExpression,
-                     SyntaxKind.TrueLiteralExpression,
-                     SyntaxKind.FalseLiteralExpression,
-                     SyntaxKind.NumericLiteralExpression,
-                     SyntaxKind.DateLiteralExpression,
-                     SyntaxKind.StringLiteralExpression,
-                     SyntaxKind.NothingLiteralExpression,
-                     SyntaxKind.ParenthesizedExpression,
-                     SyntaxKind.TupleExpression,
-                     SyntaxKind.TupleType,
-                     SyntaxKind.MeExpression,
-                     SyntaxKind.MyBaseExpression,
-                     SyntaxKind.MyClassExpression,
-                     SyntaxKind.GetTypeExpression,
-                     SyntaxKind.TypeOfIsExpression,
-                     SyntaxKind.TypeOfIsNotExpression,
-                     SyntaxKind.GetXmlNamespaceExpression,
-                     SyntaxKind.SimpleMemberAccessExpression,
-                     SyntaxKind.DictionaryAccessExpression,
-                     SyntaxKind.XmlElementAccessExpression,
-                     SyntaxKind.XmlDescendantAccessExpression,
-                     SyntaxKind.XmlAttributeAccessExpression,
-                     SyntaxKind.InvocationExpression,
-                     SyntaxKind.ObjectCreationExpression,
-                     SyntaxKind.AnonymousObjectCreationExpression,
-                     SyntaxKind.ArrayCreationExpression,
-                     SyntaxKind.CollectionInitializer,
-                     SyntaxKind.CTypeExpression,
-                     SyntaxKind.DirectCastExpression,
-                     SyntaxKind.TryCastExpression,
-                     SyntaxKind.PredefinedCastExpression,
-                     SyntaxKind.AddExpression,
-                     SyntaxKind.SubtractExpression,
-                     SyntaxKind.MultiplyExpression,
-                     SyntaxKind.DivideExpression,
-                     SyntaxKind.IntegerDivideExpression,
-                     SyntaxKind.ExponentiateExpression,
-                     SyntaxKind.LeftShiftExpression,
-                     SyntaxKind.RightShiftExpression,
-                     SyntaxKind.ConcatenateExpression,
-                     SyntaxKind.ModuloExpression,
-                     SyntaxKind.EqualsExpression,
-                     SyntaxKind.NotEqualsExpression,
-                     SyntaxKind.LessThanExpression,
-                     SyntaxKind.LessThanOrEqualExpression,
-                     SyntaxKind.GreaterThanOrEqualExpression,
-                     SyntaxKind.GreaterThanExpression,
-                     SyntaxKind.IsExpression,
-                     SyntaxKind.IsNotExpression,
-                     SyntaxKind.LikeExpression,
-                     SyntaxKind.OrExpression,
-                     SyntaxKind.ExclusiveOrExpression,
-                     SyntaxKind.AndExpression,
-                     SyntaxKind.OrElseExpression,
-                     SyntaxKind.AndAlsoExpression,
-                     SyntaxKind.UnaryPlusExpression,
-                     SyntaxKind.UnaryMinusExpression,
-                     SyntaxKind.NotExpression,
-                     SyntaxKind.AddressOfExpression,
-                     SyntaxKind.BinaryConditionalExpression,
-                     SyntaxKind.TernaryConditionalExpression,
-                     SyntaxKind.SingleLineFunctionLambdaExpression,
-                     SyntaxKind.SingleLineSubLambdaExpression,
-                     SyntaxKind.MultiLineFunctionLambdaExpression,
-                     SyntaxKind.MultiLineSubLambdaExpression,
-                     SyntaxKind.QueryExpression,
-                     SyntaxKind.FunctionAggregation,
-                     SyntaxKind.GroupAggregation,
-                     SyntaxKind.XmlDocument,
-                     SyntaxKind.XmlElement,
-                     SyntaxKind.XmlText,
-                     SyntaxKind.XmlElementStartTag,
-                     SyntaxKind.XmlElementEndTag,
-                     SyntaxKind.XmlEmptyElement,
-                     SyntaxKind.XmlAttribute,
-                     SyntaxKind.XmlString,
-                     SyntaxKind.XmlPrefixName,
-                     SyntaxKind.XmlName,
-                     SyntaxKind.XmlBracketedName,
-                     SyntaxKind.XmlComment,
-                     SyntaxKind.XmlProcessingInstruction,
-                     SyntaxKind.XmlCDataSection,
-                     SyntaxKind.XmlEmbeddedExpression,
-                     SyntaxKind.ArrayType,
-                     SyntaxKind.NullableType,
-                     SyntaxKind.PredefinedType,
-                     SyntaxKind.IdentifierName,
-                     SyntaxKind.GenericName,
-                     SyntaxKind.QualifiedName,
-                     SyntaxKind.GlobalName,
-                     SyntaxKind.CrefOperatorReference,
-                     SyntaxKind.QualifiedCrefOperatorReference,
-                     SyntaxKind.AwaitExpression,
-                     SyntaxKind.XmlCrefAttribute,
-                     SyntaxKind.XmlNameAttribute,
-                     SyntaxKind.ConditionalAccessExpression,
-                     SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
-                Case Else
-                    Throw new ArgumentException("whenTrue")
-             End Select
-            Select Case secondCommaToken.Kind()
-                Case SyntaxKind.CommaToken
-                Case Else
-                    Throw new ArgumentException("secondCommaToken")
-             End Select
-            if whenFalse Is Nothing Then
-                Throw New ArgumentNullException(NameOf(whenFalse))
-            End If
-            Select Case whenFalse.Kind()
-                Case SyntaxKind.KeywordEventContainer,
-                     SyntaxKind.WithEventsEventContainer,
-                     SyntaxKind.WithEventsPropertyEventContainer,
-                     SyntaxKind.IdentifierLabel,
-                     SyntaxKind.NumericLabel,
-                     SyntaxKind.NextLabel,
-                     SyntaxKind.MidExpression,
-                     SyntaxKind.CharacterLiteralExpression,
-                     SyntaxKind.TrueLiteralExpression,
-                     SyntaxKind.FalseLiteralExpression,
-                     SyntaxKind.NumericLiteralExpression,
-                     SyntaxKind.DateLiteralExpression,
-                     SyntaxKind.StringLiteralExpression,
-                     SyntaxKind.NothingLiteralExpression,
-                     SyntaxKind.ParenthesizedExpression,
-                     SyntaxKind.TupleExpression,
-                     SyntaxKind.TupleType,
-                     SyntaxKind.MeExpression,
-                     SyntaxKind.MyBaseExpression,
-                     SyntaxKind.MyClassExpression,
-                     SyntaxKind.GetTypeExpression,
-                     SyntaxKind.TypeOfIsExpression,
-                     SyntaxKind.TypeOfIsNotExpression,
-                     SyntaxKind.GetXmlNamespaceExpression,
-                     SyntaxKind.SimpleMemberAccessExpression,
-                     SyntaxKind.DictionaryAccessExpression,
-                     SyntaxKind.XmlElementAccessExpression,
-                     SyntaxKind.XmlDescendantAccessExpression,
-                     SyntaxKind.XmlAttributeAccessExpression,
-                     SyntaxKind.InvocationExpression,
-                     SyntaxKind.ObjectCreationExpression,
-                     SyntaxKind.AnonymousObjectCreationExpression,
-                     SyntaxKind.ArrayCreationExpression,
-                     SyntaxKind.CollectionInitializer,
-                     SyntaxKind.CTypeExpression,
-                     SyntaxKind.DirectCastExpression,
-                     SyntaxKind.TryCastExpression,
-                     SyntaxKind.PredefinedCastExpression,
-                     SyntaxKind.AddExpression,
-                     SyntaxKind.SubtractExpression,
-                     SyntaxKind.MultiplyExpression,
-                     SyntaxKind.DivideExpression,
-                     SyntaxKind.IntegerDivideExpression,
-                     SyntaxKind.ExponentiateExpression,
-                     SyntaxKind.LeftShiftExpression,
-                     SyntaxKind.RightShiftExpression,
-                     SyntaxKind.ConcatenateExpression,
-                     SyntaxKind.ModuloExpression,
-                     SyntaxKind.EqualsExpression,
-                     SyntaxKind.NotEqualsExpression,
-                     SyntaxKind.LessThanExpression,
-                     SyntaxKind.LessThanOrEqualExpression,
-                     SyntaxKind.GreaterThanOrEqualExpression,
-                     SyntaxKind.GreaterThanExpression,
-                     SyntaxKind.IsExpression,
-                     SyntaxKind.IsNotExpression,
-                     SyntaxKind.LikeExpression,
-                     SyntaxKind.OrExpression,
-                     SyntaxKind.ExclusiveOrExpression,
-                     SyntaxKind.AndExpression,
-                     SyntaxKind.OrElseExpression,
-                     SyntaxKind.AndAlsoExpression,
-                     SyntaxKind.UnaryPlusExpression,
-                     SyntaxKind.UnaryMinusExpression,
-                     SyntaxKind.NotExpression,
-                     SyntaxKind.AddressOfExpression,
-                     SyntaxKind.BinaryConditionalExpression,
-                     SyntaxKind.TernaryConditionalExpression,
-                     SyntaxKind.SingleLineFunctionLambdaExpression,
-                     SyntaxKind.SingleLineSubLambdaExpression,
-                     SyntaxKind.MultiLineFunctionLambdaExpression,
-                     SyntaxKind.MultiLineSubLambdaExpression,
-                     SyntaxKind.QueryExpression,
-                     SyntaxKind.FunctionAggregation,
-                     SyntaxKind.GroupAggregation,
-                     SyntaxKind.XmlDocument,
-                     SyntaxKind.XmlElement,
-                     SyntaxKind.XmlText,
-                     SyntaxKind.XmlElementStartTag,
-                     SyntaxKind.XmlElementEndTag,
-                     SyntaxKind.XmlEmptyElement,
-                     SyntaxKind.XmlAttribute,
-                     SyntaxKind.XmlString,
-                     SyntaxKind.XmlPrefixName,
-                     SyntaxKind.XmlName,
-                     SyntaxKind.XmlBracketedName,
-                     SyntaxKind.XmlComment,
-                     SyntaxKind.XmlProcessingInstruction,
-                     SyntaxKind.XmlCDataSection,
-                     SyntaxKind.XmlEmbeddedExpression,
-                     SyntaxKind.ArrayType,
-                     SyntaxKind.NullableType,
-                     SyntaxKind.PredefinedType,
-                     SyntaxKind.IdentifierName,
-                     SyntaxKind.GenericName,
-                     SyntaxKind.QualifiedName,
-                     SyntaxKind.GlobalName,
-                     SyntaxKind.CrefOperatorReference,
-                     SyntaxKind.QualifiedCrefOperatorReference,
-                     SyntaxKind.AwaitExpression,
-                     SyntaxKind.XmlCrefAttribute,
-                     SyntaxKind.XmlNameAttribute,
-                     SyntaxKind.ConditionalAccessExpression,
-                     SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
-                Case Else
-                    Throw new ArgumentException("whenFalse")
-             End Select
-            Select Case closeParenToken.Kind()
-                Case SyntaxKind.CloseParenToken
-                Case Else
-                    Throw new ArgumentException("closeParenToken")
-             End Select
-            Return New TernaryConditionalExpressionSyntax(SyntaxKind.TernaryConditionalExpression, Nothing, Nothing, DirectCast(ifKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(openParenToken.Node, InternalSyntax.PunctuationSyntax), condition, DirectCast(firstCommaToken.Node, InternalSyntax.PunctuationSyntax), whenTrue, DirectCast(secondCommaToken.Node, InternalSyntax.PunctuationSyntax), whenFalse, DirectCast(closeParenToken.Node, InternalSyntax.PunctuationSyntax))
-        End Function
-
-
-        ''' <summary>
-        ''' Represents a conditional expression, If(condition, true-expr, false-expr) or
-        ''' If(expr, nothing-expr).
-        ''' </summary>
-        ''' <param name="condition">
-        ''' The first expression inside the parentheses.
-        ''' </param>
-        ''' <param name="whenTrue">
-        ''' The second expression inside the parentheses.
-        ''' </param>
-        ''' <param name="whenFalse">
-        ''' The second expression inside the parentheses.
-        ''' </param>
-        Public Shared Function TernaryConditionalExpression(condition As ExpressionSyntax, whenTrue As ExpressionSyntax, whenFalse As ExpressionSyntax) As TernaryConditionalExpressionSyntax
-            Return SyntaxFactory.TernaryConditionalExpression(SyntaxFactory.Token(SyntaxKind.IfKeyword), SyntaxFactory.Token(SyntaxKind.OpenParenToken), condition, SyntaxFactory.Token(SyntaxKind.CommaToken), whenTrue, SyntaxFactory.Token(SyntaxKind.CommaToken), whenFalse, SyntaxFactory.Token(SyntaxKind.CloseParenToken))
-        End Function
-
-
-        ''' <summary>
-        ''' Represents a single line lambda expression.
-        ''' </summary>
-        ''' <param name="subOrFunctionHeader">
-        ''' The header part of the lambda that includes the "Sub" or "Function" keyword,
-        ''' the argument list and return type.
-        ''' </param>
-        ''' <param name="body">
-        ''' The body of the lambda. Depending on the kind of lambda, this is either a
-        ''' Statement (single-line Sub lambda) or Expression (single-line Function).
-        ''' </param>
-        Public Shared Function SingleLineFunctionLambdaExpression(subOrFunctionHeader As LambdaHeaderSyntax, body As VisualBasicSyntaxNode) As SingleLineLambdaExpressionSyntax
-            if subOrFunctionHeader Is Nothing Then
-                Throw New ArgumentNullException(NameOf(subOrFunctionHeader))
-            End If
-            Select Case subOrFunctionHeader.Kind()
-                Case SyntaxKind.SubLambdaHeader,
-                     SyntaxKind.FunctionLambdaHeader
-                Case Else
-                    Throw new ArgumentException("subOrFunctionHeader")
-             End Select
-            if body Is Nothing Then
-                Throw New ArgumentNullException(NameOf(body))
-            End If
-            Select Case body.Kind()
-                Case SyntaxKind.KeywordEventContainer,
-                     SyntaxKind.WithEventsEventContainer,
-                     SyntaxKind.WithEventsPropertyEventContainer,
-                     SyntaxKind.IdentifierLabel,
-                     SyntaxKind.NumericLabel,
-                     SyntaxKind.NextLabel,
-                     SyntaxKind.MidExpression,
-                     SyntaxKind.CharacterLiteralExpression,
-                     SyntaxKind.TrueLiteralExpression,
-                     SyntaxKind.FalseLiteralExpression,
-                     SyntaxKind.NumericLiteralExpression,
-                     SyntaxKind.DateLiteralExpression,
-                     SyntaxKind.StringLiteralExpression,
-                     SyntaxKind.NothingLiteralExpression,
-                     SyntaxKind.ParenthesizedExpression,
-                     SyntaxKind.TupleExpression,
-                     SyntaxKind.TupleType,
-                     SyntaxKind.MeExpression,
-                     SyntaxKind.MyBaseExpression,
-                     SyntaxKind.MyClassExpression,
-                     SyntaxKind.GetTypeExpression,
-                     SyntaxKind.TypeOfIsExpression,
-                     SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -35777,6 +36674,410 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
                      SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
+                Case Else
+                    Throw new ArgumentException("condition")
+             End Select
+            Select Case firstCommaToken.Kind()
+                Case SyntaxKind.CommaToken
+                Case Else
+                    Throw new ArgumentException("firstCommaToken")
+             End Select
+            if whenTrue Is Nothing Then
+                Throw New ArgumentNullException(NameOf(whenTrue))
+            End If
+            Select Case whenTrue.Kind()
+                Case SyntaxKind.KeywordEventContainer,
+                     SyntaxKind.WithEventsEventContainer,
+                     SyntaxKind.WithEventsPropertyEventContainer,
+                     SyntaxKind.IdentifierLabel,
+                     SyntaxKind.NumericLabel,
+                     SyntaxKind.NextLabel,
+                     SyntaxKind.MidExpression,
+                     SyntaxKind.CharacterLiteralExpression,
+                     SyntaxKind.TrueLiteralExpression,
+                     SyntaxKind.FalseLiteralExpression,
+                     SyntaxKind.NumericLiteralExpression,
+                     SyntaxKind.DateLiteralExpression,
+                     SyntaxKind.StringLiteralExpression,
+                     SyntaxKind.NothingLiteralExpression,
+                     SyntaxKind.ParenthesizedExpression,
+                     SyntaxKind.TupleExpression,
+                     SyntaxKind.TupleType,
+                     SyntaxKind.MeExpression,
+                     SyntaxKind.MyBaseExpression,
+                     SyntaxKind.MyClassExpression,
+                     SyntaxKind.GetTypeExpression,
+                     SyntaxKind.TypeOfIsExpression,
+                     SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
+                     SyntaxKind.GetXmlNamespaceExpression,
+                     SyntaxKind.SimpleMemberAccessExpression,
+                     SyntaxKind.DictionaryAccessExpression,
+                     SyntaxKind.XmlElementAccessExpression,
+                     SyntaxKind.XmlDescendantAccessExpression,
+                     SyntaxKind.XmlAttributeAccessExpression,
+                     SyntaxKind.InvocationExpression,
+                     SyntaxKind.ObjectCreationExpression,
+                     SyntaxKind.AnonymousObjectCreationExpression,
+                     SyntaxKind.ArrayCreationExpression,
+                     SyntaxKind.CollectionInitializer,
+                     SyntaxKind.CTypeExpression,
+                     SyntaxKind.DirectCastExpression,
+                     SyntaxKind.TryCastExpression,
+                     SyntaxKind.PredefinedCastExpression,
+                     SyntaxKind.AddExpression,
+                     SyntaxKind.SubtractExpression,
+                     SyntaxKind.MultiplyExpression,
+                     SyntaxKind.DivideExpression,
+                     SyntaxKind.IntegerDivideExpression,
+                     SyntaxKind.ExponentiateExpression,
+                     SyntaxKind.LeftShiftExpression,
+                     SyntaxKind.RightShiftExpression,
+                     SyntaxKind.ConcatenateExpression,
+                     SyntaxKind.ModuloExpression,
+                     SyntaxKind.EqualsExpression,
+                     SyntaxKind.NotEqualsExpression,
+                     SyntaxKind.LessThanExpression,
+                     SyntaxKind.LessThanOrEqualExpression,
+                     SyntaxKind.GreaterThanOrEqualExpression,
+                     SyntaxKind.GreaterThanExpression,
+                     SyntaxKind.IsExpression,
+                     SyntaxKind.IsNotExpression,
+                     SyntaxKind.LikeExpression,
+                     SyntaxKind.OrExpression,
+                     SyntaxKind.ExclusiveOrExpression,
+                     SyntaxKind.AndExpression,
+                     SyntaxKind.OrElseExpression,
+                     SyntaxKind.AndAlsoExpression,
+                     SyntaxKind.UnaryPlusExpression,
+                     SyntaxKind.UnaryMinusExpression,
+                     SyntaxKind.NotExpression,
+                     SyntaxKind.AddressOfExpression,
+                     SyntaxKind.BinaryConditionalExpression,
+                     SyntaxKind.TernaryConditionalExpression,
+                     SyntaxKind.SingleLineFunctionLambdaExpression,
+                     SyntaxKind.SingleLineSubLambdaExpression,
+                     SyntaxKind.MultiLineFunctionLambdaExpression,
+                     SyntaxKind.MultiLineSubLambdaExpression,
+                     SyntaxKind.QueryExpression,
+                     SyntaxKind.FunctionAggregation,
+                     SyntaxKind.GroupAggregation,
+                     SyntaxKind.XmlDocument,
+                     SyntaxKind.XmlElement,
+                     SyntaxKind.XmlText,
+                     SyntaxKind.XmlElementStartTag,
+                     SyntaxKind.XmlElementEndTag,
+                     SyntaxKind.XmlEmptyElement,
+                     SyntaxKind.XmlAttribute,
+                     SyntaxKind.XmlString,
+                     SyntaxKind.XmlPrefixName,
+                     SyntaxKind.XmlName,
+                     SyntaxKind.XmlBracketedName,
+                     SyntaxKind.XmlComment,
+                     SyntaxKind.XmlProcessingInstruction,
+                     SyntaxKind.XmlCDataSection,
+                     SyntaxKind.XmlEmbeddedExpression,
+                     SyntaxKind.ArrayType,
+                     SyntaxKind.NullableType,
+                     SyntaxKind.PredefinedType,
+                     SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference,
+                     SyntaxKind.AwaitExpression,
+                     SyntaxKind.XmlCrefAttribute,
+                     SyntaxKind.XmlNameAttribute,
+                     SyntaxKind.ConditionalAccessExpression,
+                     SyntaxKind.NameOfExpression,
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
+                Case Else
+                    Throw new ArgumentException("whenTrue")
+             End Select
+            Select Case secondCommaToken.Kind()
+                Case SyntaxKind.CommaToken
+                Case Else
+                    Throw new ArgumentException("secondCommaToken")
+             End Select
+            if whenFalse Is Nothing Then
+                Throw New ArgumentNullException(NameOf(whenFalse))
+            End If
+            Select Case whenFalse.Kind()
+                Case SyntaxKind.KeywordEventContainer,
+                     SyntaxKind.WithEventsEventContainer,
+                     SyntaxKind.WithEventsPropertyEventContainer,
+                     SyntaxKind.IdentifierLabel,
+                     SyntaxKind.NumericLabel,
+                     SyntaxKind.NextLabel,
+                     SyntaxKind.MidExpression,
+                     SyntaxKind.CharacterLiteralExpression,
+                     SyntaxKind.TrueLiteralExpression,
+                     SyntaxKind.FalseLiteralExpression,
+                     SyntaxKind.NumericLiteralExpression,
+                     SyntaxKind.DateLiteralExpression,
+                     SyntaxKind.StringLiteralExpression,
+                     SyntaxKind.NothingLiteralExpression,
+                     SyntaxKind.ParenthesizedExpression,
+                     SyntaxKind.TupleExpression,
+                     SyntaxKind.TupleType,
+                     SyntaxKind.MeExpression,
+                     SyntaxKind.MyBaseExpression,
+                     SyntaxKind.MyClassExpression,
+                     SyntaxKind.GetTypeExpression,
+                     SyntaxKind.TypeOfIsExpression,
+                     SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
+                     SyntaxKind.GetXmlNamespaceExpression,
+                     SyntaxKind.SimpleMemberAccessExpression,
+                     SyntaxKind.DictionaryAccessExpression,
+                     SyntaxKind.XmlElementAccessExpression,
+                     SyntaxKind.XmlDescendantAccessExpression,
+                     SyntaxKind.XmlAttributeAccessExpression,
+                     SyntaxKind.InvocationExpression,
+                     SyntaxKind.ObjectCreationExpression,
+                     SyntaxKind.AnonymousObjectCreationExpression,
+                     SyntaxKind.ArrayCreationExpression,
+                     SyntaxKind.CollectionInitializer,
+                     SyntaxKind.CTypeExpression,
+                     SyntaxKind.DirectCastExpression,
+                     SyntaxKind.TryCastExpression,
+                     SyntaxKind.PredefinedCastExpression,
+                     SyntaxKind.AddExpression,
+                     SyntaxKind.SubtractExpression,
+                     SyntaxKind.MultiplyExpression,
+                     SyntaxKind.DivideExpression,
+                     SyntaxKind.IntegerDivideExpression,
+                     SyntaxKind.ExponentiateExpression,
+                     SyntaxKind.LeftShiftExpression,
+                     SyntaxKind.RightShiftExpression,
+                     SyntaxKind.ConcatenateExpression,
+                     SyntaxKind.ModuloExpression,
+                     SyntaxKind.EqualsExpression,
+                     SyntaxKind.NotEqualsExpression,
+                     SyntaxKind.LessThanExpression,
+                     SyntaxKind.LessThanOrEqualExpression,
+                     SyntaxKind.GreaterThanOrEqualExpression,
+                     SyntaxKind.GreaterThanExpression,
+                     SyntaxKind.IsExpression,
+                     SyntaxKind.IsNotExpression,
+                     SyntaxKind.LikeExpression,
+                     SyntaxKind.OrExpression,
+                     SyntaxKind.ExclusiveOrExpression,
+                     SyntaxKind.AndExpression,
+                     SyntaxKind.OrElseExpression,
+                     SyntaxKind.AndAlsoExpression,
+                     SyntaxKind.UnaryPlusExpression,
+                     SyntaxKind.UnaryMinusExpression,
+                     SyntaxKind.NotExpression,
+                     SyntaxKind.AddressOfExpression,
+                     SyntaxKind.BinaryConditionalExpression,
+                     SyntaxKind.TernaryConditionalExpression,
+                     SyntaxKind.SingleLineFunctionLambdaExpression,
+                     SyntaxKind.SingleLineSubLambdaExpression,
+                     SyntaxKind.MultiLineFunctionLambdaExpression,
+                     SyntaxKind.MultiLineSubLambdaExpression,
+                     SyntaxKind.QueryExpression,
+                     SyntaxKind.FunctionAggregation,
+                     SyntaxKind.GroupAggregation,
+                     SyntaxKind.XmlDocument,
+                     SyntaxKind.XmlElement,
+                     SyntaxKind.XmlText,
+                     SyntaxKind.XmlElementStartTag,
+                     SyntaxKind.XmlElementEndTag,
+                     SyntaxKind.XmlEmptyElement,
+                     SyntaxKind.XmlAttribute,
+                     SyntaxKind.XmlString,
+                     SyntaxKind.XmlPrefixName,
+                     SyntaxKind.XmlName,
+                     SyntaxKind.XmlBracketedName,
+                     SyntaxKind.XmlComment,
+                     SyntaxKind.XmlProcessingInstruction,
+                     SyntaxKind.XmlCDataSection,
+                     SyntaxKind.XmlEmbeddedExpression,
+                     SyntaxKind.ArrayType,
+                     SyntaxKind.NullableType,
+                     SyntaxKind.PredefinedType,
+                     SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference,
+                     SyntaxKind.AwaitExpression,
+                     SyntaxKind.XmlCrefAttribute,
+                     SyntaxKind.XmlNameAttribute,
+                     SyntaxKind.ConditionalAccessExpression,
+                     SyntaxKind.NameOfExpression,
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
+                Case Else
+                    Throw new ArgumentException("whenFalse")
+             End Select
+            Select Case closeParenToken.Kind()
+                Case SyntaxKind.CloseParenToken
+                Case Else
+                    Throw new ArgumentException("closeParenToken")
+             End Select
+            Return New TernaryConditionalExpressionSyntax(SyntaxKind.TernaryConditionalExpression, Nothing, Nothing, DirectCast(ifKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(openParenToken.Node, InternalSyntax.PunctuationSyntax), condition, DirectCast(firstCommaToken.Node, InternalSyntax.PunctuationSyntax), whenTrue, DirectCast(secondCommaToken.Node, InternalSyntax.PunctuationSyntax), whenFalse, DirectCast(closeParenToken.Node, InternalSyntax.PunctuationSyntax))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a conditional expression, If(condition, true-expr, false-expr) or
+        ''' If(expr, nothing-expr).
+        ''' </summary>
+        ''' <param name="condition">
+        ''' The first expression inside the parentheses.
+        ''' </param>
+        ''' <param name="whenTrue">
+        ''' The second expression inside the parentheses.
+        ''' </param>
+        ''' <param name="whenFalse">
+        ''' The second expression inside the parentheses.
+        ''' </param>
+        Public Shared Function TernaryConditionalExpression(condition As ExpressionSyntax, whenTrue As ExpressionSyntax, whenFalse As ExpressionSyntax) As TernaryConditionalExpressionSyntax
+            Return SyntaxFactory.TernaryConditionalExpression(SyntaxFactory.Token(SyntaxKind.IfKeyword), SyntaxFactory.Token(SyntaxKind.OpenParenToken), condition, SyntaxFactory.Token(SyntaxKind.CommaToken), whenTrue, SyntaxFactory.Token(SyntaxKind.CommaToken), whenFalse, SyntaxFactory.Token(SyntaxKind.CloseParenToken))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a single line lambda expression.
+        ''' </summary>
+        ''' <param name="subOrFunctionHeader">
+        ''' The header part of the lambda that includes the "Sub" or "Function" keyword,
+        ''' the argument list and return type.
+        ''' </param>
+        ''' <param name="body">
+        ''' The body of the lambda. Depending on the kind of lambda, this is either a
+        ''' Statement (single-line Sub lambda) or Expression (single-line Function).
+        ''' </param>
+        Public Shared Function SingleLineFunctionLambdaExpression(subOrFunctionHeader As LambdaHeaderSyntax, body As VisualBasicSyntaxNode) As SingleLineLambdaExpressionSyntax
+            if subOrFunctionHeader Is Nothing Then
+                Throw New ArgumentNullException(NameOf(subOrFunctionHeader))
+            End If
+            Select Case subOrFunctionHeader.Kind()
+                Case SyntaxKind.SubLambdaHeader,
+                     SyntaxKind.FunctionLambdaHeader
+                Case Else
+                    Throw new ArgumentException("subOrFunctionHeader")
+             End Select
+            if body Is Nothing Then
+                Throw New ArgumentNullException(NameOf(body))
+            End If
+            Select Case body.Kind()
+                Case SyntaxKind.KeywordEventContainer,
+                     SyntaxKind.WithEventsEventContainer,
+                     SyntaxKind.WithEventsPropertyEventContainer,
+                     SyntaxKind.IdentifierLabel,
+                     SyntaxKind.NumericLabel,
+                     SyntaxKind.NextLabel,
+                     SyntaxKind.MidExpression,
+                     SyntaxKind.CharacterLiteralExpression,
+                     SyntaxKind.TrueLiteralExpression,
+                     SyntaxKind.FalseLiteralExpression,
+                     SyntaxKind.NumericLiteralExpression,
+                     SyntaxKind.DateLiteralExpression,
+                     SyntaxKind.StringLiteralExpression,
+                     SyntaxKind.NothingLiteralExpression,
+                     SyntaxKind.ParenthesizedExpression,
+                     SyntaxKind.TupleExpression,
+                     SyntaxKind.TupleType,
+                     SyntaxKind.MeExpression,
+                     SyntaxKind.MyBaseExpression,
+                     SyntaxKind.MyClassExpression,
+                     SyntaxKind.GetTypeExpression,
+                     SyntaxKind.TypeOfIsExpression,
+                     SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
+                     SyntaxKind.GetXmlNamespaceExpression,
+                     SyntaxKind.SimpleMemberAccessExpression,
+                     SyntaxKind.DictionaryAccessExpression,
+                     SyntaxKind.XmlElementAccessExpression,
+                     SyntaxKind.XmlDescendantAccessExpression,
+                     SyntaxKind.XmlAttributeAccessExpression,
+                     SyntaxKind.InvocationExpression,
+                     SyntaxKind.ObjectCreationExpression,
+                     SyntaxKind.AnonymousObjectCreationExpression,
+                     SyntaxKind.ArrayCreationExpression,
+                     SyntaxKind.CollectionInitializer,
+                     SyntaxKind.CTypeExpression,
+                     SyntaxKind.DirectCastExpression,
+                     SyntaxKind.TryCastExpression,
+                     SyntaxKind.PredefinedCastExpression,
+                     SyntaxKind.AddExpression,
+                     SyntaxKind.SubtractExpression,
+                     SyntaxKind.MultiplyExpression,
+                     SyntaxKind.DivideExpression,
+                     SyntaxKind.IntegerDivideExpression,
+                     SyntaxKind.ExponentiateExpression,
+                     SyntaxKind.LeftShiftExpression,
+                     SyntaxKind.RightShiftExpression,
+                     SyntaxKind.ConcatenateExpression,
+                     SyntaxKind.ModuloExpression,
+                     SyntaxKind.EqualsExpression,
+                     SyntaxKind.NotEqualsExpression,
+                     SyntaxKind.LessThanExpression,
+                     SyntaxKind.LessThanOrEqualExpression,
+                     SyntaxKind.GreaterThanOrEqualExpression,
+                     SyntaxKind.GreaterThanExpression,
+                     SyntaxKind.IsExpression,
+                     SyntaxKind.IsNotExpression,
+                     SyntaxKind.LikeExpression,
+                     SyntaxKind.OrExpression,
+                     SyntaxKind.ExclusiveOrExpression,
+                     SyntaxKind.AndExpression,
+                     SyntaxKind.OrElseExpression,
+                     SyntaxKind.AndAlsoExpression,
+                     SyntaxKind.UnaryPlusExpression,
+                     SyntaxKind.UnaryMinusExpression,
+                     SyntaxKind.NotExpression,
+                     SyntaxKind.AddressOfExpression,
+                     SyntaxKind.BinaryConditionalExpression,
+                     SyntaxKind.TernaryConditionalExpression,
+                     SyntaxKind.SingleLineFunctionLambdaExpression,
+                     SyntaxKind.SingleLineSubLambdaExpression,
+                     SyntaxKind.MultiLineFunctionLambdaExpression,
+                     SyntaxKind.MultiLineSubLambdaExpression,
+                     SyntaxKind.QueryExpression,
+                     SyntaxKind.FunctionAggregation,
+                     SyntaxKind.GroupAggregation,
+                     SyntaxKind.XmlDocument,
+                     SyntaxKind.XmlElement,
+                     SyntaxKind.XmlText,
+                     SyntaxKind.XmlElementStartTag,
+                     SyntaxKind.XmlElementEndTag,
+                     SyntaxKind.XmlEmptyElement,
+                     SyntaxKind.XmlAttribute,
+                     SyntaxKind.XmlString,
+                     SyntaxKind.XmlPrefixName,
+                     SyntaxKind.XmlName,
+                     SyntaxKind.XmlBracketedName,
+                     SyntaxKind.XmlComment,
+                     SyntaxKind.XmlProcessingInstruction,
+                     SyntaxKind.XmlCDataSection,
+                     SyntaxKind.XmlEmbeddedExpression,
+                     SyntaxKind.ArrayType,
+                     SyntaxKind.NullableType,
+                     SyntaxKind.PredefinedType,
+                     SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference,
+                     SyntaxKind.AwaitExpression,
+                     SyntaxKind.XmlCrefAttribute,
+                     SyntaxKind.XmlNameAttribute,
+                     SyntaxKind.ConditionalAccessExpression,
+                     SyntaxKind.NameOfExpression,
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression,
                      SyntaxKind.EmptyStatement,
                      SyntaxKind.EndIfStatement,
                      SyntaxKind.EndUsingStatement,
@@ -35989,6 +37290,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -36071,6 +37374,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
                      SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression,
                      SyntaxKind.EmptyStatement,
                      SyntaxKind.EndIfStatement,
                      SyntaxKind.EndUsingStatement,
@@ -36291,6 +37595,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -36373,6 +37679,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
                      SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression,
                      SyntaxKind.EmptyStatement,
                      SyntaxKind.EndIfStatement,
                      SyntaxKind.EndUsingStatement,
@@ -37028,6 +38335,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -37109,7 +38418,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -37208,6 +38518,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -37289,7 +38601,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("lowerBound")
              End Select
@@ -37325,6 +38638,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -37406,7 +38721,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("upperBound")
              End Select
@@ -37514,6 +38830,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -37595,7 +38913,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -37675,6 +38994,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -37756,7 +39077,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -38184,6 +39506,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -38265,7 +39589,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("condition")
              End Select
@@ -38336,6 +39661,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -38417,7 +39744,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("condition")
              End Select
@@ -38488,6 +39816,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -38569,7 +39899,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("condition")
              End Select
@@ -38645,6 +39976,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -38726,7 +40059,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("condition")
              End Select
@@ -38806,6 +40140,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -38887,7 +40223,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("count")
              End Select
@@ -38948,6 +40285,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -39029,7 +40368,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("count")
              End Select
@@ -39095,6 +40435,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -39176,7 +40518,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("count")
              End Select
@@ -39305,6 +40648,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -39386,7 +40731,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("left")
              End Select
@@ -39422,6 +40768,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -39503,7 +40851,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("right")
              End Select
@@ -39772,6 +41121,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -39853,7 +41204,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -39912,6 +41264,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -39993,7 +41347,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -40059,6 +41414,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -40140,7 +41497,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -40810,6 +42168,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -40891,7 +42251,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -41453,6 +42814,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -41534,7 +42897,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -41595,6 +42959,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -41676,7 +43042,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -42236,6 +43603,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -42317,7 +43686,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("argument")
              End Select
@@ -42467,6 +43837,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -42548,7 +43920,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("expression")
              End Select
@@ -42633,6 +44006,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -42714,7 +44089,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("value")
              End Select
@@ -42988,6 +44364,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -43069,7 +44447,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("value")
              End Select
@@ -43153,6 +44532,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -43234,7 +44615,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("condition")
              End Select
@@ -43297,6 +44679,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -43378,7 +44762,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("condition")
              End Select
@@ -43448,6 +44833,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.GetTypeExpression,
                      SyntaxKind.TypeOfIsExpression,
                      SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.TypeOfManyIsExpression,
+                     SyntaxKind.TypeOfManyIsNotExpression,
                      SyntaxKind.GetXmlNamespaceExpression,
                      SyntaxKind.SimpleMemberAccessExpression,
                      SyntaxKind.DictionaryAccessExpression,
@@ -43529,7 +44916,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.XmlNameAttribute,
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
-                     SyntaxKind.InterpolatedStringExpression
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.FlagsEnumOperationExpression
                 Case Else
                     Throw new ArgumentException("condition")
              End Select
@@ -43992,6 +45380,138 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         Public Shared Function BadDirectiveTrivia() As BadDirectiveTriviaSyntax
             Return SyntaxFactory.BadDirectiveTrivia(SyntaxFactory.Token(SyntaxKind.HashToken))
+        End Function
+
+
+        ''' <param name="enumFlags">
+        ''' The expression on the left-hand-side of the "." or "!" token.
+        ''' </param>
+        ''' <param name="enumFlag">
+        ''' The identifier after the "!", "!+", "!-" or "!/" token.
+        ''' </param>
+        Public Shared Function FlagsEnumOperationExpression(enumFlags As ExpressionSyntax, operatorToken As SyntaxToken, enumFlag As ExpressionSyntax) As FlagsEnumOperationExpressionSyntax
+            Select Case operatorToken.Kind()
+                Case SyntaxKind.FlagsEnumIsAnyToken:
+                Case SyntaxKind.FlagsEnumSetToken:
+                Case SyntaxKind.FlagsEnumClearToken:
+                Case SyntaxKind.FlagsEnumIsSetToken
+                Case Else
+                    Throw new ArgumentException("operatorToken")
+             End Select
+            Return New FlagsEnumOperationExpressionSyntax(SyntaxKind.FlagsEnumOperationExpression, Nothing, Nothing, enumFlags, DirectCast(operatorToken.Node, InternalSyntax.FlagsEnumOperatorSyntax), enumFlag)
+        End Function
+
+
+        Public Shared Function FlagsEnumOperationExpression(operatorToken As SyntaxToken) As FlagsEnumOperationExpressionSyntax
+            Return SyntaxFactory.FlagsEnumOperationExpression(Nothing, operatorToken, Nothing)
+        End Function
+
+
+        ''' <param name="text">
+        ''' The actual text of this token.
+        ''' </param>
+        Public Shared Function FlagsEnumIsAnyToken(leadingTrivia As SyntaxTriviaList, text as String, trailingTrivia As SyntaxTriviaList) As SyntaxToken
+            if text Is Nothing Then
+                Throw New ArgumentNullException(NameOf(text))
+            End If
+            Return New SyntaxToken(Nothing, New InternalSyntax.FlagsEnumOperatorSyntax(SyntaxKind.FlagsEnumIsAnyToken, Nothing, Nothing, text, leadingTrivia.Node, trailingTrivia.Node), 0, 0)
+        End Function
+
+
+        ''' <param name="text">
+        ''' The actual text of this token.
+        ''' </param>
+        Public Shared Function FlagsEnumIsAnyToken(text as String) As SyntaxToken
+            Return FlagsEnumIsAnyToken(Nothing, text, Nothing)
+        End Function
+
+
+        ''' <param name="text">
+        ''' The actual text of this token.
+        ''' </param>
+        Public Shared Function FlagsEnumSetToken(leadingTrivia As SyntaxTriviaList, text as String, trailingTrivia As SyntaxTriviaList) As SyntaxToken
+            if text Is Nothing Then
+                Throw New ArgumentNullException(NameOf(text))
+            End If
+            Return New SyntaxToken(Nothing, New InternalSyntax.FlagsEnumOperatorSyntax(SyntaxKind.FlagsEnumSetToken, Nothing, Nothing, text, leadingTrivia.Node, trailingTrivia.Node), 0, 0)
+        End Function
+
+
+        ''' <param name="text">
+        ''' The actual text of this token.
+        ''' </param>
+        Public Shared Function FlagsEnumSetToken(text as String) As SyntaxToken
+            Return FlagsEnumSetToken(Nothing, text, Nothing)
+        End Function
+
+
+        ''' <param name="text">
+        ''' The actual text of this token.
+        ''' </param>
+        Public Shared Function FlagsEnumClearToken(leadingTrivia As SyntaxTriviaList, text as String, trailingTrivia As SyntaxTriviaList) As SyntaxToken
+            if text Is Nothing Then
+                Throw New ArgumentNullException(NameOf(text))
+            End If
+            Return New SyntaxToken(Nothing, New InternalSyntax.FlagsEnumOperatorSyntax(SyntaxKind.FlagsEnumClearToken, Nothing, Nothing, text, leadingTrivia.Node, trailingTrivia.Node), 0, 0)
+        End Function
+
+
+        ''' <param name="text">
+        ''' The actual text of this token.
+        ''' </param>
+        Public Shared Function FlagsEnumClearToken(text as String) As SyntaxToken
+            Return FlagsEnumClearToken(Nothing, text, Nothing)
+        End Function
+
+
+        ''' <param name="text">
+        ''' The actual text of this token.
+        ''' </param>
+        Public Shared Function FlagsEnumIsSetToken(leadingTrivia As SyntaxTriviaList, text as String, trailingTrivia As SyntaxTriviaList) As SyntaxToken
+            if text Is Nothing Then
+                Throw New ArgumentNullException(NameOf(text))
+            End If
+            Return New SyntaxToken(Nothing, New InternalSyntax.FlagsEnumOperatorSyntax(SyntaxKind.FlagsEnumIsSetToken, Nothing, Nothing, text, leadingTrivia.Node, trailingTrivia.Node), 0, 0)
+        End Function
+
+
+        ''' <param name="text">
+        ''' The actual text of this token.
+        ''' </param>
+        Public Shared Function FlagsEnumIsSetToken(text as String) As SyntaxToken
+            Return FlagsEnumIsSetToken(Nothing, text, Nothing)
+        End Function
+
+
+        ''' <param name="kind">
+        ''' A <cref c="SyntaxKind"/> representing the specific kind of
+        ''' FlagsEnumOperatorSyntax. One of FlagsEnumIsAnyToken, FlagsEnumSetToken,
+        ''' FlagsEnumClearToken, FlagsEnumIsSetToken.
+        ''' </param>
+        ''' <param name="text">
+        ''' The actual text of this token.
+        ''' </param>
+        Public Shared Function FlagsEnumOperator(leadingTrivia As SyntaxTriviaList, ByVal kind As SyntaxKind, text as String, trailingTrivia As SyntaxTriviaList) As SyntaxToken
+            if text Is Nothing Then
+                Throw New ArgumentNullException(NameOf(text))
+            End If
+            If Not SyntaxFacts.IsFlagsEnumOperator(kind) Then
+                Throw New ArgumentException("kind")
+            End If
+            Return New SyntaxToken(Nothing, New InternalSyntax.FlagsEnumOperatorSyntax(kind, Nothing, Nothing, text, leadingTrivia.Node, trailingTrivia.Node), 0, 0)
+        End Function
+
+
+        ''' <param name="kind">
+        ''' A <cref c="SyntaxKind"/> representing the specific kind of
+        ''' FlagsEnumOperatorSyntax. One of FlagsEnumIsAnyToken, FlagsEnumSetToken,
+        ''' FlagsEnumClearToken, FlagsEnumIsSetToken.
+        ''' </param>
+        ''' <param name="text">
+        ''' The actual text of this token.
+        ''' </param>
+        Public Shared Function FlagsEnumOperator(ByVal kind As SyntaxKind, text as String) As SyntaxToken
+            Return FlagsEnumOperator(Nothing, kind, text, Nothing)
         End Function
 
     End Class
@@ -44635,6 +46155,26 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Shared Function IsTypeOfExpressionOperatorToken(kind As SyntaxKind) As Boolean
+            Select Case kind
+                Case _
+                SyntaxKind.IsKeyword,
+                SyntaxKind.IsNotKeyword
+                    Return True
+            End Select
+            Return False
+        End Function
+
+        Public Shared Function IsTypeOfManyExpression(kind As SyntaxKind) As Boolean
+            Select Case kind
+                Case _
+                SyntaxKind.TypeOfManyIsExpression,
+                SyntaxKind.TypeOfManyIsNotExpression
+                    Return True
+            End Select
+            Return False
+        End Function
+
+        Public Shared Function IsTypeOfManyExpressionOperatorToken(kind As SyntaxKind) As Boolean
             Select Case kind
                 Case _
                 SyntaxKind.IsKeyword,
@@ -45341,6 +46881,30 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return False
         End Function
 
+        Public Shared Function IsFlagsEnumOperationExpressionOperatorToken(kind As SyntaxKind) As Boolean
+            Select Case kind
+                Case _
+                SyntaxKind.FlagsEnumIsAnyToken,
+                SyntaxKind.FlagsEnumSetToken,
+                SyntaxKind.FlagsEnumClearToken,
+                SyntaxKind.FlagsEnumIsSetToken
+                    Return True
+            End Select
+            Return False
+        End Function
+
+        Public Shared Function IsFlagsEnumOperator(kind As SyntaxKind) As Boolean
+            Select Case kind
+                Case _
+                SyntaxKind.FlagsEnumIsAnyToken,
+                SyntaxKind.FlagsEnumSetToken,
+                SyntaxKind.FlagsEnumClearToken,
+                SyntaxKind.FlagsEnumIsSetToken
+                    Return True
+            End Select
+            Return False
+        End Function
+
         ''' <summary>
         ''' Return keyword or punctuation text based on SyntaxKind
         ''' </summary>
@@ -45855,6 +47419,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 "
         Case SyntaxKind.DocumentationCommentExteriorTrivia
             Return "'''"
+        Case SyntaxKind.FlagsEnumIsAnyToken
+            Return "!/"
+        Case SyntaxKind.FlagsEnumSetToken
+            Return "!+"
+        Case SyntaxKind.FlagsEnumClearToken
+            Return "!-"
+        Case SyntaxKind.FlagsEnumIsSetToken
+            Return "!"
             Case Else
                  Return String.Empty
             End Select

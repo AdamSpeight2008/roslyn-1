@@ -37,6 +37,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     NonTrailingNamedArguments
     PrivateProtected
     UnconstrainedTypeParameterInConditional
+    DefaultOptionalParameter
+    TypeOfMany
+    EnumFlagOperators
   End Enum
 
   Friend Module FeatureExtensions
@@ -81,6 +84,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                   Feature.NonTrailingNamedArguments,
                   Feature.PrivateProtected                                      : Return LanguageVersion.VisualBasic15_5
              Case Feature.UnconstrainedTypeParameterInConditional               : Return LanguageVersion.VisualBasic16
+             Case Feature.DefaultOptionalParameter,
+                  Feature.EnumFlagOperators,
+                  Feature.TypeOfMany                                            : Return LanguageVersion.VisualBasic16
       End Select
       Throw ExceptionUtilities.UnexpectedValue(feature)
     End Function
@@ -118,7 +124,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case Feature.PrivateProtected                                       : Return ERRID.FEATURE_PrivateProtected
                 Case Feature.InterpolatedStrings                                    : Return ERRID.FEATURE_InterpolatedStrings
                 Case Feature.UnconstrainedTypeParameterInConditional                : Return ERRID.FEATURE_UnconstrainedTypeParameterInConditional
-      End Select
+                Case Feature.DefaultOptionalParameter                               : Return ERRID.FEATURE_DefaultOptionalParameter
+                Case Feature.EnumFlagOperators                                      : Return ERRID.FEATURE_EnumFlagOperators
+                Case Feature.TypeOfMany                                             : Return ERRID.FEATURE_TypeOfMany
+            End Select
       Throw ExceptionUtilities.UnexpectedValue(feature)
    End Function
 

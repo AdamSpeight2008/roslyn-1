@@ -516,7 +516,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseWithStackGuard(Of TNode As VisualBasicSyntaxNode)(parseFunc As Func(Of TNode), defaultFunc As Func(Of TNode)) As TNode
-            Debug.Assert(_recursionDepth = 0)
+            Debug.Assert(_recursionDepth >= 0)
             Dim restorePoint = _scanner.CreateRestorePoint()
             Try
                 Return parseFunc()
@@ -4717,25 +4717,23 @@ checkNullable:
             Dim equals As PunctuationSyntax = Nothing
             Dim value As ExpressionSyntax = Nothing
 
+            Dim Feature_DefaultOptionalParameter_Allowed = Feature.DefaultOptionalParameter.IsAvailable(me._scanner.Options)
             ' TODO - Move these errors (ERRID.ERR_DefaultValueForNonOptionalParamout, ERRID.ERR_ObsoleteOptionalWithoutValue) of the parser. 
             ' These are semantic errors. The grammar allows the syntax. 
             If TryGetTokenAndEatNewLine(SyntaxKind.EqualsToken, equals) Then
-
                 If Not (modifiers.Any AndAlso modifiers.Any(SyntaxKind.OptionalKeyword)) Then
                     equals = ReportSyntaxError(equals, ERRID.ERR_DefaultValueForNonOptionalParam)
                 End If
-
                 value = ParseExpressionCore()
 
             ElseIf modifiers.Any AndAlso modifiers.Any(SyntaxKind.OptionalKeyword) Then
-
-                equals = ReportSyntaxError(InternalSyntaxFactory.MissingPunctuation(SyntaxKind.EqualsToken), ERRID.ERR_ObsoleteOptionalWithoutValue)
-                value = ParseExpressionCore()
-
+                If Feature_DefaultOptionalParameter_Allowed = False then
+                    equals = ReportSyntaxError(InternalSyntaxFactory.MissingPunctuation(SyntaxKind.EqualsToken), ERRID.ERR_ObsoleteOptionalWithoutValue)
+                     value = ParseExpressionCore()
+                End If
             End If
 
             Dim initializer As EqualsValueSyntax = Nothing
-
             If value IsNot Nothing Then
 
                 If value.ContainsDiagnostics Then
@@ -5470,8 +5468,8 @@ checkNullable:
             Dim greaterThanText = tokenText.Substring(tokenLength - 1, 1)
             Dim separatorTrivia = If(tokenLength > 2, _scanner.MakeWhiteSpaceTrivia(tokenText.Substring(1, tokenLength - 2)), Nothing)
 
-            Debug.Assert(lessThanText = "<" OrElse lessThanText = SyntaxFacts.FULLWIDTH_LESS_THAN_SIGN_STRING)
-            Debug.Assert(greaterThanText = ">" OrElse greaterThanText = SyntaxFacts.FULLWIDTH_GREATER_THAN_SIGN_STRING)
+            Debug.Assert(lessThanText = "<" OrElse lessThanText = SyntaxFacts.FULLWIDTH_LESS_THAN_SIGN)
+            Debug.Assert(greaterThanText = ">" OrElse greaterThanText = SyntaxFacts.FULLWIDTH_GREATER_THAN_SIGN)
 
             Dim lessThan = _scanner.MakePunctuationToken(
                 SyntaxKind.LessThanToken,

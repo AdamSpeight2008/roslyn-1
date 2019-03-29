@@ -18,7 +18,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Const None As UShort = 0US
 
             '// Kind  New7to8 Precedence QueryClause CanFollowExpr
-            Dim keywordInitData As UShort() = New UShort() {
+            Dim keywordInitData As UShort() = {
                 SyntaxKind.AddHandlerKeyword, None,
                 SyntaxKind.AddressOfKeyword, None,
                 SyntaxKind.AliasKeyword, None,

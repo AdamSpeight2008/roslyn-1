@@ -10,11 +10,14 @@ Imports System.Runtime.CompilerServices
 Imports CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
+
     Friend Module ScannerStateExtensions
-        <Extension()>
+
+        <Extension>
         Friend Function IsVBState(state As ScannerState) As Boolean
             Return state <= ScannerState.VBAllowLeadingMultilineTrivia
         End Function
+
     End Module
 
     Friend Enum ScannerState
@@ -200,13 +203,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Friend ReadOnly Property LastToken As SyntaxToken
             Get
                 Dim count = _tokens.Count
-                If count > 0 Then
-                    Return _tokens(count - 1).InnerTokenObject
-                ElseIf _currentToken.InnerTokenObject IsNot Nothing Then
-                    Return _currentToken.InnerTokenObject
-                Else
-                    Return _prevToken.InnerTokenObject
-                End If
+                If count > 0 Then Return _tokens(count - 1).InnerTokenObject
+                If _currentToken.InnerTokenObject IsNot Nothing Then Return _currentToken.InnerTokenObject
+                Return _prevToken.InnerTokenObject              
             End Get
         End Property
 
@@ -218,48 +217,46 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend Function GetCurrentToken() As SyntaxToken
             Dim tk = _currentToken.InnerTokenObject
-            If tk Is Nothing Then
-                Debug.Assert(_currentToken.PreprocessorState Is _scannerPreprocessorState)
-                Debug.Assert(_currentToken.Position = _lineBufferOffset)
+            If tk Isnot Nothing Then return tk
+            Debug.Assert(_currentToken.PreprocessorState Is _scannerPreprocessorState)
+            Debug.Assert(_currentToken.Position = _lineBufferOffset)
 
-                Dim state = _currentToken.State
-                tk = GetScannerToken(state)
+            Dim state = _currentToken.State
+            tk = GetScannerToken(state)
 
-                _currentToken = _currentToken.With(state, tk)
-            End If
+            _currentToken = _currentToken.With(state, tk)
             Return tk
         End Function
 
         Friend Sub ResetCurrentToken(state As ScannerState)
-            If state <> _currentToken.State Then
+            If state = _currentToken.State Then exit  sub
 
-                ' this is a special case for switching from VB to Xml
-                ' we need to keep preceding trivia as it was scanned 
-                If _currentToken.State = ScannerState.VB AndAlso state = ScannerState.Content Then
+            ' this is a special case for switching from VB to Xml
+            ' we need to keep preceding trivia as it was scanned 
+            If _currentToken.State = ScannerState.VB AndAlso state = ScannerState.Content Then
 
-                    Dim vbTk = GetCurrentToken()
+                Dim vbTk = GetCurrentToken()
 
-                    AbandonAllTokens()
+                AbandonAllTokens()
 
-                    ' skip VB trivia
-                    Dim afterTrivia = _currentToken.Position + vbTk.GetLeadingTriviaWidth
-                    _lineBufferOffset = afterTrivia
+                ' skip VB trivia
+                Dim afterTrivia = _currentToken.Position + vbTk.GetLeadingTriviaWidth
+                _lineBufferOffset = afterTrivia
 
-                    Dim xmlTk = GetScannerToken(state)
+                Dim xmlTk = GetScannerToken(state)
 
-                    ' we need to add and not replace the leading trivia because the vb token
-                    ' could have been a StatementTerminatorToken. In that case the xml token would have
-                    ' the CR/LF as leading trivia already and the statement terminator would not have any
-                    ' leading trivia. Replacing the trivia would drop the LF (Roslyn Bug 7954)
-                    xmlTk = SyntaxToken.AddLeadingTrivia(xmlTk, vbTk.GetLeadingTrivia())
+                ' we need to add and not replace the leading trivia because the vb token
+                ' could have been a StatementTerminatorToken. In that case the xml token would have
+                ' the CR/LF as leading trivia already and the statement terminator would not have any
+                ' leading trivia. Replacing the trivia would drop the LF (Roslyn Bug 7954)
+                xmlTk = SyntaxToken.AddLeadingTrivia(xmlTk, vbTk.GetLeadingTrivia())
 
-                    _currentToken = _currentToken.With(state, xmlTk)
-                Else
-                    AbandonAllTokens()
-                    Debug.Assert(_currentToken.Position = _lineBufferOffset)
-                    Debug.Assert(_currentToken.EndOfTerminatorTrivia = _endOfTerminatorTrivia)
-                    _currentToken = _currentToken.With(state, Nothing)
-                End If
+                _currentToken = _currentToken.With(state, xmlTk)
+            Else
+                AbandonAllTokens()
+                Debug.Assert(_currentToken.Position = _lineBufferOffset)
+                Debug.Assert(_currentToken.EndOfTerminatorTrivia = _endOfTerminatorTrivia)
+                _currentToken = _currentToken.With(state, Nothing)
             End If
         End Sub
 
@@ -306,7 +303,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             currentToken = tk
         End Sub
 
-        Friend Sub TransitionFromXmlToVB(toCompare As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode), ByRef toRemove As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode), ByRef toAdd As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode))
+        Friend Sub TransitionFromXmlToVB(
+                                          toCompare As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode),
+                                    ByRef toRemove  As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode),
+                                    ByRef toAdd     As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)
+                                        )
+
             Dim tk = _prevToken.InnerTokenObject
             Debug.Assert(tk IsNot Nothing)
 
@@ -336,7 +338,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             _currentToken = New ScannerToken(_scannerPreprocessorState, _lineBufferOffset, _endOfTerminatorTrivia, Nothing, state)
         End Sub
 
-        Friend Sub TransitionFromVBToXml(state As ScannerState, toCompare As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode), ByRef toRemove As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode), ByRef toAdd As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode))
+        Friend Sub TransitionFromVBToXml(
+                                          state     As ScannerState,
+                                          toCompare As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode),
+                                    ByRef toRemove  As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode),
+                                    ByRef toAdd     As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)
+                                        )
+
             Dim tk = _prevToken.InnerTokenObject
             Debug.Assert(tk IsNot Nothing)
 
@@ -357,7 +365,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             _currentToken = New ScannerToken(_scannerPreprocessorState, _lineBufferOffset, _endOfTerminatorTrivia, Nothing, state)
         End Sub
 
-        Private Shared Function GetFullWidth(token As ScannerToken, tk As SyntaxToken) As Integer
+        Private Shared Function GetFullWidth(
+                                              token As ScannerToken,
+                                              tk As SyntaxToken
+                                            ) As Integer
             Debug.Assert(token.InnerTokenObject IsNot Nothing)
             Debug.Assert(tk.Kind = token.InnerTokenObject.Kind)
 
@@ -370,7 +381,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
         End Function
 
-        Friend Sub GetNextTokenInState(state As ScannerState)
+        Friend Sub GetNextTokenInState(
+                                        state As ScannerState
+                                      )
             _prevToken = _currentToken
 
             If _tokens.Count = 0 Then
@@ -382,7 +395,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
         End Sub
 
-        Friend Function PeekNextToken(state As ScannerState) As SyntaxToken
+        Friend Function PeekNextToken(
+                                       state As ScannerState
+                                     ) As SyntaxToken
             If _tokens.Count > 0 Then
                 Dim tk = _tokens(0)
                 If tk.State = state Then
@@ -400,7 +415,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <summary>
         ''' note that state is applied only to the token #1
         ''' </summary>
-        Friend Function PeekToken(tokenOffset As Integer, state As ScannerState) As SyntaxToken
+        Friend Function PeekToken(
+                                   tokenOffset As Integer,
+                                   state As ScannerState
+                                 ) As SyntaxToken
             Debug.Assert(tokenOffset >= 0)
 #If DEBUG Then
             Dim terminatorOffset = -1
@@ -452,7 +470,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return GetTokenAndAddToQueue(state)
         End Function
 
-        Private Function GetTokenAndAddToQueue(state As ScannerState) As SyntaxToken
+        Private Function GetTokenAndAddToQueue(
+                                                state As ScannerState
+                                              ) As SyntaxToken
             Dim lineBufferOffset = _lineBufferOffset
             Dim endOfTerminatorTrivia = _endOfTerminatorTrivia
             Dim ppState = _scannerPreprocessorState
@@ -475,46 +495,50 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Sub
 
         Private Sub AbandonPeekedTokens()
-            If _tokens.Count = 0 Then
-                Return
-            End If
-
+            If _tokens.Count = 0 Then Return
             RevertState(_tokens(0))
             _tokens.Clear()
         End Sub
 
         Friend Structure RestorePoint
-            Private ReadOnly _scanner As Scanner
-            Private ReadOnly _currentToken As ScannerToken
-            Private ReadOnly _prevToken As ScannerToken
-            Private ReadOnly _tokens As ScannerToken()
-            Private ReadOnly _lineBufferOffset As Integer
-            Private ReadOnly _endOfTerminatorTrivia As Integer
-            Private ReadOnly _scannerPreprocessorState As PreprocessorState
+
+            Private ReadOnly _scanner                   As Scanner
+            Private ReadOnly _currentToken              As ScannerToken
+            Private ReadOnly _prevToken                 As ScannerToken
+            Private ReadOnly _tokens                    As ScannerToken()
+            Private ReadOnly _lineBufferOffset          As Integer
+            Private ReadOnly _endOfTerminatorTrivia     As Integer
+            Private ReadOnly _scannerPreprocessorState  As PreprocessorState
 
             Friend Sub New(scanner As Scanner)
-                Me._scanner = scanner
-                Me._currentToken = scanner._currentToken
-                Me._prevToken = scanner._prevToken
-                Me._tokens = scanner.SaveAndClearTokens()
-                Me._lineBufferOffset = scanner._lineBufferOffset
-                Me._endOfTerminatorTrivia = scanner._endOfTerminatorTrivia
-                Me._scannerPreprocessorState = scanner._scannerPreprocessorState
+                _scanner                    = scanner
+                _currentToken               = scanner._currentToken
+                _prevToken                  = scanner._prevToken
+                _tokens                     = scanner.SaveAndClearTokens()
+                _lineBufferOffset           = scanner._lineBufferOffset
+                _endOfTerminatorTrivia      = scanner._endOfTerminatorTrivia
+                _scannerPreprocessorState   = scanner._scannerPreprocessorState
             End Sub
 
-            Friend Sub RestoreTokens(includeLookAhead As Boolean)
-                _scanner._currentToken = Me._currentToken
-                _scanner._prevToken = Me._prevToken
-                _scanner.RestoreTokens(If(includeLookAhead, Me._tokens, Nothing))
+            Friend Sub RestoreTokens(
+                                      includeLookAhead As Boolean
+                                    )
+                with _scanner
+                    ._currentToken  = _currentToken
+                    ._prevToken     = _prevToken
+                    .RestoreTokens(If(includeLookAhead, _tokens, Nothing))
+                end With
             End Sub
 
             Friend Sub Restore()
-                _scanner._currentToken = Me._currentToken
-                _scanner._prevToken = Me._prevToken
-                _scanner.RestoreTokens(Me._tokens)
-                _scanner._lineBufferOffset = Me._lineBufferOffset
-                _scanner._endOfTerminatorTrivia = Me._endOfTerminatorTrivia
-                _scanner._scannerPreprocessorState = Me._scannerPreprocessorState
+                with _scanner
+                    ._currentToken  = _currentToken
+                    ._prevToken     = _prevToken
+                    .RestoreTokens(_tokens)
+                    ._lineBufferOffset          = _lineBufferOffset
+                    ._endOfTerminatorTrivia     = _endOfTerminatorTrivia
+                    ._scannerPreprocessorState  = _scannerPreprocessorState
+               end With
             End Sub
         End Structure
 
@@ -523,9 +547,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function SaveAndClearTokens() As ScannerToken()
-            If _tokens.Count = 0 Then
-                Return Nothing
-            End If
+            If _tokens.Count = 0 Then Return Nothing
             Dim tokens = _tokens.ToArray()
             _tokens.Clear()
             Return tokens
@@ -533,9 +555,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Sub RestoreTokens(tokens As ScannerToken())
             _tokens.Clear()
-            If tokens IsNot Nothing Then
-                _tokens.AddRange(tokens)
-            End If
+            If tokens IsNot Nothing Then _tokens.AddRange(tokens)
         End Sub
 
         Private Structure LineBufferAndEndOfTerminatorOffsets
@@ -570,75 +590,49 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             _scannerPreprocessorState = revertTo.PreprocessorState
         End Sub
 
-        Private Function GetScannerToken(state As ScannerState) As SyntaxToken
-            Dim token As SyntaxToken = Nothing
-
+        Private Function GetScannerToken(
+                                          state As ScannerState
+                                        ) As SyntaxToken
             Select Case state
-                Case ScannerState.VB
-                    token = Me.GetNextToken(allowLeadingMultilineTrivia:=False)
-
-                Case ScannerState.VBAllowLeadingMultilineTrivia
-                    token = Me.GetNextToken(allowLeadingMultilineTrivia:=Not _isScanningDirective)
-
-                Case ScannerState.Misc
-                    token = Me.ScanXmlMisc()
-
+                Case ScannerState.VB                                : Return GetNextToken(allowLeadingMultilineTrivia:=False)
+                Case ScannerState.VBAllowLeadingMultilineTrivia     : Return GetNextToken(allowLeadingMultilineTrivia:=Not _isScanningDirective)
+                Case ScannerState.Misc                              : Return ScanXmlMisc()
                 Case ScannerState.Element,
                      ScannerState.EndElement,
-                     ScannerState.DocType
-                    token = Me.ScanXmlElement(state)
-
-                Case ScannerState.Content
-                    token = Me.ScanXmlContent()
-
-                Case ScannerState.CData
-                    token = Me.ScanXmlCData()
-
+                     ScannerState.DocType                           : Return ScanXmlElement(state)
+                Case ScannerState.Content                           : Return ScanXmlContent()
+                Case ScannerState.CData                             : Return ScanXmlCData()
                 Case ScannerState.StartProcessingInstruction,
-                    ScannerState.ProcessingInstruction
-                    token = Me.ScanXmlPIData(state)
-
-                Case ScannerState.Comment
-                    token = Me.ScanXmlComment()
-
-                Case ScannerState.SingleQuotedString
-                    token = Me.ScanXmlStringSingle()
-
-                Case ScannerState.SmartSingleQuotedString
-                    token = Me.ScanXmlStringSmartSingle()
-
-                Case ScannerState.QuotedString
-                    token = Me.ScanXmlStringDouble()
-
-                Case ScannerState.SmartQuotedString
-                    token = Me.ScanXmlStringSmartDouble()
-
-                Case ScannerState.UnQuotedString
-                    token = Me.ScanXmlStringUnQuoted()
-
-                Case ScannerState.InterpolatedStringPunctuation
-                    token = Me.ScanInterpolatedStringPunctuation()
-
-                Case ScannerState.InterpolatedStringContent
-                    token = Me.ScanInterpolatedStringContent()
-
-                Case ScannerState.InterpolatedStringFormatString
-                    token = Me.ScanInterpolatedStringFormatString()
-
-                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(state)
-
+                     ScannerState.ProcessingInstruction             : Return ScanXmlPIData(state)
+                Case ScannerState.Comment                           : Return ScanXmlComment()
+                Case ScannerState.SingleQuotedString                : Return ScanXmlStringSingle()
+                Case ScannerState.SmartSingleQuotedString           : Return ScanXmlStringSmartSingle()
+                Case ScannerState.QuotedString                      : Return ScanXmlStringDouble()
+                Case ScannerState.SmartQuotedString                 : Return ScanXmlStringSmartDouble()
+                Case ScannerState.UnQuotedString                    : Return ScanXmlStringUnQuoted()
+                Case ScannerState.InterpolatedStringPunctuation     : Return ScanInterpolatedStringPunctuation()
+                Case ScannerState.InterpolatedStringContent         : Return ScanInterpolatedStringContent()
+                Case ScannerState.InterpolatedStringFormatString    : Return ScanInterpolatedStringFormatString()
+                Case Else                                           : Throw ExceptionUtilities.UnexpectedValue(state)
             End Select
-
-            Return token
+            Return nothing
         End Function
 
         Protected Structure ScannerToken
-            Friend Sub New(preprocessorState As PreprocessorState,
-                           lineBufferOffset As Integer,
-                           endOfTerminatorTrivia As Integer,
-                           token As SyntaxToken,
-                           state As ScannerState)
+
+            Public ReadOnly InnerTokenObject As SyntaxToken
+            Public ReadOnly Position As Integer
+            Public ReadOnly EndOfTerminatorTrivia As Integer
+            Public ReadOnly State As ScannerState
+            Public ReadOnly PreprocessorState As PreprocessorState
+
+            Friend Sub New(
+                            preprocessorState As PreprocessorState,
+                            lineBufferOffset As Integer,
+                            endOfTerminatorTrivia As Integer,
+                            token As SyntaxToken,
+                            state As ScannerState
+                          )
                 Me.PreprocessorState = preprocessorState
                 Me.Position = lineBufferOffset
                 Me.EndOfTerminatorTrivia = endOfTerminatorTrivia
@@ -654,11 +648,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Return New ScannerToken(preprocessorState, Me.Position, Me.EndOfTerminatorTrivia, Me.InnerTokenObject, Me.State)
             End Function
 
-            Public ReadOnly InnerTokenObject As SyntaxToken
-            Public ReadOnly Position As Integer
-            Public ReadOnly EndOfTerminatorTrivia As Integer
-            Public ReadOnly State As ScannerState
-            Public ReadOnly PreprocessorState As PreprocessorState
         End Structure
 
     End Class

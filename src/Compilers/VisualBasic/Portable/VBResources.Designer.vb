@@ -22,7 +22,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     '''<summary>
     '''  A strongly-typed resource class, for looking up localized strings, etc.
     '''</summary>
-    <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0"),  _
+    <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0"),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
      Global.Microsoft.VisualBasic.HideModuleNameAttribute()>  _
@@ -4313,6 +4313,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Expected Parenthesized Expression..
+        '''</summary>
+        Friend ReadOnly Property ERR_ExpectedParenthesizedExpression() As String
+            Get
+                Return ResourceManager.GetString("ERR_ExpectedParenthesizedExpression", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Expression is not a method..
         '''</summary>
         Friend ReadOnly Property ERR_ExpectedProcedure() As String
@@ -7157,6 +7166,24 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend ReadOnly Property ERR_MissingEndSet() As String
             Get
                 Return ResourceManager.GetString("ERR_MissingEndSet", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Missing Enum Flag..
+        '''</summary>
+        Friend ReadOnly Property ERR_MissingEnumFlag() As String
+            Get
+                Return ResourceManager.GetString("ERR_MissingEnumFlag", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Enum &apos;{0}&apos; requires &lt;Flags&gt; attribute..
+        '''</summary>
+        Friend ReadOnly Property ERR_MissingFlagsAttributeOnEnum() As String
+            Get
+                Return ResourceManager.GetString("ERR_MissingFlagsAttributeOnEnum", resourceCulture)
             End Get
         End Property
         
@@ -12045,11 +12072,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Default Optional Parameter.
+        '''</summary>
+        Friend ReadOnly Property FEATURE_DefaultOptionalParameter() As String
+            Get
+                Return ResourceManager.GetString("FEATURE_DefaultOptionalParameter", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to digit separators.
         '''</summary>
         Friend ReadOnly Property FEATURE_DigitSeparators() As String
             Get
                 Return ResourceManager.GetString("FEATURE_DigitSeparators", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Enum Flag Operators.
+        '''</summary>
+        Friend ReadOnly Property FEATURE_EnumFlagOperators() As String
+            Get
+                Return ResourceManager.GetString("FEATURE_EnumFlagOperators", resourceCulture)
             End Get
         End Property
         
@@ -12224,6 +12269,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Get
         End Property
         
+        '''<summary>
+        '''  Looks up a localized string similar to TypeOfMany feature.
+        '''</summary>
+        Friend ReadOnly Property FEATURE_TypeOfMany() As String
+            Get
+                Return ResourceManager.GetString("FEATURE_TypeOfMany", resourceCulture)
+            End Get
+        End Property
+
         '''<summary>
         '''  Looks up a localized string similar to unconstrained type parameters in binary conditional expressions.
         '''</summary>

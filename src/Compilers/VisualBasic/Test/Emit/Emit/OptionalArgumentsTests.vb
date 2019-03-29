@@ -353,7 +353,6 @@ Attribute: System.Runtime.CompilerServices.DecimalConstantAttribute(999.99)
         End Sub
 
         <WorkItem(543530, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543530")>
-        <Fact()>
         Public Sub OptionalForConstructorofAttribute()
             Dim source =
 <compilation>
@@ -667,6 +666,101 @@ True
 ]]>)
         End Sub
 
+
+        <ConditionalFact(GetType(WindowsDesktopOnly), Reason:="https://github.com/dotnet/roslyn/issues/28046")>
+        Public Sub TestOptionalWithoutNothing()
+            Dim source =
+<compilation>
+    <file name="a.vb">
+        <![CDATA[
+Imports System
+Imports System.Reflection
+Imports System.Runtime.CompilerServices
+Imports System.Runtime.InteropServices
+
+Class C1
+End Class
+
+Structure S1
+    dim i as integer
+End Structure
+
+Module Module1
+    Sub s1(optional s as byte)
+        Console.WriteLine(s = nothing)
+    end sub
+
+    Sub s2(optional s as boolean)
+        Console.WriteLine(s = nothing)
+    end sub
+
+    Sub s3(optional s as integer)
+        Console.WriteLine(s = nothing)
+    end sub
+
+    Sub s4(optional s as long)
+        Console.WriteLine(s = nothing)
+    end sub
+
+   Sub s5(optional s as double)
+        Console.WriteLine(s = nothing)
+    end sub
+
+    Sub s6(optional s as datetime)
+        Console.WriteLine(s = nothing)
+    end sub
+
+    Sub s7(optional s as decimal)
+        Console.WriteLine(s = nothing)
+    end sub
+
+    Sub s8(optional s as string)
+        Console.WriteLine(s = nothing)
+    end Sub
+
+    Sub s9(optional s as C1)
+        Console.WriteLine(s is nothing)
+    end Sub
+
+    Sub s10(optional s as S1 )
+        dim t as S1 = nothing
+        Console.WriteLine(s.Equals(t))
+    end Sub
+
+    Sub Main()
+        s1()
+        s2()
+        s3()
+        s4()
+        s5()
+        s6()
+        s7()
+        s8()
+        s9()
+        s10()
+    End Sub
+End Module
+]]>
+
+    </file>
+</compilation>
+
+            CompileAndVerify(source,
+                             references:={_classLibrary},
+                             expectedOutput:=<![CDATA[
+True
+True
+True
+True
+True
+True
+True
+True
+True
+True
+]]>, ParseOptions:= GetParseOptionsWithFeature(InternalSyntax.Feature.DefaultOptionalParameter))
+        End Sub
+
         <Fact()>
         Public Sub TestBadDefaultValue()
             Dim source =
@@ -731,7 +825,7 @@ End Interface
         End Function
 
         <WorkItem(529684, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529684")>
-        <Fact()>
+        <Fact(Skip:="Feature.DefaultOptionalParameter")>
         Public Sub TestDuplicateConstantAttributesMetadata()
             Dim ilSource = <![CDATA[
 .assembly extern System {}

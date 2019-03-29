@@ -2,6 +2,16 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
   <file datatype="xml" source-language="en" target-language="es" original="../VBResources.resx">
     <body>
+      <trans-unit id="FEATURE_DefaultOptionalParameter">
+        <source>Default Optional Parameter</source>
+        <target state="new">Default Optional Parameter</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_TypeOfMany">
+        <source>TypeOfMany feature</source>
+        <target state="new">TypeOfMany feature</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_UnconstrainedTypeParameterInConditional">
         <source>unconstrained type parameters in binary conditional expressions</source>
         <target state="translated">parámetros de tipo sin restricciones en expresiones condicionales binarias</target>
@@ -9092,6 +9102,26 @@
       <trans-unit id="FTL_InvalidInputFileName">
         <source>File name '{0}' is empty, contains invalid characters, has a drive specification without an absolute path, or is too long</source>
         <target state="translated">El nombre de archivo '{0}' está vacío, contiene caracteres no válidos, tiene una especificación de unidad sin ruta de acceso absoluta o es demasiado largo</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_MissingFlagsAttributeOnEnum">
+        <source>Enum '{0}' requires &lt;Flags&gt; attribute.</source>
+        <target state="new">Enum '{0}' requires &lt;Flags&gt; attribute.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_EnumFlagOperators">
+        <source>Enum Flag Operators</source>
+        <target state="new">Enum Flag Operators</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_MissingEnumFlag">
+        <source>Missing Enum Flag.</source>
+        <target state="new">Missing Enum Flag.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_ExpectedParenthesizedExpression">
+        <source>Expected Parenthesized Expression.</source>
+        <target state="new">Expected Parenthesized Expression.</target>
         <note />
       </trans-unit>
     </body>

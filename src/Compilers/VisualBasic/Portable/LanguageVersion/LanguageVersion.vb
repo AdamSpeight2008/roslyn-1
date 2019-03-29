@@ -18,6 +18,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     VisualBasic15 = 15
     VisualBasic15_3 = 1503
     VisualBasic15_5 = 1505
+    VisualBasic15_7 = 1507
     VisualBasic16 = 1600
 
     Latest = Integer.MaxValue

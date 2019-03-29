@@ -43,9 +43,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         End If
                     End If
                 End If
-
                 Return If(objectAsDefault, CreateResult(Me.Compilation.ObjectType), SpecializedCollections.EmptyEnumerable(Of TypeInferenceInfo)())
             End Function
+
 
             Protected Overrides Function InferTypesWorker_DoNotCallDirectly(node As SyntaxNode) As IEnumerable(Of TypeInferenceInfo)
                 Dim expression = TryCast(node, ExpressionSyntax)
@@ -597,7 +597,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     If propertySymbol Is Nothing Then
                         Return SpecializedCollections.EmptyEnumerable(Of TypeInferenceInfo)()
                     End If
-
                     Return CreateResult(propertySymbol.Type)
                 End If
 
@@ -873,52 +872,53 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Function
 
             Private Function InferTypeForExpressionOfMemberAccessExpression(memberAccessExpression As MemberAccessExpressionSyntax) As IEnumerable(Of TypeInferenceInfo)
-                Dim name = memberAccessExpression.Name.Identifier.Value
+                Dim simpleName = TryCast(memberAccessExpression.Name, SimpleNameSyntax)
+                If simpleName IsNot Nothing Then
+                    Dim name = simpleName.Identifier.Value
 
-                If name.Equals(NameOf(Task(Of Integer).ConfigureAwait)) AndAlso
-                   memberAccessExpression.IsParentKind(SyntaxKind.InvocationExpression) AndAlso
-                   memberAccessExpression.Parent.IsParentKind(SyntaxKind.AwaitExpression) Then
-                    Return InferTypes(DirectCast(memberAccessExpression.Parent, ExpressionSyntax))
-                ElseIf name.Equals(NameOf(Task(Of Integer).ContinueWith)) Then
-                    ' goo.ContinueWith(...)
-                    ' We want to infer Task<T>.  For now, we'll just do Task<object>,
-                    ' in the future it would be nice to figure out the actual result
-                    ' type based on the argument to ContinueWith.
-                    Dim taskOfT = Me.Compilation.TaskOfTType()
-                    If taskOfT IsNot Nothing Then
-                        Return CreateResult(taskOfT.Construct(Me.Compilation.ObjectType))
-                    End If
-                ElseIf name.Equals(NameOf(Enumerable.Select)) OrElse
-                       name.Equals(NameOf(Enumerable.Where)) Then
+                    If name.Equals(NameOf(Task(Of Integer).ConfigureAwait)) AndAlso
+                       memberAccessExpression.IsParentKind(SyntaxKind.InvocationExpression) AndAlso
+                       memberAccessExpression.Parent.IsParentKind(SyntaxKind.AwaitExpression) Then
+                        Return InferTypes(DirectCast(memberAccessExpression.Parent, ExpressionSyntax))
+                    ElseIf name.Equals(NameOf(Task(Of Integer).ContinueWith)) Then
+                        ' goo.ContinueWith(...)
+                        ' We want to infer Task<T>.  For now, we'll just do Task<object>,
+                        ' in the future it would be nice to figure out the actual result
+                        ' type based on the argument to ContinueWith.
+                        Dim taskOfT = Me.Compilation.TaskOfTType()
+                        If taskOfT IsNot Nothing Then
+                            Return CreateResult(taskOfT.Construct(Me.Compilation.ObjectType))
+                        End If
+                    ElseIf name.Equals(NameOf(Enumerable.Select)) OrElse
+                           name.Equals(NameOf(Enumerable.Where)) Then
 
-                    Dim ienumerableType = Me.Compilation.IEnumerableOfTType()
+                        Dim ienumerableType = Me.Compilation.IEnumerableOfTType()
 
-                    ' goo.Select
-                    ' We want to infer IEnumerable<T>.  We can try to figure out what 
-                    ' T if we get a delegate as the first argument to Select/Where.
-                    If ienumerableType IsNot Nothing AndAlso memberAccessExpression.IsParentKind(SyntaxKind.InvocationExpression) Then
-                        Dim invocation = DirectCast(memberAccessExpression.Parent, InvocationExpressionSyntax)
-                        If invocation.ArgumentList IsNot Nothing AndAlso invocation.ArgumentList.Arguments.Count > 0 AndAlso
-                           TypeOf invocation.ArgumentList.Arguments(0) Is SimpleArgumentSyntax Then
-                            Dim argumentExpression = DirectCast(invocation.ArgumentList.Arguments(0), SimpleArgumentSyntax).Expression
-                            Dim argumentTypes = GetTypes(argumentExpression)
-                            Dim delegateType = argumentTypes.FirstOrDefault().InferredType.GetDelegateType(Me.Compilation)
-                            Dim typeArg = If(delegateType?.TypeArguments.Length > 0,
-                                delegateType.TypeArguments(0),
-                                Me.Compilation.ObjectType)
-
-                            If delegateType Is Nothing OrElse IsUnusableType(typeArg) Then
-                                If TypeOf argumentExpression Is LambdaExpressionSyntax Then
-                                    typeArg = If(InferTypeForFirstParameterOfLambda(DirectCast(argumentExpression, LambdaExpressionSyntax)),
+                        ' goo.Select
+                        ' We want to infer IEnumerable<T>.  We can try to figure out what 
+                        ' T if we get a delegate as the first argument to Select/Where.
+                        If ienumerableType IsNot Nothing AndAlso memberAccessExpression.IsParentKind(SyntaxKind.InvocationExpression) Then
+                            Dim invocation = DirectCast(memberAccessExpression.Parent, InvocationExpressionSyntax)
+                            If invocation.ArgumentList IsNot Nothing AndAlso invocation.ArgumentList.Arguments.Count > 0 AndAlso
+                               TypeOf invocation.ArgumentList.Arguments(0) Is SimpleArgumentSyntax Then
+                                Dim argumentExpression = DirectCast(invocation.ArgumentList.Arguments(0), SimpleArgumentSyntax).Expression
+                                Dim argumentTypes = GetTypes(argumentExpression)
+                                Dim delegateType = argumentTypes.FirstOrDefault().InferredType.GetDelegateType(Me.Compilation)
+                                Dim typeArg = If(delegateType?.TypeArguments.Length > 0,
+                                    delegateType.TypeArguments(0),
                                     Me.Compilation.ObjectType)
-                                End If
-                            End If
 
-                            Return CreateResult(ienumerableType.Construct(typeArg))
+                                If delegateType Is Nothing OrElse IsUnusableType(typeArg) Then
+                                    If TypeOf argumentExpression Is LambdaExpressionSyntax Then
+                                        typeArg = If(InferTypeForFirstParameterOfLambda(DirectCast(argumentExpression, LambdaExpressionSyntax)),
+                                        Me.Compilation.ObjectType)
+                                    End If
+                                End If
+                                Return CreateResult(ienumerableType.Construct(typeArg))
+                            End If
                         End If
                     End If
                 End If
-
                 Return SpecializedCollections.EmptyEnumerable(Of TypeInferenceInfo)()
             End Function
 

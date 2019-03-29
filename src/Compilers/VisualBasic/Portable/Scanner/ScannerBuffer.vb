@@ -13,21 +13,18 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     Partial Friend Class Scanner
-        ''' <summary>
-        ''' page represents a cached array of chars.
-        ''' </summary>
+
+        ''' <summary> page represents a cached array of chars. </summary>
         Private Class Page
-            ''' <summary>
-            ''' where page maps in the stream. Used to validate pages
-            ''' </summary>
+
+            ''' <summary> where page maps in the stream. Used to validate pages </summary>
             Friend _pageStart As Integer
 
-            ''' <summary>
-            ''' page's buffer
-            ''' </summary>
+            ''' <summary> page's buffer </summary>
             Friend ReadOnly _arr As Char()
 
             Private ReadOnly _pool As ObjectPool(Of Page)
+
             Private Sub New(pool As ObjectPool(Of Page))
                 _pageStart = -1
                 _arr = New Char(s_PAGE_SIZE - 1) {}
@@ -40,15 +37,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Sub
 
             Private Shared ReadOnly s_poolInstance As ObjectPool(Of Page) = CreatePool()
+
             Private Shared Function CreatePool() As ObjectPool(Of Page)
-                Dim pool As ObjectPool(Of Page) = Nothing
+                Dim pool As objectpool(of Page) = Nothing
                 pool = New ObjectPool(Of Page)(Function() New Page(pool), 128)
                 Return pool
             End Function
+
             Friend Shared Function GetInstance() As Page
                 Dim instance = s_poolInstance.Allocate()
                 Return instance
             End Function
+
         End Class
 
         ''' <summary>
@@ -57,14 +57,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private _curPage As Page
         Private ReadOnly _pages(s_PAGE_NUM - 1) As Page
 
-        Private Const s_PAGE_NUM_SHIFT = 2
-        Private Const s_PAGE_NUM = CInt(2 ^ s_PAGE_NUM_SHIFT)
-        Private Const s_PAGE_NUM_MASK = s_PAGE_NUM - 1
-
-        Private Const s_PAGE_SHIFT = 11
-        Private Const s_PAGE_SIZE = CInt(2 ^ s_PAGE_SHIFT)
-        Private Const s_PAGE_MASK = s_PAGE_SIZE - 1
-        Private Const s_NOT_PAGE_MASK = Not s_PAGE_MASK
+        Private Const s_PAGE_NUM_SHIFT  = 2
+        Private Const s_PAGE_NUM        = CInt(2 ^ s_PAGE_NUM_SHIFT)
+        Private Const s_PAGE_NUM_MASK   = s_PAGE_NUM - 1
+        Private Const s_PAGE_SHIFT      = 11
+        Private Const s_PAGE_SIZE       = CInt(2 ^ s_PAGE_SHIFT)
+        Private Const s_PAGE_MASK       = s_PAGE_SIZE - 1
+        Private Const s_NOT_PAGE_MASK   = Not s_PAGE_MASK
 
         Private ReadOnly _buffer As SourceText
         Private ReadOnly _bufferLen As Integer
@@ -215,5 +214,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
             Return result
         End Function
+
     End Class
+
 End Namespace

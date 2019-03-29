@@ -2666,6 +2666,14 @@ EnteredRegion:
         Public Overrides Function VisitSourceDocumentIndex(node As BoundSourceDocumentIndex) As BoundNode
             Return Nothing
         End Function
+
+        Public Overrides Function VisitTypeOfMany(node As BoundTypeOfMany) As BoundNode
+            VisitRvalue(node.Operand)
+            For Each t In node.TargetTypes
+                VisitTypeOf(t)
+            Next
+            Return Nothing
+        End Function
 #End Region
 
     End Class
