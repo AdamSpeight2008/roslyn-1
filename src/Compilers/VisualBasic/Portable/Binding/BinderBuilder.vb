@@ -440,8 +440,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         '''    SourceModuleBinder
         ''' </summary>
         Public Shared Function CreateSourceModuleBinder(moduleSymbol As SourceModuleSymbol) As Binder
-            Dim backstop As Binder = New BackstopBinder()
-            Return New SourceModuleBinder(backstop, moduleSymbol)
+            Return New SourceModuleBinder(BackstopBinder.Instance, moduleSymbol)
         End Function
 
     End Class
