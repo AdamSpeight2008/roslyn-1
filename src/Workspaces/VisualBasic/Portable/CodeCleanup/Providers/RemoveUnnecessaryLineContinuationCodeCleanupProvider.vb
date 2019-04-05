@@ -7,6 +7,7 @@ Imports System.Threading.Tasks
 Imports Microsoft.CodeAnalysis
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.VisualBasic.Language
 
 Namespace Microsoft.CodeAnalysis.CodeCleanup.Providers
     <ExportCodeCleanupProvider(PredefinedCodeCleanupProviderNames.RemoveUnnecessaryLineContinuation, LanguageNames.VisualBasic), [Shared]>
@@ -23,7 +24,7 @@ Namespace Microsoft.CodeAnalysis.CodeCleanup.Providers
         Public Async Function CleanupAsync(document As Document, spans As ImmutableArray(Of TextSpan), Optional cancellationToken As CancellationToken = Nothing) As Task(Of Document) Implements ICodeCleanupProvider.CleanupAsync
             ' Is this VB 9? If so, we shouldn't remove line continuations because implicit line continuation was introduced in VB 10.
             Dim parseOptions = TryCast(document.Project.ParseOptions, VisualBasicParseOptions)
-            If parseOptions?.LanguageVersion <= LanguageVersion.VisualBasic9 Then
+            If parseOptions?.LanguageVersion <= Version.LanguageVersionService.LanguageVersion.VisualBasic9 Then
                 Return document
             End If
 

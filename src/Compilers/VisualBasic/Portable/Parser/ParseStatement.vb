@@ -5,7 +5,9 @@
 '-----------------------------------------------------------------------------
 Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax
 Imports InternalSyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SyntaxFactory
-Imports Microsoft.CodeAnalysis.VisualBasic.LanguageFeatures.CheckFeatureAvailability
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features
+
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 

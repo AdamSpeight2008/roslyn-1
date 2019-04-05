@@ -6,6 +6,7 @@ Imports Microsoft.CodeAnalysis.Options
 Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.VisualBasic.CodeStyle
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.VisualBasic.Language
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Simplification
     ''' <summary>
@@ -29,7 +30,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Simplification
                 Return False
             End If
 
-            If parseOptions.LanguageVersion < LanguageVersion.VisualBasic15_3 Then
+            If parseOptions.LanguageVersion< Version.LanguageVersionService.LanguageVersion.VisualBasic15_3 Then
                 Return False
             End If
 

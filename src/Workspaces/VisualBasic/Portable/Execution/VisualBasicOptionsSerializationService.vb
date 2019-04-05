@@ -7,6 +7,7 @@ Imports Microsoft.CodeAnalysis.Execution
 Imports Microsoft.CodeAnalysis.Host.Mef
 Imports Microsoft.CodeAnalysis.Options
 Imports Microsoft.CodeAnalysis.VisualBasic.CodeStyle
+Imports Microsoft.CodeAnalysis.VisualBasic.Language
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Execution
     <ExportLanguageService(GetType(IOptionsSerializationService), LanguageNames.VisualBasic), [Shared]>
@@ -112,7 +113,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Execution
             Dim features As IEnumerable(Of KeyValuePair(Of String, String)) = Nothing
             ReadParseOptionsFrom(reader, kind, documentationMode, features, cancellationToken)
 
-            Dim languageVersion = DirectCast(reader.ReadInt32(), LanguageVersion)
+            Dim languageVersion = DirectCast(reader.ReadInt32(), Version.LanguageVersionService.LanguageVersion)
 
             Dim count = reader.ReadInt32()
             Dim builder = ImmutableArray.CreateBuilder(Of KeyValuePair(Of String, Object))(count)

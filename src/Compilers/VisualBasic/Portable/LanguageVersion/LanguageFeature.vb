@@ -1,55 +1,66 @@
 ﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.Runtime.CompilerServices
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService
 
-Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
-  Friend Enum Feature
-    AutoProperties
-    LineContinuation
-    StatementLambdas
-    CoContraVariance
-    CollectionInitializers
-    SubLambdas
-    ArrayLiterals
-    AsyncExpressions
-    Iterators
-    GlobalNamespace
-    NullPropagatingOperator
-    NameOfExpressions
-    InterpolatedStrings
-    ReadonlyAutoProperties
-    RegionsEverywhere
-    MultilineStringLiterals
-    CObjInAttributeArguments
-    LineContinuationComments
-    TypeOfIsNot
-    YearFirstDateLiterals
-    WarningDirectives
-    PartialModules
-    PartialInterfaces
-    ImplementingReadonlyOrWriteonlyPropertyWithReadwrite
-    DigitSeparators
-    BinaryLiterals
-    Tuples
-    InferredTupleNames
-    LeadingDigitSeparator
-    NonTrailingNamedArguments
-    PrivateProtected
-    UnconstrainedTypeParameterInConditional
-    DefaultOptionalParameter
-    TypeOfMany
-    EnumFlagOperators
-  End Enum
+Namespace Microsoft.CodeAnalysis.VisualBasic.Language.Features
 
-  Friend Module FeatureExtensions
+    
+  Public NotInheritable Class LangaugeFeatureService
+    Public Shared ReadOnly Property Instance As New LangaugeFeatureService
 
-    <Extension>
-    Friend Function GetFeatureFlag(feature As Feature) As String
-       Return Nothing
+    Private Sub New()
+
+    End Sub
+
+    Friend Enum Feature
+      AutoProperties
+      LineContinuation
+      StatementLambdas
+      CoContraVariance
+      CollectionInitializers
+      SubLambdas
+      ArrayLiterals
+      AsyncExpressions
+      Iterators
+      GlobalNamespace
+      NullPropagatingOperator
+      NameOfExpressions
+      InterpolatedStrings
+      ReadonlyAutoProperties
+      RegionsEverywhere
+      MultilineStringLiterals
+      CObjInAttributeArguments
+      LineContinuationComments
+      TypeOfIsNot
+      YearFirstDateLiterals
+      WarningDirectives
+      PartialModules
+      PartialInterfaces
+      ImplementingReadonlyOrWriteonlyPropertyWithReadwrite
+      DigitSeparators
+      BinaryLiterals
+      Tuples
+      InferredTupleNames
+      LeadingDigitSeparator
+      NonTrailingNamedArguments
+      PrivateProtected
+      UnconstrainedTypeParameterInConditional
+      CommentsAfterLineContinuation
+      DefaultOptionalParameter
+      TypeOfMany
+      EnumFlagOperators
+    End Enum
+
+    Friend Function EnumerateLanguageFeatures() As IEnumerable(Of Feature)
+      Return [Enum].GetValues(GetType(Feature)).Cast(Of Feature)
     End Function
 
-    <Extension>
+    Friend Function GetFeatureFlag(feature As Feature) As String
+      Return Nothing
+    End Function
+
     Friend Function GetLanguageVersion(feature As Feature) As LanguageVersion
       Select Case feature
              Case Feature.AutoProperties,
@@ -83,7 +94,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
              Case Feature.LeadingDigitSeparator,
                   Feature.NonTrailingNamedArguments,
                   Feature.PrivateProtected                                      : Return LanguageVersion.VisualBasic15_5
-             Case Feature.UnconstrainedTypeParameterInConditional               : Return LanguageVersion.VisualBasic16
+             Case Feature.UnconstrainedTypeParameterInConditional,
+                  Feature.CommentsAfterLineContinuation                         : Return LanguageVersion.VisualBasic16
              Case Feature.DefaultOptionalParameter,
                   Feature.EnumFlagOperators,
                   Feature.TypeOfMany                                            : Return LanguageVersion.VisualBasic16
@@ -91,7 +103,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
       Throw ExceptionUtilities.UnexpectedValue(feature)
     End Function
 
-    <Extension>
     Friend Function GetResourceId(feature As Feature) As ERRID
       Select Case feature
              Case Feature.AutoProperties                                            : Return ERRID.FEATURE_AutoProperties
@@ -124,13 +135,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case Feature.PrivateProtected                                       : Return ERRID.FEATURE_PrivateProtected
                 Case Feature.InterpolatedStrings                                    : Return ERRID.FEATURE_InterpolatedStrings
                 Case Feature.UnconstrainedTypeParameterInConditional                : Return ERRID.FEATURE_UnconstrainedTypeParameterInConditional
+                Case Feature.CommentsAfterLineContinuation                          : Return ERRID.FEATURE_CommentsAfterLineContinuation
                 Case Feature.DefaultOptionalParameter                               : Return ERRID.FEATURE_DefaultOptionalParameter
                 Case Feature.EnumFlagOperators                                      : Return ERRID.FEATURE_EnumFlagOperators
                 Case Feature.TypeOfMany                                             : Return ERRID.FEATURE_TypeOfMany
             End Select
       Throw ExceptionUtilities.UnexpectedValue(feature)
-   End Function
+    End Function
 
-  End Module
+  End Class
 
 End Namespace

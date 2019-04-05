@@ -18,7 +18,8 @@ Imports Microsoft.CodeAnalysis.VisualBasic.SyntaxFacts
 Imports Microsoft.CodeAnalysis.Collections
 Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax
 Imports CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax
-Imports Microsoft.CodeAnalysis.VisualBasic.LanguageFeatures.CheckFeatureAvailability
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.CheckFeatureAvailability
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
@@ -433,6 +434,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return _lineBufferOffset + num < _bufferLen
         End Function
 
+        Private Function TryGet(ByRef ch As Char) As Boolean
+            Dim ok = CanGet()
+            ch = If(ok, Peek(), nothing)
+            Return ok
+        End Function
+
+        Private Function TryGet(num As Integer, ByRef ch As Char) As Boolean
+            Dim ok = CanGet(num)
+            ch = If(ok, Peek(num), nothing)
+            Return ok
+        End Function
+
         Private Function RemainingLength() As Integer
             Dim result = _bufferLen - _lineBufferOffset
             Debug.Assert(CanGet(result - 1))
@@ -536,25 +549,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return MakeEndOfLineTrivia(GetNextChar)
         End Function
 
-        Private Function TryGet(num As Integer, ByRef ch As Char) As Boolean
-            If CanGet(num) Then
-                ch = Peek(num)
-                Return True
-            End If
-            Return False
-        End Function
-
         Private Function ScanLineContinuation(tList As SyntaxListBuilder) As Boolean
             Dim ch As Char = ChrW(0)
-            If Not TryGet(0, ch) Then
-                Return False
-            End If
-
-            If Not IsAfterWhitespace() Then
-                Return False
-            End If
-
-            If Not IsUnderscore(ch) Then
+            If Not TryGet(0, ch) OrElse Not IsAfterWhitespace() OrElse Not IsUnderscore(ch) Then
                 Return False
             End If
 
@@ -574,15 +571,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             If foundComment Then
                 Dim comment As SyntaxTrivia = ScanComment()
-                If Not CheckFeatureAvailability(Feature.CommentsAfterLineContinuation) Then
-                    comment = comment.WithDiagnostics({ErrorFactory.ErrorInfo(ERRID.ERR_CommentsAfterLineContinuationNotAvailable1,
-                        New VisualBasicRequiredLanguageVersion(Feature.CommentsAfterLineContinuation.GetLanguageVersion()))})
-                End If
+                comment = CheckFeatureAvailability(comment, Feature.CommentsAfterLineContinuation, Options)
                 tList.Add(comment)
-                ' Need to call CanGet here to prevent Peek reading past EndOfBuffer. This can happen when file ends with comment but no New Line.
-                If CanGet() Then
-                    ch = Peek()
-                    atNewLine = IsNewLine(ch)
+                ' Need to call TryGet here to prevent Peek reading past EndOfBuffer. This can happen when file ends with comment but no New Line.
+                Dim nc AS Char = Nothing
+                If TryGet(here,nc) Then
+                    atNewLine = IsNewLine(nc) : ch= nc
                 Else
                     Debug.Assert(Not atNewLine)
                 End If
@@ -599,8 +593,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 ' implicit line continuations. (See Scanner::EatLineContinuation.) Otherwise,
                 ' include the new line and any additional spaces as trivia.
                 If startComment = 0 AndAlso
-                    CanGet(Here) AndAlso
-                    Not IsNewLine(Peek(Here)) Then
+                    TryGet(Here,ch) AndAlso
+                    Not IsNewLine(ch) Then
 
                     tList.Add(MakeEndOfLineTrivia(GetText(newLine)))
                     If spaces > 0 Then

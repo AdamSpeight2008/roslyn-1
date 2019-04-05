@@ -9,6 +9,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService
 
 <CLSCompliant(False)>
 Public Class ParseExpressionTest

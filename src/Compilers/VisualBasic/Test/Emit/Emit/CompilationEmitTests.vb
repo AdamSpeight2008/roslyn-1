@@ -14,6 +14,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Emit
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
 Imports Roslyn.Test.Utilities
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Emit
     Public Class CompilationEmitTests

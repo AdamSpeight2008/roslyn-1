@@ -5,6 +5,7 @@ Imports Microsoft.CodeAnalysis
 Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Microsoft.CodeAnalysis.VisualBasic.SyntaxFacts
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' <summary>
@@ -20,8 +21,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private _features As ImmutableDictionary(Of String, String)
 
         Private _preprocessorSymbols As ImmutableArray(Of KeyValuePair(Of String, Object))
-        Private _specifiedLanguageVersion As LanguageVersion
-        Private _languageVersion As LanguageVersion
+        Private _specifiedLanguageVersion As LanguageVersionService.LanguageVersion
+        Private _languageVersion As LanguageVersionService.LanguageVersion
 
         ''' <summary>
         ''' Creates an instance of VisualBasicParseOptions.
@@ -31,7 +32,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="kind">The kind of source code.<see cref="SourceCodeKind"/></param>
         ''' <param name="preprocessorSymbols">An enumerable sequence of KeyValuePair representing preprocessor symbols.</param>
         Public Sub New(
-            Optional languageVersion As LanguageVersion = LanguageVersion.Default,
+            Optional languageVersion As LanguageVersionService.LanguageVersion = LanguageVersionService.Default,
             Optional documentationMode As DocumentationMode = DocumentationMode.Parse,
             Optional kind As SourceCodeKind = SourceCodeKind.Regular,
             Optional preprocessorSymbols As IEnumerable(Of KeyValuePair(Of String, Object)) = Nothing)
@@ -44,7 +45,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Friend Sub New(
-            languageVersion As LanguageVersion,
+            languageVersion As LanguageVersionService.LanguageVersion,
             documentationMode As DocumentationMode,
             kind As SourceCodeKind,
             preprocessorSymbols As ImmutableArray(Of KeyValuePair(Of String, Object)),
@@ -53,7 +54,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             MyBase.New(kind, documentationMode)
 
             _specifiedLanguageVersion = languageVersion
-            _languageVersion = languageVersion.MapSpecifiedToEffectiveVersion
+            _languageVersion = LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(languageVersion)
             _preprocessorSymbols = preprocessorSymbols.ToImmutableArrayOrEmpty
             _features = If(features, ImmutableDictionary(Of String, String).Empty)
         End Sub
@@ -87,7 +88,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Returns the specified language version, which is the value that was specified in the call to the
         ''' constructor, or modified using the <see cref="WithLanguageVersion"/> method, or provided on the command line.
         ''' </summary>        
-        Public ReadOnly Property SpecifiedLanguageVersion As LanguageVersion
+        Public ReadOnly Property SpecifiedLanguageVersion As LanguageVersionService.LanguageVersion
             Get
                 Return _specifiedLanguageVersion
             End Get
@@ -97,7 +98,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Returns the effective language version, which the compiler uses to select the
         ''' language rules to apply to the program.
         ''' </summary>        
-        Public ReadOnly Property LanguageVersion As LanguageVersion
+        Public ReadOnly Property LanguageVersion As LanguageVersionService.LanguageVersion
             Get
                 Return _languageVersion
             End Get
@@ -129,15 +130,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ''' <param name="version">The parser language version.</param>
         ''' <returns>A new instance of VisualBasicParseOptions if different language version is different; otherwise current instance.</returns>
-        Public Shadows Function WithLanguageVersion(version As LanguageVersion) As VisualBasicParseOptions
+        Public Shadows Function WithLanguageVersion(version As LanguageVersionService.LanguageVersion) As VisualBasicParseOptions
             If version = _specifiedLanguageVersion Then
                 Return Me
             End If
 
-            Dim effectiveVersion = version.MapSpecifiedToEffectiveVersion()
+            Dim effectiveVersion =LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(version)
             Return New VisualBasicParseOptions(Me) With {._specifiedLanguageVersion = version, ._languageVersion = effectiveVersion}
         End Function
 
+        Public Function WithLatestLanguageVersion() As VisualBasicParseOptions
+            Return WithLanguageVersion(LanguageVersionService.LanguageVersion.Latest)
+        End Function
         ''' <summary>
         ''' Returns a VisualBasicParseOptions instance for a specified source code kind.
         ''' </summary>
@@ -245,7 +249,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ValidateOptions(builder, MessageProvider.Instance)
 
             ' Validate LanguageVersion Not SpecifiedLanguageVersion, after Latest/Default has been converted
-            If Not LanguageVersion.IsValid Then
+            If Not LanguageVersionService.Instance.IsValid( LanguageVersion) Then
                 builder.Add(Diagnostic.Create(MessageProvider.Instance, ERRID.ERR_BadLanguageVersion, LanguageVersion.ToString))
             End If
 

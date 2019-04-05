@@ -208,7 +208,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.ProjectSystemShim
                 ' For language versions after VB 15, we expect the version to be passed from MSBuild to the IDE
                 ' via command-line arguments (`ICompilerOptionsHostObject.SetCompilerOptions`)
                 ' instead of using `IVbcHostObject3.SetLanguageVersion`. Thus, if we already got a value, then we're good
-                If parseOptions.LanguageVersion <= LanguageVersion.VisualBasic15 Then
+                If parseOptions.LanguageVersion <= CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService.LanguageVersion.VisualBasic15 Then
                     parseOptions = parseOptions.WithLanguageVersion(compilerOptions.langVersion)
                 End If
 

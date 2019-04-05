@@ -10,6 +10,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Microsoft.CodeAnalysis.Options
 Imports Microsoft.CodeAnalysis.VisualBasic.Extensions.ContextQuery
 Imports Microsoft.CodeAnalysis.ErrorReporting
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Completion.Providers
     Partial Friend Class NamedParameterCompletionProvider

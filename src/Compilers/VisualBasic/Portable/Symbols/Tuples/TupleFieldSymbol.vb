@@ -234,7 +234,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         Friend Overrides Function GetUseSiteErrorInfo() As DiagnosticInfo
             If _cannotUse Then
                 Return ErrorFactory.ErrorInfo(ERRID.ERR_TupleInferredNamesNotAvailable, _name,
-                                              LanguageFeatures.VisualBasicRequiredLanguageVersionService.Instance.GetRequiredLanguageVersion(Syntax.InternalSyntax.Feature.InferredTupleNames))
+                                              VisualBasic.Language.Version.VisualBasicRequiredLanguageVersionService.Instance.GetRequiredLanguageVersion(VisualBasic.Language.Features.LangaugeFeatureService.Feature.InferredTupleNames))
             End If
 
             Return MyBase.GetUseSiteErrorInfo()

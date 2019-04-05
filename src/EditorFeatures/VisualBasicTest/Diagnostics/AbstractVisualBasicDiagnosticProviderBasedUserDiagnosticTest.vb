@@ -11,7 +11,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.Diagnostics
         Inherits AbstractDiagnosticProviderBasedUserDiagnosticTest
 
         Private ReadOnly _compilationOptions As VisualBasicCompilationOptions =
-            New VisualBasicCompilationOptions(OutputKind.ConsoleApplication).WithOptionInfer(True).WithParseOptions(New VisualBasicParseOptions(LanguageVersion.Latest))
+            New VisualBasicCompilationOptions(OutputKind.ConsoleApplication).WithOptionInfer(True).WithParseOptions(New VisualBasicParseOptions(Language.Version.LanguageVersionService.LanguageVersion.Latest))
 
         Protected Overrides Function GetScriptOptions() As ParseOptions
             Return TestOptions.Script

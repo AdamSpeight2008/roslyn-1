@@ -599,7 +599,7 @@ End Class
 Namespace System
     Structure ValueTuple(Of T1, T2)
     End Structure
-End Namespace", TestOptions.Regular.WithLanguageVersion(LanguageVersion.VisualBasic15_3))
+End Namespace", TestOptions.Regular.WithLanguageVersion(Language.Version.LanguageVersionService.LanguageVersion.VisualBasic15_3))
 
         End Function
 
@@ -631,7 +631,7 @@ End Class
 Namespace System
     Structure ValueTuple(Of T1, T2)
     End Structure
-End Namespace", TestOptions.Regular.WithLanguageVersion(LanguageVersion.VisualBasic15))
+End Namespace", TestOptions.Regular.WithLanguageVersion(Language.Version.LanguageVersionService.LanguageVersion.VisualBasic15))
 
         End Function
 

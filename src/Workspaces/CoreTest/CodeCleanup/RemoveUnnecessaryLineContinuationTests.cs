@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Roslyn.Test.Utilities;
 using Xunit;
-
+using Microsoft.CodeAnalysis.VisualBasic.Language.Version;
 namespace Microsoft.CodeAnalysis.UnitTests.CodeCleanup
 {
     [UseExportProvider]
@@ -279,7 +279,7 @@ namespace Microsoft.CodeAnalysis.UnitTests.CodeCleanup
             var expected = @"
         Console.WriteLine() _ ' test
         Console.WriteLine()";
-            await VerifyAsync(CreateMethod(code), CreateMethod(expected), LanguageVersion.VisualBasic15);
+            await VerifyAsync(CreateMethod(code), CreateMethod(expected), LanguageVersionService.LanguageVersion.VisualBasic15);
         }
 
         [Fact]
@@ -293,7 +293,7 @@ namespace Microsoft.CodeAnalysis.UnitTests.CodeCleanup
             var expected = @"
         Console.WriteLine() _ ' test
         Console.WriteLine()";
-            await VerifyAsync(CreateMethod(code), CreateMethod(expected), LanguageVersion.VisualBasic16);
+            await VerifyAsync(CreateMethod(code), CreateMethod(expected), LanguageVersionService.LanguageVersion.VisualBasic16);
         }
 
         [Fact]
@@ -1416,7 +1416,7 @@ Module Program
     End Function
 End Module
 ";
-            await VerifyAsync(code, expected, langVersion: LanguageVersion.VisualBasic9);
+            await VerifyAsync(code, expected, langVersion: LanguageVersionService.LanguageVersion.VisualBasic9);
         }
 
         [Fact]
@@ -1448,9 +1448,9 @@ Module Program
 End Module
 ";
 
-            await VerifyAsync(code, expected, langVersion: LanguageVersion.VisualBasic10);
-            await VerifyAsync(code, expected, langVersion: LanguageVersion.VisualBasic11);
-            await VerifyAsync(code, expected, langVersion: LanguageVersion.VisualBasic12);
+            await VerifyAsync(code, expected, langVersion: LanguageVersionService.LanguageVersion.VisualBasic10);
+            await VerifyAsync(code, expected, langVersion: LanguageVersionService.LanguageVersion.VisualBasic11);
+            await VerifyAsync(code, expected, langVersion: LanguageVersionService.LanguageVersion.VisualBasic12);
             await VerifyAsync(code, expected);
         }
 
@@ -1463,7 +1463,7 @@ Class C
 End Class";
         }
 
-        private async Task VerifyAsync(string codeWithMarker, string expectedResult, LanguageVersion langVersion = LanguageVersion.VisualBasic14)
+        private async Task VerifyAsync(string codeWithMarker, string expectedResult, LanguageVersionService.LanguageVersion langVersion = LanguageVersionService.LanguageVersion.VisualBasic14)
         {
             MarkupTestFile.GetSpans(codeWithMarker,
                 out var codeWithoutMarker, out ImmutableArray<TextSpan> textSpans);
@@ -1477,7 +1477,7 @@ End Class";
             Assert.Equal(expectedResult, actualResult);
         }
 
-        private static Document CreateDocument(string code, string language, LanguageVersion langVersion)
+        private static Document CreateDocument(string code, string language, LanguageVersionService.LanguageVersion langVersion)
         {
             var solution = new AdhocWorkspace().CurrentSolution;
             var projectId = ProjectId.CreateNewId();

@@ -3,6 +3,8 @@
 Imports System.Globalization
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 Imports Roslyn.Test.Utilities
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
 
@@ -55,11 +57,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
                 Feature.NonTrailingNamedArguments
             }
             Dim [set] = New HashSet(Of ERRID)
-            For Each feature As Feature In [Enum].GetValues(GetType(Feature))
+            For Each feature As Feature In Language.Features.LangaugeFeatureService.Instance.EnumerateLanguageFeatures
                 If Array.IndexOf(excludedFeatures, feature) >= 0 Then
                     Continue For
                 End If
-                Dim id = feature.GetResourceId()
+                Dim id = Language.Features.LangaugeFeatureService.Instance.GetResourceId(feature)
                 Assert.True([set].Add(id))
             Next
         End Sub

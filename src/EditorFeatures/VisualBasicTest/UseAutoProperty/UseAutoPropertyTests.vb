@@ -349,7 +349,7 @@ end class")
         end get
     end property
 end class",
-New TestParameters(VisualBasicParseOptions.Default.WithLanguageVersion(LanguageVersion.VisualBasic9)))
+New TestParameters(VisualBasicParseOptions.Default.WithLanguageVersion(Language.Version.LanguageVersionService.LanguageVersion.VisualBasic9)))
         End Function
 
         <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsUseAutoProperty)>
@@ -479,7 +479,7 @@ end class")
         end get
     end property
 end class",
-New TestParameters(VisualBasicParseOptions.Default.WithLanguageVersion(LanguageVersion.VisualBasic12)))
+New TestParameters(VisualBasicParseOptions.Default.WithLanguageVersion(Language.Version.LanguageVersionService.LanguageVersion.VisualBasic12)))
         End Function
 
         <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsUseAutoProperty)>

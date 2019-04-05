@@ -13,7 +13,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.UseNamedArguments
         End Function
 
         Private Shared ReadOnly s_vb15Parameters As TestParameters =
-            New TestParameters(parseOptions:=TestOptions.Regular.WithLanguageVersion(LanguageVersion.VisualBasic15))
+            New TestParameters(parseOptions:=TestOptions.Regular.WithLanguageVersion(Language.Version.LanguageVersionService.LanguageVersion.VisualBasic15))
 
         <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsUseNamedArguments)>
         Public Async Function TestFirstArgument() As Task

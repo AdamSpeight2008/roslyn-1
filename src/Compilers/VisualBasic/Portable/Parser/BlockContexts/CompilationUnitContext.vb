@@ -5,6 +5,9 @@ Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features
+
 '-----------------------------------------------------------------------------
 ' Contains the definition of the DeclarationContext
 '-----------------------------------------------------------------------------
@@ -116,7 +119,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                                                        declarations,
                                                        optionalTerminator)
 
-            Dim regionsAreAllowedEverywhere = Not haveRegionDirectives OrElse LanguageFeatures.CheckFeatureAvailability.IsAvailable(Feature.RegionsEverywhere, _parser.Options)
+            Dim regionsAreAllowedEverywhere = Not haveRegionDirectives OrElse Feature.RegionsEverywhere.IsAvailable(parser.Options)
 
             If notClosedIfDirectives IsNot Nothing OrElse notClosedRegionDirectives IsNot Nothing OrElse notClosedExternalSourceDirective IsNot Nothing OrElse
                Not regionsAreAllowedEverywhere Then
@@ -470,7 +473,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 End If
 
                 If reportAnError Then
-                    rewritten = LanguageFeatures.ReportFeatureUnavailable(rewritten, Feature.RegionsEverywhere, _parser.options)
+                    rewritten = CheckFeatureAvailability.ReportFeatureUnavailable(rewritten, Feature.RegionsEverywhere, _parser.options)
                 End If
 
                 Return rewritten

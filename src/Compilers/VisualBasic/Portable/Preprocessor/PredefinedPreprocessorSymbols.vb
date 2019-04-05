@@ -8,7 +8,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Friend ReadOnly Property CurrentVersionNumber As Double
             Get
-                Return Double.Parse(LanguageVersion.Latest.MapSpecifiedToEffectiveVersion().GetErrorName(), CultureInfo.InvariantCulture)
+                Return Double.Parse(Language.Version.LanguageVersionService.Instance.GetErrorName(Language.Version.LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(Language.Version.LanguageVersionService.Latest)), CultureInfo.InvariantCulture)
             End Get
         End Property
 

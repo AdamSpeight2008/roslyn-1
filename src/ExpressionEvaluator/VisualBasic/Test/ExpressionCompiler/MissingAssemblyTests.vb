@@ -14,6 +14,8 @@ Imports Microsoft.VisualStudio.Debugger.Evaluation
 Imports Roslyn.Test.Utilities
 Imports Roslyn.Utilities
 Imports Xunit
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator.UnitTests
     Public Class MissingAssemblyTests

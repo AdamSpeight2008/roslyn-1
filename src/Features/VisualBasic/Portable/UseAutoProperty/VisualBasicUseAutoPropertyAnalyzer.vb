@@ -3,6 +3,7 @@
 Imports System.Threading
 Imports Microsoft.CodeAnalysis.Diagnostics
 Imports Microsoft.CodeAnalysis.UseAutoProperty
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UseAutoProperty
@@ -11,11 +12,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UseAutoProperty
         Inherits AbstractUseAutoPropertyAnalyzer(Of PropertyBlockSyntax, FieldDeclarationSyntax, ModifiedIdentifierSyntax, ExpressionSyntax)
 
         Protected Overrides Function SupportsReadOnlyProperties(compilation As Compilation) As Boolean
-            Return DirectCast(compilation, VisualBasicCompilation).LanguageVersion >= LanguageVersion.VisualBasic14
+            Return DirectCast(compilation, VisualBasicCompilation).LanguageVersion >= LanguageVersionService.LanguageVersion.VisualBasic14
         End Function
 
         Protected Overrides Function SupportsPropertyInitializer(compilation As Compilation) As Boolean
-            Return DirectCast(compilation, VisualBasicCompilation).LanguageVersion >= LanguageVersion.VisualBasic10
+            Return DirectCast(compilation, VisualBasicCompilation).LanguageVersion >= LanguageVersionService.LanguageVersion.VisualBasic10
         End Function
 
         Protected Overrides Function CanExplicitInterfaceImplementationsBeFixed() As Boolean

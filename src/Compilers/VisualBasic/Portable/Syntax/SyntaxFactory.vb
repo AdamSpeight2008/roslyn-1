@@ -4,7 +4,8 @@ Imports System.Xml.Linq
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports VbObjectDisplay = Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay.ObjectDisplay
 Imports Parser = Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Parser
-Imports Feature = Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Feature
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -1068,7 +1069,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Throw New ArgumentException(VBResources.SyntaxTreeIsNotASubmission)
             End If
 
-            Dim languageVersion As LanguageVersion = options.LanguageVersion
+            Dim languageVersion As Language.Version.LanguageVersionService.LanguageVersion = options.LanguageVersion
 
             If Not tree.HasCompilationUnitRoot Then
                 Return False
@@ -1111,7 +1112,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             For Each err In lastToken.GetDiagnostics()
                 Select Case DirectCast(err.Code, ERRID)
                     Case ERRID.ERR_UnterminatedStringLiteral
-                        If LanguageFeatures.CheckFeatureAvailability.IsAvailable(Feature.MultilineStringLiterals, options) Then
+                        If Feature.MultilineStringLiterals.IsAvailable(options) Then
                             Return False
                         End If
                 End Select

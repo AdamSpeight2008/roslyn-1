@@ -5,6 +5,8 @@ Imports System.Runtime.InteropServices
 Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -156,7 +158,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         Dim parameter = parameterSymbol.SyntaxNode
                         Debug.Assert(parameter IsNot Nothing)
 
-                        If Compilation.LanguageVersion < InternalSyntax.FeatureExtensions.GetLanguageVersion(InternalSyntax.Feature.DefaultOptionalParameter) Then
+                        If Feature.DefaultOptionalParameter.IsAvailable(Compilation) = False Then
                             Dim isOptional = parameter.Modifiers.Any(SyntaxKind.OptionalKeyword)
                             Dim defto = parameter.Default
                             If isOptional AndAlso defto.IsMissing Then

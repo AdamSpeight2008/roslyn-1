@@ -4,6 +4,7 @@ Imports System.Collections.Immutable
 Imports System.Globalization
 Imports System.Linq
 Imports Roslyn.Test.Utilities
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version
 
 Public Class VisualBasicParseOptionsTests
     Inherits BasicTestBase
@@ -19,21 +20,21 @@ Public Class VisualBasicParseOptionsTests
     <Fact>
     Public Sub WithXxx()
         TestProperty(Function(old, value) old.WithKind(value), Function(opt) opt.Kind, SourceCodeKind.Script)
-        TestProperty(Function(old, value) old.WithLanguageVersion(value), Function(opt) opt.LanguageVersion, LanguageVersion.VisualBasic9)
+        TestProperty(Function(old, value) old.WithLanguageVersion(value), Function(opt) opt.LanguageVersion, LanguageVersionService.LanguageVersion.VisualBasic9)
         TestProperty(Function(old, value) old.WithDocumentationMode(value), Function(opt) opt.DocumentationMode, DocumentationMode.None)
     End Sub
 
     <Fact>
     Public Sub WithLatestLanguageVersion()
         Dim oldOpt1 = VisualBasicParseOptions.Default
-        Dim newOpt1 = oldOpt1.WithLanguageVersion(LanguageVersion.Latest)
-        Dim newOpt2 = newOpt1.WithLanguageVersion(LanguageVersion.Latest)
-        Assert.Equal(LanguageVersion.Latest.MapSpecifiedToEffectiveVersion, newOpt1.LanguageVersion)
-        Assert.Equal(LanguageVersion.Latest.MapSpecifiedToEffectiveVersion, newOpt2.LanguageVersion)
-        newOpt1 = oldOpt1.WithLanguageVersion(LanguageVersion.Default)
-        newOpt2 = newOpt1.WithLanguageVersion(LanguageVersion.Default)
-        Assert.Equal(LanguageVersion.Default.MapSpecifiedToEffectiveVersion, newOpt1.LanguageVersion)
-        Assert.Equal(LanguageVersion.Default.MapSpecifiedToEffectiveVersion, newOpt2.LanguageVersion)
+        Dim newOpt1 = oldOpt1.WithLanguageVersion(LanguageVersionService.LanguageVersion.Latest)
+        Dim newOpt2 = newOpt1.WithLanguageVersion(LanguageVersionService.LanguageVersion.Latest)
+        Assert.Equal(LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersionService.LanguageVersion.Latest), newOpt1.LanguageVersion)
+        Assert.Equal(LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersionService.LanguageVersion.Latest), newOpt2.LanguageVersion)
+        newOpt1 = oldOpt1.WithLanguageVersion(LanguageVersionService.LanguageVersion.Default)
+        newOpt2 = newOpt1.WithLanguageVersion(LanguageVersionService.LanguageVersion.Default)
+        Assert.Equal(LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersionService.LanguageVersion.Default), newOpt1.LanguageVersion)
+        Assert.Equal(LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersionService.LanguageVersion.Default), newOpt2.LanguageVersion)
     End Sub
 
     <Fact>
@@ -78,12 +79,9 @@ Public Class VisualBasicParseOptionsTests
 
     <Fact>
     Public Sub CurrentVersionNumber()
-        Dim highest = System.Enum.
-            GetValues(GetType(LanguageVersion)).
-            Cast(Of LanguageVersion).
-            Where(Function(x) x <> LanguageVersion.Latest AndAlso x <> LanguageVersion.VisualBasic16).
-            Max().
-            ToDisplayString()
+        Dim highest =LanguageVersionService.Instance.ToDisplayString(LanguageVersionService.Instance.EnumerateLanguageVersions.
+                                                                     Where(Function(x) x <>  LanguageVersionService.LanguageVersion.Latest AndAlso x <>  LanguageVersionService.LanguageVersion.VisualBasic16).
+            Max())
 
         ' https//github.com/dotnet/roslyn/issues/29819 Once we are ready to remove the beta tag from VB 16 we should update Default/Latest accordingly
 
@@ -325,7 +323,7 @@ Public Class VisualBasicParseOptionsTests
 
     <Fact>
     Public Sub BadLanguageVersionShouldProduceDiagnostics()
-        Dim options = New VisualBasicParseOptions(languageVersion:=DirectCast(10000, LanguageVersion))
+        Dim options = New VisualBasicParseOptions(languageVersion:=DirectCast(10000,  LanguageVersionService.LanguageVersion))
 
         options.Errors.Verify(Diagnostic(ERRID.ERR_BadLanguageVersion).WithArguments("10000").WithLocation(1, 1))
     End Sub
@@ -358,7 +356,7 @@ Public Class VisualBasicParseOptionsTests
 
     <Fact>
     Public Sub BadLanguageVersionShouldProduceDiagnostics_WithVariation()
-        Dim options = New VisualBasicParseOptions().WithLanguageVersion(DirectCast(10000, LanguageVersion))
+        Dim options = New VisualBasicParseOptions().WithLanguageVersion(DirectCast(10000,  LanguageVersionService.LanguageVersion))
 
         options.Errors.Verify(Diagnostic(ERRID.ERR_BadLanguageVersion).WithArguments("10000").WithLocation(1, 1))
     End Sub

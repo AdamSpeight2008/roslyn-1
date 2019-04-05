@@ -9,6 +9,8 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Microsoft.CodeAnalysis.VisualBasic.UnitTests.Symbols
 Imports Roslyn.Test.Utilities
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
 

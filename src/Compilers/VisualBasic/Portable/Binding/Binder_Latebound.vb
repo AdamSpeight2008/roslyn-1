@@ -8,6 +8,8 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -237,7 +239,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return
             End If
 
-            If Not LanguageFeatures.IsAvailable(InternalSyntax.Feature.NonTrailingNamedArguments, Compilation) Then
+            If Not Feature.NonTrailingNamedArguments.IsAvailable(Compilation) Then
                 Return
             End If
 

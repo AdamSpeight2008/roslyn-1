@@ -3,7 +3,8 @@
 Imports System.Collections.Immutable
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
-Imports Microsoft.CodeAnalysis.VisualBasic.LanguageFeatures.CheckFeatureAvailability
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.CheckFeatureAvailability
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
       
@@ -107,7 +108,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                         Select Case type.TypeKind
                             Case TypeKind.Enum
-                                If InternalSyntax.Feature.EnumFlagOperators.CheckFeatureAvailability(
+                                If Feature.EnumFlagOperators.CheckFeatureAvailability(
                                     DirectCast(left.Syntax.SyntaxTree.Options,VisualBasicParseOptions),
                                     node.OperatorToken.GetLocation(),diagnostics) Then
 

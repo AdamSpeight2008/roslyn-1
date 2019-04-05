@@ -26,6 +26,8 @@ Imports Roslyn.Test.Utilities
 Imports Roslyn.Test.Utilities.SharedResourceHelpers
 Imports Roslyn.Utilities
 Imports Xunit
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.CommandLine.UnitTests
     Partial Public Class CommandLineTests
@@ -1174,6 +1176,7 @@ End Module").Path
             Assert.Equal(False, parsedArgs.SourceFiles.Any())
         End Sub
 
+
         <Fact>
         Public Sub LangVersion()
             Dim parsedArgs = DefaultParse({"/langversion:9", "a.VB"}, _baseDirectory)
@@ -1242,18 +1245,18 @@ End Module").Path
             parsedArgs = DefaultParse({"/langVERSION:default", "a.vb"}, _baseDirectory)
             parsedArgs.Errors.Verify()
             Assert.Equal(LanguageVersion.Default, parsedArgs.ParseOptions.SpecifiedLanguageVersion)
-            Assert.Equal(LanguageVersion.Default.MapSpecifiedToEffectiveVersion(), parsedArgs.ParseOptions.LanguageVersion)
+            Assert.Equal(LanguageVersionService.Default, parsedArgs.ParseOptions.LanguageVersion)
 
             parsedArgs = DefaultParse({"/langVERSION:latest", "a.vb"}, _baseDirectory)
             parsedArgs.Errors.Verify()
             Assert.Equal(LanguageVersion.Latest, parsedArgs.ParseOptions.SpecifiedLanguageVersion)
             Assert.Equal(LanguageVersion.VisualBasic15_7, parsedArgs.ParseOptions.LanguageVersion)
-            Assert.Equal(LanguageVersion.Latest.MapSpecifiedToEffectiveVersion(), parsedArgs.ParseOptions.LanguageVersion)
+            Assert.Equal(LanguageVersionService.Latest, parsedArgs.ParseOptions.LanguageVersion)
 
             ' default: "current version"
             parsedArgs = DefaultParse({"a.vb"}, _baseDirectory)
             parsedArgs.Errors.Verify()
-            Assert.Equal(LanguageVersion.Default.MapSpecifiedToEffectiveVersion(), parsedArgs.ParseOptions.LanguageVersion)
+            Assert.Equal(LanguageVersionService.Default, parsedArgs.ParseOptions.LanguageVersion)
 
             ' overriding
             parsedArgs = DefaultParse({"/langVERSION:10", "/langVERSION:9.0", "a.vb"}, _baseDirectory)
@@ -1263,23 +1266,23 @@ End Module").Path
             ' errors
             parsedArgs = DefaultParse({"/langVERSION", "a.vb"}, _baseDirectory)
             parsedArgs.Errors.Verify(Diagnostic(ERRID.ERR_ArgumentRequired).WithArguments("langversion", ":<number>"))
-            Assert.Equal(LanguageVersion.Default.MapSpecifiedToEffectiveVersion(), parsedArgs.ParseOptions.LanguageVersion)
+            Assert.Equal(LanguageVersionService.Default, parsedArgs.ParseOptions.LanguageVersion)
 
             parsedArgs = DefaultParse({"/langVERSION+", "a.vb"}, _baseDirectory)
             parsedArgs.Errors.Verify(Diagnostic(ERRID.WRN_BadSwitch).WithArguments("/langVERSION+")) ' TODO: Dev11 reports ERR_ArgumentRequired
-            Assert.Equal(LanguageVersion.Default.MapSpecifiedToEffectiveVersion(), parsedArgs.ParseOptions.LanguageVersion)
+            Assert.Equal(LanguageVersionService.Default, parsedArgs.ParseOptions.LanguageVersion)
 
             parsedArgs = DefaultParse({"/langVERSION:", "a.vb"}, _baseDirectory)
             parsedArgs.Errors.Verify(Diagnostic(ERRID.ERR_ArgumentRequired).WithArguments("langversion", ":<number>"))
-            Assert.Equal(LanguageVersion.Default.MapSpecifiedToEffectiveVersion(), parsedArgs.ParseOptions.LanguageVersion)
+            Assert.Equal(LanguageVersionService.Default, parsedArgs.ParseOptions.LanguageVersion)
 
             parsedArgs = DefaultParse({"/langVERSION:8", "a.vb"}, _baseDirectory)
             parsedArgs.Errors.Verify(Diagnostic(ERRID.ERR_InvalidSwitchValue).WithArguments("langversion", "8"))
-            Assert.Equal(LanguageVersion.Default.MapSpecifiedToEffectiveVersion(), parsedArgs.ParseOptions.LanguageVersion)
+            Assert.Equal(LanguageVersionService.Default, parsedArgs.ParseOptions.LanguageVersion)
 
             parsedArgs = DefaultParse({"/langVERSION:" & (LanguageVersion.VisualBasic12 + 1), "a.vb"}, _baseDirectory)
             parsedArgs.Errors.Verify(Diagnostic(ERRID.ERR_InvalidSwitchValue).WithArguments("langversion", CStr(LanguageVersion.VisualBasic12 + 1)))
-            Assert.Equal(LanguageVersion.Default.MapSpecifiedToEffectiveVersion(), parsedArgs.ParseOptions.LanguageVersion)
+            Assert.Equal(LanguageVersionService.Default, parsedArgs.ParseOptions.LanguageVersion)
         End Sub
 
         <Fact>
@@ -1764,17 +1767,15 @@ End Module").Path
             ' - update project-system to recognize the new value and pass it through
             ' - update all the tests that call this canary
             ' - update the command-line documentation (CommandLine.md)
-            AssertEx.SetEqual({"default", "9", "10", "11", "12", "14", "15", "15.3", "15.5", "16", "latest"},
-                System.Enum.GetValues(GetType(LanguageVersion)).Cast(Of LanguageVersion)().Select(Function(v) v.ToDisplayString()))
+            AssertEx.SetEqual({"default", "9", "10", "11", "12", "14", "15", "15.3", "15.5", "15.7", "16", "latest"},
+                 LanguageVersionService.Instance.EnumerateLanguageVersionsNames)
             ' For minor versions, the format should be "x.y", such as "15.3"
         End Sub
 
         <Fact>
         Public Sub LanguageVersion_GetErrorCode()
-            Dim versions = System.Enum.GetValues(GetType(LanguageVersion)).
-                Cast(Of LanguageVersion)().
-                Except({LanguageVersion.Default, LanguageVersion.Latest}).
-                Select(Function(v) v.GetErrorName())
+            Dim versions = LanguageVersionService.Instance.EnumerateLanguageVersions.Except({LanguageVersion.Default, LanguageVersion.Latest}).
+                Select(Function(v) LanguageVersionService.Instance.GetErrorName(v))
 
             Dim errorCodes = {
                 "9.0",
@@ -1797,16 +1798,17 @@ End Module").Path
 
         <Fact>
         Public Sub LanguageVersion_MapSpecifiedToEffectiveVersion()
-            Assert.Equal(LanguageVersion.VisualBasic9, LanguageVersion.VisualBasic9.MapSpecifiedToEffectiveVersion())
-            Assert.Equal(LanguageVersion.VisualBasic10, LanguageVersion.VisualBasic10.MapSpecifiedToEffectiveVersion())
-            Assert.Equal(LanguageVersion.VisualBasic11, LanguageVersion.VisualBasic11.MapSpecifiedToEffectiveVersion())
-            Assert.Equal(LanguageVersion.VisualBasic12, LanguageVersion.VisualBasic12.MapSpecifiedToEffectiveVersion())
-            Assert.Equal(LanguageVersion.VisualBasic14, LanguageVersion.VisualBasic14.MapSpecifiedToEffectiveVersion())
-            Assert.Equal(LanguageVersion.VisualBasic15, LanguageVersion.VisualBasic15.MapSpecifiedToEffectiveVersion())
-            Assert.Equal(LanguageVersion.VisualBasic15_3, LanguageVersion.VisualBasic15_3.MapSpecifiedToEffectiveVersion())
-            Assert.Equal(LanguageVersion.VisualBasic15_5, LanguageVersion.VisualBasic15_5.MapSpecifiedToEffectiveVersion())
-            Assert.Equal(LanguageVersion.VisualBasic15_7, LanguageVersion.Latest.MapSpecifiedToEffectiveVersion())
-            Assert.Equal(LanguageVersion.VisualBasic16, LanguageVersion.VisualBasic16.MapSpecifiedToEffectiveVersion())
+            Assert.Equal(LanguageVersion.VisualBasic9, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic9))
+            Assert.Equal(LanguageVersion.VisualBasic10, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion( LanguageVersion.VisualBasic10))
+            Assert.Equal(LanguageVersion.VisualBasic11, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic11))
+            Assert.Equal(LanguageVersion.VisualBasic12, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic12))
+            Assert.Equal(LanguageVersion.VisualBasic14, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic14))
+            Assert.Equal(LanguageVersion.VisualBasic15, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic15))
+            Assert.Equal(LanguageVersion.VisualBasic15_3, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic15_3))
+            Assert.Equal(LanguageVersion.VisualBasic15_5, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic15_5))
+            Assert.Equal(LanguageVersion.VisualBasic15_7, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic15_7))
+             Assert.Equal(LanguageVersion.VisualBasic15_7, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.Latest))
+           Assert.Equal(LanguageVersion.VisualBasic16, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic16))
             ' https//github.com/dotnet/roslyn/issues/29819 Once we are ready to remove the beta tag from VB 16 we should update Default/Latest accordingly
 
             ' The canary check is a reminder that this test needs to be updated when a language version is added
@@ -1838,7 +1840,7 @@ End Module").Path
             InlineData("bad", False, LanguageVersion.Default)>
         Public Sub LanguageVersion_TryParseDisplayString(input As String, success As Boolean, expected As LanguageVersion)
             Dim version As LanguageVersion
-            Assert.Equal(success, TryParse(input, version))
+            Assert.Equal(success, LanguageVersionService.Instance.TryParse(input, version))
             Assert.Equal(expected, version)
 
             ' The canary check is a reminder that this test needs to be updated when a language version is added
@@ -1853,7 +1855,7 @@ End Module").Path
             Assert.Equal(0, exitCode)
 
             Dim actual = outWriter.ToString()
-            Dim expected = [Enum].GetValues(GetType(LanguageVersion)).Cast(Of LanguageVersion)().Select(Function(v) v.ToDisplayString())
+            Dim expected = LanguageVersionService.Instance.EnumerateLanguageVersionsNames()
             Dim acceptableSurroundingChar = {CChar(vbCr), CChar(vbLf), "("c, ")"c, " "c}
 
             For Each v In expected

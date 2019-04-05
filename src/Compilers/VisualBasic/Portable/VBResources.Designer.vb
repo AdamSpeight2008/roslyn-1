@@ -12088,6 +12088,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return ResourceManager.GetString("FEATURE_CommentsAfterLineContinuation", resourceCulture)
             End Get
         End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Default Optional Parameter.
         '''</summary>
         Friend ReadOnly Property FEATURE_DefaultOptionalParameter() As String
@@ -12096,6 +12098,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Get
         End Property
 
+        '''<summary>
         '''  Looks up a localized string similar to digit separators.
         '''</summary>
         Friend ReadOnly Property FEATURE_DigitSeparators() As String

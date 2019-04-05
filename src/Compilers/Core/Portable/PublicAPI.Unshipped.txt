@@ -165,8 +165,6 @@ Microsoft.CodeAnalysis.OperationKind.FlowAnonymousFunction = 96 -> Microsoft.Cod
 Microsoft.CodeAnalysis.OperationKind.FlowCapture = 91 -> Microsoft.CodeAnalysis.OperationKind
 Microsoft.CodeAnalysis.OperationKind.FlowCaptureReference = 92 -> Microsoft.CodeAnalysis.OperationKind
 Microsoft.CodeAnalysis.OperationKind.IsNull = 93 -> Microsoft.CodeAnalysis.OperationKind
-Microsoft.CodeAnalysis.Operations.CommonConversion.IsImplicit.get -> bool
-icrosoft.CodeAnalysis.Operations.CommonConversion.IsImplicit.get -> bool
 Microsoft.CodeAnalysis.Operations.ICaseClauseOperation.Label.get -> Microsoft.CodeAnalysis.ILabelSymbol
 Microsoft.CodeAnalysis.Operations.ICoalesceAssignmentOperation
 Microsoft.CodeAnalysis.Operations.ICoalesceOperation.ValueConversion.get -> Microsoft.CodeAnalysis.Operations.CommonConversion

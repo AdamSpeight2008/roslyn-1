@@ -6,6 +6,7 @@ Imports Microsoft.CodeAnalysis.Emit
 Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Roslyn.Test.Utilities
 Imports Xunit
+Imports Microsoft.CodeAnalysis.VisualBasic.Language
 
 Public MustInherit Class BasicTestBase
     Inherits CommonTestBase
@@ -915,8 +916,8 @@ Public MustInherit Class BasicTestBase
 
 #End Region
 
-    Friend Function GetParseOptionsWithFeature(feature As InternalSyntax.Feature) As VisualBasicParseOptions
-        Dim FL= InternalSyntax.FeatureExtensions.GetLanguageVersion(feature) 
+    Friend Function GetParseOptionsWithFeature(feature As Features.LangaugeFeatureService.Feature) As VisualBasicParseOptions
+        Dim FL= Language.Features.LangaugeFeatureService.Instance.GetLanguageVersion(feature) 
         If VisualBasicParseOptions.Default.LanguageVersion >= FL Then Return VisualBasicParseOptions.Default
         Return VisualBasicParseOptions.Default.WithLanguageVersion(fl)
     End Function

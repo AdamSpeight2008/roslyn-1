@@ -7,6 +7,8 @@ Imports Microsoft.CodeAnalysis.VisualBasic
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService
 
 <CLSCompliant(False)>
 Public Class ParseErrorTests
@@ -1441,7 +1443,7 @@ Class C1
     End Function
 End Class
 "
-        Dim  po=GetParseOptionsWithFeature(InternalSyntax.Feature.DefaultOptionalParameter)
+        Dim  po=GetParseOptionsWithFeature(Feature.DefaultOptionalParameter)
         ParseAndVerify(code, po,
                        expectedErrors:= 
                        <errors>
@@ -2246,7 +2248,7 @@ Namespace NS1
     End Module
 End Namespace
 "
-        Dim  po=GetParseOptionsWithFeature(InternalSyntax.Feature.DefaultOptionalParameter)
+        Dim  po=GetParseOptionsWithFeature(Feature.DefaultOptionalParameter)
 
         ParseAndVerify(code, Po, expectedErrors:=
         <errors>
@@ -2560,7 +2562,7 @@ Class C1
     End Function
 End Class
 "
-        Dim  po=GetParseOptionsWithFeature(InternalSyntax.Feature.DefaultOptionalParameter)
+        Dim  po=GetParseOptionsWithFeature(Feature.DefaultOptionalParameter)
         ParseAndVerify(code, po)
     End Sub
 

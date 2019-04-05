@@ -11,6 +11,8 @@ Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Microsoft.CodeAnalysis.VisualBasic.SyntaxFacts
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' <summary>
@@ -107,7 +109,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim parseDocumentationComments As Boolean = False ' Don't just null check documentationFileName because we want to do this even if the file name is invalid.
             Dim outputKind As OutputKind = OutputKind.ConsoleApplication
             Dim ssVersion As SubsystemVersion = SubsystemVersion.None
-            Dim languageVersion As LanguageVersion = LanguageVersion.Default
+            Dim languageVersion As Language.Version.LanguageVersionService.LanguageVersion = Language.Version.LanguageVersionService.LanguageVersion.Default
             Dim mainTypeName As String = Nothing
             Dim win32ManifestFile As String = Nothing
             Dim win32ResourceFile As String = Nothing
@@ -834,7 +836,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                             ElseIf value = "?" Then
                                 displayLangVersions = True
                             Else
-                                If Not TryParse(value, languageVersion) Then
+                                If Not Language.Version.LanguageVersionService.Instance.TryParse(value, languageVersion) Then
                                     AddDiagnostic(diagnostics, ERRID.ERR_InvalidSwitchValue, "langversion", value)
                                 End If
                             End If

@@ -7,6 +7,8 @@ Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -220,8 +222,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 access = Accessibility.ProtectedOrFriend
             ElseIf (foundModifiers And (SourceMemberFlags.Private Or SourceMemberFlags.Protected)) = (SourceMemberFlags.Private Or SourceMemberFlags.Protected) Then
                 access = Accessibility.ProtectedAndFriend
-                LanguageFeatures.CheckFeatureAvailability.CheckFeatureAvailability(
-                    InternalSyntax.Feature.PrivateProtected,
+                CheckFeatureAvailability.CheckFeatureAvailability(
+                    Feature.PrivateProtected,
                     DirectCast(privateProtectedToken.SyntaxTree, VisualBasicSyntaxTree).Options,
                     privateProtectedToken.GetLocation(),
                     diagBag)

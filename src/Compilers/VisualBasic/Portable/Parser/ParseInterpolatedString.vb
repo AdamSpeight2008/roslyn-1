@@ -4,7 +4,9 @@ Imports System.Runtime.InteropServices
 Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax
 Imports InternalSyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SyntaxFactory
 Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxListBuilderExtensions
-Imports Microsoft.CodeAnalysis.VisualBasic.LanguageFeatures.CheckFeatureAvailability
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.CheckFeatureAvailability
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features
 
 '
 '============ Methods for parsing portions of executable statements ==

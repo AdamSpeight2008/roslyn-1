@@ -2,17 +2,19 @@
 
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 Imports System.Runtime.CompilerServices
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version
 
-Namespace Microsoft.CodeAnalysis.VisualBasic.LanguageFeatures
+Namespace Microsoft.CodeAnalysis.VisualBasic.Language.Version
+  Friend NotInheritable Class VisualBasicRequiredLanguageVersionService
 
-  Friend Class VisualBasicRequiredLanguageVersionService
-
-    Private ReadOnly Property _RequiredVersionsForFeature As New Dictionary(Of Feature, VisualBasicRequiredLanguageVersion)()
+    Private Shared ReadOnly Property _RequiredVersionsForFeature As New Dictionary(Of Feature, VisualBasicRequiredLanguageVersion)()
     Public Shared ReadOnly Instance As New VisualBasicRequiredLanguageVersionService
 
-    Private Sub New()
-      For Each f As Feature In [Enum].GetValues(GetType(Feature))
-        Dim requiredVersion = New VisualBasicRequiredLanguageVersion(FeatureExtensions.GetLanguageVersion(f))
+     Shared Sub New()
+      For Each f As Feature In LangaugeFeatureService.Instance.EnumerateLanguageFeatures
+        Dim requiredVersion = New VisualBasicRequiredLanguageVersion(LangaugeFeatureService.Instance.GetLanguageVersion(f))
         _RequiredVersionsForFeature.Add(f, requiredVersion)
       Next
     End Sub
@@ -26,14 +28,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.LanguageFeatures
   Friend Class VisualBasicRequiredLanguageVersion
     Inherits RequiredLanguageVersion
 
-    Friend ReadOnly Property Version As LanguageVersion
+    Friend ReadOnly Property Version As LanguageVersionService.LanguageVersion
 
-    Friend Sub New(version As LanguageVersion)
+    Friend Sub New(version As LanguageVersionService.LanguageVersion)
       Me.Version = version
     End Sub
 
     Public Overrides Function ToString() As String
-      Return Version.ToDisplayString()
+      Return LanguageVersionService.Instance.ToDisplayString(Version)
     End Function
 
   End Class

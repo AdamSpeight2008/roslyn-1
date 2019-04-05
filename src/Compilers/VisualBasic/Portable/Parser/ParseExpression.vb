@@ -7,7 +7,8 @@ Imports System.Runtime.InteropServices
 Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax
 Imports InternalSyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SyntaxFactory
 Imports CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax
-Imports Microsoft.CodeAnalysis.VisualBasic.LanguageFeatures.CheckFeatureAvailability
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
@@ -237,7 +238,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                     term = ParseSimpleNameExpressionAllowingKeywordAndTypeArguments()
                     Dim op = DirectCast(start, FlagsEnumOperatorSyntax)
-                    Return ParseFlagsEnumExpr(DirectCast(term, IdentifierNameSyntax), op)
+                    Return ParseFlagsEnumExpr(term, op)
 
                 Case SyntaxKind.ExclamationToken
                     term = ParseQualifiedExpr(PrevTerm)
@@ -964,223 +965,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           Return ParseExpressionCore(OperatorPrecedence.PrecedenceRelational)
         End Function
 
-        Private Function ParseFlagsEnumExpr _
-            (
-              term  As ExpressionSyntax,
-              op    As FlagsEnumOperatorSyntax
-            ) As ExpressionSyntax
-
-          Dim prevPrevToken = PrevToken
-          GetNextToken()
-          Select Case CurrentToken.Kind
-                 Case SyntaxKind.IdentifierToken : Return ParseFlagsEnumExpr_WithIdentifier(term, op)
-                 Case SyntaxKind.OpenParenToken  : Return ParseFlagsEnumExpr_WithParenthesisedExpression(term, op)
-          End Select
-          Dim expr = ParseExpression()
-          Return SyntaxFactory.FlagsEnumOperationExpression(term, op, expr)
-        End Function
-
-        Private Function ParseFlagsEnumExpr_WithIdentifier _
-            (
-              term  As ExpressionSyntax,
-              op    As FlagsEnumOperatorSyntax
-            ) As ExpressioNSyntax
-          ' Term FlagsEnumOper Identifier
-          Dim Name = ParseIdentifierNameAllowingKeyword(True)
-          If Name IsNot Nothing Then Return SyntaxFactory.FlagsEnumOperationExpression(term, op, Name)
-          Return SyntaxFactory.FlagsEnumOperationExpression(term, op, Name.AddError(ERRID.ERR_ExpectedIdentifier))
-        End Function
-
-        Private Function ParseFlagsEnumExpr_WithParenthesisedExpression _
-            (
-              term  As ExpressionSyntax,
-              op    As FlagsEnumOperatorSyntax
-            ) As ExpressionSyntax
-          ' Term FlagsEnumOper ( ParenthesizedExpression | TupleLiteral )
-          Dim pexpr As ExpressionSyntax = ParseParenthesizedExpressionOrTupleLiteral()
-          If pexpr Is Nothing Then Return SyntaxFactory.FlagsEnumOperationExpression(term, op, pexpr.AddError(ERRID.ERR_ExpectedExpression))
-          ' ( ParenthesizedExpression | TupleLiteral )
-          If pexpr.Kind <> SyntaxKind.ParenthesizedExpression Then pexpr = AddError(pexpr, ERRID.ERR_ExpectedExpression)
-          ' ParenthesisedExpresssion
-          Return SyntaxFactory.FlagsEnumOperationExpression(term, op, pexpr)
-        End function
-
-        Private Function TryParseFlagEnumExpr_Or_QualifiedExpr _
-            (
-              term      As ExpressionSyntax,
-              op        As PunctuationSyntax,
-  <Out> ByRef output    As ExpressionSyntax
-            ) As Boolean
-          output = Nothing
-          If op.Kind <> SyntaxKind.ExclamationToken Then Return False
-          If PeekToken(0).Kind = SyntaxKind.IdentifierToken Then
-             Dim name = ParseIdentifierNameAllowingKeyword()
-             output = SyntaxFactory.DictionaryAccessExpression(term, op, name)
-          Else
-             Dim fop = SyntaxFactory.FlagsEnumIsSetToken(op.Text, op.GetLeadingTrivia, op.GetTrailingTrivia)
-             Dim expr = ParseExpression()
-             output = SyntaxFactory.FlagsEnumOperationExpression(term, fop, expr)
-          End If
-          Return output IsNot Nothing
-        End Function
-
-        ' /*********************************************************************
-        ' *
-        ' * Function:
-        ' *     Parser::ParseQualifiedExpr
-        ' *
-        ' * Purpose:
-        ' *     Parses a dot or bang reference, starting at the dot or bang.
-        ' *
-        ' **********************************************************************/
-        ' [in] token starting term
-        ' [in] stuff before "." or "!"
-
-        ' File: Parser.cpp
-        ' Lines: 16211 - 16211
-        ' Expression* .Parser::ParseQualifiedExpr( [ _In_ Token* Start ] [ _In_opt_ ParseTree::Expression* Term ] [ _Inout_ bool& ErrorInConstruct ] )
-        Private Function ParseQualifiedExpr(
-            Term As ExpressionSyntax
-        ) As ExpressionSyntax
-
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.DotToken OrElse
-                  CurrentToken.Kind = SyntaxKind.ExclamationToken,
-                  "Must be on either a '.' or '!' when entering parseQualifiedExpr()")
-
-            Dim DotOrBangToken As PunctuationSyntax = DirectCast(CurrentToken, PunctuationSyntax)
-
-            Dim prevPrevToken = PrevToken
-            GetNextToken()
-
-            Dim output As ExpressionSyntax = Nothing
-            If TryParseFlagEnumExpr_Or_QualifiedExpr(Term, DotOrBangToken, output) Then
-                Return output
-
-            Else
-                If (CurrentToken.IsEndOfLine() AndAlso Not CurrentToken.IsEndOfParse()) Then
-
-                    Debug.Assert(CurrentToken.Kind = SyntaxKind.StatementTerminatorToken AndAlso
-                              PrevToken.Kind = SyntaxKind.DotToken,
-                              "We shouldn't get here without .<eol> tokens")
-
-                    '/* We know we are sitting on an EOL preceded by a tkDot.  What we need to catch is the
-                    '   case where a tkDot following an EOL isn't preceded by a valid token.  Bug Dev10_429652  For example:
-                    '   with i <eol>
-                    '     .  <-- this is bad.  This . follows an EOL and isn't preceded by a tkID.  Can't have it dangling like this
-                    '     field = 42
-                    '*/
-                    If (prevPrevToken Is Nothing OrElse
-                         prevPrevToken.Kind = SyntaxKind.StatementTerminatorToken) Then
-                        ' if ( CurrentToken->m_Prev->m_Prev == NULL || // make sure we can look back far enough.  We know we can look back once, but twice we need to test
-                        '     CurrentToken->m_Prev->m_Prev->m_TokenType == tkEOL ) // Make sure there is something besides air before the '.' DEV10_486908
-
-                        Dim missingIdent = ReportSyntaxError(InternalSyntaxFactory.MissingIdentifier, ERRID.ERR_ExpectedIdentifier)
-
-                        ' We are sitting on the tkEOL so let's just return this and keep parsing.  No ReSync() needed here, in other words.
-                        Return SyntaxFactory.SimpleMemberAccessExpression(Term, DotOrBangToken, SyntaxFactory.IdentifierName(missingIdent))
-
-                    ElseIf Not NextLineStartsWithStatementTerminator() Then
-                        '//ILC: undone
-                        '//       Right now we don't continue after a "." when the following tokens indicate XML member access
-                        '//       We should probably enable this.
-                        TryEatNewLineIfNotFollowedBy(SyntaxKind.DotToken)
-                    End If
-                End If
-
-                ' Decide whether we're parsing:
-                ' 1. Element axis i.e. ".<ident>"
-                ' 2. Attribute axis i.e. ".@ident" or ".@<ident>
-                ' 3. Descendant axis i.e. "...<ident>"
-                ' 4. Regular CLR member axis i.e. ".ident"
-                Select Case (CurrentToken.Kind)
-
-                    Case SyntaxKind.AtToken
-                        Dim atToken = DirectCast(CurrentToken, PunctuationSyntax)
-                        Dim name As XmlNodeSyntax
-
-                        ' Do not accept space or anything else between @ and name or <
-                        If atToken.HasTrailingTrivia Then
-                            GetNextToken(ScannerState.VB)
-                            atToken = ReportSyntaxError(atToken, ERRID.ERR_ExpectedXmlName)
-                            atToken = atToken.AddTrailingSyntax(ResyncAt())
-                            name = SyntaxFactory.XmlName(Nothing, DirectCast(InternalSyntaxFactory.MissingToken(SyntaxKind.XmlNameToken), XmlNameTokenSyntax))
-
-                        Else
-                            ' Parse the Xml attribute name (allow name with and without angle brackets)
-                            If PeekNextToken(ScannerState.VB).Kind = SyntaxKind.LessThanToken Then
-                                ' Consume the @ and remember that this is an element axis
-                                GetNextToken(ScannerState.Element)
-                                name = ParseBracketedXmlQualifiedName()
-                            Else
-                                ' Consume the @ and remember that this is attribute axis
-                                GetNextToken(ScannerState.VB)
-                                name = ParseXmlQualifiedNameVB()
-
-                                If name.HasLeadingTrivia Then
-                                    atToken = ReportSyntaxError(atToken, ERRID.ERR_ExpectedXmlName)
-                                    atToken.AddTrailingSyntax(name)
-                                    atToken.AddTrailingSyntax(ResyncAt())
-                                    name = SyntaxFactory.XmlName(Nothing, DirectCast(InternalSyntaxFactory.MissingToken(SyntaxKind.XmlNameToken), XmlNameTokenSyntax))
-                                End If
-                            End If
-                        End If
-
-                        Return SyntaxFactory.XmlMemberAccessExpression(SyntaxKind.XmlAttributeAccessExpression, Term, DotOrBangToken, atToken, Nothing, name)
-
-                    Case SyntaxKind.LessThanToken
-                        ' Remember that this is element axis
-
-                        ' Parse the Xml element name
-                        Dim name = ParseBracketedXmlQualifiedName()
-
-                        Return SyntaxFactory.XmlMemberAccessExpression(SyntaxKind.XmlElementAccessExpression, Term, DotOrBangToken, Nothing, Nothing, name)
-
-                    Case SyntaxKind.DotToken
-                        If PeekToken(1).Kind = SyntaxKind.DotToken Then
-                            ' Consume the 2nd and 3rd dots and remember that this is descendant axis
-                            Dim secondDotToken = DirectCast(CurrentToken, PunctuationSyntax)
-                            GetNextToken()
-                            Dim thirdDotToken As PunctuationSyntax = Nothing
-                            TryGetToken(SyntaxKind.DotToken, thirdDotToken)
-
-                            ' Parse the Xml element name
-                            TryEatNewLineIfFollowedBy(SyntaxKind.LessThanToken)
-                            Dim name As XmlBracketedNameSyntax
-                            If CurrentToken.Kind = SyntaxKind.LessThanToken Then
-                                name = ParseBracketedXmlQualifiedName()
-                            Else
-                                name = ReportExpectedXmlBracketedName()
-                            End If
-                            Return SyntaxFactory.XmlMemberAccessExpression(SyntaxKind.XmlDescendantAccessExpression, Term, DotOrBangToken, secondDotToken, thirdDotToken, name)
-                        End If
-
-                    Case Else
-                        Dim name = ParseSimpleNameExpressionAllowingKeywordAndTypeArguments()
-                        Return SyntaxFactory.SimpleMemberAccessExpression(Term, DotOrBangToken, name)
-
-                End Select
-            End If
-
-            'This is reachable with the following invalid syntax.
-            '    p.  
-            '      x
-            ' 
-            ' or 
-            '   p..y
-            Dim result As ExpressionSyntax
-            If CurrentToken.Kind = SyntaxKind.AtToken Then
-                Dim missingName = DirectCast(InternalSyntaxFactory.MissingToken(SyntaxKind.XmlNameToken), XmlNameTokenSyntax)
-                result = SyntaxFactory.XmlMemberAccessExpression(SyntaxKind.XmlAttributeAccessExpression,
-                                                          Term,
-                                                          DotOrBangToken, Nothing, Nothing,
-                                                          ReportSyntaxError(InternalSyntaxFactory.XmlName(Nothing, missingName), ERRID.ERR_ExpectedXmlName))
-            Else
-                result = SyntaxFactory.SimpleMemberAccessExpression(Term, DotOrBangToken, ReportSyntaxError(InternalSyntaxFactory.IdentifierName(InternalSyntaxFactory.MissingIdentifier), ERRID.ERR_ExpectedIdentifier))
-            End If
-
-            Return result
-        End Function
-
         Private Sub RescanTrailingColonAsToken(ByRef prevToken As SyntaxToken, ByRef currentToken As SyntaxToken)
             _scanner.RescanTrailingColonAsToken(prevToken, currentToken)
             _currentToken = currentToken
@@ -1439,7 +1223,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Function ParseArguments(ByRef unexpected As GreenNode, Optional RedimOrNewParent As Boolean = False, Optional attributeListParent As Boolean = False) As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ArgumentSyntax)
             Dim arguments = _pool.AllocateSeparated(Of ArgumentSyntax)()
 
-            Dim allowNonTrailingNamedArguments = _scanner.Options.LanguageVersion.AllowNonTrailingNamedArguments()
+            Dim allowNonTrailingNamedArguments = Feature.NonTrailingNamedArguments.IsAvailable(me.Options)
             Dim seenNames As Boolean = False
 
             Do
@@ -1526,8 +1310,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Return argument
             End If
 
-            Return ReportSyntaxError(argument, ERRID.ERR_ExpectedNamedArgument,
-                    New VisualBasicRequiredLanguageVersion(Feature.NonTrailingNamedArguments.GetLanguageVersion()))
+            Return ReportSyntaxError(argument, ERRID.ERR_ExpectedNamedArgument, Language.Version.VisualBasicRequiredLanguageVersionService.Instance.GetRequiredLanguageVersion(Feature.NonTrailingNamedArguments))
         End Function
 
         ' Parse a list of comma-separated keyword arguments.

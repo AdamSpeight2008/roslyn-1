@@ -12,6 +12,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
 Imports Roslyn.Test.Utilities.SigningTestHelpers
 Imports Xunit
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
     <CompilerTrait(CompilerFeature.Tuples)>

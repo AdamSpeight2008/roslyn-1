@@ -11,6 +11,8 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Emit
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
     Partial Friend Class Binder
@@ -788,10 +790,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                     If node.Syntax.Kind = SyntaxKind.PredefinedCastExpression Then
                                         Dim cast = DirectCast(node.Syntax, PredefinedCastExpressionSyntax)
 
-
                                         If cast.Keyword.Kind = SyntaxKind.CObjKeyword Then
-                                            LanguageFeatures.CheckFeatureAvailability.CheckFeatureAvailability(
-                                                InternalSyntax.Feature.CObjInAttributeArguments,
+                                            CheckFeatureAvailability.CheckFeatureAvailability(
+                                                Feature.CObjInAttributeArguments,
                                                 DirectCast(cast.SyntaxTree, VisualBasicSyntaxTree).Options,
                                                 cast.Keyword.GetLocation(),
                                                 diagBag)

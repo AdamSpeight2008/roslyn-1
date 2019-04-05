@@ -19,6 +19,8 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Emit
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -174,7 +176,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' The common language version among the trees of the compilation.
         ''' </summary>
-        Private ReadOnly _languageVersion As LanguageVersion
+        Private ReadOnly _languageVersion As Language.Version.LanguageVersionService.LanguageVersion
 
         Public Overrides ReadOnly Property Language As String
             Get
@@ -209,7 +211,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' The language version that was used to parse the syntax trees of this compilation.
         ''' </summary>
-        Public ReadOnly Property LanguageVersion As LanguageVersion
+        Public ReadOnly Property LanguageVersion As Language.Version.LanguageVersionService.LanguageVersion
             Get
                 Return _languageVersion
             End Get
@@ -255,7 +257,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                             ' The My template regularly makes use of more recent language features.  Care is
                             ' taken to ensure these are compatible with 2.0 runtimes so there is no danger
                             ' with allowing the newer syntax here.
-                            Dim options = parseOptions.WithLanguageVersion(LanguageVersion.Default)
+                            Dim options = parseOptions.WithLanguageVersion(LanguageVersionService.Default)
                             tree = VisualBasicSyntaxTree.ParseText(text, options:=options, isMyTemplate:=True)
 
                             If tree.GetDiagnostics().Any() Then
@@ -469,10 +471,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
         End Sub
 
-        Private Function CommonLanguageVersion(syntaxTrees As ImmutableArray(Of SyntaxTree)) As LanguageVersion
+        Private Function CommonLanguageVersion(syntaxTrees As ImmutableArray(Of SyntaxTree)) As LanguageVersionService.LanguageVersion
             ' We don't check m_Options.ParseOptions.LanguageVersion for consistency, because
             ' it isn't consistent in practice.  In fact sometimes m_Options.ParseOptions is Nothing.
-            Dim result As LanguageVersion? = Nothing
+            Dim result As LanguageVersionService.LanguageVersion? = Nothing
             For Each tree In syntaxTrees
                 Dim version = CType(tree.Options, VisualBasicParseOptions).LanguageVersion
                 If result Is Nothing Then
@@ -482,7 +484,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End If
             Next
 
-            Return If(result, LanguageVersion.Default.MapSpecifiedToEffectiveVersion)
+            Return If(result, LanguageVersionService.Default)
         End Function
 
         ''' <summary>

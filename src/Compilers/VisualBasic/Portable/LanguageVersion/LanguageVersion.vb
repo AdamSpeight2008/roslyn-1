@@ -3,29 +3,48 @@
 Imports System.Runtime.CompilerServices
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
-Namespace Microsoft.CodeAnalysis.VisualBasic
 
-  ''' <summary>
-  ''' Supported Visual Basic language versions.
-  ''' </summary>
-  Public Enum LanguageVersion
-    [Default]       = 0
-    VisualBasic9    = 9
-    VisualBasic10   = 10
-    VisualBasic11   = 11
-    VisualBasic12   = 12
-    VisualBasic14   = 14
-    VisualBasic15   = 15
-    VisualBasic15_3 = 1503
-    VisualBasic15_5 = 1505
-    VisualBasic15_7 = 1507
-    VisualBasic16   = 1600
-    Latest = Integer.MaxValue
-  End Enum
+Namespace Microsoft.CodeAnalysis.VisualBasic.Language.Version
 
-  Friend Module LanguageVersionEnumBounds
 
-    <Extension>
+  Public NotInheritable Class LanguageVersionService
+
+    ''' <summary>
+    ''' Supported Visual Basic language versions.
+    ''' </summary>
+    Public Enum LanguageVersion
+      [Default]       = 0
+      VisualBasic9    = 9
+      VisualBasic10   = 10
+      VisualBasic11   = 11
+      VisualBasic12   = 12
+      VisualBasic14   = 14
+      VisualBasic15   = 15
+      VisualBasic15_3 = 1503
+      VisualBasic15_5 = 1505
+      VisualBasic15_7 = 1507
+      VisualBasic16   = 1600
+      Latest = Integer.MaxValue
+    End Enum
+
+    Public Shared ReadOnly Property Instance As New LanguageVersionService
+
+    Private Sub New()
+    End Sub
+
+    Public Const Latest As LanguageVersion = LanguageVersion.VisualBasic16
+    Public Const [Default] As LanguageVersion = LanguageVersion.VisualBasic16
+    Public Const Latest_Major As LanguageVersion = LanguageVersion.VisualBasic16
+    Public Const Latesr_Minor As LanguageVersion = LanguageVersion.VisualBasic15_7
+
+    Friend Function EnumerateLanguageVersions() As IEnumerable(of LanguageVersionService.LanguageVersion)
+      Return [Enum].GetValues(GetType(LanguageVersion)).Cast(Of LanguageVersion)
+    End Function
+
+    Friend Function EnumerateLanguageVersionsNames() As IEnumerable(of String)
+      Return EnumerateLanguageVersions.Select(Function(v) ToDisplayString(v))
+    End Function  
+
     Friend Function IsValid(value As LanguageVersion) As Boolean
       Select Case value
              Case LanguageVersion.VisualBasic9,
@@ -43,7 +62,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Return False
     End Function
 
-    <Extension>
     Friend Function GetErrorName(value As LanguageVersion) As String
     Select Case value
            Case LanguageVersion.VisualBasic9    : Return "9.0"
@@ -60,18 +78,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Throw ExceptionUtilities.UnexpectedValue(value)
     End Select
     End Function
-  End Module
-
-  Public Module LanguageVersionFacts
 
     ''' <summary>
     ''' Map a language version (such as Default, Latest, Or VisualBasicN) to a specific version (VisualBasicN).
     ''' </summary>
-    <Extension>
     Public Function MapSpecifiedToEffectiveVersion(version As LanguageVersion) As LanguageVersion
       Select Case version
-             Case LanguageVersion.Latest    : Return LanguageVersion.VisualBasic15_7 
-             Case LanguageVersion.Default   : Return LanguageVersion.VisualBasic15 
+             Case LanguageVersion.Latest    : Return LanguageVersionService.Latest
+             Case LanguageVersion.Default   : Return LanguageVersionService.Default 
              Case Else
                   Return version
       End Select
@@ -87,7 +101,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' Displays the version number in the format understood on the command-line (/langver flag).
     ''' For instance, "9", "15", "latest".
     ''' </summary>
-    <Extension>
     Public Function ToDisplayString(version As LanguageVersion) As String
       Select Case version
              Case LanguageVersion.VisualBasic9      : Return "9"
@@ -134,32 +147,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                   Return False
       End Select
       Return True
-    End Function
-
-    ''' <summary>Inference of tuple element names was added in VB 15.3</summary>
-    <Extension>
-    Friend Function DisallowInferredTupleElementNames(self As LanguageVersion) As Boolean
-      Return self < Feature.InferredTupleNames.GetLanguageVersion()
-    End Function
-
-    <Extension>
-    Friend Function AllowNonTrailingNamedArguments(self As LanguageVersion) As Boolean
-      Return self >= Feature.NonTrailingNamedArguments.GetLanguageVersion()
-    End Function
-
-  End Module
-
-  Friend Class VisualBasicRequiredLanguageVersion
-    Inherits RequiredLanguageVersion
-
-    Friend ReadOnly Property Version As LanguageVersion
-
-    Friend Sub New(version As LanguageVersion)
-      Me.Version = version
-    End Sub
-
-    Public Overrides Function ToString() As String
-      Return Version.ToDisplayString()
     End Function
 
   End Class

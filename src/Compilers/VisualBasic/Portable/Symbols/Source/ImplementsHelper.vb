@@ -7,6 +7,8 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Utilities
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
 
@@ -468,8 +470,8 @@ DoneWithErrorReporting:
                 ElseIf ((implementedProperty.GetMethod Is Nothing) Xor (implementedProperty.SetMethod Is Nothing)) AndAlso
                        implementingProperty.GetMethod IsNot Nothing AndAlso implementingProperty.SetMethod IsNot Nothing Then
                     errorReported = errorReported Or
-                                    Not LanguageFeatures.CheckFeatureAvailability.CheckFeatureAvailability(
-                                        InternalSyntax.Feature.ImplementingReadonlyOrWriteonlyPropertyWithReadwrite, DirectCast(implementedMemberSyntax.SyntaxTree, VisualBasicSyntaxTree).Options, implementedMemberSyntax.GetLocation(), diagBag)
+                                    Not CheckFeatureAvailability.CheckFeatureAvailability(
+                                        Feature.ImplementingReadonlyOrWriteonlyPropertyWithReadwrite, DirectCast(implementedMemberSyntax.SyntaxTree, VisualBasicSyntaxTree).Options, implementedMemberSyntax.GetLocation(), diagBag)
                 End If
             End If
 

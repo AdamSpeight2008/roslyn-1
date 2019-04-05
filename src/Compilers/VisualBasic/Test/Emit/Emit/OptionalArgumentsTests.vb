@@ -13,6 +13,8 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
 Imports Xunit
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Emit
     Public Class OptionalArgumentsTests
@@ -758,7 +760,7 @@ True
 True
 True
 True
-]]>, ParseOptions:= GetParseOptionsWithFeature(InternalSyntax.Feature.DefaultOptionalParameter))
+]]>, ParseOptions:= GetParseOptionsWithFeature(Feature.DefaultOptionalParameter))
         End Sub
 
         <Fact()>

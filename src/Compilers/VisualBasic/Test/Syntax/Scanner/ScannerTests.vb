@@ -7,6 +7,7 @@ Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax
 Imports Microsoft.CodeAnalysis.VisualBasic
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService
 
 <CLSCompliant(False)>
 Public Class ScannerTests
@@ -16,7 +17,7 @@ Public Class ScannerTests
         Return SyntaxFactory.ParseToken(str, startStatement:=startStatement)
     End Function
 
-    Private Function ScanOnce(str As String, languageVersion As VisualBasic.LanguageVersion) As SyntaxToken
+    Private Function ScanOnce(str As String, languageVersion As LanguageVersion) As SyntaxToken
         Return SyntaxFactory.ParseTokens(str, options:=New VisualBasicParseOptions(languageVersion:=languageVersion)).First()
     End Function
 

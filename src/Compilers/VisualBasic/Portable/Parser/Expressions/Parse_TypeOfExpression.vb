@@ -7,7 +7,8 @@ Imports System.Runtime.InteropServices
 Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax
 Imports InternalSyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SyntaxFactory
 Imports CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax
-Imports Microsoft.CodeAnalysis.VisualBasic.LanguageFeatures.CheckFeatureAvailability
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.CheckFeatureAvailability
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 

@@ -6,6 +6,8 @@ Imports System.Threading.Tasks
 Imports Microsoft.CodeAnalysis.Collections
 Imports Microsoft.CodeAnalysis.Diagnostics
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -208,18 +210,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides Sub PrintLangVersions(consoleOutput As TextWriter)
             consoleOutput.WriteLine(ErrorFactory.IdToString(ERRID.IDS_LangVersions, Culture))
-            Dim defaultVersion = LanguageVersion.Default.MapSpecifiedToEffectiveVersion()
-            Dim latestVersion = LanguageVersion.Latest.MapSpecifiedToEffectiveVersion()
-            For Each v As LanguageVersion In System.Enum.GetValues(GetType(LanguageVersion))
+            Dim defaultVersion = Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.Default)
+            Dim latestVersion =  Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.Latest)
+            For Each v As LanguageVersion In Instance.EnumerateLanguageVersions
+                Dim displayName = Instance.ToDisplayString(v)
                 If v = defaultVersion Then
-                    consoleOutput.WriteLine($"{v.ToDisplayString()} (default)")
+                    consoleOutput.WriteLine($"{displayName} (default)")
                 ElseIf v = latestVersion Then
-                    consoleOutput.WriteLine($"{v.ToDisplayString()} (latest)")
+                    consoleOutput.WriteLine($"{displayName} (latest)")
                 ElseIf v = LanguageVersion.VisualBasic16 Then
                     ' https://github.com/dotnet/roslyn/issues/29819 This should be removed once we are ready to move VB 16 out of beta
-                    consoleOutput.WriteLine($"{v.ToDisplayString()} *beta*")
+                    consoleOutput.WriteLine($"{displayName} *beta*")
                 Else
-                    consoleOutput.WriteLine(v.ToDisplayString())
+                    consoleOutput.WriteLine(displayName)
                 End If
             Next
             consoleOutput.WriteLine()

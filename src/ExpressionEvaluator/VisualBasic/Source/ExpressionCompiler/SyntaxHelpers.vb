@@ -7,10 +7,11 @@ Imports Microsoft.CodeAnalysis.Collections
 Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.VisualBasic.Language
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
     Friend Module SyntaxHelpers
-        Friend ReadOnly ParseOptions As VisualBasicParseOptions = VisualBasicParseOptions.Default.WithLanguageVersion(LanguageVersionFacts.CurrentVersion)
+        Friend ReadOnly ParseOptions As VisualBasicParseOptions = VisualBasicParseOptions.Default.WithLanguageVersion(Version.LanguageVersionService.Instance.CurrentVersion)
 
         ''' <summary>
         ''' Parse expression. Returns null if there are any errors.

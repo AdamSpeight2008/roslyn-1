@@ -16,7 +16,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.UseInferredMemberN
         End Function
 
         Private Shared ReadOnly s_parseOptions As VisualBasicParseOptions =
-            VisualBasicParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest)
+            VisualBasicParseOptions.Default.WithLanguageVersion(Language.Version.LanguageVersionService.LanguageVersion.Latest)
 
         <Fact>
         Public Async Function TestInferredTupleName() As Task

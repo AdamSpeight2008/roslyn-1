@@ -8,6 +8,8 @@
 Imports System.Globalization
 Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax
 Imports InternalSyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SyntaxFactory
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
@@ -428,15 +430,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Dim statement As DirectiveTriviaSyntax = Nothing
             If enableOrDisableKeyword.Kind = SyntaxKind.EnableKeyword Then
-                statement = SyntaxFactory.EnableWarningDirectiveTrivia(
-                    hashToken, enableOrDisableKeyword, warningKeyword, errorCodes.ToList)
+                statement = SyntaxFactory.EnableWarningDirectiveTrivia(hashToken, enableOrDisableKeyword, warningKeyword, errorCodes.ToList)
             ElseIf enableOrDisableKeyword.Kind = SyntaxKind.DisableKeyword Then
-                statement = SyntaxFactory.DisableWarningDirectiveTrivia(
-                    hashToken, enableOrDisableKeyword, warningKeyword, errorCodes.ToList)
+                statement = SyntaxFactory.DisableWarningDirectiveTrivia(hashToken, enableOrDisableKeyword, warningKeyword, errorCodes.ToList)
             End If
 
             If statement IsNot Nothing Then
-                statement = LanguageFeatures.CheckFeatureAvailability.CheckFeatureAvailability(statement, Feature.WarningDirectives, Me._scanner.Options)
+                statement = CheckFeatureAvailability.CheckFeatureAvailability(statement, Feature.WarningDirectives, Me._scanner.Options)
             End If
 
             Me._pool.Free(errorCodes)

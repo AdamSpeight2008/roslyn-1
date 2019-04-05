@@ -5,6 +5,7 @@ Imports System.Composition
 Imports Microsoft.CodeAnalysis.CodeRefactorings
 Imports Microsoft.CodeAnalysis.UseNamedArguments
 Imports Microsoft.CodeAnalysis.VisualBasic.Extensions
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UseNamedArguments
@@ -49,7 +50,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UseNamedArguments
             End Function
 
             Protected Overrides Function SupportsNonTrailingNamedArguments(options As ParseOptions) As Boolean
-                Return DirectCast(options, VisualBasicParseOptions).LanguageVersion >= LanguageVersion.VisualBasic15_5
+                Return DirectCast(options, VisualBasicParseOptions).LanguageVersion >= LanguageVersionService.LanguageVersion.VisualBasic15_5
             End Function
         End Class
 

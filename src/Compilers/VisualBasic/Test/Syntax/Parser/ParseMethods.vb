@@ -4,6 +4,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
 
 <CLSCompliant(False)>
 Public Class ParseMethods
@@ -345,7 +346,7 @@ Class C1
     End Function
 End Class
 "
-        Dim  po=GetParseOptionsWithFeature(InternalSyntax.Feature.DefaultOptionalParameter)
+        Dim  po=GetParseOptionsWithFeature(Feature.DefaultOptionalParameter)
 
         ParseAndVerify(code, Po, expectedErrors:=
         <errors>

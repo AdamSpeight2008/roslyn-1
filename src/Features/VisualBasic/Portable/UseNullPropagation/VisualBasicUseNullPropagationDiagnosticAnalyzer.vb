@@ -3,6 +3,7 @@
 Imports Microsoft.CodeAnalysis.Diagnostics
 Imports Microsoft.CodeAnalysis.LanguageServices
 Imports Microsoft.CodeAnalysis.UseNullPropagation
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UseNullPropagation
@@ -19,7 +20,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UseNullPropagation
             InvocationExpressionSyntax)
 
         Protected Overrides Function ShouldAnalyze(options As ParseOptions) As Boolean
-            Return DirectCast(options, VisualBasicParseOptions).LanguageVersion >= LanguageVersion.VisualBasic14
+            Return DirectCast(options, VisualBasicParseOptions).LanguageVersion >= LanguageVersionService.LanguageVersion.VisualBasic14
         End Function
 
         Protected Overrides Function GetSyntaxFactsService() As ISyntaxFactsService
@@ -27,7 +28,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UseNullPropagation
         End Function
 
         Protected Overrides Function GetSemanticFactsService() As ISemanticFactsService
-            Return VisualBasicSemanticFactsService.instance
+            Return VisualBasicSemanticFactsService.Instance
         End Function
 
         Protected Overrides Function GetSyntaxKindToAnalyze() As SyntaxKind

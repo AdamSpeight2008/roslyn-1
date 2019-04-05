@@ -2811,7 +2811,7 @@ Class C
     End Sub
 End Class
 "
-            Await TestAsync(code, expected, parseOptions:=TestOptions.Regular.WithLanguageVersion(LanguageVersion.Latest))
+            Await TestAsync(code, expected, parseOptions:=TestOptions.Regular.WithLanguageVersion(Language.Version.LanguageVersionService.LanguageVersion.Latest))
         End Function
 
         <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsIntroduceVariable)>
@@ -2835,7 +2835,7 @@ Class C
     End Sub
 End Class
 "
-            Await TestAsync(code, expected, parseOptions:=TestOptions.Regular.WithLanguageVersion(LanguageVersion.Latest))
+            Await TestAsync(code, expected, parseOptions:=TestOptions.Regular.WithLanguageVersion(Language.Version.LanguageVersionService.LanguageVersion.Latest))
         End Function
 
         <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsIntroduceVariable)>
@@ -2862,7 +2862,7 @@ Class C
 End Class
 "
             Await TestAsync(code, expected, index:=1,
-                parseOptions:=TestOptions.Regular.WithLanguageVersion(LanguageVersion.Latest))
+                parseOptions:=TestOptions.Regular.WithLanguageVersion(Language.Version.LanguageVersionService.LanguageVersion.Latest))
         End Function
 
         <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsIntroduceVariable)>
@@ -2908,7 +2908,7 @@ Class C
     End Sub
 End Class
 "
-            Await TestAsync(code, expected, parseOptions:=TestOptions.Regular.WithLanguageVersion(LanguageVersion.Latest))
+            Await TestAsync(code, expected, parseOptions:=TestOptions.Regular.WithLanguageVersion(Language.Version.LanguageVersionService.LanguageVersion.Latest))
         End Function
 
         <Fact, Trait(Traits.Feature, Traits.Features.CodeActionsIntroduceVariable)>

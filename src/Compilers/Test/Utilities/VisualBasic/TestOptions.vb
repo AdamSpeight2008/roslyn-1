@@ -3,11 +3,12 @@
 Imports System.Runtime.CompilerServices
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 Imports Roslyn.Test.Utilities
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService
 
 Public Class TestOptions
     Public Shared ReadOnly Script As New VisualBasicParseOptions(kind:=SourceCodeKind.Script)
     ' https://github.com/dotnet/roslyn/issues/29819 remove explicit language version when VB 16 is latest
-    Public Shared ReadOnly Regular As New VisualBasicParseOptions(kind:=SourceCodeKind.Regular, languageVersion:=LanguageVersion.VisualBasic16)
+    Public Shared ReadOnly Regular As New VisualBasicParseOptions(kind:=SourceCodeKind.Regular, languageVersion:= LanguageVersion.VisualBasic16)
     Public Shared ReadOnly Regular15_5 As VisualBasicParseOptions = Regular.WithLanguageVersion(LanguageVersion.VisualBasic15_5)
     Public Shared ReadOnly RegularWithLegacyStrongName As VisualBasicParseOptions = Regular.WithFeature("UseLegacyStrongNameProvider")
 
@@ -46,13 +47,13 @@ Friend Module TestOptionExtensions
     End Function
 
     <Extension()>
-    Friend Function WithExperimental(options As VisualBasicParseOptions, ParamArray features As Feature()) As VisualBasicParseOptions
+    Friend Function WithExperimental(options As VisualBasicParseOptions, ParamArray features As Language.Features.LangaugeFeatureService.Feature()) As VisualBasicParseOptions
         If features.Length = 0 Then
             Throw New InvalidOperationException("Need at least one feature to enable")
         End If
         Dim list As New List(Of KeyValuePair(Of String, String))
-        For Each feature In features
-            Dim flagName = feature.GetFeatureFlag()
+        For Each feature In Language.Features.LangaugeFeatureService.Instance.EnumerateLanguageFeatures
+            Dim flagName = Language.Features.LangaugeFeatureService.Instance.GetFeatureFlag(feature)
             If flagName Is Nothing Then
                 Throw New InvalidOperationException($"{feature} is not an experimental feature")
             End If

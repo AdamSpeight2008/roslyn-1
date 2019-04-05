@@ -190,7 +190,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.ProjectSystemShim.
         ''' <summary>
         ''' Language version option.
         ''' </summary>
-        Public langVersion As LanguageVersion
+        Public langVersion As CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService.LanguageVersion
 
         ''' <summary>
         ''' The VB Runtime Kind
