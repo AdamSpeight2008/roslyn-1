@@ -1744,6 +1744,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ERR_MissingFlagsAttributeOnEnum = 37306
         ERR_ExpectedParenthesizedExpression = 373307
         ERR_InvalidTypeSyntax = 373308
+        ERR_CommentsAfterLineContinuationNotAvailable1 = 37306
+
         '// WARNINGS BEGIN HERE
         WRN_UseOfObsoleteSymbol2 = 40000
         WRN_InvalidOverrideDueToTupleNames2 = 40001
@@ -2021,6 +2023,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_PrivateProtected
         FEATURE_InterpolatedStrings
         FEATURE_UnconstrainedTypeParameterInConditional
+        FEATURE_CommentsAfterLineContinuation
         FEATURE_EnumFlagOperators
         ERR_MissingEnumFlag
         FEATURE_DefaultOptionalParameter
