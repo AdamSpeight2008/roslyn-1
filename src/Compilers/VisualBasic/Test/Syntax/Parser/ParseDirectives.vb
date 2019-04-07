@@ -2357,11 +2357,11 @@ End Module]]>,
 
     <Fact()>
     Public Sub ParseWarningDirective_LineContinuation2()
-        Assert.Equal(37306, ERRID.ERR_CommentsAfterLineContinuationNotAvailable1)
+        'Assert.Equal(37306, ERRID.ERR_CommentsAfterLineContinuationNotAvailable1)
         Dim tree = ParseAndVerify(code:=<![CDATA[#Enable Warning _ 'Comment]]>,
                                   options:=New VisualBasicParseOptions(LanguageVersion.VisualBasic15),
                                     <errors>
-                                        <error id="37306" message="Please use language version 16 or greater to use comments after line continuation character." start="24" end="25"/>
+                                        <error id="36716" message="Visual Basic 15 does not support comments after line continuation." start="24" end="25"/>
                                     </errors>)
         tree.VerifyOccurrenceCount(SyntaxKind.EnableWarningDirectiveTrivia, 2)
 
@@ -2383,7 +2383,7 @@ End Module]]>,
         Dim tree = ParseAndVerify(code:=<![CDATA[#Enable Warning _ 'Comment]]>,
                                   options:=New VisualBasicParseOptions(LanguageVersion.VisualBasic15_5),
                                     <errors>
-                                        <error id="37306" message="Please use language version 16 or greater to use comments after line continuation character." start="24" end="25"/>
+                                        <error id="36716" message="Visual Basic 15.5 does not support comments after line continuation." start="24" end="25"/>
                                     </errors>)
         tree.VerifyOccurrenceCount(SyntaxKind.EnableWarningDirectiveTrivia, 2)
 
@@ -2446,9 +2446,9 @@ End Module]]>,
         Assert.Equal(37306, ERRID.ERR_CommentsAfterLineContinuationNotAvailable1)
         Dim tree = ParseAndVerify(<![CDATA[#Enable Warning bc41007 _ 'Comment]]>,
                                   New VisualBasicParseOptions(LanguageVersion.VisualBasic15),
-            <errors>
-                <error id="37306" message="Please use language version 16 or greater to use comments after line continuation character." start="24" end="25"/>
-            </errors>)
+                                  <errors>
+                                        <error id="36716" message="Visual Basic 15 does not support comments after line continuation." start="24" end="25"/>
+                                   </errors>)
         tree.VerifyOccurrenceCount(SyntaxKind.EnableWarningDirectiveTrivia, 2)
 
         Dim root = tree.GetRoot()
@@ -2471,8 +2471,8 @@ End Module]]>,
         Dim tree = ParseAndVerify(<![CDATA[#Enable Warning bc41007 _ 'Comment]]>,
                                   New VisualBasicParseOptions(LanguageVersion.VisualBasic15_5),
             <errors>
-                <error id="37306" message="Please use language version 16 or greater to use comments after line continuation character." start="24" end="25"/>
-            </errors>)
+                                        <error id="36716" message="Visual Basic 15.5 does not support comments after line continuation." start="24" end="25"/>
+                                    </errors>)
         tree.VerifyOccurrenceCount(SyntaxKind.EnableWarningDirectiveTrivia, 2)
 
         Dim root = tree.GetRoot()

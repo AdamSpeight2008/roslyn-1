@@ -420,7 +420,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function NextIs(offset As Integer, c As Char) As Boolean
-            Return CanGet(offset) AndAlso (Peek(offset) = c)
+            Dim ch As Char = Nothing
+            Return TryGet(offset, ch) AndAlso (ch = c)
         End Function
 
         Private Function CanGet() As Boolean
@@ -522,20 +523,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' Make it a statement separator
         ''' </summary>
         Private Function ScanNewlineAsStatementTerminator(startCharacter As Char, precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)) As SyntaxToken
-            If _lineBufferOffset < _endOfTerminatorTrivia Then
-                Dim width = LengthOfLineBreak(startCharacter)
-                Return MakeStatementTerminatorToken(precedingTrivia, width)
-            Else
-                Return MakeEmptyToken(precedingTrivia)
-            End If
+            If _lineBufferOffset >= _endOfTerminatorTrivia Then Return MakeEmptyToken(precedingTrivia)
+            Dim width = LengthOfLineBreak(startCharacter)
+            Return MakeStatementTerminatorToken(precedingTrivia, width)
         End Function
 
         Private Function ScanColonAsStatementTerminator(precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode), charIsFullWidth As Boolean) As SyntaxToken
-            If _lineBufferOffset < _endOfTerminatorTrivia Then
-                Return MakeColonToken(precedingTrivia, charIsFullWidth)
-            Else
-                Return MakeEmptyToken(precedingTrivia)
-            End If
+            If _lineBufferOffset >= _endOfTerminatorTrivia Then Return MakeEmptyToken(precedingTrivia)
+            Return MakeColonToken(precedingTrivia, charIsFullWidth)
         End Function
 
         ''' <summary>
@@ -549,63 +544,110 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return MakeEndOfLineTrivia(GetNextChar)
         End Function
 
-        Private Function ScanLineContinuation(tList As SyntaxListBuilder) As Boolean
-            Dim ch As Char = ChrW(0)
-            If Not TryGet(0, ch) OrElse Not IsAfterWhitespace() OrElse Not IsUnderscore(ch) Then
-                Return False
+ 
+         Private Function IsPreLineContinuationCommentErrorState(ByRef atNewLine As Boolean, ByRef tList As SyntaxListBuilder, ch As Char, Optional Here As Integer = 1) As Boolean
+            atNewLine = IsNewLine(ch)
+            '   Return Not (atNewLine OrElse Not CanGet(Here))
+            If Not atNewLine AndAlso CanGet(Here) Then
+                ' If we get here we have an error, return trivia is Nothing
+                Return True
             End If
+            Return False
+        End Function
 
-            Dim Here = GetWhitespaceLength(1)
-            TryGet(Here, ch)
-
-            Dim foundComment = IsSingleQuote(ch)
-            Dim atNewLine As Boolean = IsNewLine(ch)
-            If Not foundComment AndAlso Not atNewLine AndAlso CanGet(Here) Then
-                Return False
-            End If
-
+        Private Sub AddLineContinuationAndOptionalWhitespaces(tList As SyntaxListBuilder, Here As Integer)
+            ' Add the Line Continuation Character '_' triva.
             tList.Add(MakeLineContinuationTrivia(GetText(1)))
-            If Here > 1 Then
-                tList.Add(MakeWhiteSpaceTrivia(GetText(Here - 1)))
-            End If
+            If Here <= 1 Then Exit Sub
+            ' Add any whitespace trivia.
+            tList.Add(MakeWhiteSpaceTrivia(GetText(Here - 1)))
+        End Sub
 
-            If foundComment Then
-                Dim comment As SyntaxTrivia = ScanComment()
+        Private Sub PeekWhitespace(ByRef Here As Integer, ByRef Ch As Char)
+            While TryGet(Here, Ch) AndAlso IsWhitespace(Ch)
+                Here += 1
+            End While
+        End Sub
+
+        ''' <summary>
+        ''' Scan a line continuation (_) followed by an optional comment
+        ''' </summary>
+        ''' <param name="tList">A list of trivia starting with _ if returning True
+        ''' or Nothing if returning False</param>
+        ''' <returns>
+        ''' False on errors including
+        ''' EOF, Whitespace is missing before _, first character is not _
+        ''' True on space _ or _ followed by 0 or more spaces ' Comment even if feature not supported
+        ''' If feature is not support error is added to trivia
+        ''' </returns>
+        Private Function ScanLineContinuation(tList As SyntaxListBuilder) As Boolean
+            Dim Here = 1
+            Dim atNewLine As Boolean
+            Dim ch As Char
+            Dim HasOptionalWhiteSpaceOrComment = True
+            Dim HasComment = False
+            ' Line continuation is valid at the end of the line, or at the end of the file, or followed by a trailing comment.
+            ' Eg.  LineContinuation ( EndOfLine | EndOfFile | LineContinuationComment) 
+            If Not TryGet(ch) OrElse Not IsAfterWhitespace() OrElse Not IsUnderscore(ch) Then
+                Return False
+            ElseIf Not TryGet(Here, ch) OrElse (Not IsWhitespace(ch) AndAlso PeekStartComment(Here, AllowREM:=False) <= 0) Then
+                ' We don't have a space or ' but we might have an EOF after _ and that is not an error
+                If IsPreLineContinuationCommentErrorState(atNewLine, tList, ch) Then
+                    Return False
+                End If
+                HasOptionalWhiteSpaceOrComment = False
+            End If
+            If HasOptionalWhiteSpaceOrComment Then
+                ' We have a Line Continuation
+                PeekWhitespace(Here, ch)
+                ' followed optional whitespace(s)
+                HasComment = PeekStartComment(Here, AllowREM:=False) > 0
+                If Not HasComment AndAlso IsPreLineContinuationCommentErrorState(atNewLine, tList, ch, Here) Then
+                    '... without a comment.
+                    ' so process as pre this feature
+                    Return False
+                End If
+            End If
+            AddLineContinuationAndOptionalWhitespaces(tList, Here)
+            If HasComment Then
+                ' ... with a comment.
+                ' Scan the comment trivia.
+                Dim comment As SyntaxTrivia = ScanComment(AllowREM:=False)
                 comment = CheckFeatureAvailability(comment, Feature.CommentsAfterLineContinuation, Options)
+                ' Add the comment trivia.
                 tList.Add(comment)
-                ' Need to call TryGet here to prevent Peek reading past EndOfBuffer. This can happen when file ends with comment but no New Line.
-                Dim nc AS Char = Nothing
-                If TryGet(here,nc) Then
-                    atNewLine = IsNewLine(nc) : ch= nc
-                Else
-                    Debug.Assert(Not atNewLine)
-                End If
+                ch = Peek()
+                atNewLine = IsNewLine(ch)
             End If
 
-            If atNewLine Then
-                Dim newLine = SkipLineBreak(ch, 0)
-                Here = GetWhitespaceLength(newLine)
-                Dim spaces = Here - newLine
-                Dim startComment = PeekStartComment(Here)
-
-                ' If the line following the line continuation is blank, or blank with a comment,
-                ' do not include the new line character since that would confuse code handling
-                ' implicit line continuations. (See Scanner::EatLineContinuation.) Otherwise,
-                ' include the new line and any additional spaces as trivia.
-                If startComment = 0 AndAlso
-                    TryGet(Here,ch) AndAlso
-                    Not IsNewLine(ch) Then
-
-                    tList.Add(MakeEndOfLineTrivia(GetText(newLine)))
-                    If spaces > 0 Then
-                        tList.Add(MakeWhiteSpaceTrivia(GetText(spaces)))
-                    End If
-                End If
-
+            ' if there is another line.
+            If atNewLine AndAlso CanGet() Then
+                ' We need to check it.
+                ProcessNextLineToCheckIfBlamkOrBlamkWithComment(tList, ch, Here)
             End If
 
             Return True
         End Function
+
+        Private Sub ProcessNextLineToCheckIfBlamkOrBlamkWithComment(tList As SyntaxListBuilder, ch As Char, Here As Integer)
+            Dim newLine = SkipLineBreak(ch, 0)
+            Here = GetWhitespaceLength(newLine)
+            Dim spaces = Here - newLine
+            Dim startComment = PeekStartComment(Here, AllowREM:=False)
+            ' To see if the following the line continuation is ..
+            '    * blank
+            '    * blank with a comment
+            '    So as not confuse code handling Implicit Line Continuations (See Scanner::EatLineContinuation.)
+            '    do not include the newline character.
+            ' Otherwise include the new line and any additional spaces as trivia.
+            If startComment = 0 AndAlso TryGet(Here, ch) AndAlso Not IsNewLine(ch) Then
+
+                tList.Add(MakeEndOfLineTrivia(GetText(newLine)))
+                If spaces > 0 Then
+                    tList.Add(MakeWhiteSpaceTrivia(GetText(spaces)))
+                End If
+            End If
+        End Sub
 
 #End Region
 
@@ -615,23 +657,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' Consumes all trivia until a nontrivia char is found
         ''' </summary>
         Friend Function ScanMultilineTrivia() As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)
-            If Not CanGet() Then
-                Return Nothing
-            End If
-
-            Dim ch = Peek()
+            Dim ch As Char = Nothing
+            If Not TryGet(ch) Then Return Nothing
 
             ' optimization for a common case
             ' the ASCII range between ': and ~ , with exception of except "'", "_" and R cannot start trivia
-            If ch > ":"c AndAlso
-               ch <= "~"c AndAlso
-               ch <> "'"c AndAlso
-               ch <> "_"c AndAlso
-               ch <> "R"c AndAlso
-               ch <> "r"c AndAlso
-               ch <> "<"c AndAlso
-               ch <> "="c AndAlso
-               ch <> ">"c Then
+            If ch > ":"c AndAlso ch <= "~"c AndAlso Not ch.IsEither("'"c, "_"c, "R"c, "r"c, "<"c, "="c, ">"c) Then
                 Return Nothing
             End If
 
@@ -648,89 +679,79 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' Scans a single piece of trivia
         ''' </summary>
         Private Function TryScanSinglePieceOfMultilineTrivia(tList As SyntaxListBuilder) As Boolean
-            If CanGet() Then
+            Dim ch As Char = Nothing
+            If Not TryGet(ch) Then Return False
 
-                Dim atNewLine = IsAtNewLine()
+            Dim atNewLine = IsAtNewLine()
 
-                ' check for XmlDocComment and directives
+            ' check for XmlDocComment and directives
+            If atNewLine Then
+                If StartsXmlDoc(0) Then
+                    Return TryScanXmlDocComment(tList)
+                End If
+
+                If StartsDirective(0) Then
+                    Return TryScanDirective(tList)
+                End If
+
+                If IsConflictMarkerTrivia() Then
+                    ScanConflictMarker(tList)
+                    Return True
+                End If
+            End If
+
+            If IsWhitespace(ch) Then
+                ' eat until linebreak or non-whitespace
+                Dim wslen = GetWhitespaceLength(1)
+
                 If atNewLine Then
-                    If StartsXmlDoc(0) Then
+                    If StartsXmlDoc(wslen) Then
                         Return TryScanXmlDocComment(tList)
                     End If
 
-                    If StartsDirective(0) Then
+                    If StartsDirective(wslen) Then
                         Return TryScanDirective(tList)
                     End If
-
-                    If IsConflictMarkerTrivia() Then
-                        ScanConflictMarker(tList)
-                        Return True
-                    End If
                 End If
-
-                Dim ch = Peek()
-                If IsWhitespace(ch) Then
-                    ' eat until linebreak or non-whitespace
-                    Dim wslen = GetWhitespaceLength(1)
-
-                    If atNewLine Then
-                        If StartsXmlDoc(wslen) Then
-                            Return TryScanXmlDocComment(tList)
-                        End If
-
-                        If StartsDirective(wslen) Then
-                            Return TryScanDirective(tList)
-                        End If
-                    End If
-                    tList.Add(MakeWhiteSpaceTrivia(GetText(wslen)))
-                    Return True
-                ElseIf IsNewLine(ch) Then
-                    tList.Add(ScanNewlineAsTrivia(ch))
-                    Return True
-                ElseIf IsUnderscore(ch) Then
-                    Return ScanLineContinuation(tList)
-                ElseIf IsColonAndNotColonEquals(ch, offset:=0) Then
-                    tList.Add(ScanColonAsTrivia())
-                    Return True
-                End If
-
-                ' try get a comment
-                Return ScanCommentIfAny(tList)
+                tList.Add(MakeWhiteSpaceTrivia(GetText(wslen)))
+                Return True
+            ElseIf IsNewLine(ch) Then
+                tList.Add(ScanNewlineAsTrivia(ch))
+                Return True
+            ElseIf IsUnderscore(ch) Then
+                Return ScanLineContinuation(tList)
+            ElseIf IsColonAndNotColonEquals(ch, offset:=0) Then
+                tList.Add(ScanColonAsTrivia())
+                Return True
             End If
 
-            Return False
+            ' try get a comment
+            Return ScanCommentIfAny(tList)
         End Function
 
         ' All conflict markers consist of the same character repeated seven times.  If it Is
         ' a <<<<<<< Or >>>>>>> marker then it Is also followed by a space.
-        Private Shared ReadOnly s_conflictMarkerLength As Integer = "<<<<<<<".Length
+        Private Shared Const s_conflictMarkerLength As Integer = "<<<<<<<".Length
 
         Private Function IsConflictMarkerTrivia() As Boolean
-            If CanGet() Then
-                Dim ch = Peek()
+            Dim ch as Char = Nothing
+            If Not TryGet(ch) Then Return False
+            If ch <> "<"c AndAlso ch <> ">"c AndAlso ch <> "="c Then return False
+            Dim position = _lineBufferOffset
+            Dim text = _buffer
 
-                If ch = "<"c OrElse ch = ">"c OrElse ch = "="c Then
-                    Dim position = _lineBufferOffset
-                    Dim text = _buffer
+            If position = 0 OrElse SyntaxFacts.IsNewLine(text(position - 1)) Then
+                Dim firstCh = _buffer(position)
 
-                    If position = 0 OrElse SyntaxFacts.IsNewLine(text(position - 1)) Then
-                        Dim firstCh = _buffer(position)
+                If (position + s_conflictMarkerLength) <= text.Length Then
+                    For i = 0 To s_conflictMarkerLength - 1
+                        If text(position + i) <> firstCh Then Return False
+                    Next
 
-                        If (position + s_conflictMarkerLength) <= text.Length Then
-                            For i = 0 To s_conflictMarkerLength - 1
-                                If text(position + i) <> firstCh Then
-                                    Return False
-                                End If
-                            Next
+                    If firstCh = "="c Then Return True
 
-                            If firstCh = "="c Then
-                                Return True
-                            End If
-
-                            Return (position + s_conflictMarkerLength) < text.Length AndAlso
-                                   text(position + s_conflictMarkerLength) = " "c
-                        End If
-                    End If
+                    Return (position + s_conflictMarkerLength) < text.Length AndAlso
+                           text(position + s_conflictMarkerLength) = " "c
                 End If
             End If
 
@@ -873,9 +894,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                             Return
                         End If
 
-                        For i = 0 To triviaList.Count - 1
-                            tList.Add(triviaList(i))
-                        Next
+                        tlist.AddRange(MakeTriviaArray(triviaList))
+
                         _triviaListPool.Free(triviaList)
 
                 End Select
@@ -917,10 +937,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         Exit While
                     End If
 
-                    Dim n = more.Count
-                    For i = 0 To n - 1
-                        tList.Add(more(i))
-                    Next
+                    tlist.AddRange(MakeTriviaArray(more))
+
                     more.Clear()
                 End While
 
@@ -1039,10 +1057,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ScanXmlWhitespace(Optional len As Integer = 0) As VisualBasicSyntaxNode
             len = GetXmlWhitespaceLength(len)
-            If len > 0 Then
-                Return MakeWhiteSpaceTrivia(GetText(len))
-            End If
-            Return Nothing
+            Return If(len > 0, MakeWhiteSpaceTrivia(GetText(len)), Nothing)
         End Function
 
         Private Sub EatWhitespace()
@@ -1051,23 +1066,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             AdvanceChar()
 
+            Dim ch As Char = Nothing
             ' eat until linebreak or non-whitespace
-            While CanGet() AndAlso IsWhitespace(Peek)
+            While TryGet(ch) AndAlso IsWhitespace(ch)
                 AdvanceChar()
             End While
         End Sub
 
-        Private Function PeekStartComment(i As Integer) As Integer
-
-            If CanGet(i) Then
-                Dim ch = Peek(i)
-
+       Private Function PeekStartComment(i As Integer, Optional AllowREM As Boolean = True) As Integer
+            Dim ch AS Char
+            If TryGet(i,ch) Then
                 If IsSingleQuote(ch) Then
                     Return 1
-                ElseIf MatchOneOrAnotherOrFullwidth(ch, "R"c, "r"c) AndAlso
+                ElseIf AllowREM AndAlso
+                    MatchOneOrAnotherOrFullwidth(ch, "R"c, "r"c) AndAlso
                     CanGet(i + 2) AndAlso MatchOneOrAnotherOrFullwidth(Peek(i + 1), "E"c, "e"c) AndAlso
                     MatchOneOrAnotherOrFullwidth(Peek(i + 2), "M"c, "m"c) Then
-
                     If Not CanGet(i + 3) OrElse IsNewLine(Peek(i + 3)) Then
                         ' have only 'REM'
                         Return 3
@@ -1081,30 +1095,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return 0
         End Function
 
-        Private Function ScanComment() As SyntaxTrivia
-            Debug.Assert(CanGet())
+       Private Function ScanComment(Optional AllowREM As Boolean = True) As SyntaxTrivia
+         Debug.Assert(CanGet())
 
-            Dim length = PeekStartComment(0)
-            If length > 0 Then
-                Dim looksLikeDocComment As Boolean = StartsXmlDoc(0)
+         Dim length = PeekStartComment(0, AllowREM)
+         If length <= 0 Then Return Nothing
+         Dim looksLikeDocComment As Boolean = StartsXmlDoc(0)
+         Dim ch As Char = Nothing
+         ' eat all chars until EoL
+         While TryGet(length, ch) AndAlso Not IsNewLine(ch)
+           length += 1
+         End While
 
-                ' eat all chars until EoL
-                While CanGet(length) AndAlso
-                    Not IsNewLine(Peek(length))
-
-                    length += 1
-                End While
-
-                Dim commentTrivia As SyntaxTrivia = MakeCommentTrivia(GetTextNotInterned(length))
-
-                If looksLikeDocComment AndAlso _options.DocumentationMode >= DocumentationMode.Diagnose Then
-                    commentTrivia = commentTrivia.WithDiagnostics(ErrorFactory.ErrorInfo(ERRID.WRN_XMLDocNotFirstOnLine))
-                End If
-
-                Return commentTrivia
-            End If
-
-            Return Nothing
+         Dim commentTrivia As SyntaxTrivia = MakeCommentTrivia(GetTextNotInterned(length))
+         If looksLikeDocComment AndAlso _options.DocumentationMode >= DocumentationMode.Diagnose Then
+            commentTrivia = commentTrivia.WithDiagnostics(ErrorFactory.ErrorInfo(ERRID.WRN_XMLDocNotFirstOnLine))
+         End If
+         Return commentTrivia
         End Function
 
         ''' <summary>

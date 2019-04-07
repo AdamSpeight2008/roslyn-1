@@ -80,7 +80,7 @@ Public Class VisualBasicParseOptionsTests
     <Fact>
     Public Sub CurrentVersionNumber()
         Dim highest =LanguageVersionService.Instance.ToDisplayString(LanguageVersionService.Instance.EnumerateLanguageVersions.
-                                                                     Where(Function(x) x <>  LanguageVersionService.LanguageVersion.Latest AndAlso x <>  LanguageVersionService.LanguageVersion.VisualBasic16).
+                                                                     Where(Function(x) x <> LanguageVersionService.LanguageVersion.Latest).
             Max())
 
         ' https//github.com/dotnet/roslyn/issues/29819 Once we are ready to remove the beta tag from VB 16 we should update Default/Latest accordingly

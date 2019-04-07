@@ -515,8 +515,8 @@ Public Class ScannerTests
         Assert.Equal(SyntaxKind.WhitespaceTrivia, tk.LeadingTrivia(0).Kind)
         Assert.Equal(SyntaxKind.LineContinuationTrivia, tk.LeadingTrivia(1).Kind)
         Assert.Equal(SyntaxKind.CommentTrivia, tk.LeadingTrivia(2).Kind)
-        Assert.Equal(1, tk.Errors.Count)
-        Assert.Equal(ERRID.ERR_CommentsAfterLineContinuationNotAvailable1, tk.Errors.First().Code)
+        Assert.Equal(0, tk.Errors.Count)
+        'Assert.Equal(ERRID.ERR_LanguageVersion, tk.Errors.First().Code)
 
         tk = ScanOnce(" _'", LanguageVersion.VisualBasic16)
         Assert.Equal(SyntaxKind.EndOfFileToken, tk.Kind)
@@ -538,7 +538,7 @@ Public Class ScannerTests
         Assert.Equal(SyntaxKind.CommentTrivia, tk.LeadingTrivia(2).Kind)
         Assert.True(tk.LeadingTrivia(2).ContainsDiagnostics)
         Assert.Equal(1, tk.Errors.Count)
-        Assert.Equal(ERRID.ERR_CommentsAfterLineContinuationNotAvailable1, tk.Errors.First().Code)
+        Assert.Equal(ERRID.ERR_LanguageVersion, tk.Errors.First().Code)
 
         tk = ScanOnce(" _' Comment", LanguageVersion.VisualBasic16)
         Assert.Equal(SyntaxKind.EndOfFileToken, tk.Kind)

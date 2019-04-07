@@ -46,7 +46,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                    Case Else
                         operatorToken = DirectCast(HandleUnexpectedToken(SyntaxKind.IsKeyword), KeywordSyntax)
-                        operatortoken = ReportSyntaxError(operatorToken, ERRID.ERR_MissingIsInTypeOf)
             End Select
 
             current = CurrentToken

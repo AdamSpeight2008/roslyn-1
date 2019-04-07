@@ -8503,7 +8503,7 @@ End Module
             End Sub
      End Module
     ]]>, New VisualBasicParseOptions(LanguageVersion.VisualBasic15),
-            Diagnostic(ERRID.ERR_CommentsAfterLineContinuationNotAvailable1, "' Comment").WithLocation(4, 36).WithArguments("16")
+            Diagnostic(ERRID.ERR_LanguageVersion, "' Comment").WithLocation(4, 36).WithArguments("15.0", "comments after line continuation", "16")
         )
     End Sub
 
@@ -8519,7 +8519,7 @@ End Module
             End Sub
      End Module
     ]]>, New VisualBasicParseOptions(LanguageVersion.VisualBasic15_5),
-            Diagnostic(ERRID.ERR_CommentsAfterLineContinuationNotAvailable1, "' Comment").WithLocation(4, 36).WithArguments("16")
+         Diagnostic(ERRID.ERR_LanguageVersion, "' Comment").WithLocation(4, 36).WithArguments("15.5", "comments after line continuation", "16")
         )
     End Sub
 
