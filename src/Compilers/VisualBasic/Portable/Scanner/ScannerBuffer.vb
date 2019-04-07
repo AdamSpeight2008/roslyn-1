@@ -95,6 +95,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return p
         End Function
 
+        Private Function PrevChar() As Char
+          Return Peek(-1)
+        End Function
+
         ' PERF CRITICAL
         Private Function Peek(skip As Integer) As Char
             Debug.Assert(CanGet(skip))

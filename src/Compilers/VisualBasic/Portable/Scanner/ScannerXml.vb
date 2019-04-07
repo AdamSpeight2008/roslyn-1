@@ -15,15 +15,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ScanXmlTrivia(c As Char) As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)
             Debug.Assert(Not IsScanningXmlDoc)
-            Debug.Assert(c = CARRIAGE_RETURN OrElse c = LINE_FEED OrElse c = " "c OrElse c = CHARACTER_TABULATION)
+            Debug.Assert(c.IsEither( CARRIAGE_RETURN, LINE_FEED, " "c, CHARACTER_TABULATION))
 
             Dim builder = _triviaListPool.Allocate
 
             Dim len = 0
             Do
-                If c = " "c OrElse c = CHARACTER_TABULATION Then
+                If c.IsEither(" "c, CHARACTER_TABULATION) Then
                     len += 1
-                ElseIf c = CARRIAGE_RETURN OrElse c = LINE_FEED Then
+                ElseIf c.IsEither(CARRIAGE_RETURN, LINE_FEED) Then
                     If len > 0 Then
                         builder.Add(MakeWhiteSpaceTrivia(GetText(len)))
                         len = 0
@@ -300,8 +300,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim IsAllWhitespace As Boolean = True
             ' lets do an unusual peek-behind to make sure we are not restarting after a non-Ws char.
             If _lineBufferOffset > 0 Then
-                Dim prevChar = Peek(-1)
-                If prevChar <> ">"c AndAlso Not XmlCharType.IsWhiteSpace(prevChar) Then
+                Dim prevCh = PrevChar()
+                If prevCh <> ">"c AndAlso Not XmlCharType.IsWhiteSpace(prevCh) Then
                     IsAllWhitespace = False
                 End If
             End If
@@ -1235,7 +1235,6 @@ CreateNCNameToken:
 
         Private Function ScanXmlCharRef(ByRef index As Integer) As XmlCharResult
             Debug.Assert(index >= 0)
-
             If Not CanGet(index) Then
                 Return Nothing
             End If

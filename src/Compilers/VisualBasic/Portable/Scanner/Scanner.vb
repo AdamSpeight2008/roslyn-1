@@ -731,31 +731,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         ' All conflict markers consist of the same character repeated seven times.  If it Is
         ' a <<<<<<< Or >>>>>>> marker then it Is also followed by a space.
-        Private Shared Const s_conflictMarkerLength As Integer = "<<<<<<<".Length
+        Private Shared ReadOnly s_conflictMarkerLength As Integer = "<<<<<<<".Length
 
         Private Function IsConflictMarkerTrivia() As Boolean
             Dim ch as Char = Nothing
-            If Not TryGet(ch) Then Return False
-            If ch <> "<"c AndAlso ch <> ">"c AndAlso ch <> "="c Then return False
-            Dim position = _lineBufferOffset
-            Dim text = _buffer
-
-            If position = 0 OrElse SyntaxFacts.IsNewLine(text(position - 1)) Then
-                Dim firstCh = _buffer(position)
-
-                If (position + s_conflictMarkerLength) <= text.Length Then
-                    For i = 0 To s_conflictMarkerLength - 1
-                        If text(position + i) <> firstCh Then Return False
-                    Next
-
-                    If firstCh = "="c Then Return True
-
-                    Return (position + s_conflictMarkerLength) < text.Length AndAlso
-                           text(position + s_conflictMarkerLength) = " "c
-                End If
-            End If
-
-            Return False
+            If Not IsAtNewLine OrElse Not TryGet(ch) OrElse Not ch.IsEither("<"c, ">"c, "="c) Then Return False
+            If Not (NextAre("<<<<<<<") OrElse NextAre(">>>>>>>") OrElse NextAre("=======")) Then Return False
+            If ch = "="c Then Return True
+            Return NextIs(s_conflictMarkerLength, " "c)
         End Function
 
         Private Sub ScanConflictMarker(tList As SyntaxListBuilder)
@@ -777,13 +760,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Sub ScanConflictMarkerDisabledText(tList As SyntaxListBuilder)
             Dim start = _lineBufferOffset
-            While CanGet()
-                Dim ch = Peek()
-
-                If ch = ">"c AndAlso IsConflictMarkerTrivia() Then
-                    Exit While
-                End If
-
+            Dim ch As Char = Nothing
+            While TryGet(ch) AndAlso not(ch = ">"c AndAlso IsConflictMarkerTrivia())
                 AdvanceChar()
             End While
 
@@ -795,8 +773,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Sub ScanConflictMarkerEndOfLine(tList As SyntaxListBuilder)
             Dim start = _lineBufferOffset
-
-            While CanGet() AndAlso SyntaxFacts.IsNewLine(Peek())
+            Dim ch AS Char = Nothing
+            While TryGet(ch) AndAlso SyntaxFacts.IsNewLine(ch)
                 AdvanceChar()
             End While
 
@@ -808,13 +786,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Sub ScanConflictMarkerHeader(tList As SyntaxListBuilder)
             Dim start = _lineBufferOffset
-
-            While CanGet()
-                Dim ch = Peek()
-                If SyntaxFacts.IsNewLine(ch) Then
-                    Exit While
-                End If
-
+            DIm ch As Char = Nothing
+            While TryGet(ch) AndAlso Not SyntaxFacts.IsNewLine(ch)
                 AdvanceChar()
             End While
 
@@ -835,24 +808,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         ' check for #
         Private Function StartsDirective(Here As Integer) As Boolean
-            If CanGet(Here) Then
-                Dim ch = Peek(Here)
-                Return IsHash(ch)
-            End If
-            Return False
+            Dim ch As Char = Nothing
+            Return If(TryGet(Here, ch), IsHash(ch), False)
         End Function
 
         Private Function IsAtNewLine() As Boolean
-            Return _lineBufferOffset = 0 OrElse IsNewLine(Peek(-1))
+            Return _lineBufferOffset = 0 OrElse IsNewLine(PrevChar())
         End Function
 
         Private Function IsAfterWhitespace() As Boolean
             If _lineBufferOffset = 0 Then
                 Return True
             End If
-
-            Dim prevChar = Peek(-1)
-            Return IsWhitespace(prevChar)
+            Return IsWhitespace(PrevChar())
         End Function
 
         ''' <summary>
