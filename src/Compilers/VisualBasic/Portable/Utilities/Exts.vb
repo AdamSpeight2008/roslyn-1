@@ -44,6 +44,11 @@ Namespace Global.Microsoft.CodeAnalysis.VisualBasic
       Return ch.IsEither(ch0, ch1) OrElse ch.IsEither(ch2, ch3) OrElse ch.IsEither(ch4, ch5) OrElse ch.IsEither(ch6, ch7)
     End Function
 
+    <Extension>
+    Friend Function IsBetween(value As Int32, Vmin AS Int32, VMax As Int32) As Boolean
+      Return (Vmin <= Value) And (Value <= Vmax)
+    End Function
+
   End Module
 
 End Namespace

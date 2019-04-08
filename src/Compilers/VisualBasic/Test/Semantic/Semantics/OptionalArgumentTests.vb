@@ -1109,9 +1109,6 @@ End Class
 BC30529: All parameters must be explicitly typed if any of them are explicitly typed.
             Optional f A String = "",
                      ~
-BC30451: 'A' is not declared. It may be inaccessible due to its protection level.
-            Optional f A String = "",
-                       ~
 BC30213: Comma or ')' expected.
             Optional f A String = "",
                          ~~~~~~

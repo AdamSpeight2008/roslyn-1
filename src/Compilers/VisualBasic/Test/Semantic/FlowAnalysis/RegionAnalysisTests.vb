@@ -925,10 +925,10 @@ End Namespace
                                                     VisualBasicParseOptions.Default.WithPreprocessorSymbols(
                                                         KeyValuePairUtil.Create("SQLITE_DEBUG", CObj(True))))
 
-            Assert.Equal(4, startNodes.Count)
-            Assert.Equal(SyntaxKind.DictionaryAccessExpression, startNodes(2).Kind)
+            Assert.Equal(3, startNodes.Count)
+            Assert.Equal(SyntaxKind.FlagsEnumOperationExpression, startNodes(2).Kind)
 
-            Dim expr = DirectCast(startNodes(2), MemberAccessExpressionSyntax)
+            Dim expr = DirectCast(startNodes(2), FlagsEnumOperationExpressionSyntax)
             Dim model = comp.GetSemanticModel(comp.SyntaxTrees(0))
             Dim analysis = model.AnalyzeDataFlow(expr) ' NO THROW
             analysis = model.AnalyzeDataFlow(expr.Expression) ' NO THROW

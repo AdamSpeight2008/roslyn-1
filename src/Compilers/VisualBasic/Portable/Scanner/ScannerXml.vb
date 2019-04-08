@@ -1166,7 +1166,7 @@ CreateNCNameToken:
 
                         If TryGet(3, c) AndAlso NextIs(2, "t"c) Then
 
-                            If ch = ";"c Then
+                            If c = ";"c Then
                                 Return XmlMakeGtLiteralToken(precedingTrivia)
                             Else
                                 Dim noSemicolon = XmlMakeEntityLiteralToken(precedingTrivia, 3, ">")

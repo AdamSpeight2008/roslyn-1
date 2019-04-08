@@ -2969,7 +2969,7 @@ L2:
 </compilation>)
             CompilationUtils.AssertTheseDiagnostics(compilation,
 <expected>
-BC37306: Enum 'E' requires &lt;Flags&gt; attribute.
+BC37307: Enum 'E' requires &lt;Flags&gt; attribute.
             M([enum]!P)
               ~~~~~~~~
 BC30103: '!' requires its left operand to have a type parameter, class or interface type, but this operand has the type 'Boolean'.
