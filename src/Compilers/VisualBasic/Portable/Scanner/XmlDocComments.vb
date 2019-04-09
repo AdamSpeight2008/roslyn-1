@@ -52,9 +52,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function TryScanXmlDocComment(tList As SyntaxListBuilder) As Boolean
             Debug.Assert(IsAtNewLine)
-
+            Dim ch As Char = Nothing
             ' leading whitespace until we see ''' should be regular whitespace
-            If CanGet() AndAlso IsWhitespace(Peek()) Then
+            If TryGet(ch) AndAlso IsWhitespace(ch) Then
                 Dim ws = ScanWhitespace()
                 tList.Add(ws)
             End If
@@ -151,13 +151,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' lexes (ws)'''
         Private Function TrySkipXmlDocMarker(ByRef len As Integer) As Boolean
             Dim Here = len
-            While CanGet(Here)
-                Dim c = Peek(Here)
-                If IsWhitespace(c) Then
-                    Here += 1
-                Else
-                    Exit While
-                End If
+            dim c As Char = Nothing
+            While TryGet(Here, c) AndAlso IsWhitespace(c)
+                Here += 1
             End While
 
             If not StartsXmlDoc(Here) Then Return False
@@ -182,11 +178,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                                                 triviaList As SyntaxListBuilder(Of VisualBasicSyntaxNode)
                                               ) As Boolean
             Debug.Assert(IsScanningXmlDoc)
-            Debug.Assert(c = CARRIAGE_RETURN OrElse c = LINE_FEED OrElse c = " "c OrElse c = CHARACTER_TABULATION)
+            Debug.Assert(c.IsEither(CARRIAGE_RETURN, LINE_FEED, " "c, CHARACTER_TABULATION))
 
             Dim len = 0
             Do
-                If c = " "c OrElse c = CHARACTER_TABULATION Then
+                If c.IsEither(" "c, CHARACTER_TABULATION) Then
                     len += 1
 
                 ElseIf IsNewLine(c) Then
@@ -240,10 +236,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Dim Here As Integer = 0
             Dim scratch = GetScratch()
+            Dim c AS Char = Nothing
 
-            While CanGet(Here)
-                Dim c As Char = Peek(Here)
-
+            While TryGet(Here, c)
                 Select Case (c)
                     Case CARRIAGE_RETURN, LINE_FEED
                         If Here <> 0 Then
@@ -282,8 +277,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         End If
 
                         Debug.Assert(Here = 0)
-                        If CanGet(1) Then
-                            Dim ch As Char = Peek(1)
+                        Dim ch AS Char = Nothing
+                        If TryGet(1, ch) Then
                             Select Case ch
                                 Case "!"c
                                     If Not CanGet(2) Then exit Select
@@ -357,11 +352,10 @@ ScanChars:
                 End If
                 precedingTrivia.Add(xDocTrivia)
             End If
-
-            If state = ScannerState.StartProcessingInstruction AndAlso CanGet() Then
+            Dim c As Char = Nothing
+            If state = ScannerState.StartProcessingInstruction AndAlso TryGet(c) Then
                 ' // Whitespace
                 ' //  S    ::=    (#x20 | #x9 | #xD | #xA)+
-                Dim c = Peek()
                 Select Case c
                     Case CARRIAGE_RETURN, LINE_FEED, " "c, CHARACTER_TABULATION
                         Dim offsets = CreateOffsetRestorePoint()
@@ -375,8 +369,7 @@ ScanChars:
             End If
 
             Dim Here = 0
-            While CanGet(Here)
-                Dim c As Char = Peek(Here)
+            While TryGet(Here, c)
                 Select Case (c)
 
                     Case CARRIAGE_RETURN, LINE_FEED
@@ -449,15 +442,14 @@ CleanUp:
                 precedingTrivia = New CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)(xDocTrivia)
             End If
 
-            While CanGet()
+            Dim c As Char = Nothing
+            While TryGet(c)
                 If Not precedingTrivia.Any AndAlso IsAtNewLine() AndAlso Not Me._doNotRequireXmlDocCommentPrefix Then
                     ' this would indicate that we looked at Trivia, but did not find
                     ' XmlDoc prefix (or we would not be at the line start)
                     ' must terminate XmlDoc scanning
                     Return MakeEofToken(precedingTrivia)
                 End If
-
-                Dim c As Char = Peek()
 
                 Select Case (c)
                     ' // Whitespace
@@ -486,12 +478,12 @@ CleanUp:
                     Case """"c, LEFT_DOUBLE_QUOTATION_MARK, RIGHT_DOUBLE_QUOTATION_MARK
                         Return XmlMakeDoubleQuoteToken(precedingTrivia, c, isOpening:=True)
                     Case "<"c
-                        If CanGet(1) Then
-                            Dim ch As Char = Peek(1)
+                        Dim ch AS Char = Nothing
+                        If TryGet(1, ch) Then
                             Select Case ch
                                 Case "!"c
-                                    If CanGet(2) Then
-                                        Select Case (Peek(2))
+                                    If TryGet(2, ch) Then
+                                        Select Case (ch)
                                             Case "-"c   : If NextIs(3, "-"c) Then Return XmlMakeBeginCommentToken(precedingTrivia, s_scanNoTriviaFunc)
                                             Case "["c   : If NextAre(3, "CDATA[") Then Return XmlMakeBeginCDataToken(precedingTrivia, s_scanNoTriviaFunc)
                                             Case "D"c   : If NextAre(3, "OCTYPE") Then Return XmlMakeBeginDTDToken(precedingTrivia)

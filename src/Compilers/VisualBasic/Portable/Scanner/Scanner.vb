@@ -1320,7 +1320,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ScanRightAngleBracket(precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode), charIsFullWidth As Boolean) As SyntaxToken
             Debug.Assert(CanGet)  ' >
-            Debug.Assert(Peek() = ">"c OrElse Peek() = FULLWIDTH_GREATER_THAN_SIGN)
+            Debug.Assert(Peek().IsEither(">"c, FULLWIDTH_GREATER_THAN_SIGN))
 
             Dim length As Integer = 1
 
@@ -1345,7 +1345,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ScanLeftAngleBracket(precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode), charIsFullWidth As Boolean, scanTrailingTrivia As ScanTriviaFunc) As SyntaxToken
             Debug.Assert(CanGet)  ' <
-            Debug.Assert(Peek() = "<"c OrElse Peek() = FULLWIDTH_LESS_THAN_SIGN)
+            Debug.Assert(Peek().IsEither("<"c, FULLWIDTH_LESS_THAN_SIGN))
 
             Dim length As Integer = 1
             Dim c As Char = Nothing
@@ -1553,23 +1553,19 @@ FullWidthRepeat:
 
         Private Function ScanBracketedIdentifier(precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)) As SyntaxToken
             Debug.Assert(CanGet)  ' [
-            Debug.Assert(Peek() = "["c OrElse Peek() = FULLWIDTH_LEFT_SQUARE_BRACKET)
+            Debug.Assert(Peek().IsEither("["c, FULLWIDTH_LEFT_SQUARE_BRACKET))
 
             Dim IdStart As Integer = 1
             Dim Here As Integer = IdStart
-
             Dim InvalidIdentifier As Boolean = False
             Dim ch AS Char = Nothing
-            If Not TryGet(Here, ch) Then
-                Return MakeBadToken(precedingTrivia, Here, ERRID.ERR_MissingEndBrack)
-            End If
+            If Not TryGet(Here, ch) Then Return MakeBadToken(precedingTrivia, Here, ERRID.ERR_MissingEndBrack)
 
             Dim [Next] As Char = Nothing
             ' check if we can start an ident.
             If Not IsIdentifierStartCharacter(ch) OrElse
                 (IsConnectorPunctuation(ch) AndAlso
-                    Not (TryGet(Here + 1, [Next]) AndAlso
-                         IsIdentifierPartCharacter([Next]))) Then
+                    Not (TryGet(Here + 1, [Next]) AndAlso IsIdentifierPartCharacter([Next]))) Then
 
                 InvalidIdentifier = True
             End If
@@ -2421,10 +2417,7 @@ FullWidthRepeat2:
                 End If
             End If
 
-            If CanGet(2) AndAlso
-               IsDoubleQuote(Peek(1)) AndAlso
-               IsLetterC(Peek(2)) Then
-
+            If TryGet(2, ch) AndAlso IsDoubleQuote(Peek(1)) AndAlso IsLetterC(ch) Then
                 ' // Error. ""c is not a legal char constant
                 Return MakeBadToken(precedingTrivia, 3, ERRID.ERR_IllegalCharConstant)
             End If

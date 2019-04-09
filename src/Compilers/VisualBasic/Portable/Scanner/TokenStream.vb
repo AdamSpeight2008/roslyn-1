@@ -320,13 +320,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             AbandonAllTokens()
             RevertState(_prevToken)
-
             Dim trivia = New CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)(tk.GetTrailingTrivia())
             Dim index = trivia.Count - GetLengthOfCommonEnd(trivia, toCompare)
             toRemove = trivia.GetEndOfTrivia(index)
 
             tk = DirectCast(tk.WithTrailingTrivia(trivia.GetStartOfTrivia(index).Node), SyntaxToken)
-            Dim offset = GetFullWidth(_prevToken, tk)
+            trivia = nothing
+           Dim offset = GetFullWidth(_prevToken, tk)
             _lineBufferOffset += offset
             _endOfTerminatorTrivia = _lineBufferOffset
 
@@ -352,11 +352,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             RevertState(_prevToken)
 
             Dim trivia = New CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)(tk.GetTrailingTrivia())
+
             Dim index = trivia.Count - GetLengthOfCommonEnd(trivia, toCompare)
             toRemove = trivia.GetEndOfTrivia(index)
 
             tk = DirectCast(tk.WithTrailingTrivia(trivia.GetStartOfTrivia(index).Node), SyntaxToken)
-            Dim offset = GetFullWidth(_prevToken, tk)
+               trivia = nothing
+         Dim offset = GetFullWidth(_prevToken, tk)
             _lineBufferOffset += offset
             _endOfTerminatorTrivia = _lineBufferOffset
 
