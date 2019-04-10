@@ -238,7 +238,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 If _badTokenCount < BadTokenCountLimit Then
                     ' // Don't break up surrogate pairs
-                    Dim length = If(IsHighSurrogate(c) AndAlso TryGet(1,c) AndAlso IsLowSurrogate(c), 2, 1)
+                    Dim length = If(IsHighSurrogate(c) AndAlso TryGet(c,1) AndAlso IsLowSurrogate(c), 2, 1)
                     token = MakeBadToken(leadingTrivia, length, ERRID.ERR_IllegalChar)
                 Else
                     ' If we get too many characters that we cannot make sense of, absorb the rest of the input.
@@ -417,27 +417,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function NextIs(offset As Integer, c As Char) As Boolean
             Dim ch As Char = Nothing
-            Return TryGet(offset, ch) AndAlso (ch = c)
+            Return TryGet(ch, offset) AndAlso (ch = c)
         End Function
 
-        Private Function CanGet() As Boolean
-            Return _lineBufferOffset < _bufferLen
-        End Function
-
-        Private Function CanGet(num As Integer) As Boolean
+        Private Function CanGet(Optional num As Integer = 0) As Boolean
             Debug.Assert(_lineBufferOffset + num >= 0)
             Debug.Assert(num >= -MaxCharsLookBehind)
 
             Return _lineBufferOffset + num < _bufferLen
         End Function
 
-        Private Function TryGet(ByRef ch As Char) As Boolean
-            Dim ok = CanGet()
-            ch = If(ok, Peek(), nothing)
-            Return ok
-        End Function
-
-        Private Function TryGet(num As Integer, ByRef ch As Char) As Boolean
+        Private Function TryGet(ByRef ch As Char, Optional num As Integer = 0) As Boolean
             Dim ok = CanGet(num)
             ch = If(ok, Peek(num), nothing)
             Return ok
@@ -560,7 +550,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Sub
 
         Private Sub PeekWhitespace(ByRef Here As Integer, ByRef Ch As Char)
-            While TryGet(Here, Ch) AndAlso IsWhitespace(Ch)
+            While TryGet(Ch, Here) AndAlso IsWhitespace(Ch)
                 Here += 1
             End While
         End Sub
@@ -586,7 +576,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             ' Eg.  LineContinuation ( EndOfLine | EndOfFile | LineContinuationComment) 
             If Not TryGet(ch) OrElse Not IsAfterWhitespace() OrElse Not IsUnderscore(ch) Then
                 Return False
-            ElseIf Not TryGet(Here, ch) OrElse (Not IsWhitespace(ch) AndAlso PeekStartComment(Here, AllowREM:=False) <= 0) Then
+            ElseIf Not TryGet(ch, Here) OrElse (Not IsWhitespace(ch) AndAlso PeekStartComment(Here, AllowREM:=False) <= 0) Then
                 ' We don't have a space or ' but we might have an EOF after _ and that is not an error
                 If IsPreLineContinuationCommentErrorState(atNewLine, tList, ch) Then
                     Return False
@@ -636,7 +626,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             '    So as not confuse code handling Implicit Line Continuations (See Scanner::EatLineContinuation.)
             '    do not include the newline character.
             ' Otherwise include the new line and any additional spaces as trivia.
-            If startComment = 0 AndAlso TryGet(Here, ch) AndAlso Not IsNewLine(ch) Then
+            If startComment = 0 AndAlso TryGet(ch, Here) AndAlso Not IsNewLine(ch) Then
 
                 tList.Add(MakeEndOfLineTrivia(GetText(newLine)))
                 If spaces > 0 Then
@@ -791,7 +781,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' check for #
         Private Function StartsDirective(Here As Integer) As Boolean
             Dim ch As Char = Nothing
-            Return If(TryGet(Here, ch), IsHash(ch), False)
+            Return If(TryGet(ch, Here), IsHash(ch), False)
         End Function
 
         Private Function IsAtNewLine() As Boolean
@@ -938,7 +928,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 ' collect { ws, colon }
                 Do
                     Dim len = GetWhitespaceLength(0)
-                    If Not TryGet(len, ch) OrElse Not IsColonAndNotColonEquals(ch, offset:=len) Then Exit Do
+                    If Not TryGet(ch, len) OrElse Not IsColonAndNotColonEquals(ch, offset:=len) Then Exit Do
 
                     If len > 0 Then tList.Add(MakeWhiteSpaceTrivia(GetText(len)))
  
@@ -968,7 +958,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Function GetWhitespaceLength(len As Integer) As Integer
             Dim ch As Char = Nothing
             ' eat until linebreak or non-whitespace
-            While TryGet(len, ch) AndAlso IsWhitespace(ch)
+            While TryGet(ch, len) AndAlso IsWhitespace(ch)
                 len += 1
             End While
             Return len
@@ -977,7 +967,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Function GetXmlWhitespaceLength(len As Integer) As Integer
             Dim ch As Char = Nothing
             ' eat until linebreak or non-whitespace
-            While TryGet(len, ch) AndAlso IsXmlWhitespace(ch)
+            While TryGet(ch, len) AndAlso IsXmlWhitespace(ch)
                 len += 1
             End While
             Return len
@@ -1008,14 +998,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
        Private Function PeekStartComment(i As Integer, Optional AllowREM As Boolean = True) As Integer
             Dim ch AS Char
-            If TryGet(i,ch) Then
+            If TryGet(ch, i) Then
                 If IsSingleQuote(ch) Then
                     Return 1
                 ElseIf AllowREM AndAlso
                     MatchOneOrAnotherOrFullwidth(ch, "R"c, "r"c) AndAlso
-                    TryGet(i + 2, ch) AndAlso MatchOneOrAnotherOrFullwidth(Peek(i + 1), "E"c, "e"c) AndAlso
+                    TryGet(ch, i + 2) AndAlso MatchOneOrAnotherOrFullwidth(Peek(i + 1), "E"c, "e"c) AndAlso
                     MatchOneOrAnotherOrFullwidth(ch, "M"c, "m"c) Then
-                    Dim ok = TryGet(i + 3, ch)
+                    Dim ok = TryGet(ch, i + 3)
                     If Not ok OrElse IsNewLine(ch) Then
                         ' have only 'REM'
                         Return 3
@@ -1037,7 +1027,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
          Dim looksLikeDocComment As Boolean = StartsXmlDoc(0)
          Dim ch As Char = Nothing
          ' eat all chars until EoL
-         While TryGet(length, ch) AndAlso Not IsNewLine(ch)
+         While TryGet(ch, length) AndAlso Not IsNewLine(ch)
            length += 1
          End While
 
@@ -1102,7 +1092,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return If(dl, MakeHashToken(precedingTrivia, fullWidth))
 
                 Case "&"c
-                    If TryGet(1, ch) AndAlso BeginsBaseLiteral(ch) Then
+                    If TryGet(ch, 1) AndAlso BeginsBaseLiteral(ch) Then
                         Return ScanNumericLiteral(precedingTrivia)
                     End If
 
@@ -1173,7 +1163,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case "!"c
                     Dim nc As Char = Nothing
                     ' Check to see if could be a FlagsEnum Operator.
-                    If TryGet(1, nc) Then
+                    If TryGet(nc, 1) Then
                         Select Case nc
                             Case "+"c
                                 AdvanceChar(2)
@@ -1189,7 +1179,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return MakeExclamationToken(precedingTrivia, fullWidth)
 
                 Case "."c
-                    If TryGet(1, ch) AndAlso IsDecimalDigit(ch) Then
+                    If TryGet(ch, 1) AndAlso IsDecimalDigit(ch) Then
                         Return ScanNumericLiteral(precedingTrivia)
                     Else
                         Return MakeDotToken(precedingTrivia, fullWidth)
@@ -1237,13 +1227,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return ScanIdentifierOrKeyword(precedingTrivia)
 
                 Case "_"c
-                    If TryGet(1, ch) AndAlso IsIdentifierPartCharacter(ch) Then
+                    If TryGet(ch, 1) AndAlso IsIdentifierPartCharacter(ch) Then
                         Return ScanIdentifierOrKeyword(precedingTrivia)
                     End If
 
                     Dim err As ERRID = ERRID.ERR_ExpectedIdentifier
                     Dim len = GetWhitespaceLength(1)
-                    If Not TryGet(len, ch) OrElse IsNewLine(ch) OrElse PeekStartComment(len) > 0 Then
+                    If Not TryGet(ch, len) OrElse IsNewLine(ch) OrElse PeekStartComment(len) > 0 Then
                         err = ERRID.ERR_LineContWithCommentOrNoPrecSpace
                     End If
 
@@ -1263,7 +1253,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Case "$"c, FULLWIDTH_DOLLAR_SIGN
                     Dim nc As Char = Nothing
-                    If Not fullWidth AndAlso TryGet(1, nc) AndAlso IsDoubleQuote(nc) Then
+                    If Not fullWidth AndAlso TryGet(nc, 1) AndAlso IsDoubleQuote(nc) Then
                         Return MakePunctuationToken(precedingTrivia, 2, SyntaxKind.DollarSignDoubleQuoteToken)
                     End If
 
@@ -1304,7 +1294,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim Here = Index
             Dim eq As Char
 
-            While TryGet(Here, eq)
+            While TryGet(eq, Here)
                 Here += 1
                 If Not IsWhitespace(eq) Then
                     If eq.IsEither("="c, FULLWIDTH_EQUALS_SIGN) Then
@@ -1327,7 +1317,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             ' // Allow whitespace between the characters of a two-character token.
             length = GetWhitespaceLength(length)
             Dim c As Char = Nothing
-            If TryGet(length, c) Then
+            If TryGet(c, length) Then
                 If c.IsEither("="c, FULLWIDTH_EQUALS_SIGN) Then
                     length += 1
                     Return MakeGreaterThanEqualsToken(precedingTrivia, length)
@@ -1350,7 +1340,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim length As Integer = 1
             Dim c As Char = Nothing
             ' Check for XML tokens
-            If Not charIsFullWidth AndAlso TryGet(length, c) Then
+            If Not charIsFullWidth AndAlso TryGet(c, length) Then
                 Select Case c
                     Case "!"c
                         If CanGet(length + 2) Then
@@ -1378,7 +1368,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             ' // Allow whitespace between the characters of a two-character token.
             length = GetWhitespaceLength(length)
 
-            If TryGet(length, c) Then
+            If TryGet(c, length) Then
                 If c.IsEither("="c, FULLWIDTH_EQUALS_SIGN) Then
                     length += 1
                     Return MakeLessThanEqualsToken(precedingTrivia, length)
@@ -1388,7 +1378,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 ElseIf c.IsEither("<"c, FULLWIDTH_LESS_THAN_SIGN) Then
                     length += 1
 
-                    If TryGet(length, c) Then
+                    If TryGet(c, length) Then
                         'if the second "<" is a part of "<%" - like in "<<%" , we do not want to use it.
                         If c <> "%"c AndAlso c <> FULLWIDTH_PERCENT_SIGN Then
                             If TrySkipFollowingEquals(length) Then
@@ -1440,7 +1430,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Dim ch = Peek()
             Dim ch1 As Char = Nothing
-            If TryGet(1, ch1) Then
+            If TryGet(ch1, 1) Then
                 If IsConnectorPunctuation(ch) AndAlso Not IsIdentifierPartCharacter(ch1) Then
                     Return MakeBadToken(precedingTrivia, 1, ERRID.ERR_ExpectedIdentifier)
                 End If
@@ -1451,7 +1441,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             ' // The C++ compiler refuses to inline IsIdentifierCharacter, so the
             ' // < 128 test is inline here. (This loop gets a *lot* of traffic.)
             ' TODO: make sure we get good perf here
-            While TryGet(len, ch)
+            While TryGet(ch, len)
                 Dim code = Convert.ToUInt16(ch)
                 If code < 128US AndAlso IsNarrowIdentifierCharacter(code) OrElse
                     IsWideIdentifierCharacter(ch) Then
@@ -1464,14 +1454,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             'Check for a type character
             Dim TypeCharacter As TypeCharacter = TypeCharacter.None
-            If TryGet(len, ch) Then
+            If TryGet(ch, len) Then
 
 FullWidthRepeat:
                 Select Case ch
                     Case "!"c
                         Dim NextChar As Char = Nothing
                         ' // If the ! is followed by an identifier it is a dictionary lookup operator, not a type character.
-                        If TryGet(len + 1, NextChar) Then
+                        If TryGet(NextChar, len + 1) Then
                             If IsIdentifierStartCharacter(NextChar) OrElse
                                 MatchOneOrAnotherOrFullwidth(NextChar, "["c, "]"c) Then
                                 Exit Select
@@ -1559,19 +1549,19 @@ FullWidthRepeat:
             Dim Here As Integer = IdStart
             Dim InvalidIdentifier As Boolean = False
             Dim ch AS Char = Nothing
-            If Not TryGet(Here, ch) Then Return MakeBadToken(precedingTrivia, Here, ERRID.ERR_MissingEndBrack)
+            If Not TryGet(ch, Here) Then Return MakeBadToken(precedingTrivia, Here, ERRID.ERR_MissingEndBrack)
 
             Dim [Next] As Char = Nothing
             ' check if we can start an ident.
             If Not IsIdentifierStartCharacter(ch) OrElse
                 (IsConnectorPunctuation(ch) AndAlso
-                    Not (TryGet(Here + 1, [Next]) AndAlso IsIdentifierPartCharacter([Next]))) Then
+                    Not (TryGet([Next], Here + 1) AndAlso IsIdentifierPartCharacter([Next]))) Then
 
                 InvalidIdentifier = True
             End If
 
             ' check ident until ]
-            While TryGet(Here, [Next])
+            While TryGet([Next], Here)
                 If [Next].IsEither("]"c, FULLWIDTH_RIGHT_SQUARE_BRACKET) Then
                     Dim IdStringLength As Integer = Here - IdStart
 
@@ -1653,7 +1643,7 @@ FullWidthRepeat:
 
                         If NextIs(Here, "_"c) Then LeadingUnderscoreUsed = True
 
-                        While TryGet(Here, ch) AndAlso (IsHexDigit(ch) OrElse IsDigitSeperator(ch))
+                        While TryGet(ch, Here) AndAlso (IsHexDigit(ch) OrElse IsDigitSeperator(ch))
                             If ch = "_"c Then UnderscoreUsed = True
                             Here += 1
                         End While
@@ -1666,7 +1656,7 @@ FullWidthRepeat:
 
                         If NextIs(Here, "_"c) Then LeadingUnderscoreUsed = True
 
-                        While TryGet(Here, ch) AndAlso (IsBinaryDigit(ch) OrElse IsDigitSeperator(ch))
+                        While TryGet(ch, Here) AndAlso (IsBinaryDigit(ch) OrElse IsDigitSeperator(ch))
                             If ch = "_"c Then UnderscoreUsed = True
                             Here += 1
                         End While
@@ -1679,7 +1669,7 @@ FullWidthRepeat:
 
                         If NextIs(Here, "_"c) Then LeadingUnderscoreUsed = True
 
-                        While TryGet(Here, ch) AndAlso (IsOctalDigit(ch) OrElse IsDigitSeperator(ch))
+                        While TryGet(ch, Here) AndAlso (IsOctalDigit(ch) OrElse IsDigitSeperator(ch))
                             If ch = "_"c Then UnderscoreUsed = True
                             Here += 1
                         End While
@@ -1697,7 +1687,7 @@ FullWidthRepeat:
                 ' no base specifier - just go through decimal digits.
                 IntegerLiteralStart = Here
                 UnderscoreInWrongPlace = NextIs(Here, "_"c)
-                While TryGet(Here, ch) AndAlso (IsDecimalDigit(ch) OrElse IsDigitSeperator(ch))
+                While TryGet(ch, Here) AndAlso (IsDecimalDigit(ch) OrElse IsDigitSeperator(ch))
                     If ch = "_"c Then UnderscoreUsed = True
                     Here += 1
                 End While
@@ -1711,16 +1701,16 @@ FullWidthRepeat:
 
             ' // Unless there was an explicit base specifier (which indicates an integer literal),
             ' // read the rest of a float literal.
-            If Base = LiteralBase.Decimal AndAlso TryGet(Here, ch) Then
+            If Base = LiteralBase.Decimal AndAlso TryGet(ch, Here) Then
                 ' // First read a '.' followed by a sequence of one or more digits.
                 Dim nc As Char = Nothing
                 If ch.IsEither("."c, FULLWIDTH_FULL_STOP) AndAlso
-                    TryGet(Here + 1, nc) AndAlso IsDecimalDigit(nc) Then
+                    TryGet(nc, Here+1) AndAlso IsDecimalDigit(nc) Then
 
                     Here += 2   ' skip dot and first digit
 
                     ' all following decimal digits belong to the literal (fractional part)
-                    While TryGet(Here, ch) AndAlso (IsDecimalDigit(ch) OrElse IsDigitSeperator(ch))
+                    While TryGet(ch, Here) AndAlso (IsDecimalDigit(ch) OrElse IsDigitSeperator(ch))
                         Here += 1
                     End While
                     UnderscoreInWrongPlace = UnderscoreInWrongPlace Or NextIs(Here - 1, "_"c)
@@ -1729,18 +1719,18 @@ FullWidthRepeat:
 
                 ' // Read an exponent symbol followed by an optional sign and a sequence of
                 ' // one or more digits.
-                If TryGet(Here, nc) AndAlso BeginsExponent(nc) Then
+                If TryGet(ch, Here) AndAlso BeginsExponent(nc) Then
                     Here += 1
 
-                    If TryGet(Here, ch) Then
+                    If TryGet(ch, Here) Then
                         If MatchOneOrAnotherOrFullwidth(ch, "+"c, "-"c) Then
                             Here += 1
                         End If
                     End If
 
-                    If TryGet(Here, ch) AndAlso IsDecimalDigit(ch) Then
+                    If TryGet(ch, Here) AndAlso IsDecimalDigit(ch) Then
                         Here += 1
-                        While TryGet(Here, ch) AndAlso (IsDecimalDigit(ch) OrElse IsDigitSeperator(ch))
+                        While TryGet(ch, Here) AndAlso (IsDecimalDigit(ch) OrElse IsDigitSeperator(ch))
                             Here += 1
                         End While
                         UnderscoreInWrongPlace = UnderscoreInWrongPlace Or NextIs(Here - 1, "_"c)
@@ -1760,7 +1750,7 @@ FullWidthRepeat:
 
             Dim TypeCharacter As TypeCharacter = TypeCharacter.None
 
-            If TryGet(Here, ch) Then
+            If TryGet(ch, Here) Then
 
 FullWidthRepeat2:
                 Select Case ch
@@ -1836,7 +1826,7 @@ FullWidthRepeat2:
                             literalKind = NumericLiteralKind.Decimal
 
                             ' check if this was not attempt to use obsolete exponent
-                            If TryGet(Here + 1, ch) Then
+                            If TryGet(ch, Here + 1) Then
                                 If IsDecimalDigit(ch) OrElse MatchOneOrAnotherOrFullwidth(ch, "+"c, "-"c) Then
                                     Return MakeBadToken(precedingTrivia, Here, ERRID.ERR_ObsoleteExponent)
                                 End If
@@ -1847,7 +1837,7 @@ FullWidthRepeat2:
 
                     Case "U"c, "u"c
                         Dim NextChar As Char = Nothing
-                        If literalKind <> NumericLiteralKind.Float AndAlso TryGet(Here + 1, NextChar) Then
+                        If literalKind <> NumericLiteralKind.Float AndAlso TryGet(NextChar, Here + 1) Then
                             'unsigned suffixes - US, UL, UI
                             If MatchOneOrAnotherOrFullwidth(NextChar, "S"c, "s"c) Then
                                 TypeCharacter = TypeCharacter.UShortLiteral
@@ -2047,12 +2037,12 @@ FullWidthRepeat2:
            ) As Boolean
             Debug.Assert(Here >= 0)
             Dim ch As Char = Nothing
-            If Not TryGet(Here, ch) OrElse Not IsDecimalDigit(ch) Then Return False
+            If Not TryGet(ch, Here) OrElse Not IsDecimalDigit(ch) Then Return False
 
             Dim IntegralValue As Integer = IntegralLiteralCharacterValue(ch)
             Here += 1
 
-            While TryGet(Here, ch) AndAlso IsDecimalDigit(ch)
+            While TryGet(ch, Here) AndAlso IsDecimalDigit(ch)
 
                 Dim nextDigit = IntegralLiteralCharacterValue(ch)
                 If IntegralValue < 214748364 OrElse
@@ -2097,13 +2087,13 @@ FullWidthRepeat2:
             End If
 
             ' // If we see a /, then it's a date
-            If TryGet(Here, ch) AndAlso IsDateSeparatorCharacter(ch) Then
+            If TryGet(ch, Here) AndAlso IsDateSeparatorCharacter(ch) Then
                 If Not TryScan_DatePart(precedingTrivia, ch, here, firstValue, FirstValueStart, datePart, badDate) Then Return badDate
             End If
 
             If Not TryScan_TimePart(precedingTrivia, ch, Here, FirstValue, TimePart, datePart, badDate) Then REturn badDate
 
-            If Not TryGet(Here, ch) OrElse Not IsHash(ch) Then
+            If Not TryGet(ch, Here) OrElse Not IsHash(ch) Then
                 IsABadDate(precedingTrivia, here, badDate) : Return badDate
             End If
 
@@ -2155,7 +2145,7 @@ FullWidthRepeat2:
                 If Not ScanIntLiteral(datePart.MM, Here) Then Return IsABadDate(precedingTrivia, here, BadDate)
 
                 ' Do we have a day value?
-                If TryGet(Here,ch) AndAlso IsDateSeparatorCharacter(ch) Then
+                If TryGet(ch, Here) AndAlso IsDateSeparatorCharacter(ch) Then
                     ' // Check to see they used a consistent separator
 
                     If ch <> FirstDateSeparator Then Return IsABadDate(precedingTrivia, here, badDate)
@@ -2175,7 +2165,7 @@ FullWidthRepeat2:
 
                 ' // Do we have a year value?
 
-                If TryGet(Here, ch) AndAlso IsDateSeparatorCharacter(ch) Then
+                If TryGet(ch, Here) AndAlso IsDateSeparatorCharacter(ch) Then
                     ' // Check to see they used a consistent separator
 
                     If ch <> FirstDateSeparator Then Return IsABadDate(precedingTrivia, here, badDate)
@@ -2265,7 +2255,7 @@ FullWidthRepeat2:
             If TimePart.HaveTime Then
                 ' // Do we see a :?
 
-                If TryGet(Here, ch) AndAlso IsColon(ch) Then
+                If TryGet(ch, Here) AndAlso IsColon(ch) Then
                     Here += 1
 
                     ' // Now let's get the minute value
@@ -2276,7 +2266,7 @@ FullWidthRepeat2:
 
                     ' // Do we have a second value?
 
-                    If TryGet(Here, ch) AndAlso IsColon(ch) Then
+                    If TryGet(ch, Here) AndAlso IsColon(ch) Then
                         ' // Yes.
                         TimePart.HaveSeconds = True
                         Here += 1
@@ -2289,7 +2279,7 @@ FullWidthRepeat2:
 
                 ' // Check AM/PM
 
-                If TryGet(Here, ch) Then
+                If TryGet(ch, Here) Then
                     If ch.IsEither("A"c, FULLWIDTH_LATIN_CAPITAL_LETTER_A,
                                    "a"c, FULLWIDTH_LATIN_SMALL_LETTER_A) Then
 
@@ -2304,7 +2294,7 @@ FullWidthRepeat2:
 
                     End If
 
-                    If TryGet(Here, ch) AndAlso (TimePart.HaveAM OrElse TimePart.HavePM) Then
+                    If TryGet(ch, Here) AndAlso (TimePart.HaveAM OrElse TimePart.HavePM) Then
                         If ch.IsEither("M"c, FULLWIDTH_LATIN_CAPITAL_LETTER_M,
                                        "m"c, FULLWIDTH_LATIN_SMALL_LETTER_M) Then
 
@@ -2373,13 +2363,13 @@ FullWidthRepeat2:
             ' // If we can find a closing #, then assume it's a malformed date,
             ' // otherwise, it's not a date
             Dim ch As Char = Nothing
-            While TryGet(Here, ch)
+            While TryGet(ch, Here)
                 If IsHash(ch) OrElse IsNewLine(ch) Then
                     Exit While
                 End If
                 Here += 1
             End While
-            If Not TryGet(Here, ch) OrElse IsNewLine(ch) Then
+            If Not TryGet(ch, Here) OrElse IsNewLine(ch) Then
                 ' // No closing #
                 badDate = Nothing
             Else
@@ -2417,7 +2407,7 @@ FullWidthRepeat2:
                 End If
             End If
 
-            If TryGet(2, ch) AndAlso IsDoubleQuote(Peek(1)) AndAlso IsLetterC(ch) Then
+            If TryGet(ch, 2) AndAlso IsDoubleQuote(Peek(1)) AndAlso IsLetterC(ch) Then
                 ' // Error. ""c is not a legal char constant
                 Return MakeBadToken(precedingTrivia, 3, ERRID.ERR_IllegalCharConstant)
             End If
@@ -2425,9 +2415,9 @@ FullWidthRepeat2:
             Dim haveNewLine As Boolean = False
 
             Dim scratch = GetScratch()
-            While TryGet(length, ch)
+            While TryGet(ch, length)
                 If IsDoubleQuote(ch) Then
-                    If TryGet(length + 1, ch) Then
+                    If TryGet(ch, length + 1) Then
                         If IsDoubleQuote(ch) Then
                             ' // An escaped double quote
                             scratch.Append(""""c)

@@ -33,7 +33,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Exit Do
                 End If
 
-                If Not TryGet(len, c) Then
+                If Not TryGet(c, len) Then
                     Exit Do
                 End If
             Loop
@@ -110,10 +110,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                     Case "<"c
                         Dim ch As Char =  Nothing
-                        If TryGet(1, ch) Then
+                        If TryGet(ch, 1) Then
                             Select Case ch
                                 Case "!"c
-                                    If TryGet(2, ch) Then
+                                    If TryGet(ch, 2) Then
                                         Select Case ch
                                             Case "-"c
                                                 If NextIs(3, "-"c) Then
@@ -304,7 +304,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim scratch = GetScratch()
             Dim c As Char = Nothing
 
-            While TryGet(Here, c)
+            While TryGet(c, Here)
                 Select Case (c)
                     Case CARRIAGE_RETURN, LINE_FEED
                         Here = SkipLineBreak(c, Here)
@@ -336,10 +336,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                         Debug.Assert(Here = 0)
                         Dim ch As Char = Nothing
-                        If TryGet(1, ch) Then
+                        If TryGet(ch, 1) Then
                             Select Case ch
                                 Case "!"c
-                                    If TryGet(2, ch) Then
+                                    If TryGet(ch, 2) Then
                                         Select Case ch
                                             Case "-"c
                                                 If NextIs(3, "-"c) Then
@@ -485,7 +485,7 @@ ScanChars:
             End If
 
             Dim Here = 0, c As Char = Nothing
-            While TryGet(Here, c)
+            While TryGet(c, Here)
                 Select Case (c)
 
                     Case CARRIAGE_RETURN, LINE_FEED
@@ -503,7 +503,7 @@ ScanChars:
                                 Return XmlMakeCommentToken(precedingTrivia, Here)
                             End If
 
-                            If TryGet(Here + 2, c) Then
+                            If TryGet(c, Here + 2) Then
                                 Here += 2
                                 ' // if > is not found then this is an error.  Return the -- string
 
@@ -573,7 +573,7 @@ ScanChars:
 
             Dim scratch = GetScratch()
             Dim Here = 0, c As Char = Nothing
-            While TryGet(Here,c)
+            While TryGet(c, Here)
                 Select Case (c)
 
                     Case CARRIAGE_RETURN, LINE_FEED
@@ -647,7 +647,7 @@ ScanChars:
             End If
 
             Dim Here = 0
-            While TryGet(Here, c)
+            While TryGet(c, Here)
                 Select Case (c)
 
                     Case CARRIAGE_RETURN, LINE_FEED
@@ -718,7 +718,7 @@ CleanUp:
 
                     Case "<"c
                         Dim ch As Char = Nothing
-                        If TryGet(1, ch) Then
+                        If TryGet(ch, 1) Then
                             Select Case ch
                                 Case "!"c
                                     If NextAre(2, "--") Then
@@ -781,7 +781,7 @@ CleanUp:
             Dim Here = 0
             Dim scratch = GetScratch()
             Dim c As Char = Nothing
-            While TryGet(Here, c)
+            While TryGet(c, Here)
                 Select Case (c)
 
                     Case CARRIAGE_RETURN, LINE_FEED, " "c, CHARACTER_TABULATION
@@ -872,7 +872,7 @@ ScanChars:
             Dim Here = 0
             Dim scratch = GetScratch()
             Dim c As Char = Nothing
-            While TryGet(Here, c)
+            While TryGet(c, Here)
                 If c = terminatingChar Or c = altTerminatingChar Then
                     If Here > 0 Then
                         result = XmlMakeAttributeDataToken(precedingTrivia, Here, scratch)
@@ -972,7 +972,7 @@ CleanUp:
             Debug.Assert(CanGet(Here))
             Debug.Assert(Peek(Here) = c1)
             Dim c2 As Char = Nothing
-            If IsHighSurrogate(c1) AndAlso TryGet(Here + 1, c2) Then
+            If IsHighSurrogate(c1) AndAlso TryGet(c2, Here + 1) Then
                If IsLowSurrogate(c2) Then Return New XmlCharResult(c1, c2)
             End If
 
@@ -1009,7 +1009,7 @@ CleanUp:
 
         Private Function ScanXmlChar(Here As Integer) As XmlCharResult
             Dim c AS Char = Nothing
-            Dim ok = TryGet(here, c)
+            Dim ok = TryGet(c, here)
             Debug.Assert(Here >= 0)
             Debug.Assert(ok)
             If Not isValidUtf16(c) Then Return Nothing
@@ -1035,7 +1035,7 @@ CleanUp:
 
             'TODO - Fix ScanXmlNCName to conform to XML spec instead of old loose scanning.
             Dim c As Char = Nothing
-            While TryGet(Here, c)
+            While TryGet(c, Here)
               Select Case (c)
 
                     Case ":"c, " "c, CHARACTER_TABULATION, LINE_FEED, CARRIAGE_RETURN,
@@ -1101,7 +1101,7 @@ CreateNCNameToken:
             Debug.Assert(Peek() = "&"c)
             Dim c As Char = Nothing
             ' skip 1 char for "&"
-            If TryGet(1,c) Then
+            If TryGet(c, 1) Then
                 Select Case (c)
                     Case "#"c
                         Dim Here = 2    ' skip "&#"
@@ -1128,7 +1128,7 @@ CreateNCNameToken:
                         ' // &amp;
                         ' // &apos;
 
-                        If TryGet(4,c) AndAlso NextAre(2, "mp") Then
+                        If TryGet(c, 4) AndAlso NextAre(2, "mp") Then
                             If c = ";"c Then
                                 Return XmlMakeAmpLiteralToken(precedingTrivia)
                             Else
@@ -1137,7 +1137,7 @@ CreateNCNameToken:
                                 Return DirectCast(noSemicolon.SetDiagnostics({noSemicolonError}), XmlTextTokenSyntax)
                             End If
 
-                        ElseIf TryGet(5,c) AndAlso NextAre(2, "pos") Then
+                        ElseIf TryGet(c,5) AndAlso NextAre(2, "pos") Then
                             If c = ";"c Then
                                 Return XmlMakeAposLiteralToken(precedingTrivia)
                             Else
@@ -1150,7 +1150,7 @@ CreateNCNameToken:
                     Case "l"c
                         ' // &lt;
 
-                        If TryGet(3,c) AndAlso NextIs(2, "t"c) Then
+                        If TryGet( c, 3) AndAlso NextIs(2, "t"c) Then
 
                             If c = ";"c Then
                                 Return XmlMakeLtLiteralToken(precedingTrivia)
@@ -1164,7 +1164,7 @@ CreateNCNameToken:
                     Case "g"c
                         ' // &gt;
 
-                        If TryGet(3, c) AndAlso NextIs(2, "t"c) Then
+                        If TryGet(c, 3) AndAlso NextIs(2, "t"c) Then
 
                             If c = ";"c Then
                                 Return XmlMakeGtLiteralToken(precedingTrivia)
@@ -1178,7 +1178,7 @@ CreateNCNameToken:
                     Case "q"c
                         ' // &quot;
 
-                        If TryGet(5, c) AndAlso NextAre(2, "uot") Then
+                        If TryGet(c, 5) AndAlso NextAre(2, "uot") Then
 
                             If c = ";"c Then
                                 Return XmlMakeQuotLiteralToken(precedingTrivia)
@@ -1201,7 +1201,7 @@ CreateNCNameToken:
         Private Function ScanXmlCharRef(ByRef index As Integer) As XmlCharResult
             Debug.Assert(index >= 0)
             Dim ch As Char = Nothing
-            If Not TryGet(index, ch) Then Return Nothing
+            If Not TryGet(ch, index) Then Return Nothing
 
             ' cannot reuse Scratch as this can be used in a nested call.
             Dim charRefSb As New StringBuilder
@@ -1209,7 +1209,7 @@ CreateNCNameToken:
             If ch = "x"c Then
                 Here += 1
 
-                While TryGet(Here, ch) AndAlso XmlCharType.IsHexDigit(ch)
+                While TryGet(ch, Here) AndAlso XmlCharType.IsHexDigit(ch)
                     charRefSb.Append(ch)
                     Here += 1
                 End While
@@ -1221,7 +1221,7 @@ CreateNCNameToken:
                     Return result
                 End If
             Else
-                While TryGet(Here, ch) AndAlso XmlCharType.IsDigit(ch)
+                While TryGet(ch, Here) AndAlso XmlCharType.IsDigit(ch)
                         charRefSb.Append(ch)
                     Here += 1
                 End While

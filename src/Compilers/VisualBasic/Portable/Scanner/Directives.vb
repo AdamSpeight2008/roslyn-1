@@ -26,7 +26,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(IsAtNewLine())
 
             ' leading whitespace until we see # should be regular whitespace
-            If CanGet() AndAlso IsWhitespace(Peek()) Then
+            Dim ch AS Char = Nothing
+            If TryGet(Ch) AndAlso IsWhitespace(ch) Then
                 Dim ws = ScanWhitespace()
                 tList.Add(ws)
             End If

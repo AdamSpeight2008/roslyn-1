@@ -12,10 +12,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             '// The complete list was discovered through the tool in vb\Language\Tools\VBGrammarAnalyzer\vbgrammar.html
             '// If you add keywords, then make sure that they're added to the official language grammar, and re-run the tool.
 
-            Const New7to8 As UShort = 1US << 8
-            Const QueryClause As UShort = 1US << 9
-            Const CanFollowExpr As UShort = 1US << 10
-            Const None As UShort = 0US
+            Const New7to8       As UShort   = 1US << 8
+            Const QueryClause   As UShort   = 1US << 9
+            Const CanFollowExpr As UShort   = 1US << 10
+            Const None          As UShort   = 0US
 
             '// Kind  New7to8 Precedence QueryClause CanFollowExpr
             Dim keywordInitData As UShort() = {

@@ -152,7 +152,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Function TrySkipXmlDocMarker(ByRef len As Integer) As Boolean
             Dim Here = len
             dim c As Char = Nothing
-            While TryGet(Here, c) AndAlso IsWhitespace(c)
+            While TryGet(c, Here) AndAlso IsWhitespace(c)
                 Here += 1
             End While
 
@@ -238,7 +238,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim scratch = GetScratch()
             Dim c AS Char = Nothing
 
-            While TryGet(Here, c)
+            While TryGet(c, Here)
                 Select Case (c)
                     Case CARRIAGE_RETURN, LINE_FEED
                         If Here <> 0 Then
@@ -278,7 +278,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                         Debug.Assert(Here = 0)
                         Dim ch AS Char = Nothing
-                        If TryGet(1, ch) Then
+                        If TryGet(ch, 1) Then
                             Select Case ch
                                 Case "!"c
                                     If Not CanGet(2) Then exit Select
@@ -369,7 +369,7 @@ ScanChars:
             End If
 
             Dim Here = 0
-            While TryGet(Here, c)
+            While TryGet(c, Here)
                 Select Case (c)
 
                     Case CARRIAGE_RETURN, LINE_FEED
@@ -479,10 +479,10 @@ CleanUp:
                         Return XmlMakeDoubleQuoteToken(precedingTrivia, c, isOpening:=True)
                     Case "<"c
                         Dim ch AS Char = Nothing
-                        If TryGet(1, ch) Then
+                        If TryGet(ch, 1) Then
                             Select Case ch
                                 Case "!"c
-                                    If TryGet(2, ch) Then
+                                    If TryGet(ch, 2) Then
                                         Select Case (ch)
                                             Case "-"c   : If NextIs(3, "-"c) Then Return XmlMakeBeginCommentToken(precedingTrivia, s_scanNoTriviaFunc)
                                             Case "["c   : If NextAre(3, "CDATA[") Then Return XmlMakeBeginCDataToken(precedingTrivia, s_scanNoTriviaFunc)
