@@ -43,9 +43,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return Nothing
         End Function
 
-        Private Shared Const _D0 As Integer = Ascw("0"c)
-        Private Shared Const _UCA As Integer = Ascw("A"c)
-        Private Shared Const _LCA As Integer = Ascw("a"c)
+        Private Const _D0  As Integer = Ascw("0"c)
+        Private Const _UCA As Integer = Ascw("A"c)
+        Private Const _LCA As Integer = Ascw("a"c)
 
         Friend Function TryHexToUnicode(pwcText As StringBuilder, ByRef pulCode As UInteger) As Boolean
             Debug.Assert(pwcText IsNot Nothing)

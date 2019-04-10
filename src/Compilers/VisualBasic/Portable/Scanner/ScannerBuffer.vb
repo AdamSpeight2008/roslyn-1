@@ -9,6 +9,7 @@ Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.VisualBasic.SyntaxFacts
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
@@ -218,6 +219,111 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
             Return result
         End Function
+
+        #Region "Buffer helpers"
+
+        Private Function NextAre(chars As String) As Boolean
+            Return NextAre(0, chars)
+        End Function
+
+        Private Function NextAre(offset As Integer, chars As String) As Boolean
+            Debug.Assert(Not String.IsNullOrEmpty(chars))
+            Dim n = chars.Length
+            If Not CanGet(offset + n - 1) Then Return False
+            For i = 0 To n - 1
+                If chars(i) <> Peek(offset + i) Then Return False
+            Next
+            Return True
+        End Function
+
+        Private Function NextIs(offset As Integer, c As Char) As Boolean
+            Dim ch As Char = Nothing
+            Return TryGet(ch, offset) AndAlso (ch = c)
+        End Function
+
+        Private Function CanGet(Optional num As Integer = 0) As Boolean
+            Debug.Assert(_lineBufferOffset + num >= 0)
+            Debug.Assert(num >= -MaxCharsLookBehind)
+
+            Return _lineBufferOffset + num < _bufferLen
+        End Function
+
+        Private Function TryGet(ByRef ch As Char, Optional num As Integer = 0) As Boolean
+            Dim ok = CanGet(num)
+            ch = If(ok, Peek(num), nothing)
+            Return ok
+        End Function
+
+        Private Function RemainingLength() As Integer
+            Dim result = _bufferLen - _lineBufferOffset
+            Debug.Assert(CanGet(result - 1))
+            Return result
+        End Function
+
+        Private Function GetText(length As Integer) As String
+            Debug.Assert(length > 0)
+            Debug.Assert(CanGet(length - 1))
+
+            If length = 1 Then
+                Return GetNextChar()
+            End If
+
+            Dim str = GetText(_lineBufferOffset, length)
+            AdvanceChar(length)
+            Return str
+        End Function
+
+        Private Function GetTextNotInterned(length As Integer) As String
+            Debug.Assert(length > 0)
+            Debug.Assert(CanGet(length - 1))
+
+            If length = 1 Then
+                ' we will still intern single chars. There could not be too many.
+                Return GetNextChar()
+            End If
+
+            Dim str = GetTextNotInterned(_lineBufferOffset, length)
+            AdvanceChar(length)
+            Return str
+        End Function
+
+        Private Sub AdvanceChar(Optional howFar As Integer = 1)
+            Debug.Assert(howFar > 0)
+            Debug.Assert(CanGet(howFar - 1))
+
+            _lineBufferOffset += howFar
+        End Sub
+
+        Private Function GetNextChar() As String
+            Debug.Assert(CanGet)
+
+            Dim ch = GetChar()
+            _lineBufferOffset += 1
+
+            Return ch
+        End Function
+
+        Private Sub EatThroughLineBreak(StartCharacter As Char)
+            AdvanceChar(LengthOfLineBreak(StartCharacter))
+        End Sub
+
+        Private Function SkipLineBreak(StartCharacter As Char, index As Integer) As Integer
+            Return index + LengthOfLineBreak(StartCharacter, index)
+        End Function
+
+        Private Function LengthOfLineBreak(StartCharacter As Char, Optional here As Integer = 0) As Integer
+            Debug.Assert(CanGet(here))
+            Debug.Assert(IsNewLine(StartCharacter))
+
+            Debug.Assert(StartCharacter = Peek(here))
+
+            If StartCharacter = CARRIAGE_RETURN AndAlso NextIs(here + 1, LINE_FEED) Then
+                Return 2
+            End If
+            Return 1
+        End Function
+#End Region
+
 
     End Class
 
