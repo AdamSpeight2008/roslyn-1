@@ -43,6 +43,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return Nothing
         End Function
 
+        Private Shared Const _D0 As Integer = Ascw("0"c)
+        Private Shared Const _UCA As Integer = Ascw("A"c)
+        Private Shared Const _LCA As Integer = Ascw("a"c)
+
         Friend Function TryHexToUnicode(pwcText As StringBuilder, ByRef pulCode As UInteger) As Boolean
             Debug.Assert(pwcText IsNot Nothing)
 
@@ -55,13 +59,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 wch = pwcText(i)
 
                 If XmlCharType.InRange(wch, "0"c, "9"c) Then
-                    ulCode = (ulCode * 16UI) + CUInt(AscW(wch)) - CUInt(AscW("0"c))
+                    ulCode = (ulCode * 16UI) + CUInt(AscW(wch)) - CUInt(_D0)
 
                 ElseIf XmlCharType.InRange(wch, "a"c, "f"c) Then
-                    ulCode = (ulCode * 16UI) + 10UI + CUInt(AscW(wch)) - CUInt(AscW("a"c))
+                    ulCode = (ulCode * 16UI) + 10UI + CUInt(AscW(wch)) - CUInt(_LCA)
 
                 ElseIf XmlCharType.InRange(wch, "A"c, "F"c) Then
-                    ulCode = (ulCode * 16UI) + 10UI + CUInt(AscW(wch)) - CUInt(AscW("A"c))
+                    ulCode = (ulCode * 16UI) + 10UI + CUInt(AscW(wch)) - CUInt(_UCA)
                 Else
                     Return False
                 End If
@@ -104,7 +108,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 wch = pwcText(i)
 
                 If XmlCharType.InRange(wch, "0"c, "9"c) Then
-                    ulCode = (ulCode * 10) + AscW(wch) - AscW("0"c)
+                    ulCode = (ulCode * 10) + AscW(wch) - _D0
                 Else
                     Return False
                 End If

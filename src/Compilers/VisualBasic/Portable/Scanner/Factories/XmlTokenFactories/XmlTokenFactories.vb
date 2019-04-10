@@ -63,9 +63,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         (precedingTrivia.Any OrElse
                         PrevToken Is Nothing OrElse
                         PrevToken.HasTrailingTrivia OrElse
-                        PrevToken.Kind = SyntaxKind.LessThanToken OrElse
-                        PrevToken.Kind = SyntaxKind.LessThanSlashToken OrElse
-                        PrevToken.Kind = SyntaxKind.LessThanQuestionToken) Then
+                        PrevToken.Kind.IsEither(SyntaxKind.LessThanToken, SyntaxKind.LessThanSlashToken, SyntaxKind.LessThanQuestionToken)) Then
                         id = ERRID.ERR_IllegalXmlStartNameChar
                     End If
                     Dim xmlCh = spelling(0)

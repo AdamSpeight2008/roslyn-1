@@ -24,7 +24,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                                                   precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode),
                                                   scanTrailingTrivia As ScanTriviaFunc
                                                 ) As PunctuationSyntax
-            Debug.Assert(Peek() = "%"c OrElse Peek() = FULLWIDTH_PERCENT_SIGN)
+            Debug.Assert(Peek().IsEither("%"c, FULLWIDTH_PERCENT_SIGN))
             Debug.Assert(Peek(1) = ">"c)
 
             Dim spelling As String

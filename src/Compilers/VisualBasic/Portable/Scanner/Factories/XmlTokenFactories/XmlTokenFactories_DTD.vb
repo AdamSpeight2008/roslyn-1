@@ -32,7 +32,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                                                   state As ScannerState,
                                                   precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)
                                                 ) As BadTokenSyntax
-            Debug.Assert(Peek() = "["c)
+            Debug.Assert(NextIs(0,"["c))
             Return XmlMakeBadToken(SyntaxSubKind.OpenBracketToken, precedingTrivia, 1, If(state = ScannerState.DocType, ERRID.ERR_DTDNotSupported, ERRID.ERR_IllegalXmlNameChar))
         End Function
 
@@ -40,7 +40,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                                                    state As ScannerState,
                                                    precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)
                                                  ) As BadTokenSyntax
-            Debug.Assert(Peek() = "]"c)
+            Debug.Assert(NextIs(0,"]"c))
 
             Return XmlMakeBadToken(SyntaxSubKind.CloseBracketToken, precedingTrivia, 1, If(state = ScannerState.DocType, ERRID.ERR_DTDNotSupported, ERRID.ERR_IllegalXmlNameChar))
         End Function
