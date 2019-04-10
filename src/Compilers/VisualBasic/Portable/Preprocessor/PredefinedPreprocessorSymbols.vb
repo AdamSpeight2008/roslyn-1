@@ -2,13 +2,14 @@
 
 Imports System.Collections.Immutable
 Imports System.Globalization
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
     Public Module PredefinedPreprocessorSymbols
 
         Friend ReadOnly Property CurrentVersionNumber As Double
             Get
-                Return Double.Parse(Language.Version.LanguageVersionService.Instance.GetErrorName(Language.Version.LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(Language.Version.LanguageVersionService.Latest)), CultureInfo.InvariantCulture)
+                Return Double.Parse(LanguageVersionService.Instance.GetErrorName(LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersionService.Latest)), CultureInfo.InvariantCulture)
             End Get
         End Property
 
