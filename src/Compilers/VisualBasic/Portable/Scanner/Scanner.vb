@@ -604,12 +604,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         ' All conflict markers consist of the same character repeated seven times.  If it Is
         ' a <<<<<<< Or >>>>>>> marker then it Is also followed by a space.
-        Private Shared ReadOnly s_conflictMarkerLength As Integer = "<<<<<<<".Length
-
+        Private Const s_ConflictMarker1 As String = "<<<<<<<"
+        Private Const s_ConflictMarker2 As String = ">>>>>>>"
+        Private Const s_ConflictMarker3 As String = "======="
+        Private Shared ReadOnly s_conflictMarkerLength As Integer = s_ConflictMarker1.Length
         Private Function IsConflictMarkerTrivia() As Boolean
             Dim ch as Char = Nothing
             If Not IsAtNewLine OrElse Not TryGet(ch) OrElse Not ch.IsEither("<"c, ">"c, "="c) Then Return False
-            If Not (NextAre("<<<<<<<") OrElse NextAre(">>>>>>>") OrElse NextAre("=======")) Then Return False
+            If Not (NextAre(s_ConflictMarker1) OrElse NextAre(s_ConflictMarker2) OrElse NextAre(s_ConflictMarker3)) Then Return False
             If ch = "="c Then Return True
             Return NextIs(s_conflictMarkerLength, " "c)
         End Function
