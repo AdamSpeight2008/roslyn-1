@@ -14,7 +14,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Friend Sub New(statement As StatementSyntax, prevContext As BlockContext)
             MyBase.New(If(statement.Kind = SyntaxKind.FunctionLambdaHeader, SyntaxKind.SingleLineFunctionLambdaExpression, SyntaxKind.SingleLineSubLambdaExpression), statement, prevContext)
 
-            Debug.Assert(statement.Kind = SyntaxKind.FunctionLambdaHeader OrElse statement.Kind = SyntaxKind.SubLambdaHeader)
+            Debug.Assert(statement.Kind.IsEither(SyntaxKind.FunctionLambdaHeader, SyntaxKind.SubLambdaHeader))
             Debug.Assert(SyntaxFacts.IsSingleLineLambdaExpression(BlockKind))
         End Sub
 

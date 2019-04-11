@@ -327,8 +327,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             End If
 
-            Dim separatedCaseClauses = caseClauses.ToList()
-            _pool.Free(caseClauses)
+            Dim separatedCaseClauses = caseClauses.ToListAndFree(_pool)
 
             Dim statement As CaseStatementSyntax
 
@@ -755,10 +754,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     End If
                 Loop
 
-                Dim statement = SyntaxFactory.NextStatement(nextKeyword, variables.ToList)
-
-                _pool.Free(variables)
-
+                Dim statement = SyntaxFactory.NextStatement(nextKeyword, variables.ToListAndFree(_pool))
                 Return statement
             End If
         End Function
@@ -854,10 +850,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim names = _pool.AllocateSeparated(Of ModifiedIdentifierSyntax)()
             names.Add(Declarator)
 
-            Dim result = SyntaxFactory.VariableDeclarator(names.ToList, optionalAsClause, Nothing)
-
-            _pool.Free(names)
-
+            Dim result = SyntaxFactory.VariableDeclarator(names.ToListAndFree(_pool), optionalAsClause, Nothing)
             Return result
         End Function
 
@@ -1642,8 +1635,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 argumentsBuilder.Add(ParseArgument(RedimOrNewParent:=False))
             End If
 
-            Dim arguments As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ArgumentSyntax) = argumentsBuilder.ToList
-            _pool.Free(argumentsBuilder)
+            Dim arguments = argumentsBuilder.ToListAndFree(_pool)
 
             Dim closeParen As PunctuationSyntax = Nothing
             TryEatNewLineAndGetToken(SyntaxKind.CloseParenToken, closeParen, createIfMissing:=True)

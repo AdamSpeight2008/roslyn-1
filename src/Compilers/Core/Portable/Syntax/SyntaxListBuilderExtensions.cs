@@ -44,5 +44,28 @@ namespace Microsoft.CodeAnalysis.Syntax
 
             return new SeparatedSyntaxList<TNode>(new SyntaxNodeOrTokenList(builder.ToListNode().CreateRed(), 0));
         }
+
+        public static InternalSyntax.SeparatedSyntaxList<TGreenNode> ToListAndFree<TSyntaxNode, TGreenNode>
+            (
+                this InternalSyntax.SeparatedSyntaxListBuilder<TGreenNode> builder,
+                     InternalSyntax.SyntaxListPool pool
+            )
+            where TGreenNode : GreenNode
+        {
+            var list = builder.ToList();
+            pool.Free(builder);
+            return list;
+        }
+        public static InternalSyntax.SyntaxList<TGreenNode> ToListAndFree<TSyntaxNode, TGreenNode>
+            (
+                this InternalSyntax.SyntaxListBuilder<TGreenNode> builder,
+                     InternalSyntax.SyntaxListPool pool
+            )
+            where TGreenNode : GreenNode
+        {
+            var list = builder.ToList();
+            pool.Free(builder);
+            return list;
+        }
     }
 }

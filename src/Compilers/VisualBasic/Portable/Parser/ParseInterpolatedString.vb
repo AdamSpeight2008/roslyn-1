@@ -7,6 +7,7 @@ Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxListBuilderExtensions
 Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.CheckFeatureAvailability
 Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
 Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features
+Imports Microsoft.CodeAnalysis.Syntax.SyntaxListBuilderExtensions
 
 '
 '============ Methods for parsing portions of executable statements ==
@@ -89,18 +90,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Loop
 
             If Not skipped.IsNull Then
-                doubleQuoteToken = AddLeadingSyntax(doubleQuoteToken, _pool.ToListAndFree(skipped), ERRID.ERR_Syntax)
+                doubleQuoteToken = AddLeadingSyntax(doubleQuoteToken, skipped.ToListAndFree(_pool), ERRID.ERR_Syntax)
                 skipped = Nothing
             End If
 
-            Dim node = SyntaxFactory.InterpolatedStringExpression(dollarSignDoubleQuoteToken,
-                                                              _pool.ToListAndFree(contentBuilder),
-                                                              doubleQuoteToken)
+            Dim node = SyntaxFactory.InterpolatedStringExpression(dollarSignDoubleQuoteToken, _pool.ToListAndFree(contentBuilder), doubleQuoteToken)
             Return node.CheckFeatureAvailability(Feature.InterpolatedStrings, Options)
         End Function
 
         Private Function ParseInterpolatedStringInterpolation() As InterpolationSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.OpenBraceToken, "ParseInterpolatedStringEmbeddedExpression called on the wrong token.")
+            Debug.Assert(CurrentToken.Kind = SyntaxKind.OpenBraceToken, NameOf(ParseInterpolatedStringExpression) & " called on the wrong token.")
 
             Dim colonToken As PunctuationSyntax = Nothing
             Dim excessText As String = Nothing
@@ -138,8 +137,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Dim signTokenOpt As PunctuationSyntax
 
-                If CurrentToken.Kind = SyntaxKind.MinusToken OrElse
-                   CurrentToken.Kind = SyntaxKind.PlusToken Then
+                If CurrentToken.Kind.IsEither(SyntaxKind.MinusToken, SyntaxKind.PlusToken) Then
 
                     signTokenOpt = DirectCast(CurrentToken, PunctuationSyntax)
                     GetNextToken(ScannerState.VB)

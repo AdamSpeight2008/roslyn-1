@@ -10,6 +10,22 @@ Namespace Global.Microsoft.CodeAnalysis.VisualBasic
     Friend Function IsEither(k As SyntaxKind, k0 As SyntaxKind, k1 As SyntaxKind) As Boolean
         Return k = k0 OrElse k = k1
     End Function
+    <Extension>
+    Friend Function IsEither(k As SyntaxKind, k0 As SyntaxKind, k1 As SyntaxKind, k2 As SyntaxKind) As Boolean
+        Return k.IsEither(k0,k1) OrElse k=k2
+    End Function
+            <Extension>
+    Friend Function IsEither(k As SyntaxKind, k0 As SyntaxKind, k1 As SyntaxKind, k2 As SyntaxKind, k3 As SyntaxKind) As Boolean
+        Return k.IsEither(k0, k1) OrElse k.IsEither(k2,k3)
+    End Function
+    <Extension>
+    Friend Function IsEither(k As SyntaxKind, k0 As SyntaxKind, k1 As SyntaxKind, k2 As SyntaxKind, k3 As SyntaxKind, k4 As SyntaxKind) As Boolean
+        Return k.IsEither(k0,k1) OrElse k.IsEither(k2,k3) OrElse k=k4
+    End Function
+            <Extension>
+    Friend Function IsEither(k As SyntaxKind, k0 As SyntaxKind, k1 As SyntaxKind, k2 As SyntaxKind, k3 As SyntaxKind, k4 As SyntaxKind, k5 As SyntaxKind) As Boolean
+        Return k.IsEither(k0, k1) OrElse k.IsEither(k2,k3) OrElse k.IsEither(k4,k5)
+    End Function
 
     <Extension>
     Friend Function IsEither(ch As Char, ch0 As Char, ch1 As Char) As Boolean

@@ -88,8 +88,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim endBlockStmt As EndBlockStatementSyntax = DirectCast(endStmt, EndBlockStatementSyntax)
             GetBeginEndStatements(beginBlockStmt, endBlockStmt)
 
-            Dim result = SyntaxFactory.SelectBlock(beginBlockStmt, _caseBlocks.ToList, endBlockStmt)
-            _parser._pool.Free(_caseBlocks)
+            Dim result = SyntaxFactory.SelectBlock(beginBlockStmt, _caseBlocks.ToListAndFree(_Parser._pool), endBlockStmt)
             FreeStatements()
             Return result
         End Function

@@ -17,12 +17,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 13261 - 13261
         ' Expression* .Parser::ParseXmlExpression( [ _Inout_ bool& ErrorInConstruct ] )
         Private Function ParseXmlExpression() As XmlNodeSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.LessThanToken OrElse
-                 CurrentToken.Kind = SyntaxKind.LessThanGreaterThanToken OrElse
-                 CurrentToken.Kind = SyntaxKind.LessThanSlashToken OrElse
-                 CurrentToken.Kind = SyntaxKind.BeginCDataToken OrElse
-                 CurrentToken.Kind = SyntaxKind.LessThanExclamationMinusMinusToken OrElse
-                 CurrentToken.Kind = SyntaxKind.LessThanQuestionToken, "ParseXmlMarkup called on the wrong token.")
+            Debug.Assert(CurrentToken.Kind.IsEither(SyntaxKind.LessThanToken, SyntaxKind.LessThanGreaterThanToken,
+                                                    SyntaxKind.LessThanSlashToken, SyntaxKind.BeginCDataToken,
+                                                    SyntaxKind.LessThanExclamationMinusMinusToken, SyntaxKind.LessThanQuestionToken),
+                                                    "ParseXmlMarkup called on the wrong token.")
 
             ' The < token must be reset because a VB scanned < might following trivia attached to it.
             ResetCurrentToken(ScannerState.Content)
@@ -354,9 +352,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             End While
 
-            Dim ContentList = Content.ToList
-            Me._pool.Free(Content)
-
+            Dim ContentList = Content.ToListAndFree(_pool)
             Return ContentList
         End Function
 
@@ -944,8 +940,7 @@ LessThanSlashTokenCase:
                 End Select
             Loop
 
-            Dim result = Attributes.ToList
-            Me._pool.Free(Attributes)
+            Dim result = Attributes.ToListAndFree(_pool)
             Return result
         End Function
 
@@ -1713,8 +1708,7 @@ lFailed:
                 End If
             End If
 
-            Dim result = content.ToList
-            Me._pool.Free(content)
+            Dim result = content.ToListAndFree(_pool)
 
             Return result
         End Function
@@ -1813,8 +1807,7 @@ TryResync:
                 Content.Add(xml)
             Loop
 
-            Dim result = Content.ToList
-            Me._pool.Free(Content)
+            Dim result = Content.ToListAndFree(_pool)
 
             Return result
         End Function
@@ -1871,12 +1864,10 @@ TryResync:
 
             Dim endProcessingInstruction As PunctuationSyntax = Nothing
             VerifyExpectedToken(SyntaxKind.QuestionGreaterThanToken, endProcessingInstruction, nextState)
-
-            Dim result = SyntaxFactory.XmlProcessingInstruction(beginProcessingInstruction, name, values.ToList, endProcessingInstruction)
+            Dim list = values.ToListAndFree(_pool)
+            Dim result = SyntaxFactory.XmlProcessingInstruction(beginProcessingInstruction, name, list, endProcessingInstruction)
 
             result = DirectCast(whitespaceChecker.Visit(result), XmlProcessingInstructionSyntax)
-
-            _pool.Free(values)
 
             Return result
         End Function
@@ -1901,8 +1892,7 @@ TryResync:
             Dim endCData As PunctuationSyntax = Nothing
             VerifyExpectedToken(SyntaxKind.EndCDataToken, endCData, nextState)
 
-            Dim result = values.ToList
-            _pool.Free(values)
+            Dim result = values.ToListAndFree(_pool)
 
             Return SyntaxFactory.XmlCDataSection(beginCData, result, endCData)
         End Function
@@ -1930,8 +1920,7 @@ TryResync:
             Dim endComment As PunctuationSyntax = Nothing
             VerifyExpectedToken(SyntaxKind.MinusMinusGreaterThanToken, endComment, nextState)
 
-            Dim result = values.ToList
-            _pool.Free(values)
+            Dim result = values.ToListAndFree(_pool)
 
             Return SyntaxFactory.XmlComment(beginComment, result, endComment)
         End Function
@@ -2031,8 +2020,7 @@ TryResync:
                     endXmlEmbedded = DirectCast(HandleUnexpectedToken(SyntaxKind.PercentGreaterThanToken), PunctuationSyntax)
                 End If
 
-                Dim unexpectedSyntax = skippedTokens.ToList()
-                Me._pool.Free(skippedTokens)
+                Dim unexpectedSyntax = skippedTokens.ToListAndFree(_pool)
 
                 If unexpectedSyntax.Node IsNot Nothing Then
                     endXmlEmbedded = AddLeadingSyntax(endXmlEmbedded, unexpectedSyntax, ERRID.ERR_Syntax)
