@@ -11,12 +11,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     Partial Friend Class Scanner
 
         Private Function ScanInterpolatedStringPunctuation() As SyntaxToken
-            If Not CanGet() Then
-                Return MakeEndOfInterpolatedStringToken()
-            End If
-
+            If Not CanGet() Then Return MakeEndOfInterpolatedStringToken()
+ 
             Dim kind As SyntaxKind
-
             Dim leadingTriviaLength = GetWhitespaceLength(0)
             Dim offset = leadingTriviaLength
             Dim length As Integer
@@ -24,7 +21,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             If Not TryGet(c, offset) Then Return MakeEndOfInterpolatedStringToken()
 
             ' This should only ever happen for $" or }
-            Debug.Assert(leadingTriviaLength = 0 OrElse c = "$"c OrElse c = FULLWIDTH_DOLLAR_SIGN OrElse IsRightCurlyBracket(c))
+            Debug.Assert(leadingTriviaLength = 0 OrElse c.IsEither("$"c, FULLWIDTH_DOLLAR_SIGN) OrElse IsRightCurlyBracket(c))
 
             ' Another } may follow the close brace of an interpolation if the interpolation lacked a format clause.
             ' This is because the normal escaping rules only apply when parsing the format string.
@@ -70,15 +67,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Case Else
 
-                    If IsDoubleQuote(c) Then
-                        Debug.Assert(Not CanGet(offset + 1) OrElse Not IsDoubleQuote(Peek(offset + 1)))
-
-                        kind = SyntaxKind.DoubleQuoteToken
-                        length = 1
-                        scanTrailingTrivia = True
-                    Else
-                        Return MakeEndOfInterpolatedStringToken()
-                    End If
+                    If Not IsDoubleQuote(c) Then Return MakeEndOfInterpolatedStringToken()
+                    Debug.Assert(Not CanGet(offset + 1) OrElse Not IsDoubleQuote(Peek(offset + 1)))
+                    kind = SyntaxKind.DoubleQuoteToken
+                    length = 1
+                    scanTrailingTrivia = True
 
             End Select
 
@@ -93,19 +86,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ScanInterpolatedStringContent() As SyntaxToken
-            If IsInterpolatedStringPunctuation() Then
-                Return ScanInterpolatedStringPunctuation()
-            Else
-                Return ScanInterpolatedStringText(scanTrailingWhitespaceAsTrivia:=False)
-            End If
+            If IsInterpolatedStringPunctuation() Then Return ScanInterpolatedStringPunctuation()
+            Return ScanInterpolatedStringText(scanTrailingWhitespaceAsTrivia:=False)
         End Function
 
         Private Function ScanInterpolatedStringFormatString() As SyntaxToken
-            If IsInterpolatedStringPunctuation() Then
-                Return ScanInterpolatedStringPunctuation()
-            Else
-                Return ScanInterpolatedStringText(scanTrailingWhitespaceAsTrivia:=True)
-            End If
+            If IsInterpolatedStringPunctuation() Then Return ScanInterpolatedStringPunctuation()
+            Return ScanInterpolatedStringText(scanTrailingWhitespaceAsTrivia:=True)
         End Function
 
         Private Function IsInterpolatedStringPunctuation(Optional offset As Integer = 0) As Boolean
