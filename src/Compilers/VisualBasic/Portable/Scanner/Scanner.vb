@@ -618,11 +618,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             ' Now add the newlines as the next trivia.
             ScanConflictMarkerEndOfLine(tList)
 
-            If startCh = "="c Then
-                ' Consume everything from the start of the mid-conflict marker to the start of the next
-                ' end-conflict marker.
-                ScanConflictMarkerDisabledText(tList)
-            End If
+            If startCh <> "="c Then Exit Sub
+            ' Consume everything from the start of the mid-conflict marker to the start of the next
+            ' end-conflict marker.
+            ScanConflictMarkerDisabledText(tList)
         End Sub
 
         Private Sub ScanConflictMarkerDisabledText(tList As SyntaxListBuilder)
@@ -661,12 +660,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         ' check for '''(~')
         Private Function StartsXmlDoc(Here As Integer) As Boolean
+            Dim ch As Char = Nothing
             Return _options.DocumentationMode >= DocumentationMode.Parse AndAlso
-                CanGet(Here + 3) AndAlso
+                TryGet(ch, Here + 3) AndAlso
                 IsSingleQuote(Peek(Here)) AndAlso
                 IsSingleQuote(Peek(Here + 1)) AndAlso
                 IsSingleQuote(Peek(Here + 2)) AndAlso
-                Not IsSingleQuote(Peek(Here + 3))
+                Not IsSingleQuote(ch)
         End Function
 
         ' check for #
@@ -784,13 +784,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </summary>
         Private Shared Function IsBlankLine(tList As SyntaxListBuilder) As Boolean
             Dim n = tList.Count
-            If n = 0 OrElse tList(n - 1).RawKind <> SyntaxKind.EndOfLineTrivia Then
-                Return False
-            End If
+            If n = 0 OrElse tList(n - 1).RawKind <> SyntaxKind.EndOfLineTrivia Then Return False
             For i = 0 To n - 2
-                If tList(i).RawKind <> SyntaxKind.WhitespaceTrivia Then
-                    Return False
-                End If
+                If tList(i).RawKind <> SyntaxKind.WhitespaceTrivia Then Return False
             Next
             Return True
         End Function
@@ -835,15 +831,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Sub
 
         Private Function ScanCommentIfAny(tList As SyntaxListBuilder) As Boolean
-            If CanGet() Then
-                ' check for comment
-                Dim comment = ScanComment()
-                If comment IsNot Nothing Then
-                    tList.Add(comment)
-                    Return True
-                End If
-            End If
-            Return False
+            If Not CanGet() Then Return False
+            ' check for comment
+            Dim comment = ScanComment()
+            If comment Is Nothing Then Return False
+            tList.Add(comment)
+            Return True
         End Function
 
         Private Function GetWhitespaceLength(len As Integer) As Integer
@@ -983,15 +976,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return If(dl, MakeHashToken(precedingTrivia, fullWidth))
 
                 Case "&"c
-                    If TryGet(ch, 1) AndAlso BeginsBaseLiteral(ch) Then
-                        Return ScanNumericLiteral(precedingTrivia)
-                    End If
-
-                    If TrySkipFollowingEquals(lengthWithMaybeEquals) Then
-                        Return MakeAmpersandEqualsToken(precedingTrivia, lengthWithMaybeEquals)
-                    Else
-                        Return MakeAmpersandToken(precedingTrivia, fullWidth)
-                    End If
+                    If TryGet(ch, 1) AndAlso BeginsBaseLiteral(ch)   Then Return ScanNumericLiteral(precedingTrivia)
+                    If TrySkipFollowingEquals(lengthWithMaybeEquals) Then Return MakeAmpersandEqualsToken(precedingTrivia, lengthWithMaybeEquals)
+                    Return MakeAmpersandToken(precedingTrivia, fullWidth)
 
                 Case "="c
                     Return MakeEqualsToken(precedingTrivia, fullWidth)
@@ -1003,53 +990,31 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return ScanRightAngleBracket(precedingTrivia, fullWidth)
 
                 Case ":"c
-                    If TrySkipFollowingEquals(lengthWithMaybeEquals) Then
-                        Return MakeColonEqualsToken(precedingTrivia, lengthWithMaybeEquals)
-                    Else
-                        Return ScanColonAsStatementTerminator(precedingTrivia, fullWidth)
-                    End If
-
+                    If TrySkipFollowingEquals(lengthWithMaybeEquals) Then Return MakeColonEqualsToken(precedingTrivia, lengthWithMaybeEquals)
+                    Return ScanColonAsStatementTerminator(precedingTrivia, fullWidth)
                 Case "+"c
-                    If TrySkipFollowingEquals(lengthWithMaybeEquals) Then
-                        Return MakePlusEqualsToken(precedingTrivia, lengthWithMaybeEquals)
-                    Else
-                        Return MakePlusToken(precedingTrivia, fullWidth)
-                    End If
+                    If TrySkipFollowingEquals(lengthWithMaybeEquals) Then Return MakePlusEqualsToken(precedingTrivia, lengthWithMaybeEquals)
+                    Return MakePlusToken(precedingTrivia, fullWidth)
 
                 Case "-"c
-                    If TrySkipFollowingEquals(lengthWithMaybeEquals) Then
-                        Return MakeMinusEqualsToken(precedingTrivia, lengthWithMaybeEquals)
-                    Else
-                        Return MakeMinusToken(precedingTrivia, fullWidth)
-                    End If
+                    If TrySkipFollowingEquals(lengthWithMaybeEquals) Then Return MakeMinusEqualsToken(precedingTrivia, lengthWithMaybeEquals)
+                    Return MakeMinusToken(precedingTrivia, fullWidth)
 
                 Case "*"c
-                    If TrySkipFollowingEquals(lengthWithMaybeEquals) Then
-                        Return MakeAsteriskEqualsToken(precedingTrivia, lengthWithMaybeEquals)
-                    Else
-                        Return MakeAsteriskToken(precedingTrivia, fullWidth)
-                    End If
+                    If TrySkipFollowingEquals(lengthWithMaybeEquals) Then Return MakeAsteriskEqualsToken(precedingTrivia, lengthWithMaybeEquals)
+                    Return MakeAsteriskToken(precedingTrivia, fullWidth)
 
                 Case "/"c
-                    If TrySkipFollowingEquals(lengthWithMaybeEquals) Then
-                        Return MakeSlashEqualsToken(precedingTrivia, lengthWithMaybeEquals)
-                    Else
-                        Return MakeSlashToken(precedingTrivia, fullWidth)
-                    End If
+                    If TrySkipFollowingEquals(lengthWithMaybeEquals) Then Return MakeSlashEqualsToken(precedingTrivia, lengthWithMaybeEquals)
+                    Return MakeSlashToken(precedingTrivia, fullWidth)
 
                 Case "\"c
-                    If TrySkipFollowingEquals(lengthWithMaybeEquals) Then
-                        Return MakeBackSlashEqualsToken(precedingTrivia, lengthWithMaybeEquals)
-                    Else
-                        Return MakeBackslashToken(precedingTrivia, fullWidth)
-                    End If
+                    If TrySkipFollowingEquals(lengthWithMaybeEquals) Then Return MakeBackSlashEqualsToken(precedingTrivia, lengthWithMaybeEquals)
+                    Return MakeBackslashToken(precedingTrivia, fullWidth)
 
                 Case "^"c
-                    If TrySkipFollowingEquals(lengthWithMaybeEquals) Then
-                        Return MakeCaretEqualsToken(precedingTrivia, lengthWithMaybeEquals)
-                    Else
-                        Return MakeCaretToken(precedingTrivia, fullWidth)
-                    End If
+                    If TrySkipFollowingEquals(lengthWithMaybeEquals) Then Return MakeCaretEqualsToken(precedingTrivia, lengthWithMaybeEquals)
+                    Return MakeCaretToken(precedingTrivia, fullWidth)
 
                 Case "!"c
                     Dim nc As Char = Nothing
@@ -1138,29 +1103,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return MakeQuestionToken(precedingTrivia, fullWidth)
 
                 Case "%"c
-                    If NextIs(1, ">"c) Then
-                        Return XmlMakeEndEmbeddedToken(precedingTrivia, _scanSingleLineTriviaFunc)
-                    End If
+                    If NextIs(1, ">"c) Then Return XmlMakeEndEmbeddedToken(precedingTrivia, _scanSingleLineTriviaFunc)
 
                 Case "$"c, FULLWIDTH_DOLLAR_SIGN
                     Dim nc As Char = Nothing
-                    If Not fullWidth AndAlso TryGet(nc, 1) AndAlso IsDoubleQuote(nc) Then
-                        Return MakePunctuationToken(precedingTrivia, 2, SyntaxKind.DollarSignDoubleQuoteToken)
-                    End If
+                    If Not fullWidth AndAlso TryGet(nc, 1) AndAlso IsDoubleQuote(nc) Then Return MakePunctuationToken(precedingTrivia, 2, SyntaxKind.DollarSignDoubleQuoteToken)
 
             End Select
-            If IsIdentifierStartCharacter(ch) Then
-                Return ScanIdentifierOrKeyword(precedingTrivia)
-            End If
+            If IsIdentifierStartCharacter(ch) Then Return ScanIdentifierOrKeyword(precedingTrivia)
+
             Debug.Assert(Not IsNewLine(ch))
             If fullWidth Then
                 Debug.Assert(Not IsDoubleQuote(ch))
                 Return Nothing
             End If
-            If IsDoubleQuote(ch) Then
-                Return ScanStringLiteral(precedingTrivia)
-            End If
-            If IsFullWidth(ch) Then
+            If IsDoubleQuote(ch) Then Return ScanStringLiteral(precedingTrivia)
+            If IsFullWidth(ch)   Then
                 ch = MakeHalfWidth(ch)
                 Return ScanTokenFullWidth(precedingTrivia, ch)
             End If
@@ -1290,9 +1248,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </remarks>
         Friend Shared Function IsIdentifier(spelling As String) As Boolean
             Dim spellingLength As Integer = spelling.Length
-            If spellingLength = 0 Then
-                Return False
-            End If
+            If spellingLength = 0 Then Return False
 
             Dim c = spelling(0)
             If SyntaxFacts.IsIdentifierStartCharacter(c) Then
@@ -1300,14 +1256,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 '  SPEC:     exception: identifiers may begin with an underscore (connector) character.
                 '  SPEC:     If an identifier begins with an underscore, it must contain at least one other
                 '  SPEC:     valid identifier character to disambiguate it from a line continuation.
-                If IsConnectorPunctuation(c) AndAlso spellingLength = 1 Then
-                    Return False
-                End If
+                If IsConnectorPunctuation(c) AndAlso spellingLength = 1 Then Return False
 
                 For i = 1 To spellingLength - 1
-                    If Not IsIdentifierPartCharacter(spelling(i)) Then
-                        Return False
-                    End If
+                    If Not IsIdentifierPartCharacter(spelling(i)) Then Return False
                 Next
             End If
 
@@ -1322,9 +1274,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim ch = Peek()
             Dim ch1 As Char = Nothing
             If TryGet(ch1, 1) Then
-                If IsConnectorPunctuation(ch) AndAlso Not IsIdentifierPartCharacter(ch1) Then
-                    Return MakeBadToken(precedingTrivia, 1, ERRID.ERR_ExpectedIdentifier)
-                End If
+                If IsConnectorPunctuation(ch) AndAlso Not IsIdentifierPartCharacter(ch1) Then Return MakeBadToken(precedingTrivia, 1, ERRID.ERR_ExpectedIdentifier)
             End If
 
             Dim len = 1 ' we know that the first char was good
@@ -1425,10 +1375,7 @@ FullWidthRepeat:
         End Function
 
         Private Function TokenOfStringCached(spelling As String) As SyntaxKind
-            If spelling.Length > 16 Then
-                Return SyntaxKind.IdentifierToken
-            End If
-
+            If spelling.Length > 16 Then Return SyntaxKind.IdentifierToken
             Return _KeywordsObjs.GetOrMakeValue(spelling)
         End Function
 
@@ -1816,21 +1763,13 @@ FullWidthRepeat2:
                         End If
 
                     ElseIf TypeCharacter = TypeCharacter.UIntegerLiteral Then
-                        If IntegralValue > &HFFFFFFFFUI Then
-                            Overflows = True
-                        End If
+                        If IntegralValue > &HFFFFFFFFUI Then Overflows = True
 
                     ElseIf TypeCharacter = TypeCharacter.ShortLiteral Then
-                        If (Base = LiteralBase.Decimal AndAlso IntegralValue > &H7FFF) OrElse
-                            IntegralValue > &HFFFF Then
-
-                            Overflows = True
-                        End If
+                        If (Base = LiteralBase.Decimal AndAlso IntegralValue > &H7FFF) OrElse IntegralValue > &HFFFF Then Overflows = True
 
                     ElseIf TypeCharacter = TypeCharacter.UShortLiteral Then
-                        If IntegralValue > &HFFFF Then
-                            Overflows = True
-                        End If
+                        If IntegralValue > &HFFFF Then Overflows = True
 
                     Else
                         Debug.Assert(TypeCharacter = TypeCharacter.Long OrElse
@@ -1845,9 +1784,7 @@ FullWidthRepeat2:
                 Dim scratch = GetScratch()
                 For i = 0 To literalWithoutTypeChar - 1
                     Dim curCh = Peek(i)
-                    If curCh <> "_"c Then
-                        scratch.Append(If(IsFullWidth(curCh), MakeHalfWidth(curCh), curCh))
-                    End If
+                    If curCh <> "_"c Then scratch.Append(If(IsFullWidth(curCh), MakeHalfWidth(curCh), curCh))
                 Next
                 Dim LiteralSpelling = GetScratchTextInterned(scratch)
 
@@ -1865,9 +1802,7 @@ FullWidthRepeat2:
                         End If
                     Else
                         ' // Attempt to convert to double.
-                        If Not RealParser.TryParseDouble(LiteralSpelling, FloatingValue) Then
-                            Overflows = True
-                        End If
+                        If Not RealParser.TryParseDouble(LiteralSpelling, FloatingValue) Then Overflows = True
                     End If
                 End If
             End If
@@ -1884,9 +1819,7 @@ FullWidthRepeat2:
                     Throw ExceptionUtilities.UnexpectedValue(literalKind)
             End Select
 
-            If Overflows Then
-                result = DirectCast(result.AddError(ErrorFactory.ErrorInfo(ERRID.ERR_Overflow)), SyntaxToken)
-            End If
+            If Overflows Then result = DirectCast(result.AddError(ErrorFactory.ErrorInfo(ERRID.ERR_Overflow)), SyntaxToken)
 
             If UnderscoreInWrongPlace Then
                 result = DirectCast(result.AddError(ErrorFactory.ErrorInfo(ERRID.ERR_Syntax)), SyntaxToken)
@@ -1922,10 +1855,12 @@ FullWidthRepeat2:
             Return Decimal.TryParse(text, NumberStyles.AllowDecimalPoint Or NumberStyles.AllowExponent, CultureInfo.InvariantCulture, value)
         End Function
 
-        Private Function ScanIntLiteral(
-               ByRef ReturnValue As Integer,
-               ByRef Here As Integer
-           ) As Boolean
+        Private Function ScanIntLiteral _ 
+            (
+        ByRef ReturnValue As Integer,
+        ByRef Here As Integer
+            ) As Boolean
+
             Debug.Assert(Here >= 0)
             Dim ch As Char = Nothing
             If Not TryGet(ch, Here) OrElse Not IsDecimalDigit(ch) Then Return False
@@ -1936,8 +1871,7 @@ FullWidthRepeat2:
             While TryGet(ch, Here) AndAlso IsDecimalDigit(ch)
 
                 Dim nextDigit = IntegralLiteralCharacterValue(ch)
-                If IntegralValue < 214748364 OrElse
-                    (IntegralValue = 214748364 AndAlso nextDigit < 8) Then
+                If IntegralValue < 214748364 OrElse (IntegralValue = 214748364 AndAlso nextDigit < 8) Then
 
                     IntegralValue = IntegralValue * 10 + nextDigit
                     Here += 1
@@ -2386,41 +2320,25 @@ FullWidthRepeat2:
             Debug.Assert(id IsNot Nothing)
 
             Dim kind As SyntaxKind = SyntaxKind.IdentifierToken
-            If TryIdentifierAsContextualKeyword(id, kind) Then
-                k = MakeKeyword(id)
-                Return True
-            End If
-
-            Return False
+            If Not TryIdentifierAsContextualKeyword(id, kind) Then Return False
+            k = MakeKeyword(id)
+            Return True
         End Function
 
         Friend Function TryTokenAsContextualKeyword(t As SyntaxToken, ByRef k As KeywordSyntax) As Boolean
-            If t Is Nothing Then
-                Return False
-            End If
-
-            If t.Kind = SyntaxKind.IdentifierToken Then
-                Return TryIdentifierAsContextualKeyword(DirectCast(t, IdentifierTokenSyntax), k)
-            End If
-
+            If t Is Nothing Then Return False
+            If t.Kind = SyntaxKind.IdentifierToken Then Return TryIdentifierAsContextualKeyword(DirectCast(t, IdentifierTokenSyntax), k)
             Return False
         End Function
 
         Friend Shared Function TryTokenAsKeyword(t As SyntaxToken, ByRef kind As SyntaxKind) As Boolean
-
-            If t Is Nothing Then
-                Return False
-            End If
-
+            If t Is Nothing Then Return False
             If t.IsKeyword Then
                 kind = t.Kind
                 Return True
             End If
 
-            If t.Kind = SyntaxKind.IdentifierToken Then
-                Return TryIdentifierAsContextualKeyword(DirectCast(t, IdentifierTokenSyntax), kind)
-            End If
-
+            If t.Kind = SyntaxKind.IdentifierToken Then Return TryIdentifierAsContextualKeyword(DirectCast(t, IdentifierTokenSyntax), kind)
             Return False
         End Function
 
