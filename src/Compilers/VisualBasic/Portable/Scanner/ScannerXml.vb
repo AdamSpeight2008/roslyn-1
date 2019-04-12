@@ -115,29 +115,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                                 Case "!"c
                                     If TryGet(ch, 2) Then
                                         Select Case ch
-                                            Case "-"c
-                                                If NextIs(3, "-"c) Then
-                                                    Return XmlMakeBeginCommentToken(leadingTrivia, s_scanNoTriviaFunc)
-                                                End If
-                                            Case "["c
-                                                If NextAre(3, "CDATA[") Then
-                                                    Return XmlMakeBeginCDataToken(leadingTrivia, s_scanNoTriviaFunc)
-                                                End If
-                                            Case "D"c
-                                                If NextAre(3, "OCTYPE") Then
-                                                    Return XmlMakeBeginDTDToken(leadingTrivia)
-                                                End If
-                                        End Select
+                                            Case "-"c : If NextIs(3, "-"c)      Then Return XmlMakeBeginCommentToken(leadingTrivia, s_scanNoTriviaFunc)
+                                            Case "["c : If NextAre(3, "CDATA[") Then Return XmlMakeBeginCDataToken(leadingTrivia, s_scanNoTriviaFunc)
+                                            Case "D"c : If NextAre(3, "OCTYPE") Then Return XmlMakeBeginDTDToken(leadingTrivia)
+                                         End Select
                                     End If
                                     Return XmlLessThanExclamationToken(state, leadingTrivia)
-                                Case "%"c
-                                    If NextIs(2, "="c) Then
-                                        Return XmlMakeBeginEmbeddedToken(leadingTrivia)
-                                    End If
-                                Case "?"c
-                                    Return XmlMakeBeginProcessingInstructionToken(leadingTrivia, s_scanNoTriviaFunc)
-                                Case "/"c
-                                    Return XmlMakeBeginEndElementToken(leadingTrivia, s_scanNoTriviaFunc)
+                                Case "%"c : If NextIs(2, "="c) Then Return XmlMakeBeginEmbeddedToken(leadingTrivia)
+                                Case "?"c : Return XmlMakeBeginProcessingInstructionToken(leadingTrivia, s_scanNoTriviaFunc)
+                                Case "/"c : Return XmlMakeBeginEndElementToken(leadingTrivia, s_scanNoTriviaFunc)
                             End Select
                         End If
 
@@ -152,23 +138,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                         Return XmlMakeBadToken(leadingTrivia, 1, ERRID.ERR_IllegalXmlNameChar)
 
-                    Case "("c
-                        Return XmlMakeLeftParenToken(leadingTrivia)
-
-                    Case ")"c
-                        Return XmlMakeRightParenToken(leadingTrivia)
-
-                    Case "!"c, ";"c, "#"c, ","c, "}"c
-                        Return XmlMakeBadToken(leadingTrivia, 1, ERRID.ERR_IllegalXmlNameChar)
-
-                    Case ":"c
-                        Return XmlMakeColonToken(leadingTrivia)
-
-                    Case "["c
-                        Return XmlMakeOpenBracketToken(state, leadingTrivia)
-
-                    Case "]"c
-                        Return XmlMakeCloseBracketToken(state, leadingTrivia)
+                    Case "("c : Return XmlMakeLeftParenToken(leadingTrivia)
+                    Case ")"c : Return XmlMakeRightParenToken(leadingTrivia)
+                    Case "!"c,
+                         ";"c,
+                         "#"c,
+                         ","c,
+                         "}"c : Return XmlMakeBadToken(leadingTrivia, 1, ERRID.ERR_IllegalXmlNameChar)
+                    Case ":"c : Return XmlMakeColonToken(leadingTrivia)
+                    Case "["c : Return XmlMakeOpenBracketToken(state, leadingTrivia)
+                    Case "]"c : Return XmlMakeCloseBracketToken(state, leadingTrivia)
 
                     Case Else
                         ' // Because of weak scanning of QName, this state must always handle
@@ -233,8 +212,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         If name.PossibleKeywordKind <> SyntaxKind.XmlNameToken Then
                             leadingTrivia = ScanSingleLineTrivia()
                             c = Peek()
-                            possibleStatement =
-                                c = "("c OrElse c = FULLWIDTH_LEFT_PARENTHESIS
+                            possibleStatement = c.IsEither("("c, FULLWIDTH_LEFT_PARENTHESIS)
                         End If
                     End If
 
@@ -266,11 +244,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                             token = ScanNextToken(allowLeadingMultilineTrivia:=False)
 
                             If name.PossibleKeywordKind = SyntaxKind.XmlNameToken Then
-                                possibleStatement =
-                                    token.Kind = SyntaxKind.OpenParenToken
+                                possibleStatement = (token.Kind = SyntaxKind.OpenParenToken)
                             Else
-                                possibleStatement =
-                                    (token.Kind = SyntaxKind.IdentifierToken) OrElse token.IsKeyword
+                                possibleStatement = (token.Kind = SyntaxKind.IdentifierToken) OrElse token.IsKeyword
                             End If
                         End If
 
@@ -284,10 +260,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend Function ScanXmlContent() As SyntaxToken
             ' SHIM
-            If IsScanningXmlDoc Then
-                Return ScanXmlContentInXmlDoc()
-            End If
-
+            If IsScanningXmlDoc Then Return ScanXmlContentInXmlDoc()
+ 
             ' // [14]    CharData    ::=    [^<&]* - ([^<&]* ']]>' [^<&]*)
 
             Dim Here As Integer = 0
@@ -315,10 +289,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         Here += 1
 
                     Case "&"c
-                        If Here <> 0 Then
-                            Return XmlMakeTextLiteralToken(Nothing, Here, scratch)
-                        End If
-
+                        If Here <> 0 Then Return XmlMakeTextLiteralToken(Nothing, Here, scratch)
                         ' TODO: the entity could be whitespace, do we want to report it as WS?
                         Return ScanXmlReference(Nothing)
 
@@ -341,28 +312,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                                 Case "!"c
                                     If TryGet(ch, 2) Then
                                         Select Case ch
-                                            Case "-"c
-                                                If NextIs(3, "-"c) Then
-                                                    Return XmlMakeBeginCommentToken(precedingTrivia, s_scanNoTriviaFunc)
-                                                End If
-                                            Case "["c
-                                                If NextAre(3, "CDATA[") Then
-                                                    Return XmlMakeBeginCDataToken(precedingTrivia, s_scanNoTriviaFunc)
-                                                End If
-                                            Case "D"c
-                                                If NextAre(3, "OCTYPE") Then
-                                                    Return XmlMakeBeginDTDToken(precedingTrivia)
-                                                End If
+                                            Case "-"c : If NextIs(3, "-"c)      Then Return XmlMakeBeginCommentToken(precedingTrivia, s_scanNoTriviaFunc)
+                                            Case "["c : If NextAre(3, "CDATA[") Then Return XmlMakeBeginCDataToken(precedingTrivia, s_scanNoTriviaFunc)
+                                            Case "D"c : If NextAre(3, "OCTYPE") Then Return XmlMakeBeginDTDToken(precedingTrivia)
                                         End Select
                                     End If
-                                Case "%"c
-                                    If NextIs(2, "="c) Then
-                                        Return XmlMakeBeginEmbeddedToken(precedingTrivia)
-                                    End If
-                                Case "?"c
-                                    Return XmlMakeBeginProcessingInstructionToken(precedingTrivia, s_scanNoTriviaFunc)
-                                Case "/"c
-                                    Return XmlMakeBeginEndElementToken(precedingTrivia, s_scanNoTriviaFunc)
+                                Case "%"c : If NextIs(2, "="c) Then Return XmlMakeBeginEmbeddedToken(precedingTrivia)
+                                Case "?"c : Return XmlMakeBeginProcessingInstructionToken(precedingTrivia, s_scanNoTriviaFunc)
+                                Case "/"c : Return XmlMakeBeginEndElementToken(precedingTrivia, s_scanNoTriviaFunc)
                             End Select
                         End If
 
@@ -726,12 +683,8 @@ CleanUp:
                                     ElseIf NextAre(2, "DOCTYPE") Then
                                         Return XmlMakeBeginDTDToken(precedingTrivia)
                                     End If
-                                Case "%"c
-                                    If NextIs(2, "="c) Then
-                                        Return XmlMakeBeginEmbeddedToken(precedingTrivia)
-                                    End If
-                                Case "?"c
-                                    Return XmlMakeBeginProcessingInstructionToken(precedingTrivia, s_scanNoTriviaFunc)
+                                Case "%"c : If NextIs(2, "="c) Then Return XmlMakeBeginEmbeddedToken(precedingTrivia)
+                                Case "?"c : Return XmlMakeBeginProcessingInstructionToken(precedingTrivia, s_scanNoTriviaFunc)
                             End Select
                         End If
 
@@ -771,10 +724,7 @@ CleanUp:
         End Function
 
         Friend Function ScanXmlStringUnQuoted() As SyntaxToken
-            If Not CanGet() Then
-                Return MakeEofToken()
-            End If
-
+            If Not CanGet() Then Return MakeEofToken()
             ' This can never happen as this token cannot cross lines.
             Debug.Assert(Not (IsScanningXmlDoc AndAlso IsAtNewLine()))
 
@@ -1001,9 +951,7 @@ CleanUp:
                 Debug.Assert(Length <> 0)
 
                 list.Append(Char1)
-                If Length = 2 Then
-                    list.Append(Char2)
-                End If
+                If Length = 2 Then list.Append(Char2)
             End Sub
         End Structure
 
@@ -1036,14 +984,14 @@ CleanUp:
             'TODO - Fix ScanXmlNCName to conform to XML spec instead of old loose scanning.
             Dim c As Char = Nothing
             While TryGet(c, Here)
-              Select Case (c)
+                Select Case (c)
 
                     Case ":"c, " "c, CHARACTER_TABULATION, LINE_FEED, CARRIAGE_RETURN,
                         "="c, "'"c, """"c, "/"c,
                         ">"c, "<"c, "("c, ")"c,
                         "?"c, ";"c, ","c, "}"c
 
-                        GoTo CreateNCNameToken
+                        Return CreateNCNameToken(precedingTrivia, Here, IsIllegalChar, err, errUnicode, errChar)
 
                     Case Else
                         ' // Invalid Xml name but scan as Xml name anyway
@@ -1052,7 +1000,7 @@ CleanUp:
                         Dim xmlCh = ScanXmlChar(Here)
                         If xmlCh.Length = 0 Then
                             IsIllegalChar = True
-                            GoTo CreateNCNameToken
+                            Return CreateNCNameToken(precedingTrivia, Here, IsIllegalChar, err, errUnicode, errChar)
                         Else
                             If err = ERRID.ERR_None Then
                                 If xmlCh.Length = 1 Then
@@ -1081,8 +1029,10 @@ CleanUp:
                         End If
                 End Select
             End While
+            Return CreateNCNameToken(precedingTrivia, Here, IsIllegalChar, err, errUnicode, errChar)
+        End Function
 
-CreateNCNameToken:
+        Private Function CreateNCNameToken(precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode), Here As Integer, IsIllegalChar As Boolean, err As ERRID, errUnicode As Integer, errChar As String) As SyntaxToken
             If Here <> 0 Then
                 Dim name = XmlMakeXmlNCNameToken(precedingTrivia, Here)
                 If err <> ERRID.ERR_None Then
@@ -1222,14 +1172,12 @@ CreateNCNameToken:
                 End If
             Else
                 While TryGet(ch, Here) AndAlso XmlCharType.IsDigit(ch)
-                        charRefSb.Append(ch)
+                    charRefSb.Append(ch)
                     Here += 1
                 End While
                 If charRefSb.Length > 0 Then
                     Dim result = DecToUTF16(charRefSb)
-                    If result.Length <> 0 Then
-                        index = Here
-                    End If
+                    If result.Length <> 0 Then index = Here
                     Return result
                 End If
             End If
