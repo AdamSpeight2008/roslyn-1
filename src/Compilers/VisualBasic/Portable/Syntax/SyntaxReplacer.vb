@@ -10,6 +10,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     Friend Class SyntaxReplacer
+
         Friend Shared Function Replace(Of TNode As SyntaxNode)(
             root As SyntaxNode,
             Optional nodes As IEnumerable(Of TNode) = Nothing,
@@ -21,21 +22,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
             Dim replacer = New Replacer(Of TNode)(nodes, computeReplacementNode, tokens, computeReplacementToken, trivia, computeReplacementTrivia)
 
-            If replacer.HasWork Then
-                Return replacer.Visit(root)
-            Else
-                Return root
-            End If
+            If replacer.HasWork Then Return replacer.Visit(root)
+            Return root
         End Function
 
-        Friend Shared Function Replace(
-            root As SyntaxToken,
-            Optional nodes As IEnumerable(Of SyntaxNode) = Nothing,
-            Optional computeReplacementNode As Func(Of SyntaxNode, SyntaxNode, SyntaxNode) = Nothing,
-            Optional tokens As IEnumerable(Of SyntaxToken) = Nothing,
-            Optional computeReplacementToken As Func(Of SyntaxToken, SyntaxToken, SyntaxToken) = Nothing,
-            Optional trivia As IEnumerable(Of SyntaxTrivia) = Nothing,
-            Optional computeReplacementTrivia As Func(Of SyntaxTrivia, SyntaxTrivia, SyntaxTrivia) = Nothing) As SyntaxToken
+        Friend Shared Function Replace _
+            (
+              root                      As SyntaxToken,
+     Optional nodes                     As IEnumerable(Of SyntaxNode) = Nothing,
+     Optional computeReplacementNode    As Func(Of SyntaxNode, SyntaxNode, SyntaxNode) = Nothing,
+     Optional tokens                    As IEnumerable(Of SyntaxToken) = Nothing,
+     Optional computeReplacementToken   As Func(Of SyntaxToken, SyntaxToken, SyntaxToken) = Nothing,
+     Optional trivia                    As IEnumerable(Of SyntaxTrivia) = Nothing,
+     Optional computeReplacementTrivia  As Func(Of SyntaxTrivia, SyntaxTrivia, SyntaxTrivia) = Nothing
+            ) As SyntaxToken
 
             Dim replacer = New Replacer(Of SyntaxNode)(nodes, computeReplacementNode, tokens, computeReplacementToken, trivia, computeReplacementTrivia)
 
@@ -48,6 +48,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
         Private Class Replacer(Of TNode As SyntaxNode)
             Inherits VisualBasicSyntaxRewriter
+            Implements IDisposable
 
             Private ReadOnly _computeReplacementNode As Func(Of TNode, TNode, SyntaxNode)
             Private ReadOnly _computeReplacementToken As Func(Of SyntaxToken, SyntaxToken, SyntaxToken)
@@ -62,48 +63,83 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Private ReadOnly _visitStructuredTrivia As Boolean
             Private ReadOnly _shouldVisitTrivia As Boolean
 
-            Public Sub New(
-                nodes As IEnumerable(Of TNode),
-                computeReplacementNode As Func(Of TNode, TNode, SyntaxNode),
-                tokens As IEnumerable(Of SyntaxToken),
-                computeReplacementToken As Func(Of SyntaxToken, SyntaxToken, SyntaxToken),
-                trivia As IEnumerable(Of SyntaxTrivia),
-                computeReplacementTrivia As Func(Of SyntaxTrivia, SyntaxTrivia, SyntaxTrivia))
+            Private ReadOnly _UsingStaticNodeSet As Boolean
+            Private ReadOnly _UsingStaticTokenSet As Boolean
+            Private ReadOnly _UsingStaticTriviaSet As Boolean
 
-                Me._computeReplacementNode = computeReplacementNode
-                Me._computeReplacementToken = computeReplacementToken
-                Me._computeReplacementTrivia = computeReplacementTrivia
 
-                Me._nodeSet = If(nodes IsNot Nothing, New HashSet(Of SyntaxNode)(nodes), s_noNodes)
-                Me._tokenSet = If(tokens IsNot Nothing, New HashSet(Of SyntaxToken)(tokens), s_noTokens)
-                Me._triviaSet = If(trivia IsNot Nothing, New HashSet(Of SyntaxTrivia)(trivia), s_noTrivia)
+            Public Sub New _ 
+                (
+                  nodes                     As IEnumerable(Of TNode),
+                  computeReplacementNode    As Func(Of TNode, TNode, SyntaxNode),
+                  tokens                    As IEnumerable(Of SyntaxToken),
+                  computeReplacementToken   As Func(Of SyntaxToken, SyntaxToken, SyntaxToken),
+                  trivia                    As IEnumerable(Of SyntaxTrivia),
+                  computeReplacementTrivia  As Func(Of SyntaxTrivia, SyntaxTrivia, SyntaxTrivia)
+                )
 
-                Me._spanSet = New HashSet(Of TextSpan)(Me._nodeSet.Select(Function(n) n.FullSpan).Concat(
-                                                      Me._tokenSet.Select(Function(t) t.FullSpan)).Concat(
-                                                      Me._triviaSet.Select(Function(t) t.FullSpan)))
+                _computeReplacementNode     = computeReplacementNode
+                _computeReplacementToken    = computeReplacementToken
+                _computeReplacementTrivia   = computeReplacementTrivia
 
-                Me._totalSpan = ComputeTotalSpan(Me._spanSet)
+                _UsingStaticNodeSet = nodes Is Nothing
+                If _UsingStaticNodeSet Then
+                    _nodeSet = s_noNodes
+                Else
+                    _nodeSet = PooledObjects.PooledHashSet(Of SyntaxNode).GetInstance()
+                    _nodeSet.AddAll(nodes)
+                End If
+                _UsingStaticTokenSet = tokens Is nothing
+                If _UsingStaticTokenSet Then
+                    _tokenSet = s_noTokens
+                Else
+                    _tokenSet = PooledObjects.PooledHashSet(Of SyntaxToken).GetInstance()
+                    _tokenSet.AddAll(tokens)
+                End If
 
-                Me._visitStructuredTrivia = Me._nodeSet.Any(Function(n) n.IsPartOfStructuredTrivia()) OrElse
-                    Me._tokenSet.Any(Function(t) t.IsPartOfStructuredTrivia()) OrElse
-                    Me._triviaSet.Any(Function(t) t.IsPartOfStructuredTrivia())
+                _UsingStaticTriviaSet = trivia Is Nothing
+                If _UsingStaticTriviaSet Then
+                    _triviaSet = s_noTrivia
+                Else
+                    _triviaSet = PooledObjects.PooledHashSet(Of SyntaxTrivia).GetInstance()
+                    _triviaSet.AddAll(trivia)
 
-                Me._shouldVisitTrivia = Me._triviaSet.Count > 0 OrElse Me._visitStructuredTrivia
+                End If
+                '    Me._nodeSet = If(tokens IsNot Nothing, New HashSet(Of SyntaxNode)(nodes), s_nonodes)
+                'Me._tokenSet = If(tokens IsNot Nothing, New HashSet(Of SyntaxToken)(tokens), s_noTokens)
+                'Me._triviaSet = If(trivia IsNot Nothing, New HashSet(Of SyntaxTrivia)(trivia), s_noTrivia)
+
+                'Me._spanSet = New HashSet(Of TextSpan)(Me._nodeSet.Select(Function(n) n.FullSpan).Concat(
+                '                                      Me._tokenSet.Select(Function(t) t.FullSpan)).Concat(
+                '                                      Me._triviaSet.Select(Function(t) t.FullSpan)))
+
+                _spanSet = PooledObjects.PooledHashSet(Of TextSpan).GetInstance
+                _spanset.AddAll(_nodeSet.Select(Function(n) n.FullSpan))
+                _spanset.AddAll(_tokenSet.Select(Function(t) t.FullSpan))
+                _spanset.AddAll(_triviaSet.Select(Function(t) t.FullSpan))
+
+                _totalSpan = ComputeTotalSpan(_spanSet)
+
+                _visitStructuredTrivia = _nodeSet.Any(Function(n) n.IsPartOfStructuredTrivia()) OrElse
+                    _tokenSet.Any(Function(t) t.IsPartOfStructuredTrivia()) OrElse
+                    _triviaSet.Any(Function(t) t.IsPartOfStructuredTrivia())
+
+                _shouldVisitTrivia = _triviaSet.Count > 0 OrElse _visitStructuredTrivia
             End Sub
 
-            Private Shared ReadOnly s_noNodes As HashSet(Of SyntaxNode) = New HashSet(Of SyntaxNode)()
-            Private Shared ReadOnly s_noTokens As HashSet(Of SyntaxToken) = New HashSet(Of SyntaxToken)()
-            Private Shared ReadOnly s_noTrivia As HashSet(Of SyntaxTrivia) = New HashSet(Of SyntaxTrivia)()
+            Private Shared ReadOnly s_noNodes  As New HashSet(Of SyntaxNode)()
+            Private Shared ReadOnly s_noTokens As New HashSet(Of SyntaxToken)()
+            Private Shared ReadOnly s_noTrivia As New HashSet(Of SyntaxTrivia)()
 
             Public Overrides ReadOnly Property VisitIntoStructuredTrivia As Boolean
                 Get
-                    Return Me._visitStructuredTrivia
+                    Return _visitStructuredTrivia
                 End Get
             End Property
 
             Public ReadOnly Property HasWork As Boolean
                 Get
-                    Return Me._nodeSet.Count + Me._tokenSet.Count + Me._triviaSet.Count > 0
+                    Return _nodeSet.Count + _tokenSet.Count + _triviaSet.Count > 0
                 End Get
             End Property
 
@@ -127,14 +163,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             End Function
 
             Private Function ShouldVisit(span As TextSpan) As Boolean
-                If Not span.IntersectsWith(Me._totalSpan) Then
-                    Return False
-                End If
-
-                For Each s In Me._spanSet
-                    If span.IntersectsWith(s) Then
-                        Return True
-                    End If
+                If Not span.IntersectsWith(_totalSpan) Then Return False
+                For Each s In _spanSet
+                    If span.IntersectsWith(s) Then Return True
                 Next
 
                 Return False
@@ -142,46 +173,60 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
             Public Overrides Function Visit(node As SyntaxNode) As SyntaxNode
                 Dim rewritten = node
-                If node IsNot Nothing Then
-                    If Me.ShouldVisit(node.FullSpan) Then
-                        rewritten = MyBase.Visit(node)
-                    End If
-
-                    If Me._nodeSet.Contains(node) AndAlso Me._computeReplacementNode IsNot Nothing Then
-                        rewritten = Me._computeReplacementNode(DirectCast(node, TNode), DirectCast(rewritten, TNode))
-                    End If
+                If node Is Nothing Then Return rewritten
+                If ShouldVisit(node.FullSpan) Then rewritten = MyBase.Visit(node)
+                If _nodeSet.Contains(node) AndAlso _computeReplacementNode IsNot Nothing Then
+                    rewritten = _computeReplacementNode(DirectCast(node, TNode), DirectCast(rewritten, TNode))
                 End If
-
                 Return rewritten
             End Function
 
             Public Overrides Function VisitToken(token As SyntaxToken) As SyntaxToken
                 Dim rewritten = token
 
-                If Me._shouldVisitTrivia AndAlso Me.ShouldVisit(token.FullSpan) Then
-                    rewritten = MyBase.VisitToken(token)
-                End If
-
-                If Me._tokenSet.Contains(token) AndAlso Me._computeReplacementToken IsNot Nothing Then
-                    rewritten = Me._computeReplacementToken(token, rewritten)
-                End If
-
+                If _shouldVisitTrivia AndAlso ShouldVisit(token.FullSpan) Then rewritten = MyBase.VisitToken(token)
+                If _computeReplacementToken IsNot Nothing AndAlso _tokenSet.Contains(token) Then rewritten = _computeReplacementToken(token, rewritten)
                 Return rewritten
             End Function
 
             Public Overrides Function VisitListElement(trivia As SyntaxTrivia) As SyntaxTrivia
                 Dim rewritten = trivia
-
-                If Me.VisitIntoStructuredTrivia AndAlso trivia.HasStructure AndAlso Me.ShouldVisit(trivia.FullSpan) Then
-                    rewritten = Me.VisitTrivia(trivia)
-                End If
-
-                If Me._triviaSet.Contains(trivia) AndAlso Me._computeReplacementTrivia IsNot Nothing Then
-                    rewritten = Me._computeReplacementTrivia(trivia, rewritten)
-                End If
-
+                If VisitIntoStructuredTrivia AndAlso trivia.HasStructure AndAlso ShouldVisit(trivia.FullSpan) Then rewritten = VisitTrivia(trivia)
+                If _triviaSet.Contains(trivia) AndAlso _computeReplacementTrivia IsNot Nothing Then rewritten = _computeReplacementTrivia(trivia, rewritten)
                 Return rewritten
             End Function
+
+#Region "IDisposable Support"
+            Private disposedValue As Boolean ' To detect redundant calls
+
+            ' IDisposable
+            Protected Overridable Sub Dispose(disposing As Boolean)
+                If Not disposedValue Then
+                    If disposing Then
+                        ' TODO: dispose managed state (managed objects).
+                        If _UsingStaticNodeSet Then
+                          DirectCast(_nodeSet, PooledObjects.PooledHashSet(Of SyntaxNode)).Free()
+                        End If
+                        If _UsingStaticTokenSet Then
+                          DirectCast(_TokenSet, PooledObjects.PooledHashSet(Of SyntaxToken)).Free()
+                        End If
+                        If _UsingStaticTriviaSet Then
+                          DirectCast(_TriviaSet, PooledObjects.PooledHashSet(Of SyntaxTrivia)).Free()
+                        End If
+                        DirectCast(_spanSet, PooledObjects.PooledHashSet(Of TextSpan)).Free()
+                    End If
+
+                    ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
+                    ' TODO: set large fields to null.
+                End If
+                disposedValue = True
+            End Sub
+
+            ' This code added by Visual Basic to correctly implement the disposable pattern.
+            Public Sub Dispose() Implements IDisposable.Dispose
+                Dispose(True)
+            End Sub
+#End Region
         End Class
 
         Public Shared Function ReplaceNodeInList(root As SyntaxNode, originalNode As SyntaxNode, newNodes As IEnumerable(Of SyntaxNode)) As SyntaxNode
@@ -229,53 +274,48 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         Private Class BaseListEditor
             Inherits VisualBasicSyntaxRewriter
 
-            Private ReadOnly _elementSpan As TextSpan
+            Private   ReadOnly _elementSpan As TextSpan
             Protected ReadOnly _editKind As ListEditKind
-            Private ReadOnly _visitTrivia As Boolean
-            Private ReadOnly _visitIntoStructuredTrivia As Boolean
+            Private   ReadOnly _visitTrivia As Boolean
+            Private   ReadOnly _visitIntoStructuredTrivia As Boolean
 
             Public Sub New(
-                elementSpan As TextSpan,
-                editKind As ListEditKind,
-                visitTrivia As Boolean,
-                visitIntoStructuredTrivia As Boolean)
-                Me._elementSpan = elementSpan
-                Me._editKind = editKind
-                Me._visitTrivia = visitTrivia Or visitIntoStructuredTrivia
-                Me._visitIntoStructuredTrivia = visitIntoStructuredTrivia
+                            elementSpan                 As TextSpan,
+                            editKind                    As ListEditKind,
+                            visitTrivia                 As Boolean,
+                            visitIntoStructuredTrivia   As Boolean
+                          )
+                _elementSpan = elementSpan
+                _editKind = editKind
+                _visitTrivia = visitTrivia Or visitIntoStructuredTrivia
+                _visitIntoStructuredTrivia = visitIntoStructuredTrivia
             End Sub
 
             Public Overrides ReadOnly Property VisitIntoStructuredTrivia As Boolean
                 Get
-                    Return Me._visitIntoStructuredTrivia
+                    Return _visitIntoStructuredTrivia
                 End Get
             End Property
 
             Private Function ShouldVisit(span As TextSpan) As Boolean
-                Return span.IntersectsWith(Me._elementSpan)
+                Return span.IntersectsWith(_elementSpan)
             End Function
 
             Public Overrides Function Visit(node As SyntaxNode) As SyntaxNode
                 Dim rewritten = node
-                If node IsNot Nothing AndAlso ShouldVisit(node.FullSpan) Then
-                    rewritten = MyBase.Visit(node)
-                End If
+                If node IsNot Nothing AndAlso ShouldVisit(node.FullSpan) Then rewritten = MyBase.Visit(node)
                 Return rewritten
             End Function
 
             Public Overrides Function VisitToken(token As SyntaxToken) As SyntaxToken
                 Dim rewritten = token
-                If Me._visitTrivia AndAlso Me.ShouldVisit(token.FullSpan) Then
-                    rewritten = MyBase.VisitToken(token)
-                End If
+                If _visitTrivia AndAlso ShouldVisit(token.FullSpan) Then rewritten = MyBase.VisitToken(token)
                 Return rewritten
             End Function
 
             Public Overrides Function VisitListElement(element As SyntaxTrivia) As SyntaxTrivia
                 Dim rewritten = element
-                If Me._visitIntoStructuredTrivia AndAlso element.HasStructure AndAlso Me.ShouldVisit(element.FullSpan) Then
-                    rewritten = MyBase.VisitTrivia(element)
-                End If
+                If _visitIntoStructuredTrivia AndAlso element.HasStructure AndAlso ShouldVisit(element.FullSpan) Then rewritten = MyBase.VisitTrivia(element)
                 Return rewritten
             End Function
         End Class
@@ -288,29 +328,26 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
             Public Sub New(originalNode As SyntaxNode, replacementNodes As IEnumerable(Of SyntaxNode), editKind As ListEditKind)
                 MyBase.New(originalNode.FullSpan, editKind, visitTrivia:=False, visitIntoStructuredTrivia:=originalNode.IsPartOfStructuredTrivia())
-                Me._originalNode = originalNode
-                Me._replacementNodes = replacementNodes
+                _originalNode = originalNode
+                _replacementNodes = replacementNodes
             End Sub
 
             Public Overrides Function Visit(node As SyntaxNode) As SyntaxNode
-                If node Is _originalNode Then
-                    Throw GetItemNotListElementException()
-                End If
-
+                If node Is _originalNode Then Throw GetItemNotListElementException()
                 Return MyBase.Visit(node)
             End Function
 
             Public Overrides Function VisitList(Of TNode As SyntaxNode)(list As SeparatedSyntaxList(Of TNode)) As SeparatedSyntaxList(Of TNode)
-                If TypeOf Me._originalNode Is TNode Then
-                    Dim index = list.IndexOf(DirectCast(Me._originalNode, TNode))
+                If TypeOf _originalNode Is TNode Then
+                    Dim index = list.IndexOf(DirectCast(_originalNode, TNode))
                     If index >= 0 AndAlso index < list.Count Then
-                        Select Case Me._editKind
+                        Select Case _editKind
                             Case ListEditKind.Replace
-                                Return list.ReplaceRange(DirectCast(Me._originalNode, TNode), Me._replacementNodes.Cast(Of TNode))
+                                Return list.ReplaceRange(DirectCast(_originalNode, TNode), _replacementNodes.Cast(Of TNode))
                             Case ListEditKind.InsertBefore
-                                Return list.InsertRange(index, Me._replacementNodes.Cast(Of TNode))
+                                Return list.InsertRange(index, _replacementNodes.Cast(Of TNode))
                             Case ListEditKind.InsertAfter
-                                Return list.InsertRange(index + 1, Me._replacementNodes.Cast(Of TNode))
+                                Return list.InsertRange(index + 1, _replacementNodes.Cast(Of TNode))
                         End Select
                     End If
                 End If
@@ -318,16 +355,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             End Function
 
             Public Overrides Function VisitList(Of TNode As SyntaxNode)(list As SyntaxList(Of TNode)) As SyntaxList(Of TNode)
-                If TypeOf Me._originalNode Is TNode Then
-                    Dim index = list.IndexOf(DirectCast(Me._originalNode, TNode))
+                If TypeOf _originalNode Is TNode Then
+                    Dim index = list.IndexOf(DirectCast(_originalNode, TNode))
                     If index >= 0 AndAlso index < list.Count Then
-                        Select Case Me._editKind
+                        Select Case _editKind
                             Case ListEditKind.Replace
-                                Return list.ReplaceRange(DirectCast(Me._originalNode, TNode), Me._replacementNodes.Cast(Of TNode))
+                                Return list.ReplaceRange(DirectCast(_originalNode, TNode), _replacementNodes.Cast(Of TNode))
                             Case ListEditKind.InsertBefore
-                                Return list.InsertRange(index, Me._replacementNodes.Cast(Of TNode))
+                                Return list.InsertRange(index, _replacementNodes.Cast(Of TNode))
                             Case ListEditKind.InsertAfter
-                                Return list.InsertRange(index + 1, Me._replacementNodes.Cast(Of TNode))
+                                Return list.InsertRange(index + 1, _replacementNodes.Cast(Of TNode))
                         End Select
                     End If
                 End If
@@ -343,28 +380,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
             Public Sub New(originalToken As SyntaxToken, newTokens As IEnumerable(Of SyntaxToken), editKind As ListEditKind)
                 MyBase.New(originalToken.FullSpan, editKind, visitTrivia:=False, visitIntoStructuredTrivia:=originalToken.IsPartOfStructuredTrivia())
-                Me._originalToken = originalToken
-                Me._newTokens = newTokens
+                _originalToken = originalToken
+                _newTokens = newTokens
             End Sub
 
             Public Overrides Function VisitToken(token As SyntaxToken) As SyntaxToken
-                If token = _originalToken Then
-                    Throw GetItemNotListElementException()
-                End If
-
+                If token = _originalToken Then Throw GetItemNotListElementException()
                 Return MyBase.VisitToken(token)
             End Function
 
             Public Overrides Function VisitList(list As SyntaxTokenList) As SyntaxTokenList
-                Dim index = list.IndexOf(Me._originalToken)
+                Dim index = list.IndexOf(_originalToken)
                 If index >= 0 AndAlso index < list.Count Then
-                    Select Case Me._editKind
+                    Select Case _editKind
                         Case ListEditKind.Replace
-                            Return list.ReplaceRange(Me._originalToken, Me._newTokens)
+                            Return list.ReplaceRange(_originalToken, _newTokens)
                         Case ListEditKind.InsertBefore
-                            Return list.InsertRange(index, Me._newTokens)
+                            Return list.InsertRange(index, _newTokens)
                         Case ListEditKind.InsertAfter
-                            Return list.InsertRange(index + 1, Me._newTokens)
+                            Return list.InsertRange(index + 1, _newTokens)
                     End Select
                 End If
                 Return MyBase.VisitList(list)
@@ -379,20 +413,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
             Public Sub New(originalTrivia As SyntaxTrivia, newTrivia As IEnumerable(Of SyntaxTrivia), editKind As ListEditKind)
                 MyBase.New(originalTrivia.FullSpan, editKind, visitTrivia:=True, visitIntoStructuredTrivia:=originalTrivia.IsPartOfStructuredTrivia())
-                Me._originalTrivia = originalTrivia
-                Me._newTrivia = newTrivia
+                _originalTrivia = originalTrivia
+                _newTrivia = newTrivia
             End Sub
 
             Public Overrides Function VisitList(list As SyntaxTriviaList) As SyntaxTriviaList
-                Dim index = list.IndexOf(Me._originalTrivia)
+                Dim index = list.IndexOf(_originalTrivia)
                 If index >= 0 AndAlso index < list.Count Then
-                    Select Case Me._editKind
+                    Select Case _editKind
                         Case ListEditKind.Replace
-                            Return list.ReplaceRange(Me._originalTrivia, Me._newTrivia)
+                            Return list.ReplaceRange(_originalTrivia, _newTrivia)
                         Case ListEditKind.InsertBefore
-                            Return list.InsertRange(index, Me._newTrivia)
+                            Return list.InsertRange(index, _newTrivia)
                         Case ListEditKind.InsertAfter
-                            Return list.InsertRange(index + 1, Me._newTrivia)
+                            Return list.InsertRange(index + 1, _newTrivia)
                     End Select
                 End If
                 Return MyBase.VisitList(list)

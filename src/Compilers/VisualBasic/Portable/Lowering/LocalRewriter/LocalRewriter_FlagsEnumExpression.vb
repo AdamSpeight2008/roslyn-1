@@ -31,14 +31,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ' IsAny <== (Flags And Flag) <> 0
             Dim _AND_ = Make_AND(node.Syntax, EnumFlags, flagPart, EnumFlags.Type).MakeCompilerGenerated
             Dim Zero = New BoundLiteral(node.Syntax, ConstantValue.Create(0), EnumFlags.Type).MakeCompilerGenerated
-            Dim _EQ_ = MakeBinaryExpression(node.Syntax, BinaryOperatorKind.NotEquals, _AND_, Zero, False, _Boolean_).MakeCompilerGenerated
+            Dim _EQ_ = MakeBinaryExpression(node.Syntax, BinaryOperatorKind.NotEquals, _AND_, Zero, False,  GetSpecialType(SpecialType.System_Boolean)).MakeCompilerGenerated
             Return _EQ_.MakeRValue
         End Function
 
         Private Function Rewrite_As_IsSet(node As BoundFlagsEnumOperationExpressionSyntax, EnumFlags As BoundExpression, flagPart As BoundExpression) As BoundNode
             ' IsSet <== (Flags And Flag) = Flag
             Dim _AND_ = Make_AND(node.Syntax, EnumFlags, flagPart, EnumFlags.Type).MakeCompilerGenerated
-            Dim _EQ_ = MakeBinaryExpression(node.Syntax, BinaryOperatorKind.Equals, _AND_, flagPart, False, _Boolean_).MakeCompilerGenerated
+            Dim _EQ_ = MakeBinaryExpression(node.Syntax, BinaryOperatorKind.Equals, _AND_, flagPart, False,  GetSpecialType(SpecialType.System_Boolean)).MakeCompilerGenerated
             Return _EQ_.MakeRValue
         End Function
 

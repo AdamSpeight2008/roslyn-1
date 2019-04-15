@@ -15,14 +15,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           Return MakeBinaryExpression(node, BinaryOperatorKind.And, LExpe.MakeRValue, RExpr, False, RType)
         End Function
 
-        Private ReadOnly _Boolean_ As NamedTypeSymbol = GetSpecialType(SpecialType.System_Boolean)
-
         Private Function [AndAlso](node As SyntaxNode, lexpr As BoundExpression, rexpr As BoundExpression) As BoundExpression
-            Return New BoundBinaryOperator(node,BinaryOperatorKind.AndAlso, lexpr, rexpr, False, _Boolean_)
+            Return New BoundBinaryOperator(node,BinaryOperatorKind.AndAlso, lexpr, rexpr, False, GetSpecialType(SpecialType.System_Boolean))
         End Function
 
         Private Function [OrElse](node As SyntaxNode, lexpr As BoundExpression, rexpr As BoundExpression) As BoundExpression
-            Return New BoundBinaryOperator(node,BinaryOperatorKind.OrElse, lexpr, rexpr, False, _Boolean_)
+            Return New BoundBinaryOperator(node,BinaryOperatorKind.OrElse, lexpr, rexpr, False, GetSpecialType(SpecialType.System_Boolean))
         End Function
 
     End Class
