@@ -9,6 +9,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
     Friend Module BaseSyntaxExtensions
         ' Methods
 
+        <Obsolete("Just use the node", True)>
         <Extension()>
         Friend Function ToGreen(node As InternalSyntax.VisualBasicSyntaxNode) As InternalSyntax.VisualBasicSyntaxNode
             Debug.Assert(False, "just use the node")
@@ -28,7 +29,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Dim red = node.CreateRed(Nothing, 0)
             Return red
         End Function
-
+        
+        <Obsolete("Just use the node", True)>
         <Extension()>
         Friend Function ToRed(node As VisualBasicSyntaxNode) As VisualBasicSyntaxNode
             Debug.Assert(False, "just use the node")
