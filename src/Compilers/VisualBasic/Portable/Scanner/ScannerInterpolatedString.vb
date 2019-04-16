@@ -11,24 +11,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     Partial Friend Class Scanner
 
         Private Function ScanInterpolatedStringPunctuation() As SyntaxToken
-            If Not CanGet() Then
-                Return MakeEndOfInterpolatedStringToken()
-            End If
+            If Not CanGet() Then Return MakeEndOfInterpolatedStringToken()
 
             Dim kind As SyntaxKind
-
             Dim leadingTriviaLength = GetWhitespaceLength(0)
             Dim offset = leadingTriviaLength
             Dim length As Integer
+            Dim c As Char = Nothing
 
-            If Not CanGet(offset) Then
-                Return MakeEndOfInterpolatedStringToken()
-            End If
-
-            Dim c = Peek(offset)
+            If Not TryGet(c, offset) Then Return MakeEndOfInterpolatedStringToken()
 
             ' This should only ever happen for $" or }
-            Debug.Assert(leadingTriviaLength = 0 OrElse c = "$"c OrElse c = FULLWIDTH_DOLLAR_SIGN OrElse IsRightCurlyBracket(c))
+            Debug.Assert(leadingTriviaLength = 0 OrElse c.IsEither("$"c, FULLWIDTH_DOLLAR_SIGN) OrElse IsRightCurlyBracket(c))
 
             ' Another } may follow the close brace of an interpolation if the interpolation lacked a format clause.
             ' This is because the normal escaping rules only apply when parsing the format string.
@@ -38,8 +32,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Select Case c
                 Case "$"c, FULLWIDTH_DOLLAR_SIGN
-
-                    If CanGet(offset + 1) AndAlso IsDoubleQuote(Peek(offset + 1)) Then
+                    Dim nc As Char = Nothing
+                    If TryGet(nc, offset + 1) AndAlso IsDoubleQuote(nc) Then
                         kind = SyntaxKind.DollarSignDoubleQuoteToken
                         length = 2
                         scanTrailingTrivia = False ' Trailing whitespace should be scanned as interpolated string text.
@@ -90,7 +84,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Dim text = GetText(length)
 
-            Dim trailingTrivia As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode) = If(scanTrailingTrivia, ScanSingleLineTrivia(), Nothing)
+            Dim trailingTrivia = If(scanTrailingTrivia, ScanSingleLineTrivia(), Nothing)
 
             Return MakePunctuationToken(kind, text, leadingTrivia, trailingTrivia.Node)
 
@@ -113,26 +107,37 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function IsInterpolatedStringPunctuation(Optional offset As Integer = 0) As Boolean
-            If Not CanGet(offset) Then Return False
-
-            Dim c = Peek(offset)
+            Dim c As Char = Nothing
+            If TryGet(c, offset) Then Return False
 
             If IsLeftCurlyBracket(c) Then
-                Return Not CanGet(offset + 1) OrElse Not IsLeftCurlyBracket(Peek(offset + 1))
+                Return Not IsEscaped_LeftCurly(offset + 1)
 
             ElseIf IsRightCurlyBracket(c) Then
-                Return Not CanGet(offset + 1) OrElse Not IsRightCurlyBracket(Peek(offset + 1))
+                Return Not IsEscaped_RightCurly(offset + 1)
 
             ElseIf IsDoubleQuote(c)
                 'A subtle difference between this case and the one above.
                 ' In both interpolated and literal strings the two quote characters used in an escape sequence don't have to match.
                 ' It's enough that the next character is *a* quote char. It doesn't have to be the same quote.
                 ' If we want to preserve consistency the quotes need to be special cased.
-                Return Not CanGet(offset + 1) OrElse Not IsDoubleQuote(Peek(offset + 1))
+                Return Not NextIsDoubleQuote(offset + 1)
 
             Else
                 Return False
             End If
+        End Function
+
+        Private Function IsEscaped_RightCurly(offset As Integer) As Boolean
+           Dim nc As Char = Nothing : Return TryGet(nc, offset) AndAlso IsRightCurlyBracket(nc)
+        End Function
+
+        Private Function IsEscaped_LeftCurly(offset As Integer) As Boolean
+           Dim nc As Char = Nothing : Return TryGet(nc, offset) AndAlso IsLeftCurlyBracket(nc)
+        End Function
+
+        Private Function NextIsDoubleQuote(offset As Integer) As Boolean
+           Dim nc As Char = Nothing : Return TryGet(nc, offset) AndAlso IsDoubleQuote(nc)
         End Function
 
         Private Function ScanInterpolatedStringText(scanTrailingWhitespaceAsTrivia As Boolean) As SyntaxToken
@@ -141,70 +146,44 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim offset = 0
             Dim pendingWhitespace = 0
             Dim valueBuilder = GetScratch()
-
-            Do While CanGet(offset)
-
-                Dim c = Peek(offset)
+            Dim c As Char = Nothing
+            Do While TryGet(c, offset)
 
                 ' Any combination of fullwidth and ASCII curly braces of the same direction is an escaping sequence for the corresponding ASCII curly brace.
                 ' We insert that curly brace doubled and because this is the escaping sequence understood by String.Format, that will be replaced by a single brace.
                 ' This is deliberate design and it aligns with existing rules for double quote escaping in strings.
                 If IsLeftCurlyBracket(c) Then
-
-                    If CanGet(offset + 1) AndAlso IsLeftCurlyBracket(Peek(offset + 1)) Then
-                        ' This is an escape sequence.
-
-                        valueBuilder.Append("{{")
-                        offset += 2
-                        pendingWhitespace = 0
-
-                        Continue Do
-                    End If
-
-                    Exit Do
+                    If Not IsEscaped_LeftCurly(offset + 1) Then Exit Do
+                    ' This is an escape sequence.
+                    valueBuilder.Append("{{")
+                    offset += 2
+                    pendingWhitespace = 0
 
                 ElseIf IsRightCurlyBracket(c) Then
-
-                    If CanGet(offset + 1) AndAlso IsRightCurlyBracket(Peek(offset + 1)) Then
-                        ' This is an escape sequence.
-
-                        valueBuilder.Append("}}")
-                        offset += 2
-                        pendingWhitespace = 0
-
-                        Continue Do
-                    End If
-
-                    Exit Do
+                    If Not IsEscaped_RightCurly(offset + 1) Then Exit Do
+                    ' This is an escape sequence.
+                    valueBuilder.Append("}}")
+                    offset += 2
+                    pendingWhitespace = 0
 
                 ElseIf IsDoubleQuote(c)
-
-                    If CanGet(offset + 1) AndAlso IsDoubleQuote(Peek(offset + 1)) Then
-                        ' This is a VB double quote escape. Oddly enough this logic allows mixing and matching of
-                        ' smart and dumb double quotes in any order. Regardless we always emit as a standard double quote.
-                        ' This is consistent with their handling in string literals.
-                        valueBuilder.Append(""""c)
-                        offset += 2
-                        pendingWhitespace = 0
-
-                        Continue Do
-                    End If
-
-                    Exit Do
+                    If NOt NextIsDoubleQuote(offset + 1) Then Exit Do
+                    ' This is a VB double quote escape. Oddly enough this logic allows mixing and matching of
+                    ' smart and dumb double quotes in any order. Regardless we always emit as a standard double quote.
+                    ' This is consistent with their handling in string literals.
+                    valueBuilder.Append(""""c)
+                    offset += 2
+                    pendingWhitespace = 0
 
                 ElseIf IsNewLine(c) AndAlso scanTrailingWhitespaceAsTrivia
-
                     Exit Do
 
                 ElseIf IsWhitespace(c) AndAlso scanTrailingWhitespaceAsTrivia
-
                     valueBuilder.Append(c)
                     offset += 1
                     pendingWhitespace += 1
-                    Continue Do
 
                 Else
-
                     valueBuilder.Append(c)
                     offset += 1
                     pendingWhitespace = 0
