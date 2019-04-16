@@ -1557,7 +1557,7 @@ FullWidthRepeat:
 
                 ' // Read an exponent symbol followed by an optional sign and a sequence of
                 ' // one or more digits.
-                If TryGet(ch, Here) AndAlso BeginsExponent(nc) Then
+                If TryGet(ch, Here) AndAlso BeginsExponent(ch) Then
                     Here += 1
 
                     If TryGet(ch, Here) Then

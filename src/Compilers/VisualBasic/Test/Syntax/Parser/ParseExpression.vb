@@ -1969,7 +1969,7 @@ Module Program
     End Sub
 End Module
             ]]>.Value
-        ParseAndVerify(code)
+     dim result= ParseAndVerify(code)
     End Sub
 
     <WorkItem(541324, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541324")>

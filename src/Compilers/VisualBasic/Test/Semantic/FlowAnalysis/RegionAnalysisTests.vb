@@ -931,8 +931,8 @@ End Namespace
             Dim expr = DirectCast(startNodes(2), FlagsEnumOperationExpressionSyntax)
             Dim model = comp.GetSemanticModel(comp.SyntaxTrees(0))
             Dim analysis = model.AnalyzeDataFlow(expr) ' NO THROW
-            analysis = model.AnalyzeDataFlow(expr.Expression) ' NO THROW
-            analysis = model.AnalyzeDataFlow(expr.Name) ' NO THROW
+            analysis = model.AnalyzeDataFlow(expr.EnumFlags) ' NO THROW
+            analysis = model.AnalyzeDataFlow(expr.EnumFlag) ' NO THROW
         End Sub
 
         <WorkItem(768094, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/768094")>

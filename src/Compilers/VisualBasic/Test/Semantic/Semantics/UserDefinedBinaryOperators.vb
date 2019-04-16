@@ -2606,11 +2606,8 @@ End Class
 <expected>
 BC33010: 'operator' parameters cannot be declared 'Optional'.
     Public Shared Operator Not(Optional x As TestType) As Boolean 'BIND1:"TestType"
-                               ~~~~~~~~                                                     ~
+                               ~~~~~~~~
 </expected>)
-            'BC30812: Optional parameters must specify a default value.
-            '    Public Shared Operator Not(Optional x As TestType) As Boolean 'BIND1:"TestType"
-            '                                                     ~
 
         End Sub
 

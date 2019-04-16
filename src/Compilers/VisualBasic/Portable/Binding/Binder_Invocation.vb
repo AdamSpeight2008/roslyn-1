@@ -3098,6 +3098,10 @@ ProduceBoundNode:
                 Else
                     defaultConstantValue = ConstantValue.Nothing
                 End If
+                If defaultConstantValue Is Nothing Then
+                    HandleOptionalObjectTypeWithNoDefault(param, defaultArgument, syntax, diagnostics)
+                    defaultArgument.SetWasCompilerGenerated()
+                End If
             End If
             If defaultConstantValue IsNot Nothing Then
 
@@ -3269,6 +3273,39 @@ ProduceBoundNode:
                     Return syntax.Span
             End Select
         End Function
+
+        Private Sub HandleOptionalObjectTypeWithNoDefault(param As ParameterSymbol,byref defaultArgument As BoundExpression,byref syntax as SyntaxNode,byref diagnostics As DiagnosticBag)
+            ' Handle optional object type argument when no default value is specified.
+            ' Section 3 of §11.8.2 Applicable Methods
+
+            If param.Type.SpecialType = SpecialType.System_Object Then
+
+                Dim methodSymbol As MethodSymbol = Nothing
+                If param.IsMarshalAsObject Then
+                    ' Nothing
+                    defaultArgument = New BoundLiteral(syntax, ConstantValue.Null, Nothing)
+                ElseIf param.IsIDispatchConstant Then
+                    ' new DispatchWrapper(nothing)
+                    methodSymbol = DirectCast(GetWellKnownTypeMember(WellKnownMember.System_Runtime_InteropServices_DispatchWrapper__ctor, syntax, diagnostics), MethodSymbol)
+                ElseIf param.IsIUnknownConstant Then
+                    ' new UnknownWrapper(nothing)
+                    methodSymbol = DirectCast(GetWellKnownTypeMember(WellKnownMember.System_Runtime_InteropServices_UnknownWrapper__ctor, syntax, diagnostics), MethodSymbol)
+                Else
+                    defaultArgument = New BoundOmittedArgument(syntax, param.Type)
+                End If
+
+                If methodSymbol IsNot Nothing Then
+                    Dim argument = New BoundLiteral(syntax, ConstantValue.Null, param.Type).MakeCompilerGenerated()
+                    defaultArgument = New BoundObjectCreationExpression(syntax, methodSymbol,
+                                                                        ImmutableArray.Create(Of BoundExpression)(argument),
+                                                                        Nothing,
+                                                                        methodSymbol.ContainingType)
+                End If
+            Else
+                defaultArgument = New BoundLiteral(syntax, ConstantValue.Null, Nothing)
+            End If
+        End sub
+
 
         ''' <summary>
         ''' Return true if the node is an immediate child of a call statement.
