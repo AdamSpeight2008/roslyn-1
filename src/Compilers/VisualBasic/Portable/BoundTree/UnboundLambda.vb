@@ -26,8 +26,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Debug.Assert(TypeOf Me.Syntax Is LambdaExpressionSyntax)
                 Dim kind As SyntaxKind = Me.Syntax.Kind
 
-                Return kind = SyntaxKind.SingleLineFunctionLambdaExpression OrElse
-                       kind = SyntaxKind.SingleLineSubLambdaExpression
+                Return kind.i(IsEither(SyntaxKind.SingleLineFunctionLambdaExpression,
+                                       SyntaxKind.SingleLineSubLambdaExpression))
             End Get
         End Property
 
@@ -39,8 +39,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Debug.Assert(TypeOf Me.Syntax Is LambdaExpressionSyntax)
                 Dim kind As SyntaxKind = Me.Syntax.Kind
 
-                Return kind = SyntaxKind.SingleLineFunctionLambdaExpression OrElse
-                       kind = SyntaxKind.MultiLineFunctionLambdaExpression
+                Return kind.IsEither(SyntaxKind.SingleLineFunctionLambdaExpression,
+                                     SyntaxKind.MultiLineFunctionLambdaExpression)
             End Get
         End Property
 
