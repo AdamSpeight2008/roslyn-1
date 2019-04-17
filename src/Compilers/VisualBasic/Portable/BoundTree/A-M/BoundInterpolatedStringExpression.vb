@@ -19,6 +19,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ' $"{INTERPOLATION}TEXT..."
                 ' The parser will never produce two adjacent text elements so in for non-synthetic trees this should only need
                 ' to examine the first two elements at most.
+                'Return Contents.Any(Function(item) item.Kind = BoundKind.Interpolation)
                 For Each item In Contents
                     If item.Kind = BoundKind.Interpolation Then Return True
                 Next

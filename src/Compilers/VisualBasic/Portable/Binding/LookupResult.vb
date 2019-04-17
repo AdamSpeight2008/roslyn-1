@@ -40,42 +40,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         <Extension()>
         Public Function ToCandidateReason(resultKind As LookupResultKind) As CandidateReason
             Select Case resultKind
-                Case LookupResultKind.Empty, LookupResultKind.EmptyAndStopLookup
-                    Return CandidateReason.None
-                Case LookupResultKind.OverloadResolutionFailure
-                    Return CandidateReason.OverloadResolutionFailure
-                Case LookupResultKind.NotATypeOrNamespace
-                    Return CandidateReason.NotATypeOrNamespace
-                Case LookupResultKind.NotAnEvent
-                    Return CandidateReason.NotAnEvent
-                Case LookupResultKind.LateBound
-                    Return CandidateReason.LateBound
-                Case LookupResultKind.NotAnAttributeType
-                    Return CandidateReason.NotAnAttributeType
-                Case LookupResultKind.NotAWithEventsMember
-                    Return CandidateReason.NotAWithEventsMember
-                Case LookupResultKind.WrongArity, LookupResultKind.WrongArityAndStopLookup
-                    Return CandidateReason.WrongArity
-                Case LookupResultKind.NotCreatable
-                    Return CandidateReason.NotCreatable
-                Case LookupResultKind.Inaccessible
-                    Return CandidateReason.Inaccessible
-                Case LookupResultKind.NotAValue
-                    Return CandidateReason.NotAValue
-                Case LookupResultKind.NotAVariable
-                    Return CandidateReason.NotAVariable
-                Case LookupResultKind.NotReferencable
-                    Return CandidateReason.NotReferencable
-                Case LookupResultKind.MustNotBeInstance, LookupResultKind.MustBeInstance
-                    Return CandidateReason.StaticInstanceMismatch
-                Case LookupResultKind.Ambiguous
-                    Return CandidateReason.Ambiguous
-                Case LookupResultKind.MemberGroup
-                    Return CandidateReason.MemberGroup
-
-                Case Else
-                    ' Should not call this on LookupResultKind.Good or undefined kind
-                    Throw ExceptionUtilities.UnexpectedValue(resultKind)
+                  Case LookupResultKind.Empty,
+                       LookupResultKind.EmptyAndStopLookup          : Return CandidateReason.None
+                  Case LookupResultKind.OverloadResolutionFailure   : Return CandidateReason.OverloadResolutionFailure
+                  Case LookupResultKind.NotATypeOrNamespace         : Return CandidateReason.NotATypeOrNamespace
+                  Case LookupResultKind.NotAnEvent                  : Return CandidateReason.NotAnEvent
+                  Case LookupResultKind.LateBound                   : Return CandidateReason.LateBound
+                  Case LookupResultKind.NotAnAttributeType          : Return CandidateReason.NotAnAttributeType
+                  Case LookupResultKind.NotAWithEventsMember        : Return CandidateReason.NotAWithEventsMember
+                  Case LookupResultKind.WrongArity,
+                       LookupResultKind.WrongArityAndStopLookup     : Return CandidateReason.WrongArity
+                  Case LookupResultKind.NotCreatable                : Return CandidateReason.NotCreatable
+                  Case LookupResultKind.Inaccessible                : Return CandidateReason.Inaccessible
+                  Case LookupResultKind.NotAValue                   : Return CandidateReason.NotAValue
+                  Case LookupResultKind.NotAVariable                : Return CandidateReason.NotAVariable
+                  Case LookupResultKind.NotReferencable             : Return CandidateReason.NotReferencable
+                  Case LookupResultKind.MustNotBeInstance,
+                       LookupResultKind.MustBeInstance              : Return CandidateReason.StaticInstanceMismatch
+                  Case LookupResultKind.Ambiguous                   : Return CandidateReason.Ambiguous
+                  Case LookupResultKind.MemberGroup                 : Return CandidateReason.MemberGroup
+                  Case Else
+                       ' Should not call this on LookupResultKind.Good or undefined kind
+                       Throw ExceptionUtilities.UnexpectedValue(resultKind)
             End Select
         End Function
     End Module

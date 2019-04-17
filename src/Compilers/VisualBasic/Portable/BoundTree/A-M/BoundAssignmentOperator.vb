@@ -7,22 +7,35 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Partial Friend NotInheritable Class BoundAssignmentOperator
         Inherits BoundExpression
 
-        Public Sub New(syntax As SyntaxNode, left As BoundExpression, right As BoundExpression, suppressObjectClone As Boolean, type As TypeSymbol, Optional hasErrors As Boolean = False)
+        Public Sub New(
+                        syntax              As SyntaxNode,
+                        left                As BoundExpression,
+                        right               As BoundExpression,
+                        suppressObjectClone As Boolean,
+                        type                As TypeSymbol,
+               Optional hasErrors           As Boolean = False
+                      )
             Me.New(syntax, left, leftOnTheRightOpt:=Nothing, right:=right, suppressObjectClone:=suppressObjectClone, type:=type, hasErrors:=hasErrors)
         End Sub
 
-        Public Sub New(syntax As SyntaxNode, left As BoundExpression, right As BoundExpression, suppressObjectClone As Boolean, Optional hasErrors As Boolean = False)
+        Public Sub New(
+                        syntax              As SyntaxNode,
+                        left                As BoundExpression,
+                        right               As BoundExpression,
+                        suppressObjectClone As Boolean,
+               Optional hasErrors           As Boolean = False
+                      )
             Me.New(syntax, left, leftOnTheRightOpt:=Nothing, right:=right, suppressObjectClone:=suppressObjectClone, hasErrors:=hasErrors)
         End Sub
 
         Public Sub New(
-            syntax As SyntaxNode,
-            left As BoundExpression,
-            leftOnTheRightOpt As BoundCompoundAssignmentTargetPlaceholder,
-            right As BoundExpression,
-            suppressObjectClone As Boolean,
-            Optional hasErrors As Boolean = False
-        )
+                        syntax              As SyntaxNode,
+                        left                As BoundExpression,
+                        leftOnTheRightOpt   As BoundCompoundAssignmentTargetPlaceholder,
+                        right               As BoundExpression,
+                        suppressObjectClone As Boolean,
+               Optional hasErrors           As Boolean = False
+                      )
             'NOTE: even though in general assignment returns the value of the Right,
             '      the type of the operator is the type of the Left as that is the type of the location 
             '      into which the Right is stored.

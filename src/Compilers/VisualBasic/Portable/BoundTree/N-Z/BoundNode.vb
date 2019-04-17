@@ -33,22 +33,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Sub New(kind As BoundKind, syntax As SyntaxNode, hasErrors As Boolean)
             MyClass.New(kind, syntax)
 
-            If hasErrors Then
-                _attributes = BoundNodeAttributes.HasErrors
-            End If
+            If hasErrors Then _attributes = BoundNodeAttributes.HasErrors
         End Sub
 
         Protected Sub CopyAttributes(node As BoundNode)
-            If node.WasCompilerGenerated Then
-                Me.SetWasCompilerGenerated()
-            End If
+            If node.WasCompilerGenerated Then Me.SetWasCompilerGenerated()
         End Sub
 
         <Conditional("DEBUG")>
         Private Shared Sub ValidateLocationInformation(kind As BoundKind, syntax As SyntaxNode)
             ' We should always have a syntax node and a syntax tree as well, unless it is a hidden sequence point.
             ' If it's a sequence point, it must have a syntax tree to retrieve the file name.
-            Debug.Assert(kind = BoundKind.SequencePoint OrElse kind = BoundKind.SequencePointExpression OrElse syntax IsNot Nothing)
+            Debug.Assert(kind.IsEither(BoundKind.SequencePoint, BoundKind.SequencePointExpression) OrElse syntax IsNot Nothing)
         End Sub
 
         Public ReadOnly Property HasErrors As Boolean

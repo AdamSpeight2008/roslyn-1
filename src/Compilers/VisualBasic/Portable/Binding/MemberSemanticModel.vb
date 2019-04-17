@@ -1960,10 +1960,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ' but it will not happen in some scenarios such as for field or property 
                 ' initializers, let's add it to prevent re-binding 
 
-                Debug.Assert(bindingRoot.Kind = SyntaxKind.FieldDeclaration OrElse
-                             bindingRoot.Kind = SyntaxKind.PropertyStatement OrElse
-                             bindingRoot.Kind = SyntaxKind.Parameter OrElse
-                             bindingRoot.Kind = SyntaxKind.EnumMemberDeclaration OrElse
+                Debug.Assert(bindingRoot.Kind.IsEither(SyntaxKind.FieldDeclaration,
+                                                       SyntaxKind.PropertyStatement,
+                                                       SyntaxKind.Parameter,
+                                                       SyntaxKind.EnumMemberDeclaration) OrElse
                              bindingRoot Is Me.Root AndAlso Me.IsSpeculativeSemanticModel)
 
                 _guardedNodeMap.Add(bindingRoot, ImmutableArray.Create(Of BoundNode)(boundRoot))

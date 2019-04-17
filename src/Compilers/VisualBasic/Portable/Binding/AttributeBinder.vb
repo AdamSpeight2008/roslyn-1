@@ -12,21 +12,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Friend NotInheritable Class AttributeBinder
         Inherits Binder
 
-        ''' <summary> Root syntax node </summary>
-        Private ReadOnly _root As VisualBasicSyntaxNode
-
         Public Sub New(containingBinder As Binder, tree As SyntaxTree, Optional node As VisualBasicSyntaxNode = Nothing)
             MyBase.New(containingBinder, tree)
 
-            _root = node
+            Root = node
         End Sub
 
         ''' <summary> Field or property declaration statement syntax node </summary>
         Friend ReadOnly Property Root As VisualBasicSyntaxNode
-            Get
-                Return _root
-            End Get
-        End Property
 
         ''' <summary>
         ''' Some nodes have special binder's for their contents 

@@ -16,7 +16,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
              diagnostics As DiagnosticBag
         ) As BoundExpression
 
-            Debug.Assert(node.Kind = SyntaxKind.IsExpression OrElse node.Kind = SyntaxKind.IsNotExpression)
+            Debug.Assert(node.Kind.IsEither(SyntaxKind.IsExpression, SyntaxKind.IsNotExpression))
             Dim [isNot] As Boolean = (node.Kind = SyntaxKind.IsNotExpression)
 
             ' The function below will make sure they are RValues.

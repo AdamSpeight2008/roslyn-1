@@ -350,40 +350,24 @@ lAgain:
 
             Dim type As SpecialType
             Select Case node.Keyword.Kind
-                Case SyntaxKind.ObjectKeyword
-                    type = SpecialType.System_Object
-                Case SyntaxKind.BooleanKeyword
-                    type = SpecialType.System_Boolean
-                Case SyntaxKind.DateKeyword
-                    type = SpecialType.System_DateTime
-                Case SyntaxKind.CharKeyword
-                    type = SpecialType.System_Char
-                Case SyntaxKind.StringKeyword
-                    type = SpecialType.System_String
-                Case SyntaxKind.DecimalKeyword
-                    type = SpecialType.System_Decimal
-                Case SyntaxKind.ByteKeyword
-                    type = SpecialType.System_Byte
-                Case SyntaxKind.SByteKeyword
-                    type = SpecialType.System_SByte
-                Case SyntaxKind.UShortKeyword
-                    type = SpecialType.System_UInt16
-                Case SyntaxKind.ShortKeyword
-                    type = SpecialType.System_Int16
-                Case SyntaxKind.UIntegerKeyword
-                    type = SpecialType.System_UInt32
-                Case SyntaxKind.IntegerKeyword
-                    type = SpecialType.System_Int32
-                Case SyntaxKind.ULongKeyword
-                    type = SpecialType.System_UInt64
-                Case SyntaxKind.LongKeyword
-                    type = SpecialType.System_Int64
-                Case SyntaxKind.SingleKeyword
-                    type = SpecialType.System_Single
-                Case SyntaxKind.DoubleKeyword
-                    type = SpecialType.System_Double
-                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(node.Keyword.Kind)
+                   Case SyntaxKind.ObjectKeyword   : type = SpecialType.System_Object
+                   Case SyntaxKind.BooleanKeyword  : type = SpecialType.System_Boolean
+                   Case SyntaxKind.DateKeyword     : type = SpecialType.System_DateTime
+                   Case SyntaxKind.CharKeyword     : type = SpecialType.System_Char
+                   Case SyntaxKind.StringKeyword   : type = SpecialType.System_String
+                   Case SyntaxKind.DecimalKeyword  : type = SpecialType.System_Decimal
+                   Case SyntaxKind.ByteKeyword     : type = SpecialType.System_Byte
+                   Case SyntaxKind.SByteKeyword    : type = SpecialType.System_SByte
+                   Case SyntaxKind.UShortKeyword   : type = SpecialType.System_UInt16
+                   Case SyntaxKind.ShortKeyword    : type = SpecialType.System_Int16
+                   Case SyntaxKind.UIntegerKeyword : type = SpecialType.System_UInt32
+                   Case SyntaxKind.IntegerKeyword  : type = SpecialType.System_Int32
+                   Case SyntaxKind.ULongKeyword    : type = SpecialType.System_UInt64
+                   Case SyntaxKind.LongKeyword     : type = SpecialType.System_Int64
+                   Case SyntaxKind.SingleKeyword   : type = SpecialType.System_Single
+                   Case SyntaxKind.DoubleKeyword   : type = SpecialType.System_Double
+                   Case Else
+                        Throw ExceptionUtilities.UnexpectedValue(node.Keyword.Kind)
             End Select
 
             ' We discard diagnostics in case 

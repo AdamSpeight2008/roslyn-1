@@ -27,21 +27,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
 #If DEBUG Then
         Private Sub Validate()
-            If InitializerOpt IsNot Nothing Then
-
-                InitializerOpt.AssertRValue()
-
-                Debug.Assert(DeclarationInitializerOpt IsNot IdentifierInitializerOpt)
-
-                If Not HasErrors Then
-                    If InitializerOpt.Type Is Nothing Then
-                        Debug.Assert(LocalSymbol.IsConst AndAlso InitializerOpt.IsStrictNothingLiteral())
-                    Else
-                        Debug.Assert(LocalSymbol.Type.IsSameTypeIgnoringAll(InitializerOpt.Type) OrElse InitializerOpt.Type.IsErrorType() OrElse
-                                     (LocalSymbol.IsConst AndAlso LocalSymbol.Type.SpecialType = SpecialType.System_Object AndAlso
-                                      InitializerOpt.IsConstant AndAlso InitializerOpt.ConstantValueOpt.IsNothing))
-                    End If
-                End If
+            If InitializerOpt Is Nothing Then Exit Sub
+            InitializerOpt.AssertRValue()
+            Debug.Assert(DeclarationInitializerOpt IsNot IdentifierInitializerOpt)
+            If HasErrors Then Exit Sub
+            If InitializerOpt.Type Is Nothing Then
+               Debug.Assert(LocalSymbol.IsConst AndAlso InitializerOpt.IsStrictNothingLiteral())
+            Else
+               Debug.Assert(LocalSymbol.Type.IsSameTypeIgnoringAll(InitializerOpt.Type) OrElse InitializerOpt.Type.IsErrorType() OrElse
+                           (LocalSymbol.IsConst AndAlso LocalSymbol.Type.SpecialType = SpecialType.System_Object AndAlso
+                            InitializerOpt.IsConstant AndAlso InitializerOpt.ConstantValueOpt.IsNothing))
             End If
         End Sub
 #End If

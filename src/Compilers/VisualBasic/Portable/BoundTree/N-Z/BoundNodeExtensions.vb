@@ -16,16 +16,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         'Return if any node in an array of nodes has errors.
         <Extension()>
         Public Function NonNullAndHasErrors(Of T As BoundNode)(nodeArray As ImmutableArray(Of T)) As Boolean
-            If nodeArray.IsDefault Then
-                Return False
-            End If
-
+            If nodeArray.IsDefault Then Return False
             For i As Integer = 0 To nodeArray.Length - 1
-                If nodeArray(i).HasErrors Then
-                    Return True
-                End If
+                If nodeArray(i).HasErrors Then Return True
             Next
-
             Return False
         End Function
 
@@ -63,7 +57,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         <Extension()>
         Public Function IsAnyLambda(boundNode As BoundNode) As Boolean
             Dim kind = boundNode.Kind
-            Return kind = BoundKind.UnboundLambda OrElse kind = BoundKind.Lambda OrElse kind = BoundKind.QueryLambda OrElse kind = BoundKind.GroupTypeInferenceLambda
+            Return kind.IsEither(BoundKind.UnboundLambda, BoundKind.Lambda, BoundKind.QueryLambda, BoundKind.GroupTypeInferenceLambda)
         End Function
     End Module
 End Namespace

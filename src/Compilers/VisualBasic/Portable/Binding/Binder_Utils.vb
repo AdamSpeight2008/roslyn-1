@@ -27,12 +27,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Shared Function DecodeVariance(varianceKeywordOpt As SyntaxToken) As VarianceKind
             Select Case varianceKeywordOpt.Kind
-                Case SyntaxKind.None
-                    Return VarianceKind.None
-                Case SyntaxKind.InKeyword
-                    Return VarianceKind.In
-                Case SyntaxKind.OutKeyword
-                    Return VarianceKind.Out
+                Case SyntaxKind.None        : Return VarianceKind.None
+                Case SyntaxKind.InKeyword   : Return VarianceKind.In
+                Case SyntaxKind.OutKeyword  : Return VarianceKind.Out
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(varianceKeywordOpt.Kind)
             End Select
@@ -84,31 +81,31 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         Friend Shared Function MapKeywordToFlag(syntax As SyntaxToken) As SourceMemberFlags
             Select Case syntax.Kind
-                Case SyntaxKind.PrivateKeyword : Return SourceMemberFlags.Private
-                Case SyntaxKind.FriendKeyword : Return SourceMemberFlags.Friend
-                Case SyntaxKind.ProtectedKeyword : Return SourceMemberFlags.Protected
-                Case SyntaxKind.PublicKeyword : Return SourceMemberFlags.Public
-                Case SyntaxKind.SharedKeyword : Return SourceMemberFlags.Shared
-                Case SyntaxKind.ReadOnlyKeyword : Return SourceMemberFlags.ReadOnly
-                Case SyntaxKind.WriteOnlyKeyword : Return SourceMemberFlags.WriteOnly
-                Case SyntaxKind.OverloadsKeyword : Return SourceMemberFlags.Overloads
-                Case SyntaxKind.OverridableKeyword : Return SourceMemberFlags.Overridable
-                Case SyntaxKind.MustOverrideKeyword : Return SourceMemberFlags.MustOverride
-                Case SyntaxKind.NotOverridableKeyword : Return SourceMemberFlags.NotOverridable
-                Case SyntaxKind.OverridesKeyword : Return SourceMemberFlags.Overrides
-                Case SyntaxKind.ShadowsKeyword : Return SourceMemberFlags.Shadows
-                Case SyntaxKind.ConstKeyword : Return SourceMemberFlags.Const
-                Case SyntaxKind.StaticKeyword : Return SourceMemberFlags.Static
-                Case SyntaxKind.DefaultKeyword : Return SourceMemberFlags.Default
-                Case SyntaxKind.WithEventsKeyword : Return SourceMemberFlags.WithEvents
-                Case SyntaxKind.WideningKeyword : Return SourceMemberFlags.Widening
-                Case SyntaxKind.NarrowingKeyword : Return SourceMemberFlags.Narrowing
-                Case SyntaxKind.PartialKeyword : Return SourceMemberFlags.Partial
-                Case SyntaxKind.DimKeyword : Return SourceMemberFlags.Dim
-                Case SyntaxKind.MustInheritKeyword : Return SourceMemberFlags.MustInherit
-                Case SyntaxKind.NotInheritableKeyword : Return SourceMemberFlags.NotInheritable
-                Case SyntaxKind.AsyncKeyword : Return SourceMemberFlags.Async
-                Case SyntaxKind.IteratorKeyword : Return SourceMemberFlags.Iterator
+                   Case SyntaxKind.PrivateKeyword           : Return SourceMemberFlags.Private
+                   Case SyntaxKind.FriendKeyword            : Return SourceMemberFlags.Friend
+                   Case SyntaxKind.ProtectedKeyword         : Return SourceMemberFlags.Protected
+                   Case SyntaxKind.PublicKeyword            : Return SourceMemberFlags.Public
+                   Case SyntaxKind.SharedKeyword            : Return SourceMemberFlags.Shared
+                   Case SyntaxKind.ReadOnlyKeyword          : Return SourceMemberFlags.ReadOnly
+                   Case SyntaxKind.WriteOnlyKeyword         : Return SourceMemberFlags.WriteOnly
+                   Case SyntaxKind.OverloadsKeyword         : Return SourceMemberFlags.Overloads
+                   Case SyntaxKind.OverridableKeyword       : Return SourceMemberFlags.Overridable
+                   Case SyntaxKind.MustOverrideKeyword      : Return SourceMemberFlags.MustOverride
+                   Case SyntaxKind.NotOverridableKeyword    : Return SourceMemberFlags.NotOverridable
+                   Case SyntaxKind.OverridesKeyword         : Return SourceMemberFlags.Overrides
+                   Case SyntaxKind.ShadowsKeyword           : Return SourceMemberFlags.Shadows
+                   Case SyntaxKind.ConstKeyword             : Return SourceMemberFlags.Const
+                   Case SyntaxKind.StaticKeyword            : Return SourceMemberFlags.Static
+                   Case SyntaxKind.DefaultKeyword           : Return SourceMemberFlags.Default
+                   Case SyntaxKind.WithEventsKeyword        : Return SourceMemberFlags.WithEvents
+                   Case SyntaxKind.WideningKeyword          : Return SourceMemberFlags.Widening
+                   Case SyntaxKind.NarrowingKeyword         : Return SourceMemberFlags.Narrowing
+                   Case SyntaxKind.PartialKeyword           : Return SourceMemberFlags.Partial
+                   Case SyntaxKind.DimKeyword               : Return SourceMemberFlags.Dim
+                   Case SyntaxKind.MustInheritKeyword       : Return SourceMemberFlags.MustInherit
+                   Case SyntaxKind.NotInheritableKeyword    : Return SourceMemberFlags.NotInheritable
+                   Case SyntaxKind.AsyncKeyword             : Return SourceMemberFlags.Async
+                   Case SyntaxKind.IteratorKeyword          : Return SourceMemberFlags.Iterator
 
                 Case Else
 #If DEBUG Then

@@ -8,11 +8,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Partial Friend Class BoundArrayCreation
         Inherits BoundExpression
 
-        Public Sub New(syntax As SyntaxNode, bounds As ImmutableArray(Of BoundExpression), initializerOpt As BoundArrayInitialization, type As TypeSymbol, Optional hasErrors As Boolean = False)
+        Public Sub New(
+                        syntax          As SyntaxNode,
+                        bounds          As ImmutableArray(Of BoundExpression),
+                        initializerOpt  As BoundArrayInitialization,
+                        type            As TypeSymbol,
+               Optional hasErrors       As Boolean = False
+                      )
             Me.New(syntax, False, bounds, initializerOpt, Nothing, Nothing, type, hasErrors)
         End Sub
 
-        Public Sub New(syntax As SyntaxNode, bounds As ImmutableArray(Of BoundExpression), initializerOpt As BoundArrayInitialization, arrayLiteralOpt As BoundArrayLiteral, arrayLiteralConversion As ConversionKind, type As TypeSymbol, Optional hasErrors As Boolean = False)
+        Public Sub New(
+                        syntax                  As SyntaxNode,
+                        bounds                  As ImmutableArray(Of BoundExpression),
+                        initializerOpt          As BoundArrayInitialization,
+                        arrayLiteralOpt         As BoundArrayLiteral,
+                        arrayLiteralConversion  As ConversionKind,
+                        type                    As TypeSymbol,
+               Optional hasErrors               As Boolean = False
+                      )
             Me.New(syntax, False, bounds, initializerOpt, arrayLiteralOpt, arrayLiteralConversion, type, hasErrors)
         End Sub
 
@@ -20,13 +34,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Sub Validate()
             Dim elementType As TypeSymbol = ErrorTypeSymbol.UnknownResultType
 
-            If Type.Kind = SymbolKind.ArrayType Then
-                elementType = DirectCast(Type, ArrayTypeSymbol).ElementType
-            End If
-
-            If InitializerOpt IsNot Nothing Then
-                ValidateInitializer(InitializerOpt, elementType)
-            End If
+            If Type.Kind = SymbolKind.ArrayType Then elementType = DirectCast(Type, ArrayTypeSymbol).ElementType
+            If InitializerOpt IsNot Nothing     Then ValidateInitializer(InitializerOpt, elementType)
         End Sub
 
         Private Sub ValidateInitializer(initializer As BoundArrayInitialization, elementType As TypeSymbol)

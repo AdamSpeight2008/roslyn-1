@@ -14,9 +14,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Debug.Assert(Me.ResumeWithoutLabelOpt Is Nothing OrElse Me.ContainsResume)
 
             If Me.ResumeWithoutLabelOpt IsNot Nothing Then
-                Debug.Assert(Me.ResumeWithoutLabelOpt.Kind = SyntaxKind.OnErrorResumeNextStatement OrElse
-                             Me.ResumeWithoutLabelOpt.Kind = SyntaxKind.ResumeNextStatement OrElse
-                             Me.ResumeWithoutLabelOpt.Kind = SyntaxKind.ResumeStatement)
+                Debug.Assert(Me.ResumeWithoutLabelOpt.Kind.IsEither(SyntaxKind.OnErrorResumeNextStatement,
+                                                                    SyntaxKind.ResumeNextStatement,
+                                                                    SyntaxKind.ResumeStatement))
             End If
         End Sub
 #End If

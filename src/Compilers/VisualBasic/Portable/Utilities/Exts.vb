@@ -22,8 +22,33 @@ Namespace Global.Microsoft.CodeAnalysis.VisualBasic
     Friend Function IsEither(k As SyntaxKind, k0 As SyntaxKind, k1 As SyntaxKind, k2 As SyntaxKind, k3 As SyntaxKind, k4 As SyntaxKind) As Boolean
         Return k.IsEither(k0,k1) OrElse k.IsEither(k2,k3) OrElse k=k4
     End Function
-            <Extension>
+
+    <Extension>
     Friend Function IsEither(k As SyntaxKind, k0 As SyntaxKind, k1 As SyntaxKind, k2 As SyntaxKind, k3 As SyntaxKind, k4 As SyntaxKind, k5 As SyntaxKind) As Boolean
+        Return k.IsEither(k0, k1) OrElse k.IsEither(k2,k3) OrElse k.IsEither(k4,k5)
+    End Function
+    <Extension>
+    Friend Function IsEither(k As SyntaxKind, kinds() As SyntaxKind) As Boolean
+        Return kinds.Contains(k)
+    End Function
+    <Extension>
+    Friend Function IsEither(k As BoundKind, k0 As BoundKind, k1 As BoundKind) As Boolean
+        Return k = k0 OrElse k = k1
+    End Function
+    <Extension>
+    Friend Function IsEither(k As BoundKind, k0 As BoundKind, k1 As BoundKind, k2 As BoundKind) As Boolean
+        Return k.IsEither(k0,k1) OrElse k=k2
+    End Function
+            <Extension>
+    Friend Function IsEither(k As BoundKind, k0 As BoundKind, k1 As BoundKind, k2 As BoundKind, k3 As BoundKind) As Boolean
+        Return k.IsEither(k0, k1) OrElse k.IsEither(k2,k3)
+    End Function
+    <Extension>
+    Friend Function IsEither(k As BoundKind, k0 As BoundKind, k1 As BoundKind, k2 As BoundKind, k3 As BoundKind, k4 As BoundKind) As Boolean
+        Return k.IsEither(k0,k1) OrElse k.IsEither(k2,k3) OrElse k=k4
+    End Function
+            <Extension>
+    Friend Function IsEither(k As BoundKind, k0 As BoundKind, k1 As BoundKind, k2 As BoundKind, k3 As BoundKind, k4 As BoundKind, k5 As BoundKind) As Boolean
         Return k.IsEither(k0, k1) OrElse k.IsEither(k2,k3) OrElse k.IsEither(k4,k5)
     End Function
 

@@ -23,11 +23,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         Public ReadOnly Property IsSingleLine As Boolean
             Get
-                Debug.Assert(TypeOf Me.Syntax Is LambdaExpressionSyntax)
-                Dim kind As SyntaxKind = Me.Syntax.Kind
-
-                Return kind.i(IsEither(SyntaxKind.SingleLineFunctionLambdaExpression,
-                                       SyntaxKind.SingleLineSubLambdaExpression))
+                Debug.Assert(TypeOf Syntax Is LambdaExpressionSyntax)
+                Return Syntax.Kind.IsEither(SyntaxKind.SingleLineFunctionLambdaExpression,
+                                            SyntaxKind.SingleLineSubLambdaExpression)
             End Get
         End Property
 
@@ -36,17 +34,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         Public ReadOnly Property IsFunctionLambda As Boolean
             Get
-                Debug.Assert(TypeOf Me.Syntax Is LambdaExpressionSyntax)
-                Dim kind As SyntaxKind = Me.Syntax.Kind
-
-                Return kind.IsEither(SyntaxKind.SingleLineFunctionLambdaExpression,
-                                     SyntaxKind.MultiLineFunctionLambdaExpression)
+                Debug.Assert(TypeOf Syntax Is LambdaExpressionSyntax)
+                Return Syntax.Kind.IsEither(SyntaxKind.SingleLineFunctionLambdaExpression,
+                                            SyntaxKind.MultiLineFunctionLambdaExpression)
             End Get
         End Property
 
         Public Function Bind(target As TargetSignature) As BoundLambda
             Debug.Assert(target IsNot Nothing)
-            Dim result As BoundLambda = _BindingCache.BoundLambdas.GetOrAdd(target, AddressOf DoBind)
+            Dim result = _BindingCache.BoundLambdas.GetOrAdd(target, AddressOf DoBind)
             Debug.Assert(result IsNot Nothing)
             Return result
         End Function
@@ -54,19 +50,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' target.ReturnType is ignored and must be Void, only parameter types are taken into consideration.
         ''' </summary>
-        Public Function InferReturnType(target As TargetSignature) As KeyValuePair(Of TypeSymbol, ImmutableArray(Of Diagnostic))
+        Public Function InferReturnType _
+            (
+              target As TargetSignature
+            ) As KeyValuePair(Of TypeSymbol, ImmutableArray(Of Diagnostic))
+
             Debug.Assert(target IsNot Nothing AndAlso target.ReturnType.IsVoidType())
 
-            If Me.ReturnType IsNot Nothing Then
-                Dim result = New KeyValuePair(Of TypeSymbol, ImmutableArray(Of Diagnostic))(If(Me.IsFunctionLambda AndAlso Me.ReturnType.IsVoidType(),
-                                                                               LambdaSymbol.ReturnTypeVoidReplacement,
-                                                                         Me.ReturnType),
-                                                                      Nothing)
+            If ReturnType IsNot Nothing Then
+                Dim result As New KeyValuePair(Of TypeSymbol,
+                    ImmutableArray(Of Diagnostic))(
+                    If(IsFunctionLambda AndAlso ReturnType.IsVoidType(), LambdaSymbol.ReturnTypeVoidReplacement, ReturnType), Nothing)
 
                 Return _BindingCache.InferredReturnType.GetOrAdd(target, result)
             End If
 
-            Debug.Assert(Me.IsFunctionLambda)
+            Debug.Assert(IsFunctionLambda)
 
             Return _BindingCache.InferredReturnType.GetOrAdd(target, AddressOf DoInferFunctionLambdaReturnType)
         End Function
@@ -77,22 +76,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Function GetBoundLambda(target As TargetSignature) As BoundLambda
             Dim result As BoundLambda = Nothing
-
-            If _BindingCache.BoundLambdas.TryGetValue(target, result) Then
-                Return result
-            End If
-
+            If _BindingCache.BoundLambdas.TryGetValue(target, result) Then Return result
             Return Nothing
         End Function
 
         Private Function GetSingletonBoundLambda() As BoundLambda
-
             Dim result As BoundLambda = _BindingCache.BoundLambdas.Values.FirstOrDefault()
-
-            If _BindingCache.BoundLambdas.Count = 1 Then
-                Return result
-            End If
-
+            If _BindingCache.BoundLambdas.Count = 1 Then Return result
             Return Nothing
         End Function
 
@@ -123,11 +113,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Function IsInferredDelegateForThisLambda(delegateType As NamedTypeSymbol) As Boolean
             Dim info As Tuple(Of NamedTypeSymbol, ImmutableArray(Of Diagnostic)) = _BindingCache.AnonymousDelegate
-            If info Is Nothing Then
-                Return False
-            End If
-
-            Return delegateType Is info.Item1
+            Return (info IsNot Nothing) AndAlso (delegateType Is info.Item1)
         End Function
 
         Friend Class TargetSignature
@@ -136,7 +122,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Public ReadOnly ReturnsByRef As Boolean
             Public ReadOnly ParameterIsByRef As BitVector
 
-            Public Sub New(parameterTypes As ImmutableArray(Of TypeSymbol), parameterIsByRef As BitVector, returnType As TypeSymbol, returnsByRef As Boolean)
+            Public Sub New _
+                (
+                  parameterTypes    As ImmutableArray(Of TypeSymbol),
+                  parameterIsByRef  As BitVector,
+                  returnType        As TypeSymbol,
+                  returnsByRef      As Boolean
+                )
                 Debug.Assert(Not parameterTypes.IsDefault)
                 Debug.Assert(Not parameterIsByRef.IsNull)
                 Debug.Assert(returnType IsNot Nothing)
@@ -146,7 +138,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Me.ReturnsByRef = returnsByRef
             End Sub
 
-            Public Sub New(params As ImmutableArray(Of ParameterSymbol), returnType As TypeSymbol, returnsByRef As Boolean)
+            Public Sub New _
+                (
+                  params        As ImmutableArray(Of ParameterSymbol),
+                  returnType    As TypeSymbol,
+                  returnsByRef  As Boolean
+                )
                 Debug.Assert(Not params.IsDefault)
                 Debug.Assert(returnType IsNot Nothing)
 
@@ -178,28 +175,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Sub
 
             Public Overrides Function GetHashCode() As Integer
-                Dim hashVal As Integer = 0
-
-                For Each item In ParameterTypes
-                    hashVal = Hash.Combine(item, hashVal)
-                Next
-
-                hashVal = Hash.Combine(ReturnType, hashVal)
-
-                Return hashVal
+                Return Hash.Combine(ReturnType,Hash.CombineValues(Of TypeSymbol)(ParameterTypes))
             End Function
 
-            Public Overrides Function Equals(obj As Object) As Boolean
-                If obj Is Me Then
-                    Return True
-                End If
+            Public Overrides Function Equals _
+                (
+                  obj As Object
+                ) As Boolean
 
+                If obj Is Me Then Return True
                 Dim other = TryCast(obj, TargetSignature)
-
-                If other Is Nothing OrElse other.ParameterTypes.Length <> Me.ParameterTypes.Length Then
-                    Return False
-                End If
-
+                If (other Is Nothing) OrElse (other.ParameterTypes.Length <> Me.ParameterTypes.Length) Then Return False
                 For i As Integer = 0 To ParameterTypes.Length - 1
                     If Not TypeSymbol.Equals(Me.ParameterTypes(i), other.ParameterTypes(i), TypeCompareKind.ConsiderEverything) OrElse
                        Me.ParameterIsByRef(i) <> other.ParameterIsByRef(i) Then

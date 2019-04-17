@@ -13,7 +13,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides ReadOnly Property ExpressionSymbol As Symbol
             Get
-                Return Me._lazyPropertySymbol.Value
+                Return _lazyPropertySymbol.Value
             End Get
         End Property
 

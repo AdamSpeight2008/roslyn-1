@@ -3,6 +3,7 @@
 Imports System.Collections.Immutable
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
+
     Friend Partial Class BoundBadExpression
         Implements IBoundInvalidNode
 
@@ -17,6 +18,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return StaticCast(Of BoundNode).From(ChildBoundNodes)
             End Get
         End Property
+
     End Class
 
     Partial Friend Class BoundAssignmentOperator

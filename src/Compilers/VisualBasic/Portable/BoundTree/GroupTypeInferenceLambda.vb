@@ -13,10 +13,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Function InferLambdaReturnType(delegateParams As ImmutableArray(Of ParameterSymbol)) As TypeSymbol
             ' Return type of the lambda must be an Anonymous Type corresponding to the following initializer:
             '   New With {key .$VB$ItAnonymous = <delegates's second parameter> }
-            If delegateParams.Length <> 2 Then
-                Return Nothing
-            Else
-                Return Compilation.AnonymousTypeManager.ConstructAnonymousTypeSymbol(
+            If delegateParams.Length <> 2 Then Return Nothing
+            Return Compilation.AnonymousTypeManager.ConstructAnonymousTypeSymbol(
                                             New AnonymousTypeDescriptor(
                                                 ImmutableArray.Create(New AnonymousTypeField(StringConstants.ItAnonymous,
                                                                        delegateParams(1).Type,
@@ -24,7 +22,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                                        True)),
                                                 Syntax.QueryClauseKeywordOrRangeVariableIdentifier.GetLocation(),
                                                 True))
-            End If
         End Function
 
     End Class

@@ -29,9 +29,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Public Overrides Function CheckAccessibility(sym As Symbol,
-                                                     <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo),
-                                                     Optional accessThroughType As TypeSymbol = Nothing,
-                                                     Optional basesBeingResolved As ConsList(Of Symbol) = Nothing) As AccessCheckResult
+                                    <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo),
+                                             Optional accessThroughType As TypeSymbol = Nothing,
+                                             Optional basesBeingResolved As ConsList(Of Symbol) = Nothing
+                                                    ) As AccessCheckResult
             Throw ExceptionUtilities.Unreachable
         End Function
 
@@ -122,7 +123,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return Nothing
         End Function
 
-        Protected Overrides Function TryBindOmittedLeftForConditionalAccess(node As ConditionalAccessExpressionSyntax, accessingBinder As Binder, diagnostics As DiagnosticBag) As BoundExpression
+        Protected Overrides Function TryBindOmittedLeftForConditionalAccess(node As ConditionalAccessExpressionSyntax,
+                                                                            accessingBinder As Binder,
+                                                                            diagnostics As DiagnosticBag) As BoundExpression
             Return Nothing
         End Function
 
@@ -238,7 +241,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             {StringConstants.XmlnsPrefix, StringConstants.XmlnsNamespace}
         }
 
-        Friend Overrides Function LookupXmlNamespace(prefix As String, ignoreXmlNodes As Boolean, <Out()> ByRef [namespace] As String, <Out()> ByRef fromImports As Boolean) As Boolean
+        Friend Overrides Function LookupXmlNamespace(prefix As String,
+                                                     ignoreXmlNodes As Boolean,
+                                                     <Out()> ByRef [namespace] As String,
+                                                     <Out()> ByRef fromImports As Boolean) As Boolean
             fromImports = False
             Return s_defaultXmlNamespaces.TryGetValue(prefix, [namespace])
         End Function

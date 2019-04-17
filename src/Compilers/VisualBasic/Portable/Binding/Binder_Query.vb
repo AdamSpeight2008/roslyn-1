@@ -2967,7 +2967,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Dim doErrorRecovery As Boolean = False
 
                     If declaredNames IsNot Nothing AndAlso Not declaredNames.Add(rangeVarName) Then
-                        Debug.Assert(item.Parent.Kind = SyntaxKind.SelectClause OrElse item.Parent.Kind = SyntaxKind.GroupByClause)
+                        Debug.Assert(item.Parent.Kind.IsEither(SyntaxKind.SelectClause, SyntaxKind.GroupByClause))
                         ReportDiagnostic(diagnostics, rangeVarNameSyntax, ERRID.ERR_QueryDuplicateAnonTypeMemberName1, rangeVarName)
                         doErrorRecovery = True  ' Shouldn't add to the scope.
                     Else

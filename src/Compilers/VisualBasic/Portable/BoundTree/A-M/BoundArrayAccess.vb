@@ -10,7 +10,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Friend Partial Class BoundArrayAccess
         Inherits BoundExpression
 
-        Public Sub New(syntax As SyntaxNode, expression As BoundExpression, indices As ImmutableArray(Of BoundExpression), type As TypeSymbol, Optional hasErrors As Boolean = False)
+        Public Sub New(
+                        syntax      As SyntaxNode,
+                        expression  As BoundExpression,
+                        indices     As ImmutableArray(Of BoundExpression),
+                        type        As TypeSymbol,
+               Optional hasErrors   As Boolean = False
+                      )
             Me.New(syntax, expression, indices, True, type, hasErrors)
         End Sub
 
@@ -19,10 +25,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Shadows Function MakeRValue() As BoundArrayAccess
-            If _IsLValue Then
-                Return Update(_Expression, _Indices, False, Type)
-            End If
-
+            If _IsLValue Then Return Update(_Expression, _Indices, False, Type)
             Return Me
         End Function
 

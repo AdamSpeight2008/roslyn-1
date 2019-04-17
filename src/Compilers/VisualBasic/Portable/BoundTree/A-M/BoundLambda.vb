@@ -15,12 +15,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Get
                 ' NOTE: the following assert fails if the lambda was compiler generated, this is 
                 ' NOTE: intentional as the method is not supposed to be called for such lambdas
-                Debug.Assert(TypeOf Me.Syntax Is LambdaExpressionSyntax)
+                Debug.Assert(TypeOf Syntax Is LambdaExpressionSyntax)
 
-                Dim kind As SyntaxKind = Me.Syntax.Kind
-
-                Return kind = SyntaxKind.SingleLineFunctionLambdaExpression OrElse
-                       kind = SyntaxKind.SingleLineSubLambdaExpression
+                Return Syntax.Kind.IsEither(SyntaxKind.SingleLineFunctionLambdaExpression,
+                                            SyntaxKind.SingleLineSubLambdaExpression)
             End Get
         End Property
 

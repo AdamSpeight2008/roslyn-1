@@ -638,8 +638,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Debug.Assert(Not node.IsLateBound() OrElse node.GetLateBoundAccessKind() = LateBoundAccessKind.Get)
                 Debug.Assert(If(node.Type Is Nothing,
                                 node.IsNothingLiteral() OrElse
-                                    node.GetMostEnclosedParenthesizedExpression().Kind = BoundKind.AddressOfOperator OrElse
-                                    node.GetMostEnclosedParenthesizedExpression().Kind = BoundKind.Lambda OrElse
+                                    node.GetMostEnclosedParenthesizedExpression().Kind.IsEither(BoundKind.AddressOfOperator, BoundKind.Lambda) OrElse
                                     node.Kind = BoundKind.QueryLambda,
                                 Not node.Type.IsVoidType()))
             End If

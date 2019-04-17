@@ -13,9 +13,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If Not Me.HasErrors Then
                 For Each initializer In Me.Initializers
                     Debug.Assert(initializer.Kind = BoundKind.AssignmentOperator)
-                    Debug.Assert(DirectCast(initializer, BoundAssignmentOperator).Left.Kind = BoundKind.BadExpression OrElse
-                                 DirectCast(initializer, BoundAssignmentOperator).Left.Kind = BoundKind.FieldAccess OrElse
-                                 DirectCast(initializer, BoundAssignmentOperator).Left.Kind = BoundKind.PropertyAccess)
+                    Debug.Assert(DirectCast(initializer, BoundAssignmentOperator).Left.Kind.IsEither(BoundKind.BadExpression,
+                                                                                                     BoundKind.FieldAccess,
+                                                                                                     BoundKind.PropertyAccess))
                 Next
             End If
         End Sub

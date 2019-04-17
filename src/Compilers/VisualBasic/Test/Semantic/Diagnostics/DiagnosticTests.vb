@@ -24,6 +24,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
                 ERRID.ERRWRN_NextAvailable
             }
             For Each id As ERRID In [Enum].GetValues(GetType(ERRID))
+                If id = ERRID.ERR_EndOfErrors Then Continue For
                 If Array.IndexOf(excludedIds, id) >= 0 Then
                     Continue For
                 End If
@@ -32,7 +33,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
                     Continue For
                 End If
                 Dim message = ErrorFactory.IdToString(id, CultureInfo.InvariantCulture)
-                Assert.False(String.IsNullOrEmpty(message))
+                Assert.False(String.IsNullOrEmpty(message), $"ID:=[{id.ToString()}]")
             Next
         End Sub
 

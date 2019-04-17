@@ -69,9 +69,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     ' (b) call statement we are binding is 'the first' statement of the constructor
                     Dim receiver As BoundExpression = boundMemberGroup.ReceiverOpt
 
-                    If receiver IsNot Nothing AndAlso (receiver.Kind = BoundKind.MeReference OrElse
-                                                       receiver.Kind = BoundKind.MyBaseReference OrElse
-                                                       receiver.Kind = BoundKind.MyClassReference) Then
+                    If receiver IsNot Nothing AndAlso (receiver.Kind.IsEither(BoundKind.MeReference,
+                                                                              BoundKind.MyBaseReference,
+                                                                              BoundKind.MyClassReference)) Then
                         ' (c) receiver is 'Me'/'MyClass'/'MyBase'
                         Return True
                     End If
@@ -348,13 +348,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Dim defaultPropertyGroup As BoundExpression = BindDefaultPropertyGroup(If(node.Expression, node), target, diagnostics)
 
                     If defaultPropertyGroup IsNot Nothing Then
-                        Debug.Assert(defaultPropertyGroup.Kind = BoundKind.PropertyGroup OrElse
-                                     defaultPropertyGroup.Kind = BoundKind.MethodGroup OrElse
+                        Debug.Assert(defaultPropertyGroup.Kind.IsEither(BoundKind.PropertyGroup, BoundKind.MethodGroup) OrElse
                                      defaultPropertyGroup.HasErrors)
 
                         hasIndexableTarget = True
 
-                        If defaultPropertyGroup.Kind = BoundKind.PropertyGroup OrElse defaultPropertyGroup.Kind = BoundKind.MethodGroup Then
+                        If defaultPropertyGroup.Kind.IsEither(BoundKind.PropertyGroup, BoundKind.MethodGroup) Then
                             Return BindInvocationExpressionPossiblyWithoutArguments(
                                 node,
                                 TypeCharacter.None,
@@ -529,7 +528,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If result.HasSymbol Then
                 defaultMemberGroup = BindSymbolAccess(node, result, LookupOptions.Default, target, Nothing, QualificationKind.QualifiedViaValue, diagnostics)
                 Debug.Assert(defaultMemberGroup IsNot Nothing)
-                Debug.Assert((defaultMemberGroup.Kind = BoundKind.BadExpression) OrElse (defaultMemberGroup.Kind = BoundKind.PropertyGroup))
+                Debug.Assert(defaultMemberGroup.Kind.IsEither(BoundKind.BadExpression, BoundKind.PropertyGroup))
 
             Else
                 ' All queryable sources have default indexer, which maps to an ElementAtOrDefault method or property on the source.

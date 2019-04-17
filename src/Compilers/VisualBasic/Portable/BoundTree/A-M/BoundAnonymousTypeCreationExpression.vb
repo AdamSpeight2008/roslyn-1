@@ -14,10 +14,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Dim type = Me.Type
                 Debug.Assert(type IsNot Nothing)
 
-                If type.IsErrorType Then
-                    Return Nothing
-                End If
-
+                If type.IsErrorType Then Return Nothing
                 Debug.Assert(type.IsAnonymousType)
                 Return DirectCast(type, NamedTypeSymbol).InstanceConstructors(0)
             End Get

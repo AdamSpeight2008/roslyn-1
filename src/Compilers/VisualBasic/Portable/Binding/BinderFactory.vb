@@ -556,7 +556,7 @@ lAgain:
             End If
 
             ' member declared on top-level or in a namespace is enclosed in an implicit type:
-            If node IsNot Nothing AndAlso (node.Kind = SyntaxKind.NamespaceBlock OrElse node.Kind = SyntaxKind.CompilationUnit) Then
+            If node IsNot Nothing AndAlso node.Kind.IsEither(SyntaxKind.NamespaceBlock, SyntaxKind.CompilationUnit) Then
                 Return DirectCast(
                     GetBinderForNodeAndUsage(node, NodeUsage.ImplicitClass,
                                              containingBinder:=containingBinder), NamedTypeBinder)

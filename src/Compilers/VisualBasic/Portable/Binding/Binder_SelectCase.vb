@@ -207,14 +207,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim operatorKind As BinaryOperatorKind
             Select Case node.Kind
-                Case SyntaxKind.CaseEqualsClause : operatorKind = BinaryOperatorKind.Equals
-                Case SyntaxKind.CaseNotEqualsClause : operatorKind = BinaryOperatorKind.NotEquals
-                Case SyntaxKind.CaseLessThanOrEqualClause : operatorKind = BinaryOperatorKind.LessThanOrEqual
-                Case SyntaxKind.CaseGreaterThanOrEqualClause : operatorKind = BinaryOperatorKind.GreaterThanOrEqual
-                Case SyntaxKind.CaseLessThanClause : operatorKind = BinaryOperatorKind.LessThan
-                Case SyntaxKind.CaseGreaterThanClause : operatorKind = BinaryOperatorKind.GreaterThan
-                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(node.Kind)
+                   Case SyntaxKind.CaseEqualsClause             : operatorKind = BinaryOperatorKind.Equals
+                   Case SyntaxKind.CaseNotEqualsClause          : operatorKind = BinaryOperatorKind.NotEquals
+                   Case SyntaxKind.CaseLessThanOrEqualClause    : operatorKind = BinaryOperatorKind.LessThanOrEqual
+                   Case SyntaxKind.CaseGreaterThanOrEqualClause : operatorKind = BinaryOperatorKind.GreaterThanOrEqual
+                   Case SyntaxKind.CaseLessThanClause           : operatorKind = BinaryOperatorKind.LessThan
+                   Case SyntaxKind.CaseGreaterThanClause        : operatorKind = BinaryOperatorKind.GreaterThan
+                   Case Else
+                        Throw ExceptionUtilities.UnexpectedValue(node.Kind)
             End Select
 
             Dim conditionOpt As BoundExpression = Nothing

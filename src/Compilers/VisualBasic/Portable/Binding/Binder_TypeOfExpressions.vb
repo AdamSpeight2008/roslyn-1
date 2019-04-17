@@ -7,7 +7,8 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Namespace Microsoft.CodeAnalysis.VisualBasic
       
     Partial Friend Class Binder
-                Private Function BindTypeOfExpression _ 
+
+        Private Function BindTypeOfExpression _ 
             (
               node          As TypeOfExpressionSyntax,
               diagnostics   As DiagnosticBag

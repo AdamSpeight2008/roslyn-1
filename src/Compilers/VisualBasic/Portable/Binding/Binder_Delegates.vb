@@ -117,11 +117,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                     If boundFirstArgument IsNot Nothing Then
                         hadErrorsInFirstArgument = boundFirstArgument.HasErrors
-                        Debug.Assert(boundFirstArgument.Kind = BoundKind.BadExpression OrElse
-                                     boundFirstArgument.Kind = BoundKind.LateAddressOfOperator OrElse
-                                     boundFirstArgument.Kind = BoundKind.AddressOfOperator OrElse
-                                     boundFirstArgument.Kind = BoundKind.UnboundLambda)
-
+                        Debug.Assert(boundFirstArgument.Kind.IsEither(BoundKind.BadExpression,
+                                                                      BoundKind.LateAddressOfOperator,
+                                                                      BoundKind.AddressOfOperator,
+                                                                      BoundKind.UnboundLambda))
                         If argumentCount = 1 Then
                             boundFirstArgument = ApplyImplicitConversion(node,
                                                                          delegateType,

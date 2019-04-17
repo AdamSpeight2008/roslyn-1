@@ -336,12 +336,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private Sub PrepareBindingOfOmittedLeft(node As VisualBasicSyntaxNode, diagnostics As DiagnosticBag, accessingBinder As Binder)
             AssertExpressionIsNotFromStatementExpression(node)
-            Debug.Assert((node.Kind = SyntaxKind.SimpleMemberAccessExpression) OrElse
-                         (node.Kind = SyntaxKind.DictionaryAccessExpression) OrElse
-                         (node.Kind = SyntaxKind.XmlAttributeAccessExpression) OrElse
-                         (node.Kind = SyntaxKind.XmlElementAccessExpression) OrElse
-                         (node.Kind = SyntaxKind.XmlDescendantAccessExpression) OrElse
-                         (node.Kind = SyntaxKind.ConditionalAccessExpression))
+            Debug.Assert(node.Kind.IsEither(SyntaxKind.SimpleMemberAccessExpression,
+                                            SyntaxKind.DictionaryAccessExpression,
+                                            SyntaxKind.XmlAttributeAccessExpression,
+                                            SyntaxKind.XmlElementAccessExpression,
+                                            SyntaxKind.XmlDescendantAccessExpression,
+                                            SyntaxKind.ConditionalAccessExpression))
 
             Me.EnsureExpressionAndPlaceholder()
             ' NOTE: In case the call above produced diagnostics they were stored in 

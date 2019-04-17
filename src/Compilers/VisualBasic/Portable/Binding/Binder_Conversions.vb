@@ -266,23 +266,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim targetType As SpecialType
 
             Select Case node.Keyword.Kind
-                Case SyntaxKind.CBoolKeyword : targetType = SpecialType.System_Boolean
-                Case SyntaxKind.CByteKeyword : targetType = SpecialType.System_Byte
-                Case SyntaxKind.CCharKeyword : targetType = SpecialType.System_Char
-                Case SyntaxKind.CDateKeyword : targetType = SpecialType.System_DateTime
-                Case SyntaxKind.CDecKeyword : targetType = SpecialType.System_Decimal
-                Case SyntaxKind.CDblKeyword : targetType = SpecialType.System_Double
-                Case SyntaxKind.CIntKeyword : targetType = SpecialType.System_Int32
-                Case SyntaxKind.CLngKeyword : targetType = SpecialType.System_Int64
-                Case SyntaxKind.CObjKeyword : targetType = SpecialType.System_Object
-                Case SyntaxKind.CSByteKeyword : targetType = SpecialType.System_SByte
-                Case SyntaxKind.CShortKeyword : targetType = SpecialType.System_Int16
-                Case SyntaxKind.CSngKeyword : targetType = SpecialType.System_Single
-                Case SyntaxKind.CStrKeyword : targetType = SpecialType.System_String
-                Case SyntaxKind.CUIntKeyword : targetType = SpecialType.System_UInt32
-                Case SyntaxKind.CULngKeyword : targetType = SpecialType.System_UInt64
-                Case SyntaxKind.CUShortKeyword : targetType = SpecialType.System_UInt16
-                Case Else
+                   Case SyntaxKind.CBoolKeyword   : targetType = SpecialType.System_Boolean
+                   Case SyntaxKind.CByteKeyword   : targetType = SpecialType.System_Byte
+                   Case SyntaxKind.CCharKeyword   : targetType = SpecialType.System_Char
+                   Case SyntaxKind.CDateKeyword   : targetType = SpecialType.System_DateTime
+                   Case SyntaxKind.CDecKeyword    : targetType = SpecialType.System_Decimal
+                   Case SyntaxKind.CDblKeyword    : targetType = SpecialType.System_Double
+                   Case SyntaxKind.CIntKeyword    : targetType = SpecialType.System_Int32
+                   Case SyntaxKind.CLngKeyword    : targetType = SpecialType.System_Int64
+                   Case SyntaxKind.CObjKeyword    : targetType = SpecialType.System_Object
+                   Case SyntaxKind.CSByteKeyword  : targetType = SpecialType.System_SByte
+                   Case SyntaxKind.CShortKeyword  : targetType = SpecialType.System_Int16
+                   Case SyntaxKind.CSngKeyword    : targetType = SpecialType.System_Single
+                   Case SyntaxKind.CStrKeyword    : targetType = SpecialType.System_String
+                   Case SyntaxKind.CUIntKeyword   : targetType = SpecialType.System_UInt32
+                   Case SyntaxKind.CULngKeyword   : targetType = SpecialType.System_UInt64
+                   Case SyntaxKind.CUShortKeyword : targetType = SpecialType.System_UInt16
+                   Case Else
                     Throw ExceptionUtilities.UnexpectedValue(node.Keyword.Kind)
             End Select
 
