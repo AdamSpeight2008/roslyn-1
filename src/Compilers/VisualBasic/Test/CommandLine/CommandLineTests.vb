@@ -1250,7 +1250,7 @@ End Module").Path
             parsedArgs = DefaultParse({"/langVERSION:latest", "a.vb"}, _baseDirectory)
             parsedArgs.Errors.Verify()
             Assert.Equal(LanguageVersion.Latest, parsedArgs.ParseOptions.SpecifiedLanguageVersion)
-            Assert.Equal(LanguageVersion.VisualBasic15_7, parsedArgs.ParseOptions.LanguageVersion)
+            Assert.Equal(LanguageVersion.VisualBasic16, parsedArgs.ParseOptions.LanguageVersion)
             Assert.Equal(LanguageVersionService.Latest, parsedArgs.ParseOptions.LanguageVersion)
 
             ' default: "current version"
@@ -1807,8 +1807,8 @@ End Module").Path
             Assert.Equal(LanguageVersion.VisualBasic15_3, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic15_3))
             Assert.Equal(LanguageVersion.VisualBasic15_5, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic15_5))
             Assert.Equal(LanguageVersion.VisualBasic15_7, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic15_7))
-             Assert.Equal(LanguageVersion.VisualBasic15_7, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.Latest))
-           Assert.Equal(LanguageVersion.VisualBasic16, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic16))
+            Assert.Equal(LanguageVersion.VisualBasic16, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.Latest))
+            Assert.Equal(LanguageVersion.VisualBasic16, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic16))
             ' https//github.com/dotnet/roslyn/issues/29819 Once we are ready to remove the beta tag from VB 16 we should update Default/Latest accordingly
 
             ' The canary check is a reminder that this test needs to be updated when a language version is added

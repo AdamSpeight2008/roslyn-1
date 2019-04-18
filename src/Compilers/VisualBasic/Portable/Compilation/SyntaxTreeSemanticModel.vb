@@ -1583,8 +1583,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ' and is nested in member access. This is too wide definition, but it's 
                 ' difficult to improve this without doing semantic analysis
                 Return
+                
             End If
-
+            If expressionParent.Kind = SyntaxKind.FlagsEnumOperationExpression Then
+                Dim feoe = DirectCast(expressionParent, FlagsEnumOperationExpressionSyntax)
+                
+                Return 
+            End If
             ' CASE 2: If the region flow analysis is performed on the arguments of field declaration of array
             '         data type having explicit initializer, like 'Public AnArray(2) = {0, 1}'; 
             '         VB semantics generates an error about specifying both bounds and initializer and ignores them

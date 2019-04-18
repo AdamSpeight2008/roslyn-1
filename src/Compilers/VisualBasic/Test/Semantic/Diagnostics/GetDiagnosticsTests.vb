@@ -27,12 +27,12 @@ End Class
             ' CreateCompilation... method normalizes EOL chars of xml literals,
             ' so we cannot verify against spans in the original xml here as positions would differ
             Dim sourceText = compilation.SyntaxTrees.Single().GetText().ToString()
-            DiagnosticsHelper.VerifyDiagnostics(model, sourceText, "(?s)^.*$", "BC30035", "BC30248", "BC30203", "BC30157")
+            DiagnosticsHelper.VerifyDiagnostics(model, sourceText, "(?s)^.*$", "BC30035", "BC30248", "BC30201", "BC30201")
             DiagnosticsHelper.VerifyDiagnostics(model, sourceText, "@", "BC30035")
             DiagnosticsHelper.VerifyDiagnostics(model, sourceText, "#", "BC30248")
-            DiagnosticsHelper.VerifyDiagnostics(model, sourceText, "(?<=\!)", "BC30203", "BC30157")
-            DiagnosticsHelper.VerifyDiagnostics(model, sourceText, "!", "BC30203", "BC30157")
-        End Sub
+            DiagnosticsHelper.VerifyDiagnostics(model, sourceText, "(?<=\!)", "BC30201", "BC30201")
+            DiagnosticsHelper.VerifyDiagnostics(model, sourceText, "!", "BC30201", "BC30201")
+      End Sub
 
         <Fact>
         Public Sub DiagnosticsFilteredInMethodBodyInsideNamespace()
