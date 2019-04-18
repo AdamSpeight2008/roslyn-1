@@ -690,7 +690,42 @@ IInterpolatedStringOperation (OperationKind.InterpolatedString, Type: System.Str
         FormatString: 
           null
 ]]>.Value
-
+            expectedOperationTree ="IInterpolatedStringOperation (OperationKind.InterpolatedString, Type: System.String) (Syntax: '$""String {x ... nstant {1}""')
+  Parts(7):
+      IInterpolatedStringTextOperation (OperationKind.InterpolatedStringText, Type: null) (Syntax: 'String ')
+        Text: 
+          ILiteralOperation (OperationKind.Literal, Type: System.String, Constant: ""String "", IsImplicit) (Syntax: 'String ')
+      IInterpolationOperation (OperationKind.Interpolation, Type: null) (Syntax: '{x,20}')
+        Expression: 
+          IParameterReferenceOperation: x (OperationKind.ParameterReference, Type: System.String) (Syntax: 'x')
+        Alignment: 
+          ILiteralOperation (OperationKind.Literal, Type: System.Int32, Constant: 20) (Syntax: '20')
+        FormatString: 
+          null
+      IInterpolatedStringTextOperation (OperationKind.InterpolatedStringText, Type: null) (Syntax: ' and ')
+        Text: 
+          ILiteralOperation (OperationKind.Literal, Type: System.String, Constant: "" and "", IsImplicit) (Syntax: ' and ')
+      IInterpolationOperation (OperationKind.Interpolation, Type: null) (Syntax: '{y:D3}')
+        Expression: 
+          IParameterReferenceOperation: y (OperationKind.ParameterReference, Type: System.Int32) (Syntax: 'y')
+        Alignment: 
+          null
+        FormatString: 
+          ILiteralOperation (OperationKind.Literal, Type: System.String, Constant: ""D3"") (Syntax: ':D3')
+      IInterpolatedStringTextOperation (OperationKind.InterpolatedStringText, Type: null) (Syntax: ' and constant ')
+        Text: 
+          ILiteralOperation (OperationKind.Literal, Type: System.String, Constant: "" and constant "", IsImplicit) (Syntax: ' and constant ')
+      IInterpolationOperation (OperationKind.Interpolation, Type: null) (Syntax: '{1}')
+        Expression: 
+          ILiteralOperation (OperationKind.Literal, Type: System.Int32, Constant: 1) (Syntax: '1')
+        Alignment: 
+          null
+        FormatString: 
+          null
+      IInterpolatedStringTextOperation (OperationKind.InterpolatedStringText, Type: null) (Syntax: '')
+        Text: 
+          ILiteralOperation (OperationKind.Literal, Type: System.String, Constant: """", IsImplicit) (Syntax: '')
+"
             Dim expectedDiagnostics = String.Empty
 
             VerifyOperationTreeAndDiagnosticsForTest(Of InterpolatedStringExpressionSyntax)(source, expectedOperationTree, expectedDiagnostics)
