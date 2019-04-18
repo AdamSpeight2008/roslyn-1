@@ -108,7 +108,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function IsInterpolatedStringPunctuation(Optional offset As Integer = 0) As Boolean
             Dim c As Char = Nothing
-            If TryGet(c, offset) Then Return False
+            If not TryGet(c, offset) Then Return False
 
             If IsLeftCurlyBracket(c) Then
                 Return Not IsEscaped_LeftCurly(offset + 1)
