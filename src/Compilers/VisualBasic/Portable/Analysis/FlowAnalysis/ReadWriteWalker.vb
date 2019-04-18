@@ -64,13 +64,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             MyBase.Free()
         End Sub
 
-        Private ReadOnly _readInside As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
-        Private ReadOnly _writtenInside As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
-        Private ReadOnly _readOutside As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
-        Private ReadOnly _writtenOutside As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
-        Private ReadOnly _captured As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
-        Private ReadOnly _capturedInside As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
-        Private ReadOnly _capturedOutside As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
+        Private ReadOnly _readInside        As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
+        Private ReadOnly _writtenInside     As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
+        Private ReadOnly _readOutside       As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
+        Private ReadOnly _writtenOutside    As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
+        Private ReadOnly _captured          As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
+        Private ReadOnly _capturedInside    As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
+        Private ReadOnly _capturedOutside   As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
 
         Private _currentMethodOrLambda As Symbol
         Private _currentQueryLambda As BoundQueryLambda

@@ -122,9 +122,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         Public Overrides ReadOnly Property ReadInside As ImmutableArray(Of ISymbol)
             Get
-                If _readInside.IsDefault Then
-                    AnalyzeReadWrite()
-                End If
+                If _readInside.IsDefault Then AnalyzeReadWrite()
                 Return _readInside
             End Get
         End Property
@@ -134,9 +132,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         Public Overrides ReadOnly Property WrittenInside As ImmutableArray(Of ISymbol)
             Get
-                If _writtenInside.IsDefault Then
-                    AnalyzeReadWrite()
-                End If
+                If _writtenInside.IsDefault Then AnalyzeReadWrite()
                 Return _writtenInside
             End Get
         End Property
@@ -146,9 +142,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         Public Overrides ReadOnly Property ReadOutside As ImmutableArray(Of ISymbol)
             Get
-                If _readOutside.IsDefault Then
-                    AnalyzeReadWrite()
-                End If
+                If _readOutside.IsDefault Then AnalyzeReadWrite()
                 Return _readOutside
             End Get
         End Property
@@ -158,9 +152,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         Public Overrides ReadOnly Property WrittenOutside As ImmutableArray(Of ISymbol)
             Get
-                If _writtenOutside.IsDefault Then
-                    AnalyzeReadWrite()
-                End If
+                If _writtenOutside.IsDefault Then AnalyzeReadWrite()
                 Return _writtenOutside
             End Get
         End Property
@@ -208,30 +200,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         Public Overrides ReadOnly Property Captured As ImmutableArray(Of ISymbol)
             Get
-                If Me._captured.IsDefault Then
-                    AnalyzeReadWrite()
-                End If
-
+                If Me._captured.IsDefault Then AnalyzeReadWrite()
                 Return Me._captured
             End Get
         End Property
 
         Public Overrides ReadOnly Property CapturedInside As ImmutableArray(Of ISymbol)
             Get
-                If Me._capturedInside.IsDefault Then
-                    AnalyzeReadWrite()
-                End If
-
+                If Me._capturedInside.IsDefault Then AnalyzeReadWrite()
                 Return Me._capturedInside
             End Get
         End Property
 
         Public Overrides ReadOnly Property CapturedOutside As ImmutableArray(Of ISymbol)
             Get
-                If Me._capturedOutside.IsDefault Then
-                    AnalyzeReadWrite()
-                End If
-
+                If Me._capturedOutside.IsDefault Then AnalyzeReadWrite()
                 Return Me._capturedOutside
             End Get
         End Property
