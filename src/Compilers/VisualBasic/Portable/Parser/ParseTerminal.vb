@@ -129,7 +129,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 17021 - 17021
         ' Expression* .Parser::ParseIdentifierExpressionAllowingKeyword( [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseIdentifierNameAllowingKeyword(Optional ReturnNothingOnError As Boolean = False) As IdentifierNameSyntax
+        Private Function ParseIdentifierNameAllowingKeyword(Optional ReturnNothingOnError As Boolean) As IdentifierNameSyntax
 
             Dim Name = ParseIdentifierAllowingKeyword()
             If ReturnNothingOnError AndAlso Name.ContainsDiagnostics Then Return Nothing

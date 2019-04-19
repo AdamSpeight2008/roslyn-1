@@ -19,9 +19,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Friend Sub New(
                     info                                    As FlowAnalysisInfo,
                     region                                  As FlowAnalysisRegionInfo,
-           Optional initiallyAssignedVariables              As ImmutableArray(Of Symbol) = Nothing,
-           Optional trackUnassignments                      As Boolean = False,
-           Optional trackStructsWithIntrinsicTypedFields    As Boolean = False
+           Optional initiallyAssignedVariables              As ImmutableArray(Of Symbol) ,
+           Optional trackUnassignments                      As Boolean,
+           Optional trackStructsWithIntrinsicTypedFields    As Boolean
                   )
       MyBase.New(info, region, False, initiallyAssignedVariables, trackUnassignments, trackStructsWithIntrinsicTypedFields)
     End Sub

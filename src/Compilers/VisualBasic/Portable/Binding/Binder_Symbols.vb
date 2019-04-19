@@ -26,9 +26,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <returns>The best type that can be found, or and ErrorTypeSymbol if no reasonable type can be found.</returns>
         Public Function BindTypeSyntax(typeSyntax As TypeSyntax,
                                        diagBag As DiagnosticBag,
-                                       Optional suppressUseSiteError As Boolean = False,
-                                       Optional inGetTypeContext As Boolean = False,
-                                       Optional resolvingBaseType As Boolean = False) As TypeSymbol
+                                       Optional suppressUseSiteError As Boolean,
+                                       Optional inGetTypeContext As Boolean,
+                                       Optional resolvingBaseType As Boolean) As TypeSymbol
 
             Debug.Assert(Not inGetTypeContext OrElse Not resolvingBaseType)
 
@@ -45,7 +45,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Friend Function BindTypeOrAliasSyntax(typeSyntax As TypeSyntax,
                                diagBag As DiagnosticBag,
-                               Optional suppressUseSiteError As Boolean = False) As Symbol
+                               Optional suppressUseSiteError As Boolean) As Symbol
 
             Dim sym As Symbol = TypeBinder.BindTypeOrAliasSyntax(typeSyntax, Me, diagBag, suppressUseSiteError,
                                                                  inGetTypeContext:=False, resolvingBaseType:=False)
@@ -75,13 +75,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <returns>The best type or namespace that can be found, or and ErrorTypeSymbol if no reasonable type can be found.</returns>
         Public Function BindNamespaceOrTypeSyntax(typeSyntax As TypeSyntax,
                                               diagBag As DiagnosticBag,
-                                              Optional suppressUseSiteError As Boolean = False) As NamespaceOrTypeSymbol
+                                              Optional suppressUseSiteError As Boolean) As NamespaceOrTypeSymbol
             Return TypeBinder.BindNamespaceOrTypeSyntax(typeSyntax, Me, diagBag, suppressUseSiteError)
         End Function
 
         Public Function BindNamespaceOrTypeOrAliasSyntax(typeSyntax As TypeSyntax,
                                       diagBag As DiagnosticBag,
-                                      Optional suppressUseSiteError As Boolean = False) As Symbol
+                                      Optional suppressUseSiteError As Boolean) As Symbol
             Return TypeBinder.BindNamespaceOrTypeOrAliasSyntax(typeSyntax, Me, diagBag, suppressUseSiteError)
         End Function
 

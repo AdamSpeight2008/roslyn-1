@@ -15,9 +15,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     Friend Partial Class Parser
 
         Friend Function ParseExpression(
-            Optional pendingPrecedence As OperatorPrecedence = OperatorPrecedence.PrecedenceNone,
-            Optional bailIfFirstTokenRejected As Boolean = False
-        ) As ExpressionSyntax
+                                Optional pendingPrecedence As OperatorPrecedence = OperatorPrecedence.PrecedenceNone,
+                                Optional bailIfFirstTokenRejected As Boolean
+                                       ) As ExpressionSyntax
 
             Return ParseWithStackGuard(Of ExpressionSyntax)(
                 Function() ParseExpressionCore(pendingPrecedence, bailIfFirstTokenRejected),
@@ -48,10 +48,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         '    bool EatLeadingNewLine,         - we no longer support it in ParseExpressionCore, please eat the new line yourself before calling
         '    bool BailIfFirstTokenRejected                 // bail (return NULL) if the first token isn't a valid expression-starter, rather than reporting an error or setting ErrorInConstruct
         Private Function ParseExpressionCore(
-            Optional pendingPrecedence As OperatorPrecedence = OperatorPrecedence.PrecedenceNone,
-            Optional bailIfFirstTokenRejected As Boolean = False,
-            Optional prevTerm As ExpressionSyntax = Nothing
-        ) As ExpressionSyntax
+                                     Optional pendingPrecedence As OperatorPrecedence = OperatorPrecedence.PrecedenceNone,
+                                     Optional bailIfFirstTokenRejected As Boolean,
+                                     Optional prevTerm As ExpressionSyntax
+                                            ) As ExpressionSyntax
 
             Try
                 _recursionDepth += 1
@@ -175,10 +175,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseTerm(
-            Optional BailIfFirstTokenRejected As Boolean = False,
-            Optional RedimOrNewParent As Boolean = False,
-            Optional PrevTerm AS ExpressionSyntax = Nothing
-        ) As ExpressionSyntax
+                           Optional BailIfFirstTokenRejected As Boolean,
+                           Optional RedimOrNewParent As Boolean,
+                           Optional PrevTerm AS ExpressionSyntax
+                                  ) As ExpressionSyntax
 
             '// Note: this function will only ever return NULL if the flag "BailIfFirstTokenIsRejected" is set,
             '// and if the first token isn't a valid way to start an expression. In all other error scenarios
@@ -1139,7 +1139,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' File: Parser.cpp
         ' Lines: 16304 - 16304
         ' ParenthesizedArgumentList .Parser::ParseParenthesizedArguments( [ _Inout_ bool& ErrorInConstruct ] )
-        Friend Function ParseParenthesizedArguments(Optional RedimOrNewParent As Boolean = False, Optional attributeListParent As Boolean = False) As ArgumentListSyntax
+        Friend Function ParseParenthesizedArguments(
+                                            Optional RedimOrNewParent As Boolean,
+                                            Optional attributeListParent As Boolean
+                                                   ) As ArgumentListSyntax
+
             Debug.Assert(CurrentToken.Kind = SyntaxKind.OpenParenToken, "should be at tkLParen.")
 
             Dim arguments As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ArgumentSyntax) = Nothing
@@ -1200,7 +1204,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 16366 - 16366
         ' Expression* .Parser::ParseParenthesizedQualifier( [ _In_ Token* Start ] [ _In_ ParseTree::Expression* Term ] [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseParenthesizedQualifier(Term As ExpressionSyntax, Optional RedimOrNewParent As Boolean = False) As ExpressionSyntax
+        Private Function ParseParenthesizedQualifier(
+                                                      Term As ExpressionSyntax,
+                                             Optional RedimOrNewParent As Boolean
+                                                    ) As ExpressionSyntax
             ' Because parentheses are used for array indexing, parameter passing, and array
             ' declaring (via the Redim statement), there is some ambiguity about how to handle
             ' a parenthesized list that begins with an expression. The most general case is to
@@ -1219,7 +1226,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 16425 - 16425
         ' .Parser::ParseArguments( [ _In_ ParseTree::ArgumentList** Target ] [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseArguments(ByRef unexpected As GreenNode, Optional RedimOrNewParent As Boolean = False, Optional attributeListParent As Boolean = False) As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ArgumentSyntax)
+        Private Function ParseArguments(
+                                   ByRef unexpected As GreenNode,
+                               Optional RedimOrNewParent As Boolean,
+                               Optional attributeListParent As Boolean
+                                   ) As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ArgumentSyntax)
+
             Dim arguments = _pool.AllocateSeparated(Of ArgumentSyntax)()
 
             Dim allowNonTrailingNamedArguments = Feature.NonTrailingNamedArguments.IsAvailable(me.Options)
@@ -1374,7 +1386,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 16564 - 16564
         ' Argument* .Parser::ParseArgument( [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseArgument(Optional RedimOrNewParent As Boolean = False) As ArgumentSyntax
+        Private Function ParseArgument(
+                               Optional RedimOrNewParent As Boolean
+                                      ) As ArgumentSyntax
+
             Dim argument As ArgumentSyntax
 
             Dim value As ExpressionSyntax = ParseExpressionCore(OperatorPrecedence.PrecedenceNone)
@@ -1462,7 +1477,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return cast
         End Function
 
-        Private Function ParseFunctionOrSubLambdaHeader(<Out> ByRef isMultiLine As Boolean, Optional parseModifiers As Boolean = False) As LambdaHeaderSyntax
+        Private Function ParseFunctionOrSubLambdaHeader(
+                                             <Out> ByRef isMultiLine As Boolean,
+                                                Optional parseModifiers As Boolean
+                                                       ) As LambdaHeaderSyntax
 
             Dim modifiers As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of KeywordSyntax)
 
@@ -1714,7 +1732,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return result
         End Function
 
-        Private Function ParseAwaitExpression(Optional awaitKeyword As KeywordSyntax = Nothing) As AwaitExpressionSyntax
+        Private Function ParseAwaitExpression(
+                                      Optional awaitKeyword As KeywordSyntax
+                                             ) As AwaitExpressionSyntax
 
             Debug.Assert(DirectCast(CurrentToken, IdentifierTokenSyntax).ContextualKind = SyntaxKind.AwaitKeyword)
 

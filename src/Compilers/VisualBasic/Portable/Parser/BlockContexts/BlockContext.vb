@@ -396,7 +396,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return RecoverFromMismatchedEnd(DirectCast(node, StatementSyntax))
         End Function
 
-        Friend Function UseSyntax(node As VisualBasicSyntaxNode, ByRef newContext As BlockContext, Optional AddMissingTerminator As Boolean = False) As LinkResult
+        Friend Function UseSyntax(
+                                   node As VisualBasicSyntaxNode,
+                             ByRef newContext As BlockContext,
+                          Optional AddMissingTerminator As Boolean
+                                 ) As LinkResult
             ' get off the current node as we are definitely using it and LinkStatement may need to look at next token
             Parser.GetNextSyntaxNode()
 

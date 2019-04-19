@@ -256,13 +256,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="equalsValueOrAsNewSyntax">The syntax node for the optional initialization.</param>
         ''' <param name="boundInitializers">The array of bound initializers to add the newly bound ones to.</param>
         ''' <param name="diagnostics">The diagnostics.</param>
-        Friend Sub BindFieldInitializer(
-            fieldSymbols As ImmutableArray(Of FieldSymbol),
-            equalsValueOrAsNewSyntax As SyntaxNode,
-            boundInitializers As ArrayBuilder(Of BoundInitializer),
-            diagnostics As DiagnosticBag,
-            Optional bindingForSemanticModel As Boolean = False
-        )
+        Friend Sub BindFieldInitializer( fieldSymbols As ImmutableArray(Of FieldSymbol),
+                                         equalsValueOrAsNewSyntax As SyntaxNode,
+                                         boundInitializers As ArrayBuilder(Of BoundInitializer),
+                                         diagnostics As DiagnosticBag,
+                                Optional bindingForSemanticModel As Boolean
+                                       )
+
             Debug.Assert(Not fieldSymbols.IsEmpty)
             Dim firstFieldSymbol = DirectCast(fieldSymbols.First, SourceFieldSymbol)
             Debug.Assert(bindingForSemanticModel OrElse Not firstFieldSymbol.IsConst)

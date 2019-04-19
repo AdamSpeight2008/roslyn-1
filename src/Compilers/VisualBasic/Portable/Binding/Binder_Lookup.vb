@@ -733,9 +733,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                 binder As Binder,
                                                 <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo),
                                                 lookupMembersNotDefaultProperties As Boolean,
-                                                Optional name As String = Nothing,
+                                                Optional name As String,
                                                 Optional arity As Integer = -1,
-                                                Optional options As LookupOptions = Nothing)
+                                                Optional options As LookupOptions)
                 ' If we have no conflict with existing members, we also have to check
                 ' if we have a conflict with other interface members. An example would be
                 ' a type which implements both IIterable (IEnumerable) and IMap 
@@ -1404,7 +1404,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Public ReadOnly InComInterfaceContext As Boolean
                 Public ReadOnly DescendantDefinitions As ImmutableHashSet(Of NamedTypeSymbol)
 
-                Public Sub New(interfaceType As NamedTypeSymbol, inComInterfaceContext As Boolean, Optional descendantDefinitions As ImmutableHashSet(Of NamedTypeSymbol) = Nothing)
+                Public Sub New(interfaceType As NamedTypeSymbol, inComInterfaceContext As Boolean, Optional descendantDefinitions As ImmutableHashSet(Of NamedTypeSymbol))
                     Me.InterfaceType = interfaceType
                     Me.InComInterfaceContext = inComInterfaceContext
                     Me.DescendantDefinitions = descendantDefinitions

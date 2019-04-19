@@ -295,12 +295,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' This function must return a BoundConversion node in case of non-identity conversion.
         ''' </summary>
         Friend Function ApplyImplicitConversion(
-            node As SyntaxNode,
-            targetType As TypeSymbol,
-            expression As BoundExpression,
-            diagnostics As DiagnosticBag,
-            Optional isOperandOfConditionalBranch As Boolean = False
-        ) As BoundExpression
+                                                 node As SyntaxNode,
+                                                 targetType As TypeSymbol,
+                                                 expression As BoundExpression,
+                                                 diagnostics As DiagnosticBag,
+                                        Optional isOperandOfConditionalBranch As Boolean
+                                              ) As BoundExpression
             Return ApplyConversion(node, targetType, expression, False, diagnostics, isOperandOfConditionalBranch:=isOperandOfConditionalBranch)
         End Function
 
@@ -308,14 +308,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' This function must return a BoundConversion node in case of explicit or non-identity conversion.
         ''' </summary>
         Private Function ApplyConversion(
-            node As SyntaxNode,
-            targetType As TypeSymbol,
-            argument As BoundExpression,
-            isExplicit As Boolean,
-            diagnostics As DiagnosticBag,
-            Optional isOperandOfConditionalBranch As Boolean = False,
-            Optional explicitSemanticForConcatArgument As Boolean = False
-        ) As BoundExpression
+                                          node As SyntaxNode,
+                                          targetType As TypeSymbol,
+                                          argument As BoundExpression,
+                                          isExplicit As Boolean,
+                                          diagnostics As DiagnosticBag,
+                                 Optional isOperandOfConditionalBranch As Boolean,
+                                 Optional explicitSemanticForConcatArgument As Boolean
+                                        ) As BoundExpression
             Debug.Assert(node IsNot Nothing)
             Debug.Assert(Not isOperandOfConditionalBranch OrElse Not isExplicit)
             Debug.Assert(argument.IsValue())
@@ -413,15 +413,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' This function must return a BoundConversion node in case of non-identity conversion.
         ''' </summary>
         Private Function CreateConversionAndReportDiagnostic(
-            tree As SyntaxNode,
-            argument As BoundExpression,
-            convKind As KeyValuePair(Of ConversionKind, MethodSymbol),
-            isExplicit As Boolean,
-            targetType As TypeSymbol,
-            diagnostics As DiagnosticBag,
-            Optional copybackConversionParamName As String = Nothing,
-            Optional explicitSemanticForConcatArgument As Boolean = False
-        ) As BoundExpression
+                                                              tree As SyntaxNode,
+                                                              argument As BoundExpression,
+                                                              convKind As KeyValuePair(Of ConversionKind, MethodSymbol),
+                                                              isExplicit As Boolean,
+                                                              targetType As TypeSymbol,
+                                                              diagnostics As DiagnosticBag,
+                                                              Optional copybackConversionParamName As String,
+                                                              Optional explicitSemanticForConcatArgument As Boolean
+                                                            ) As BoundExpression
             Debug.Assert(argument.IsValue())
 
             ' We need to preserve any conversion that was explicitly written in code 
@@ -1712,12 +1712,12 @@ DoneWithDiagnostics:
         End Function
 
         Private Sub ReportNoConversionError(
-            location As SyntaxNode,
-            sourceType As TypeSymbol,
-            targetType As TypeSymbol,
-            diagnostics As DiagnosticBag,
-            Optional copybackConversionParamName As String = Nothing
-        )
+                                             location As SyntaxNode,
+                                             sourceType As TypeSymbol,
+                                             targetType As TypeSymbol,
+                                             diagnostics As DiagnosticBag,
+                                    Optional copybackConversionParamName As String 
+                                           )
             If sourceType.IsArrayType() AndAlso targetType.IsArrayType() Then
 
                 Dim sourceArray = DirectCast(sourceType, ArrayTypeSymbol)

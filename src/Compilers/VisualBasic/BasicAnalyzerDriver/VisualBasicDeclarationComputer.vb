@@ -24,7 +24,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                     node As SyntaxNode,
                                                     getSymbol As Boolean,
                                                     builder As ArrayBuilder(Of DeclarationInfo),
-                                                    cancellationToken As CancellationToken, Optional levelsToCompute As Integer? = Nothing)
+                                                    cancellationToken As CancellationToken,
+                                                    Optional levelsToCompute As Integer?)
             ComputeDeclarationsCore(model, node, Function(n, level) InvalidLevel(level), getSymbol, builder, levelsToCompute, cancellationToken)
         End Sub
 

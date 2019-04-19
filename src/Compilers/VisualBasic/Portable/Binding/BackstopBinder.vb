@@ -28,10 +28,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             MyBase.New(Nothing)
         End Sub
 
-        Public Overrides Function CheckAccessibility(sym As Symbol,
+        Public Overrides Function CheckAccessibility(
+                                                      sym As Symbol,
                                     <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo),
-                                             Optional accessThroughType As TypeSymbol = Nothing,
-                                             Optional basesBeingResolved As ConsList(Of Symbol) = Nothing
+                                             Optional accessThroughType As TypeSymbol,
+                                             Optional basesBeingResolved As ConsList(Of Symbol)
                                                     ) As AccessCheckResult
             Throw ExceptionUtilities.Unreachable
         End Function

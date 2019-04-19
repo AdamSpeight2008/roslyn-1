@@ -29,7 +29,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
               operatorIsIsNot   As Boolean,
               targetTypeSyntax  As TypeSyntax,
               expr              As ExpressionSyntax,
-     Optional suppressAdditionalDiagostics As Boolean = False
+     Optional suppressAdditionalDiagostics As Boolean
             ) As BoundTypeOf
 
           Dim resultType   As TypeSymbol  = GetSpecialType(SpecialType.System_Boolean, node, diagnostics)

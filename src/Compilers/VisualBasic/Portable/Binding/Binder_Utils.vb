@@ -215,7 +215,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim access As Accessibility
             If (foundModifiers And SourceMemberFlags.Public) <> 0 Then
                 access = Accessibility.Public
-            ElseIf (foundModifiers And (SourceMemberFlags.Friend Or SourceMemberFlags.Protected)) = (SourceMemberFlags.Friend Or SourceMemberFlags.Protected) Then
+            ElseIf (foundModifiers!(SourceMemberFlags.Friend!+[Protected])) Then
                 access = Accessibility.ProtectedOrFriend
             ElseIf (foundModifiers And (SourceMemberFlags.Private Or SourceMemberFlags.Protected)) = (SourceMemberFlags.Private Or SourceMemberFlags.Protected) Then
                 access = Accessibility.ProtectedAndFriend
@@ -568,8 +568,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                      getRequireTypeDiagnosticInfoFunc As Func(Of DiagnosticInfo),
                                                      <Out()> ByRef asClauseType As TypeSymbol,
                                                      diagBag As DiagnosticBag,
-                                                     Optional decoderContext As ModifiedIdentifierTypeDecoderContext = Nothing
-        ) As TypeSymbol
+                                                     Optional decoderContext As ModifiedIdentifierTypeDecoderContext
+                                                     ) As TypeSymbol
 
             If asClauseOpt IsNot Nothing Then
 
@@ -600,8 +600,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                      initializerSyntaxOpt As EqualsValueSyntax,
                                                      getRequireTypeDiagnosticInfoFunc As Func(Of DiagnosticInfo),
                                                      diagBag As DiagnosticBag,
-                                                     Optional decoderContext As ModifiedIdentifierTypeDecoderContext = Nothing
-        ) As TypeSymbol
+                                                     Optional decoderContext As ModifiedIdentifierTypeDecoderContext
+                                                    ) As TypeSymbol
 
             Dim asClauseType As TypeSymbol = Nothing
             Return DecodeModifiedIdentifierType(modifiedIdentifier, asClauseOpt, initializerSyntaxOpt, getRequireTypeDiagnosticInfoFunc, asClauseType, diagBag, decoderContext)
@@ -921,19 +921,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Shared ReadOnly s_checkOperatorParameterModifierCallback As CheckParameterModifierDelegate = AddressOf CheckOperatorParameterModifier
 
         Private Shared Function CheckOperatorParameterModifier(container As Symbol, token As SyntaxToken, flag As SourceParameterFlags, diagnostics As DiagnosticBag) As SourceParameterFlags
-            If (flag And SourceParameterFlags.ByRef) <> 0 Then
+            If (flag!/[ByRef]) Then
                 diagnostics.Add(ERRID.ERR_ByRefIllegal1, token.GetLocation(), container.GetKindText())
-                flag = flag And (Not SourceParameterFlags.ByRef)
+                flag = flag!-[ByRef]' And (Not SourceParameterFlags.ByRef)
             End If
 
-            If (flag And SourceParameterFlags.ParamArray) <> 0 Then
+            If (flag!/[ParamArray]) Then
                 diagnostics.Add(ERRID.ERR_ParamArrayIllegal1, token.GetLocation(), container.GetKindText())
-                flag = flag And (Not SourceParameterFlags.ParamArray)
+                flag = flag!-[ParamArray]
             End If
 
-            If (flag And SourceParameterFlags.Optional) <> 0 Then
+            If (flag!/[Optional]) Then
                 diagnostics.Add(ERRID.ERR_OptionalIllegal1, token.GetLocation(), container.GetKindText())
-                flag = flag And (Not SourceParameterFlags.Optional)
+                flag = flag!-[Optional]
             End If
 
             Return flag
@@ -984,12 +984,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Shared ReadOnly s_checkPropertyParameterModifierCallback As CheckParameterModifierDelegate = AddressOf CheckPropertyParameterModifier
 
         Private Shared Function CheckPropertyParameterModifier(container As Symbol, token As SyntaxToken, flag As SourceParameterFlags, diagnostics As DiagnosticBag) As SourceParameterFlags
-            If flag = SourceParameterFlags.ByRef Then
-                Dim location = token.GetLocation()
-                diagnostics.Add(ERRID.ERR_ByRefIllegal1, location, container.GetKindText(), token.ToString())
-                Return flag And (Not SourceParameterFlags.ByRef)
-            End If
-            Return flag
+            If flag <> SourceParameterFlags.ByRef Then Return flag
+            Dim location = token.GetLocation()
+            diagnostics.Add(ERRID.ERR_ByRefIllegal1, location, container.GetKindText(), token.ToString())
+            Return flag!-[ByRef]
         End Function
 
         Private Shared Function CheckReservedParameterName(reservedName As String, syntax As ParameterSyntax, errorId As ERRID, diagnostics As DiagnosticBag) As Boolean
@@ -1043,15 +1041,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 flags = DecodeParameterModifiers(container, paramSyntax.Modifiers, checkModifier, diagBag)
 
-                If (flagsOfPreviousParameters And SourceParameterFlags.Optional) = SourceParameterFlags.Optional Then
-                    If (flags And SourceParameterFlags.ParamArray) = SourceParameterFlags.ParamArray AndAlso
-                        Not reportedError Then
+                If flagsOfPreviousParameters![Optional] Then
+                    If flags![ParamArray] AndAlso Not reportedError Then
 
                         ' If one of the previous parameters is optional then report an error if paramarray is specified.
                         ReportDiagnostic(diagBag, paramSyntax.Identifier.Identifier, ERRID.ERR_ParamArrayWithOptArgs)
                         reportedError = True
 
-                    ElseIf (flags And SourceParameterFlags.Optional) <> SourceParameterFlags.Optional AndAlso
+                    ElseIf flags!/[Optional] AndAlso
                         Not reportedError Then
 
                         ' If one of the previous parameters is optional then report an error if this one isn't optional.
@@ -1061,7 +1058,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     End If
                 End If
 
-                If (flagsOfPreviousParameters And SourceParameterFlags.ParamArray) <> 0 AndAlso
+                If flagsOfPreviousParameters!/[ParamArray] AndAlso
                     Not reportedError Then
 
                     ReportDiagnostic(diagBag, paramSyntax, ERRID.ERR_ParamArrayMustBeLast)
@@ -1078,10 +1075,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End If
                 ordinal += 1
 
-                If newParam.IsByRef AndAlso (modifiers And SourceMemberFlags.Async) = SourceMemberFlags.Async Then
+                If newParam.IsByRef AndAlso modifiers![Async] Then
                     ReportDiagnostic(diagBag, paramSyntax, ERRID.ERR_BadAsyncByRefParam)
 
-                ElseIf newParam.IsByRef AndAlso (modifiers And SourceMemberFlags.Iterator) = SourceMemberFlags.Iterator Then
+                ElseIf newParam.IsByRef AndAlso modifiers![Iterator] Then
                     ReportDiagnostic(diagBag, paramSyntax, ERRID.ERR_BadIteratorByRefParam)
 
                 Else
@@ -1149,61 +1146,61 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                                  diagBag As DiagnosticBag) As MemberModifiers
             Dim flags = memberModifiers.FoundFlags
 
-            If (flags And SourceMemberFlags.Shared) <> 0 AndAlso (flags And SourceMemberFlags.InvalidIfShared) <> 0 Then
+            If flags!/[Shared] AndAlso flags!/InvalidIfShared Then
                 ReportModifierError(modifierList, If(isProperty, ERRID.ERR_BadFlagsOnSharedProperty1, ERRID.ERR_BadFlagsOnSharedMeth1), diagBag, InvalidModifiersIfShared)
-                flags = flags And Not SourceMemberFlags.InvalidIfShared
+                flags = flags!-InvalidIfShared
                 memberModifiers = New MemberModifiers(flags, memberModifiers.ComputedFlags)
             End If
 
             Select Case container.TypeKind
                 Case TypeKind.Module
                     ' Don't allow overloads in module
-                    If (flags And SourceMemberFlags.Overloads) <> 0 Then
+                    If flags!/[Overloads] Then
                         ReportModifierError(modifierList, ERRID.ERR_OverloadsModifierInModule, diagBag, SyntaxKind.OverloadsKeyword)
 
-                        flags = flags And Not SourceMemberFlags.Overloads
+                        flags = flags!-[Overloads]
                     End If
 
                     ' Members in module are implicitly Shared, and cannot be explicitly Shared.
-                    If (flags And SourceMemberFlags.InvalidInModule) <> 0 Then
+                    If flags!/InvalidInModule Then
                         ReportModifierError(modifierList, If(isProperty, ERRID.ERR_BadFlagsOnStdModuleProperty1, ERRID.ERR_ModuleCantUseMethodSpecifier1), diagBag, InvalidModifiersInModule)
-                        If (flags And SourceMemberFlags.Protected) <> 0 Then
-                            flags = flags And Not SourceMemberFlags.Friend ' remove "Friend" if removing "Protected"
+                        If (flags!/[Protected]) <> 0 Then
+                            flags = flags!-[Friend] ' remove "Friend" if removing "Protected"
                         End If
-                        flags = flags And Not SourceMemberFlags.InvalidInModule
+                        flags = flags!-InvalidInModule
                     End If
 
                     memberModifiers = New MemberModifiers(flags, memberModifiers.ComputedFlags Or SourceMemberFlags.Shared)
 
                 Case TypeKind.Interface
-                    If (flags And SourceMemberFlags.InvalidInInterface) <> 0 Then
+                    If (flags!/InvalidInInterface) Then
                         ReportModifierError(modifierList, If(isProperty, ERRID.ERR_BadInterfacePropertyFlags1, ERRID.ERR_BadInterfaceMethodFlags1), diagBag, InvalidModifiersInInterface)
-                        flags = flags And Not SourceMemberFlags.InvalidInInterface
+                        flags = flags!-InvalidInInterface
                     End If
 
                     ' Interface members are always public and always implicitly MustOverride.
                     memberModifiers = New MemberModifiers(flags, memberModifiers.ComputedFlags Or SourceMemberFlags.MustOverride)
 
                 Case TypeKind.Structure
-                    If (flags And SourceMemberFlags.Protected) <> 0 AndAlso (flags And SourceMemberFlags.Overrides) = 0 Then
+                    If flags!/(SourceMemberFlags.Protected!+[Overrides]) Then
                         ReportModifierError(modifierList, If(isProperty, ERRID.ERR_StructCantUseVarSpecifier1, ERRID.ERR_StructureCantUseProtected), diagBag, SyntaxKind.ProtectedKeyword)
 
-                        flags = flags And Not SourceMemberFlags.Protected
+                        flags = flags!-[Protected]
                         memberModifiers = New MemberModifiers(flags,
                                           (memberModifiers.ComputedFlags And Not SourceMemberFlags.AccessibilityMask) Or SourceMemberFlags.AccessibilityPrivate)
                     End If
-                    If (flags And SourceMemberFlags.InvalidInNotInheritableClass) <> 0 Then
+                    If (flags!/InvalidInNotInheritableClass) Then
                         ReportModifierError(modifierList, ERRID.ERR_StructCantUseVarSpecifier1, diagBag,
                                             SyntaxKind.OverridableKeyword, SyntaxKind.NotOverridableKeyword, SyntaxKind.MustOverrideKeyword)
 
-                        flags = flags And Not SourceMemberFlags.InvalidInNotInheritableClass
+                        flags = flags!-InvalidInNotInheritableClass
                     End If
 
             End Select
 
             ' Don't allow Overridable, etc. on NotInheritable.
             If container.IsNotInheritable Then
-                If (flags And SourceMemberFlags.InvalidInNotInheritableClass) <> 0 Then
+                If (flags!/InvalidInNotInheritableClass) Then
                     ' Somewhat strangely, the old VB compiler has different behavior depending on whether the containing type DECLARATION
                     ' has NotInheritable, vs. any partial has NotInheritable (although they are semantically the same). If the containing declaration
                     ' does not have NotInheritable, then only MustOverride has an error reported for it, and the error has a different code.
@@ -1212,13 +1209,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     If containingTypeBLock IsNot Nothing AndAlso FindFirstKeyword(containingTypeBLock.BlockStatement.Modifiers, s_notInheritableKeyword).Kind = SyntaxKind.None Then
                         ' Containing type block doesn't have a NotInheritable modifier on it. Must be from other partial declaration.
 
-                        If (flags And SourceMemberFlags.InvalidInNotInheritableOtherPartialClass) <> 0 Then
+                        If (flags!/InvalidInNotInheritableOtherPartialClass) Then
                             ReportModifierError(modifierList, ERRID.ERR_MustOverOnNotInheritPartClsMem1, diagBag, InvalidModifiersInNotInheritableOtherPartialClass)
-                            flags = flags And Not SourceMemberFlags.InvalidInNotInheritableOtherPartialClass
+                            flags = flags!-InvalidInNotInheritableOtherPartialClass
                         End If
                     Else
                         ReportModifierError(modifierList, ERRID.ERR_BadFlagsInNotInheritableClass1, diagBag, InvalidModifiersInNotInheritableClass)
-                        flags = flags And Not SourceMemberFlags.InvalidInNotInheritableClass
+                        flags = flags!-InvalidInNotInheritableClass
                     End If
 
                     memberModifiers = New MemberModifiers(flags, memberModifiers.ComputedFlags)
@@ -1240,10 +1237,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     ' Members in module are implicitly Shared, and cannot be explicitly Shared.
                     If (flags And SourceMemberFlags.InvalidInModule) <> 0 Then
                         ReportModifierError(modifierList, ERRID.ERR_ModuleCantUseEventSpecifier1, diagBag, InvalidModifiersInModule)
-                        If (flags And SourceMemberFlags.Protected) <> 0 Then
-                            flags = flags And Not SourceMemberFlags.Friend ' remove "Friend" if removing "Protected"
+                        If (flags!/[Protected]) Then
+                            flags = flags![Friend] ' remove "Friend" if removing "Protected"
                         End If
-                        flags = flags And Not SourceMemberFlags.InvalidInModule
+                        flags = flags!-InvalidInModule
                     End If
 
                     memberModifiers = New MemberModifiers(flags, memberModifiers.ComputedFlags Or SourceMemberFlags.Shared)

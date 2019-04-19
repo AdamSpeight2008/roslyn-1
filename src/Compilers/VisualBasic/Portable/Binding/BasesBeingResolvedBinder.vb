@@ -24,10 +24,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             MyBase.New(containingBinder, basesBeingResolved)
         End Sub
 
-        Public Overrides Function CheckAccessibility(sym As Symbol,
-                                                     <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo),
-                                                     Optional accessThroughType As TypeSymbol = Nothing,
-                                                     Optional basesBeingResolved As ConsList(Of Symbol) = Nothing) As AccessCheckResult
+        Public Overrides Function CheckAccessibility(
+                                                      sym As Symbol,
+                                    <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo),
+                                             Optional accessThroughType As TypeSymbol,
+                                             Optional basesBeingResolved As ConsList(Of Symbol)
+                                                    ) As AccessCheckResult
             ' Accessibility checking may involve looking at base types. We need to pass this accessibility
             ' checking code any base classes currently being bound so we don't use those.
 

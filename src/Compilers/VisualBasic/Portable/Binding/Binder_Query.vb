@@ -787,7 +787,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             clauseSyntax As LetClauseSyntax,
             operatorsEnumerator As SyntaxList(Of QueryClauseSyntax).Enumerator,
             diagnostics As DiagnosticBag,
-            Optional skipFirstVariable As Boolean = False
+            Optional skipFirstVariable As Boolean
         ) As BoundQueryClause
             Debug.Assert(clauseSyntax Is operatorsEnumerator.Current)
 
@@ -3251,8 +3251,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 syntax As VisualBasicSyntaxNode,
                 mustProduceFlatCompoundVariable As Boolean,
                 diagnostics As DiagnosticBag,
-                Optional rangeVarOpt As RangeVariableSymbol = Nothing,
-                Optional rangeVarValueOpt As BoundExpression = Nothing
+                Optional rangeVarOpt As RangeVariableSymbol,
+                Optional rangeVarValueOpt As BoundExpression
             ) As BoundExpression
                 Debug.Assert(_rangeVariables.Length > 0)
                 Debug.Assert((rangeVarOpt Is Nothing) = (rangeVarValueOpt Is Nothing))

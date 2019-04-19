@@ -38,7 +38,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Function CreateAnonymousObjectCreationExpression(node As VisualBasicSyntaxNode,
                                                                typeDescr As AnonymousTypeDescriptor,
                                                                initExpressions As ImmutableArray(Of BoundExpression),
-                                                               Optional hasErrors As Boolean = False) As BoundExpression
+                                                               Optional hasErrors As Boolean) As BoundExpression
             '  Get or create an anonymous type
             Dim anonymousType As AnonymousTypeManager.AnonymousTypePublicSymbol =
                 Me.Compilation.AnonymousTypeManager.ConstructAnonymousTypeSymbol(typeDescr)
@@ -54,7 +54,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Protected Overridable Function CreateAnonymousObjectCreationExpression(node As VisualBasicSyntaxNode,
                                                                                anonymousType As AnonymousTypeManager.AnonymousTypePublicSymbol,
                                                                                initExpressions As ImmutableArray(Of BoundExpression),
-                                                                               Optional hasErrors As Boolean = False) As BoundAnonymousTypeCreationExpression
+                                                                               Optional hasErrors As Boolean
+                                                                              ) As BoundAnonymousTypeCreationExpression
 
             ' By default BoundAnonymousTypeCreationExpression is created without 
             ' locals and bound nodes for 'declarations' of properties
@@ -285,10 +286,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return result
             End Function
 
-            Protected Overrides Function CreateAnonymousObjectCreationExpression(node As VisualBasicSyntaxNode,
-                                                                                 anonymousType As AnonymousTypeManager.AnonymousTypePublicSymbol,
-                                                                                 initExpressions As ImmutableArray(Of BoundExpression),
-                                                                                 Optional hasErrors As Boolean = False) As BoundAnonymousTypeCreationExpression
+            Protected Overrides Function CreateAnonymousObjectCreationExpression( node As VisualBasicSyntaxNode,
+                                                                                  anonymousType As AnonymousTypeManager.AnonymousTypePublicSymbol,
+                                                                                  initExpressions As ImmutableArray(Of BoundExpression),
+                                                                         Optional hasErrors As Boolean
+                                                                                ) As BoundAnonymousTypeCreationExpression
                 ' cache anonymous type property symbols created
                 For index = 0 To Me._fields.Length - 1
 

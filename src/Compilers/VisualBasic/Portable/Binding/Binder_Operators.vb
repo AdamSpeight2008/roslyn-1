@@ -201,8 +201,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             preliminaryOperatorKind As BinaryOperatorKind,
             isOperandOfConditionalBranch As Boolean,
             diagnostics As DiagnosticBag,
-            Optional isSelectCase As Boolean = False,
-            <[In], Out> Optional ByRef compoundStringLength As Integer = 0
+            Optional isSelectCase As Boolean,
+            <[In], Out> Optional ByRef compoundStringLength As Integer
         ) As BoundExpression
 
             Debug.Assert(left.IsValue)

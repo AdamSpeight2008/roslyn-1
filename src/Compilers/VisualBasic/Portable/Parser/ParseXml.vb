@@ -2462,7 +2462,7 @@ TryResync:
         End Function
 
         <Extension()>
-        Friend Function Peek(this As List(Of XmlContext), Optional i As Integer = 0) As XmlContext
+        Friend Function Peek(this As List(Of XmlContext), Optional i As Integer) As XmlContext
             Dim last = this.Count - 1
             Return this(last - i)
         End Function

@@ -762,7 +762,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend Function BindValue(
                                    node As ExpressionSyntax,
                                    diagnostics As DiagnosticBag,
-                          Optional isOperandOfConditionalBranch As Boolean = False
+                          Optional isOperandOfConditionalBranch As Boolean
                                  ) As BoundExpression
             Dim expr = BindExpression(node, diagnostics:=diagnostics, isOperandOfConditionalBranch:=isOperandOfConditionalBranch, isInvocationOrAddressOf:=False, eventContext:=False)
 
@@ -1286,7 +1286,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Function BindRValue(
            node As ExpressionSyntax,
            diagnostics As DiagnosticBag,
-           Optional isOperandOfConditionalBranch As Boolean = False
+           Optional isOperandOfConditionalBranch As Boolean
        ) As BoundExpression
             Dim expr = BindExpression(node, diagnostics:=diagnostics, isOperandOfConditionalBranch:=isOperandOfConditionalBranch, isInvocationOrAddressOf:=False, eventContext:=False)
 
@@ -2096,7 +2096,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                         type As TypeSymbol,
                                         hasErrors As Boolean,
                                         diagnostics As DiagnosticBag,
-                                        Optional explicitConversion As Boolean = False) As BoundExpression
+                                        Optional explicitConversion As Boolean
+                                        ) As BoundExpression
 
             Dim convertedTestExpression As BoundExpression = Nothing
             Dim placeholder As BoundRValuePlaceholder = Nothing
@@ -2293,7 +2294,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         ' Create a reference to Me, without error checking.
-        Private Function CreateMeReference(node As SyntaxNode, Optional isSynthetic As Boolean = False) As BoundMeReference
+        Private Function CreateMeReference(node As SyntaxNode, Optional isSynthetic As Boolean) As BoundMeReference
             Dim containingMethod = TryCast(ContainingMember, MethodSymbol)
             Dim result = New BoundMeReference(node, If(Me.ContainingType, ErrorTypeSymbol.UnknownResultType))
 
@@ -2391,7 +2392,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Function BindSimpleName(node As SimpleNameSyntax,
                                         isInvocationOrAddressOf As Boolean,
                                         diagnostics As DiagnosticBag,
-                                        Optional skipLocalsAndParameters As Boolean = False) As BoundExpression
+                                        Optional skipLocalsAndParameters As Boolean) As BoundExpression
             Dim name As String
             Dim typeArguments As TypeArgumentListSyntax
 
@@ -2957,7 +2958,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="diagnostics">diagnostic bag if errors are to be reported</param>
         ''' <returns>Returns the symbol's type or an ErrorTypeSymbol if the local is referenced before its definition or if the symbol is still being bound.</returns>
         ''' <remarks>This method safely returns a local symbol's type by checking for circular references or references before declaration.</remarks>
-        Private Function GetLocalSymbolType(localSymbol As LocalSymbol, node As VisualBasicSyntaxNode, Optional diagnostics As DiagnosticBag = Nothing) As TypeSymbol
+        Private Function GetLocalSymbolType(localSymbol As LocalSymbol, node As VisualBasicSyntaxNode, Optional diagnostics As DiagnosticBag) As TypeSymbol
             Dim localType As TypeSymbol = Nothing
             ' Check if local symbol is used before it's definition.
             ' Do span comparison first in order to optimize performance for non-error cases. 
@@ -4154,10 +4155,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="arrayBoundsOpt">The bounds</param>
         ''' <param name="diagnostics">Where to put the errors</param>
         ''' <param name="knownSizes">The bounds if they are constants, if argument is not specified this info is not returned </param>
-        Private Function BindArrayBounds(arrayBoundsOpt As ArgumentListSyntax,
-                                         diagnostics As DiagnosticBag,
-                                         Optional knownSizes As DimensionSize() = Nothing,
-                                         Optional errorOnEmptyBound As Boolean = False) As ImmutableArray(Of BoundExpression)
+        Private Function BindArrayBounds( arrayBoundsOpt As ArgumentListSyntax,
+                                          diagnostics As DiagnosticBag,
+                                 Optional knownSizes As DimensionSize(),
+                                 Optional errorOnEmptyBound As Boolean
+                                        ) As ImmutableArray(Of BoundExpression)
 
             If arrayBoundsOpt Is Nothing Then
                 Return s_noArguments
@@ -4457,11 +4459,10 @@ lElseClause:
             Return ContainingMember.Kind = SymbolKind.Method AndAlso DirectCast(ContainingMember, MethodSymbol).IsIterator
         End Function
 
-        Private Function BindAwait(
-            node As AwaitExpressionSyntax,
-            diagnostics As DiagnosticBag,
-            Optional bindAsStatement As Boolean = False
-        ) As BoundExpression
+        Private Function BindAwait( node As AwaitExpressionSyntax,
+                                    diagnostics As DiagnosticBag,
+                           Optional bindAsStatement As Boolean
+                                  ) As BoundExpression
 
             If IsInQuery Then
                 ReportDiagnostic(diagnostics, node.AwaitKeyword, ERRID.ERR_BadAsyncInQuery)

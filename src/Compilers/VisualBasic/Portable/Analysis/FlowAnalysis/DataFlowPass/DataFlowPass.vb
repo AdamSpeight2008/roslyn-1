@@ -106,7 +106,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Protected _convertInsufficientExecutionStackExceptionToCancelledByStackGuardException As Boolean = False ' By default, just let the original exception to bubble up.
 
-        Friend Sub New(info As FlowAnalysisInfo, suppressConstExpressionsSupport As Boolean, Optional trackStructsWithIntrinsicTypedFields As Boolean = False)
+        Friend Sub New(info As FlowAnalysisInfo, suppressConstExpressionsSupport As Boolean, Optional trackStructsWithIntrinsicTypedFields As Boolean)
             MyBase.New(info, suppressConstExpressionsSupport)
             Me._initiallyAssignedVariables = Nothing
             Me._trackStructsWithIntrinsicTypedFields = trackStructsWithIntrinsicTypedFields
@@ -114,9 +114,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Friend Sub New(info As FlowAnalysisInfo, region As FlowAnalysisRegionInfo,
                        suppressConstExpressionsSupport As Boolean,
-                       Optional initiallyAssignedVariables As ImmutableArray(Of Symbol) = Nothing,
-                       Optional trackUnassignments As Boolean = False,
-                       Optional trackStructsWithIntrinsicTypedFields As Boolean = False)
+                       Optional initiallyAssignedVariables As ImmutableArray(Of Symbol),
+                       Optional trackUnassignments As Boolean,
+                       Optional trackStructsWithIntrinsicTypedFields As Boolean)
 
             MyBase.New(info, region, suppressConstExpressionsSupport, trackUnassignments)
             Me._initiallyAssignedVariables = initiallyAssignedVariables
@@ -401,7 +401,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' in an earlier phase as "use before declaration". That allows us to avoid giving slots to local variables before
         ''' processing their declarations.
         ''' </summary>
-        Protected Function VariableSlot(symbol As Symbol, Optional containingSlot As Integer = 0) As Integer
+        Protected Function VariableSlot(symbol As Symbol, Optional containingSlot As Integer) As Integer
 
             containingSlot = DescendThroughTupleRestFields(symbol, containingSlot, forceContainingSlotsToExist:=False)
 
@@ -488,7 +488,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ''' <param name = "symbol"></param>
         ''' <returns></returns>
-        Protected Function GetOrCreateSlot(symbol As Symbol, Optional containingSlot As Integer = 0) As Integer
+        Protected Function GetOrCreateSlot(symbol As Symbol, Optional containingSlot As Integer) As Integer
             containingSlot = DescendThroughTupleRestFields(symbol, containingSlot, forceContainingSlotsToExist:=True)
 
 
@@ -1000,7 +1000,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Protected Overridable Sub VisitAmbiguousLocalSymbol(ambiguous As AmbiguousLocalsPseudoSymbol)
         End Sub
 
-        Protected Overrides Sub VisitLvalue(node As BoundExpression, Optional dontLeaveRegion As Boolean = False)
+        Protected Overrides Sub VisitLvalue(node As BoundExpression, Optional dontLeaveRegion As Boolean)
             MyBase.VisitLvalue(node, True) ' Don't leave region
 
             If node.Kind = BoundKind.Local Then
@@ -1146,7 +1146,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                    node As SyntaxNode,
                                                    rwContext As ReadWriteContext,
                                                    Optional slot As Integer = SlotKind.NotTracked,
-                                                   Optional boundFieldAccess As BoundFieldAccess = Nothing)
+                                                   Optional boundFieldAccess As BoundFieldAccess)
 
             If slot < SlotKind.FirstAvailable Then
                 slot = VariableSlot(sym)

@@ -1067,7 +1067,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             asClauseOpt As AsClauseSyntax,
             equalsValueOpt As EqualsValueSyntax,
             diagnostics As DiagnosticBag,
-            Optional skipAsNewInitializer As Boolean = False
+            Optional skipAsNewInitializer As Boolean
         ) As BoundLocalDeclaration
 
             Dim symbol As LocalSymbol = GetLocalForDeclaration(name.Identifier)
@@ -4280,7 +4280,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             derivedType As TypeSymbol,
             interfaceType As NamedTypeSymbol,
             <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo),
-            Optional matchingInterfaces As HashSet(Of NamedTypeSymbol) = Nothing
+            Optional matchingInterfaces As HashSet(Of NamedTypeSymbol)
         ) As Boolean
 
             ' this is a more specialized version of the Dev10 code for IsOrInheritsFromOrImplements (type_helpers.cpp 

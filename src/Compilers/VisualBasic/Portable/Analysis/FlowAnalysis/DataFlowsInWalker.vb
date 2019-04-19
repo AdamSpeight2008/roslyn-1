@@ -124,7 +124,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                   node As SyntaxNode,
                                                   rwContext As ReadWriteContext,
                                          Optional slot As Integer = SlotKind.NotTracked,
-                                         Optional boundFieldAccess As BoundFieldAccess = Nothing
+                                         Optional boundFieldAccess As BoundFieldAccess
                                                 )
 
             Debug.Assert(local.Kind <> SymbolKind.Field OrElse boundFieldAccess IsNot Nothing)

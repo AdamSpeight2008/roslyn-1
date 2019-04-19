@@ -49,7 +49,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private _isInAsyncMethodDeclarationHeader As Boolean
         Private _isInIteratorMethodDeclarationHeader As Boolean
 
-        Friend Sub New(text As SourceText, options As VisualBasicParseOptions, Optional cancellationToken As CancellationToken = Nothing)
+        Friend Sub New(text As SourceText, options As VisualBasicParseOptions, Optional cancellationToken As CancellationToken)
             MyClass.New(New Scanner(text, options))
             Debug.Assert(text IsNot Nothing)
             Debug.Assert(options IsNot Nothing)
@@ -160,16 +160,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Name* .Parser::ParseName( [ bool RequireQualification ] [ _Inout_ bool& ErrorInConstruct ] [ bool AllowGlobalNameSpace ] [ bool AllowGenericArguments ] [ bool DisallowGenericArgumentsOnLastQualifiedName ] [ bool AllowEmptyGenericArguments ] [ _Out_opt_ bool* AllowedEmptyGenericArguments ] )
 
         Friend Function ParseName(
-                            requireQualification As Boolean,
-                            allowGlobalNameSpace As Boolean,
-                            allowGenericArguments As Boolean,
-                            allowGenericsWithoutOf As Boolean,
-                            Optional nonArrayName As Boolean = False,
-                            Optional disallowGenericArgumentsOnLastQualifiedName As Boolean = False,
-                            Optional allowEmptyGenericArguments As Boolean = False,
-                            Optional ByRef allowedEmptyGenericArguments As Boolean = False,
-                            Optional isNameInNamespaceDeclaration As Boolean = False
-                        ) As NameSyntax
+                                   requireQualification As Boolean,
+                                   allowGlobalNameSpace As Boolean,
+                                   allowGenericArguments As Boolean,
+                                   allowGenericsWithoutOf As Boolean,
+                          Optional nonArrayName As Boolean,
+                          Optional disallowGenericArgumentsOnLastQualifiedName As Boolean,
+                          Optional allowEmptyGenericArguments As Boolean,
+                    ByRef Optional allowedEmptyGenericArguments As Boolean,
+                          Optional isNameInNamespaceDeclaration As Boolean
+                                 ) As NameSyntax
 
             Debug.Assert(allowGenericArguments OrElse Not allowEmptyGenericArguments, "Inconsistency in generic arguments parsing requirements!!!")
 
@@ -242,7 +242,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' gets the last token that has nonzero FullWidth. 
         ''' NOTE: this helper will not descend into structured trivia.
         ''' </summary>
-        Private Shared Function GetLastNZWToken(node As Microsoft.CodeAnalysis.SyntaxNode) As Microsoft.CodeAnalysis.SyntaxToken
+        Private Shared Function GetLastNZWToken(node As CodeAnalysis.SyntaxNode) As CodeAnalysis.SyntaxToken
             Do
                 Debug.Assert(node.FullWidth <> 0)
                 For Each child In node.ChildNodesAndTokens.Reverse
@@ -264,7 +264,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' gets the last token regardless if it has zero FullWidth or not 
         ''' NOTE: this helper will not descend into structured trivia.
         ''' </summary>
-        Private Shared Function GetLastToken(node As Microsoft.CodeAnalysis.SyntaxNode) As Microsoft.CodeAnalysis.SyntaxToken
+        Private Shared Function GetLastToken(node As CodeAnalysis.SyntaxNode) As CodeAnalysis.SyntaxToken
             Do
                 Dim child = node.ChildNodesAndTokens.Last
 
@@ -1459,8 +1459,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 4352 - 4352
         ' EnumTypeStatement* .Parser::ParseEnumStatement( [ ParseTree::AttributeSpecifierList* Attributes ] [ ParseTree::SpecifierList* Specifiers ] [ Token* Start ] [ _Inout_ bool& ErrorInConstruct ] )
         Private Function ParseEnumStatement(
-                  Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax) = Nothing,
-                  Optional modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax) = Nothing
+                  Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                  Optional modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax) 
         ) As EnumStatementSyntax
             Debug.Assert(CurrentToken.Kind = SyntaxKind.EnumKeyword, "ParseEnumStatement called on the wrong token.")
 
@@ -1577,8 +1577,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 4563 - 4563
         ' TypeStatement* .Parser::ParseTypeStatement( [ ParseTree::AttributeSpecifierList* Attributes ] [ ParseTree::SpecifierList* Specifiers ] [ Token* Start ] [ _Inout_ bool& ErrorInConstruct ] )
         Private Function ParseTypeStatement(
-                  Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax) = Nothing,
-                  Optional modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax) = Nothing
+                  Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                  Optional modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
         ) As TypeStatementSyntax
 
             Dim kind As SyntaxKind
@@ -2473,7 +2473,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         '''  Dim x as new Customer With {.Id = 1, .Name = "A"}
         ''' </summary>
         ''' <returns>ObjectMemberInitializer</returns>
-        Private Function ParseObjectInitializerList(Optional anonymousTypeInitializer As Boolean = False, Optional anonymousTypesAllowedHere As Boolean = True) As ObjectMemberInitializerSyntax
+        Private Function ParseObjectInitializerList(
+                                            Optional anonymousTypeInitializer As Boolean,
+                                            Optional anonymousTypesAllowedHere As Boolean = True
+                                                   ) As ObjectMemberInitializerSyntax
 
             Debug.Assert(CurrentToken.Kind = SyntaxKind.WithKeyword, "ParseObjectInitializerList called with wrong token")
 
@@ -2832,10 +2835,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="allowedEmptyGenericArguments">Controls generic argument parsing</param>
         ''' <returns>TypeName</returns>
         Friend Function ParseTypeName(
-            Optional nonArrayName As Boolean = False,
-            Optional allowEmptyGenericArguments As Boolean = False,
-            Optional ByRef allowedEmptyGenericArguments As Boolean = False
-        ) As TypeSyntax
+                              Optional nonArrayName As Boolean,
+                              Optional allowEmptyGenericArguments As Boolean,
+                              Optional ByRef allowedEmptyGenericArguments As Boolean
+                                     ) As TypeSyntax
 
             Dim Start As SyntaxToken = CurrentToken
             Dim prev As SyntaxToken = PrevToken
@@ -3074,7 +3077,9 @@ checkNullable:
         ' Lines: 7117 - 7117
         ' Type* .Parser::ParseGeneralType( [ _Inout_ bool& ErrorInConstruct ] [ bool AllowEmptyGenericArguments ] )
 
-        Friend Function ParseGeneralType(Optional allowEmptyGenericArguments As Boolean = False) As TypeSyntax
+        Friend Function ParseGeneralType(
+                                 Optional allowEmptyGenericArguments As Boolean
+                                        ) As TypeSyntax
 
             Dim start As SyntaxToken = CurrentToken
             Dim result As TypeSyntax
@@ -5887,9 +5892,10 @@ checkNullable:
         End Function
 
         Private Function TryGetContextualKeyword(
-            kind As SyntaxKind,
-            ByRef keyword As KeywordSyntax,
-            Optional createIfMissing As Boolean = False) As Boolean
+                                                  kind As SyntaxKind,
+                                            ByRef keyword As KeywordSyntax,
+                                         Optional createIfMissing As Boolean
+                                                ) As Boolean
 
             If TryTokenAsContextualKeyword(CurrentToken, kind, keyword) Then
                 GetNextToken()
@@ -5904,9 +5910,10 @@ checkNullable:
 
         ' This is for contextual keywords like "From"
         Private Function TryGetContextualKeywordAndEatNewLine(
-            kind As SyntaxKind,
-            ByRef keyword As KeywordSyntax,
-            Optional createIfMissing As Boolean = False) As Boolean
+                                                               kind As SyntaxKind,
+                                                         ByRef keyword As KeywordSyntax,
+                                                      Optional createIfMissing As Boolean
+                                                             ) As Boolean
 
             Dim result = TryGetContextualKeyword(kind, keyword, createIfMissing)
             If result Then
@@ -5917,9 +5924,10 @@ checkNullable:
 
         ' This is for contextual keywords like "From"
         Private Function TryEatNewLineAndGetContextualKeyword(
-            kind As SyntaxKind,
-            ByRef keyword As KeywordSyntax,
-            Optional createIfMissing As Boolean = False) As Boolean
+                                                               kind As SyntaxKind,
+                                                         ByRef keyword As KeywordSyntax,
+                                                      Optional createIfMissing As Boolean
+                                                             ) As Boolean
 
             If TryGetContextualKeyword(kind, keyword, createIfMissing) Then
                 Return True
@@ -5940,10 +5948,11 @@ checkNullable:
         End Function
 
         Private Function TryGetTokenAndEatNewLine(Of T As SyntaxToken)(
-            kind As SyntaxKind,
-            ByRef token As T,
-            Optional createIfMissing As Boolean = False,
-            Optional state As ScannerState = ScannerState.VB) As Boolean
+                                                                        kind As SyntaxKind,
+                                                                        ByRef token As T,
+                                                               Optional createIfMissing As Boolean,
+                                                               Optional state As ScannerState = ScannerState.VB
+                                                                      ) As Boolean
 
             Debug.Assert(CanUseInTryGetToken(kind))
 
@@ -5964,10 +5973,11 @@ checkNullable:
         End Function
 
         Private Function TryEatNewLineAndGetToken(Of T As SyntaxToken)(
-            kind As SyntaxKind,
-            ByRef token As T,
-            Optional createIfMissing As Boolean = False,
-            Optional state As ScannerState = ScannerState.VB) As Boolean
+                                                                        kind As SyntaxKind,
+                                                                  ByRef token As T,
+                                                               Optional createIfMissing As Boolean,
+                                                               Optional state As ScannerState = ScannerState.VB
+                                                                      ) As Boolean
 
             Debug.Assert(CanUseInTryGetToken(kind))
 

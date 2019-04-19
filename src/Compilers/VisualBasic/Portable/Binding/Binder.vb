@@ -84,7 +84,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             _compilation = compilation
         End Sub
 
-        Protected Sub New(containingBinder As Binder, Optional isEarlyAttributeBinder As Boolean? = Nothing, Optional ignoreBaseClassesInLookup As Boolean? = Nothing)
+        Protected Sub New(
+                           containingBinder As Binder, 
+                  Optional isEarlyAttributeBinder As Boolean?,
+                  Optional ignoreBaseClassesInLookup As Boolean?
+                         )
+
             Me.New(containingBinder)
 
             If isEarlyAttributeBinder.HasValue Then
@@ -285,10 +290,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <remarks>
         ''' Overriding methods should consider <see cref="IgnoresAccessibility"/>.
         ''' </remarks>
-        Public Overridable Function CheckAccessibility(sym As Symbol,
-                                                       <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo),
-                                                       Optional accessThroughType As TypeSymbol = Nothing,
-                                                       Optional basesBeingResolved As ConsList(Of Symbol) = Nothing) As AccessCheckResult
+        Public Overridable Function CheckAccessibility(
+                                                        sym As Symbol,
+                                      <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo),
+                                               Optional accessThroughType As TypeSymbol,
+                                               Optional basesBeingResolved As ConsList(Of Symbol)
+                                                      ) As AccessCheckResult
             Return m_containingBinder.CheckAccessibility(sym, useSiteDiagnostics, accessThroughType, basesBeingResolved)
         End Function
 
@@ -298,9 +305,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' access with no qualifier).
         ''' </summary>
         Public Function IsAccessible(sym As Symbol,
-                                     <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo),
-                                     Optional accessThroughType As TypeSymbol = Nothing,
-                                     Optional basesBeingResolved As ConsList(Of Symbol) = Nothing) As Boolean
+                    <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo),
+                             Optional accessThroughType As TypeSymbol,
+                             Optional basesBeingResolved As ConsList(Of Symbol)
+                                    ) As Boolean
             Return CheckAccessibility(sym, useSiteDiagnostics, accessThroughType, basesBeingResolved) = AccessCheckResult.Accessible
         End Function
 
@@ -450,7 +458,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return symbol
         End Function
 
-        Friend Shared Function GetUseSiteErrorForSpecialType(type As TypeSymbol, Optional suppressUseSiteError As Boolean = False) As DiagnosticInfo
+        Friend Shared Function GetUseSiteErrorForSpecialType(type As TypeSymbol, Optional suppressUseSiteError As Boolean) As DiagnosticInfo
             Dim info As DiagnosticInfo = Nothing
             If type.TypeKind = TypeKind.Error AndAlso TypeOf type Is MissingMetadataTypeSymbol.TopLevel Then
                 Dim missing = DirectCast(type, MissingMetadataTypeSymbol.TopLevel)
@@ -640,12 +648,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             errorInfo As DiagnosticInfo,
             candidateSymbols As ImmutableArray(Of Symbol),
             resultKind As LookupResultKind,
-            Optional reportErrorWhenReferenced As Boolean = False
+            Optional reportErrorWhenReferenced As Boolean
         ) As ErrorTypeSymbol
             Return New ExtendedErrorTypeSymbol(errorInfo, name, 0, candidateSymbols, resultKind, reportErrorWhenReferenced)
         End Function
 
-        Public Shared Function GetErrorSymbol(name As String, errorInfo As DiagnosticInfo, Optional reportErrorWhenReferenced As Boolean = False) As ErrorTypeSymbol
+        Public Shared Function GetErrorSymbol(name As String, errorInfo As DiagnosticInfo, Optional reportErrorWhenReferenced As Boolean) As ErrorTypeSymbol
             Return GetErrorSymbol(name, errorInfo, ImmutableArray(Of Symbol).Empty, LookupResultKind.Empty, reportErrorWhenReferenced)
         End Function
 

@@ -485,9 +485,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ParseAnachronisticStatement() As StatementSyntax
             ' Assume CurrentToken is on ENDIF, WEND
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.EndIfKeyword OrElse
-                             CurrentToken.Kind = SyntaxKind.GosubKeyword OrElse
-                             CurrentToken.Kind = SyntaxKind.WendKeyword, "ParseAnachronisticEndIfStatement called on wrong token")
+            Debug.Assert(CurrentToken.Kind.IsEither( SyntaxKind.EndIfKeyword, SyntaxKind.GosubKeyword, SyntaxKind.WendKeyword), "ParseAnachronisticEndIfStatement called on wrong token")
 
             Dim keyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 

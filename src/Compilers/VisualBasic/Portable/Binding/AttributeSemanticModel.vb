@@ -14,10 +14,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Sub New(
                          root                       As VisualBasicSyntaxNode,
                          binder                     As Binder,
-                Optional containingSemanticModelOpt As SyntaxTreeSemanticModel = Nothing,
-                Optional parentSemanticModelOpt     As SyntaxTreeSemanticModel = Nothing,
-                Optional speculatedPosition         As Integer = 0,
-                Optional ignoreAccessibility        As Boolean = False
+                Optional containingSemanticModelOpt As SyntaxTreeSemanticModel,
+                Optional parentSemanticModelOpt     As SyntaxTreeSemanticModel,
+                Optional speculatedPosition         As Integer,
+                Optional ignoreAccessibility        As Boolean
                        )
             MyBase.New(root, binder, containingSemanticModelOpt, parentSemanticModelOpt, speculatedPosition, ignoreAccessibility)
         End Sub

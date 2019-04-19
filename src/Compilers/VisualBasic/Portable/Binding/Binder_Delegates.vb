@@ -933,14 +933,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             diagnostics As DiagnosticBag
         ) As SourceParameterFlags
             ' 9.2.5.4: ParamArray parameters may not be specified in delegate or event declarations.
-            If (flag And SourceParameterFlags.ParamArray) = SourceParameterFlags.ParamArray Then
+            If flag![ParamArray] Then
                 Dim location = token.GetLocation()
                 diagnostics.Add(ERRID.ERR_ParamArrayIllegal1, location, GetDelegateOrEventKeywordText(container))
                 flag = flag And (Not SourceParameterFlags.ParamArray)
             End If
 
             ' 9.2.5.3 Optional parameters may not be specified on delegate or event declarations
-            If (flag And SourceParameterFlags.Optional) = SourceParameterFlags.Optional Then
+            If flag!(SourceParameterFlags.Optional) Then
                 Dim location = token.GetLocation()
                 diagnostics.Add(ERRID.ERR_OptionalIllegal1, location, GetDelegateOrEventKeywordText(container))
                 flag = flag And (Not SourceParameterFlags.Optional)

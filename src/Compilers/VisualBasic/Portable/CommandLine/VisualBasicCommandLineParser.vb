@@ -109,7 +109,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim parseDocumentationComments As Boolean = False ' Don't just null check documentationFileName because we want to do this even if the file name is invalid.
             Dim outputKind As OutputKind = OutputKind.ConsoleApplication
             Dim ssVersion As SubsystemVersion = SubsystemVersion.None
-            Dim languageVersion As Language.Version.LanguageVersionService.LanguageVersion = Language.Version.LanguageVersionService.LanguageVersion.Default
+            Dim languageVersion As Language.Version.LanguageVersionService.LanguageVersion = Language.Version.LanguageVersionService.Default
             Dim mainTypeName As String = Nothing
             Dim win32ManifestFile As String = Nothing
             Dim win32ResourceFile As String = Nothing

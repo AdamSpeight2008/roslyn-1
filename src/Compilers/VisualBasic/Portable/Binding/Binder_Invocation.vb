@@ -13,15 +13,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
     Partial Friend Class Binder
 
-        Private Function CreateBoundMethodGroup(
-            node As SyntaxNode,
-            lookupResult As LookupResult,
-            lookupOptionsUsed As LookupOptions,
-            receiver As BoundExpression,
-            typeArgumentsOpt As BoundTypeArguments,
-            qualKind As QualificationKind,
-            Optional hasError As Boolean = False
-        ) As BoundMethodGroup
+        Private Function CreateBoundMethodGroup( node As SyntaxNode,
+                                                 lookupResult As LookupResult,
+                                                 lookupOptionsUsed As LookupOptions,
+                                                 receiver As BoundExpression,
+                                                 typeArgumentsOpt As BoundTypeArguments,
+                                                 qualKind As QualificationKind,
+                                        Optional hasError As Boolean
+                                               ) As BoundMethodGroup
             Dim pendingExtensionMethods As ExtensionMethodGroup = Nothing
 
             Debug.Assert(lookupResult.Kind = LookupResultKind.Good OrElse lookupResult.Kind = LookupResultKind.Inaccessible)
@@ -718,20 +717,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Friend Function BindInvocationExpression(
-            node As SyntaxNode,
-            target As SyntaxNode,
-            typeChar As TypeCharacter,
-            group As BoundMethodOrPropertyGroup,
-            boundArguments As ImmutableArray(Of BoundExpression),
-            argumentNames As ImmutableArray(Of String),
-            diagnostics As DiagnosticBag,
-            callerInfoOpt As SyntaxNode,
-            Optional allowConstructorCall As Boolean = False,
-            Optional suppressAbstractCallDiagnostics As Boolean = False,
-            Optional isDefaultMemberAccess As Boolean = False,
-            Optional representCandidateInDiagnosticsOpt As Symbol = Nothing,
-            Optional forceExpandedForm As Boolean = False
-        ) As BoundExpression
+                                                  node As SyntaxNode,
+                                                  target As SyntaxNode,
+                                                  typeChar As TypeCharacter,
+                                                  group As BoundMethodOrPropertyGroup,
+                                                  boundArguments As ImmutableArray(Of BoundExpression),
+                                                  argumentNames As ImmutableArray(Of String),
+                                                  diagnostics As DiagnosticBag,
+                                                  callerInfoOpt As SyntaxNode,
+                                         Optional allowConstructorCall As Boolean,
+                                         Optional suppressAbstractCallDiagnostics As Boolean,
+                                         Optional isDefaultMemberAccess As Boolean,
+                                         Optional representCandidateInDiagnosticsOpt As Symbol,
+                                         Optional forceExpandedForm As Boolean
+                                                ) As BoundExpression
 
             Debug.Assert(group IsNot Nothing)
             Debug.Assert(allowConstructorCall OrElse Not IsGroupOfConstructors(group))
@@ -825,7 +824,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             bestResult As OverloadResolution.CandidateAnalysisResult,
             asyncLambdaSubToFunctionMismatch As ImmutableArray(Of BoundExpression),
             diagnostics As DiagnosticBag,
-            Optional suppressAbstractCallDiagnostics As Boolean = False
+            Optional suppressAbstractCallDiagnostics As Boolean
         ) As BoundExpression
 
             Dim candidate = bestResult.Candidate
@@ -1192,11 +1191,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             <[In]> ByRef results As OverloadResolution.OverloadResolutionResult,
             diagnostics As DiagnosticBag,
             callerInfoOpt As SyntaxNode,
-            Optional overrideCommonReturnType As TypeSymbol = Nothing,
-            Optional queryMode As Boolean = False,
-            Optional boundTypeExpression As BoundTypeExpression = Nothing,
-            Optional representCandidateInDiagnosticsOpt As Symbol = Nothing,
-            Optional diagnosticLocationOpt As Location = Nothing
+            Optional overrideCommonReturnType As TypeSymbol,
+            Optional queryMode As Boolean,
+            Optional boundTypeExpression As BoundTypeExpression,
+            Optional representCandidateInDiagnosticsOpt As Symbol,
+            Optional diagnosticLocationOpt As Location
         ) As BoundExpression
             Return ReportOverloadResolutionFailureAndProduceBoundNode(
                         node,
@@ -1222,12 +1221,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             <[In]> ByRef results As OverloadResolution.OverloadResolutionResult,
             diagnostics As DiagnosticBag,
             callerInfoOpt As SyntaxNode,
-            Optional groupOpt As BoundMethodOrPropertyGroup = Nothing,
-            Optional overrideCommonReturnType As TypeSymbol = Nothing,
-            Optional queryMode As Boolean = False,
-            Optional boundTypeExpression As BoundTypeExpression = Nothing,
-            Optional representCandidateInDiagnosticsOpt As Symbol = Nothing,
-            Optional diagnosticLocationOpt As Location = Nothing
+            Optional groupOpt As BoundMethodOrPropertyGroup,
+            Optional overrideCommonReturnType As TypeSymbol,
+            Optional queryMode As Boolean,
+            Optional boundTypeExpression As BoundTypeExpression,
+            Optional representCandidateInDiagnosticsOpt As Symbol,
+            Optional diagnosticLocationOpt As Location
         ) As BoundExpression
 
             Dim bestCandidates = ArrayBuilder(Of OverloadResolution.CandidateAnalysisResult).GetInstance()
@@ -1271,10 +1270,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             argumentNames As ImmutableArray(Of String),
             diagnostics As DiagnosticBag,
             callerInfoOpt As SyntaxNode,
-            Optional delegateSymbol As Symbol = Nothing,
-            Optional queryMode As Boolean = False,
-            Optional boundTypeExpression As BoundTypeExpression = Nothing,
-            Optional representCandidateInDiagnosticsOpt As Symbol = Nothing
+            Optional delegateSymbol As Symbol,
+            Optional queryMode As Boolean,
+            Optional boundTypeExpression As BoundTypeExpression,
+            Optional representCandidateInDiagnosticsOpt As Symbol
         ) As BoundExpression
             Return ReportOverloadResolutionFailureAndProduceBoundNode(
                        node,
@@ -1293,7 +1292,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                        representCandidateInDiagnosticsOpt)
         End Function
 
-        Public Shared Function GetLocationForOverloadResolutionDiagnostic(node As SyntaxNode, Optional groupOpt As BoundMethodOrPropertyGroup = Nothing) As Location
+        Public Shared Function GetLocationForOverloadResolutionDiagnostic(node As SyntaxNode, Optional groupOpt As BoundMethodOrPropertyGroup) As Location
             Dim result As SyntaxNode
 
             If groupOpt IsNot Nothing Then
@@ -1346,12 +1345,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             argumentNames As ImmutableArray(Of String),
             diagnostics As DiagnosticBag,
             callerInfoOpt As SyntaxNode,
-            Optional groupOpt As BoundMethodOrPropertyGroup = Nothing,
-            Optional delegateSymbol As Symbol = Nothing,
-            Optional queryMode As Boolean = False,
-            Optional boundTypeExpression As BoundTypeExpression = Nothing,
-            Optional representCandidateInDiagnosticsOpt As Symbol = Nothing,
-            Optional diagnosticLocationOpt As Location = Nothing
+            Optional groupOpt As BoundMethodOrPropertyGroup,
+            Optional delegateSymbol As Symbol,
+            Optional queryMode As Boolean,
+            Optional boundTypeExpression As BoundTypeExpression,
+            Optional representCandidateInDiagnosticsOpt As Symbol,
+            Optional diagnosticLocationOpt As Location
         ) As BoundExpression
 
             Debug.Assert(commonReturnType IsNot Nothing AndAlso bestSymbols.Length > 0 AndAlso bestCandidates.Count >= bestSymbols.Length)
@@ -2478,8 +2477,8 @@ ProduceBoundNode:
             targetType As TypeSymbol,
             reportNarrowingConversions As Boolean,
             diagnostics As DiagnosticBag,
-            Optional diagnosticNode As SyntaxNode = Nothing,
-            Optional delegateSymbol As Symbol = Nothing
+            Optional diagnosticNode As SyntaxNode,
+            Optional delegateSymbol As Symbol
         )
 
             ' TODO: Do we need to do more thorough check for error types here, i.e. dig into generics, 
@@ -2548,8 +2547,8 @@ ProduceBoundNode:
             targetType As TypeSymbol,
             reportNarrowingConversions As Boolean,
             diagnostics As DiagnosticBag,
-            Optional diagnosticNode As SyntaxNode = Nothing,
-            Optional delegateSymbol As Symbol = Nothing
+            Optional diagnosticNode As SyntaxNode,
+            Optional delegateSymbol As Symbol 
         ) As Boolean
 
             ' TODO: Do we need to do more thorough check for error types here, i.e. dig into generics, 

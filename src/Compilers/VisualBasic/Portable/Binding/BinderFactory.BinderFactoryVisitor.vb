@@ -240,7 +240,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ' create a new binder. The parent node and position are used if we need to find an enclosing binder unless specified explicitly.
             Private Function GetBinderForNodeAndUsage(node As VisualBasicSyntaxNode,
                                                       usage As NodeUsage,
-                                                      Optional parentNode As VisualBasicSyntaxNode = Nothing,
+                                                      Optional parentNode As VisualBasicSyntaxNode,
                                                       Optional position As Integer = -1
                                                       ) As Binder
 

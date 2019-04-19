@@ -547,7 +547,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' We use this to restore the old set of pending branches and labels after visiting a construct that contains nested statements.
         ''' </summary>
         ''' <param name="oldPending">The old pending branches/labels, which are to be merged with the current ones</param>
-        Protected Sub RestorePending(oldPending As SavedPending, Optional mergeLabelsSeen As Boolean = False)
+        Protected Sub RestorePending(oldPending As SavedPending, Optional mergeLabelsSeen As Boolean)
             If ResolveBranches(Me._labelsSeen) Then
                 Me.backwardBranchChanged = True
             End If
@@ -597,10 +597,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Private Function BothBranchAndLabelArePrefixedByNesting(branch As PendingBranch,
-                                                                Optional labelsFilter As HashSet(Of LabelSymbol) = Nothing,
-                                                                Optional ignoreLast As Boolean = False,
-                                                                <Out()> Optional ByRef labelSymbol As LabelSymbol = Nothing,
-                                                                <Out()> Optional ByRef labelAndNesting As LabelStateAndNesting = Nothing) As Boolean
+                                                                Optional labelsFilter As HashSet(Of LabelSymbol),
+                                                                Optional ignoreLast As Boolean ,
+                                                                <Out()> Optional ByRef labelSymbol As LabelSymbol,
+                                                                <Out()> Optional ByRef labelAndNesting As LabelStateAndNesting) As Boolean
 
             Dim branchStatement As BoundStatement = branch.Branch
             If branchStatement IsNot Nothing AndAlso branch.Nesting.IsPrefixedBy(Me._nesting, ignoreLast) Then
@@ -671,7 +671,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' Visit a node, process 
         ''' </summary>
-        Protected Sub VisitAlways(node As BoundNode, Optional dontLeaveRegion As Boolean = False)
+        Protected Sub VisitAlways(node As BoundNode, Optional dontLeaveRegion As Boolean)
             If Me._firstInRegion Is Nothing Then
                 VisitWithStackGuard(node)
             Else
@@ -707,7 +707,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return False ' just let the original exception to bubble up.
         End Function
 
-        Protected Overridable Sub VisitLvalue(node As BoundExpression, Optional dontLeaveRegion As Boolean = False)
+        Protected Overridable Sub VisitLvalue(node As BoundExpression, Optional dontLeaveRegion As Boolean)
             ' NOTE: we can skip checking if Me._firstInRegion is nothing because 'node' is not nothing
             If node Is Me._firstInRegion AndAlso Me._regionPlace = RegionPlace.Before Then
                 Me.EnterRegion()
@@ -786,7 +786,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' assigned (or not). That is, we will not be needing AssignedWhenTrue and
         ''' AssignedWhenFalse.
         ''' </summary>
-        Protected Sub VisitRvalue(node As BoundExpression, Optional rwContext As ReadWriteContext = ReadWriteContext.None, Optional dontLeaveRegion As Boolean = False)
+        Protected Sub VisitRvalue(node As BoundExpression, Optional rwContext As ReadWriteContext = ReadWriteContext.None, Optional dontLeaveRegion As Boolean)
             ' NOTE: we can skip checking if Me._firstInRegion is nothing because 'node' is not nothing
             If node Is Me._firstInRegion AndAlso Me._regionPlace = RegionPlace.Before Then
                 Me.EnterRegion()

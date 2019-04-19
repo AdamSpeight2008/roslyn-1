@@ -17,7 +17,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 301 - 301
         ' Class: Token
         ' bool .::IsContinuableEOL( )
-        Private Function IsContinuableEOL(Optional i As Integer = 0) As Boolean
+        Private Function IsContinuableEOL(Optional i As Integer) As Boolean
             'TODO - This applies ot both IsContinuableEOL and PeekPastStatementTerminator and any code that peeks through an EOL.
             ' The scanner scans the fist token of a statement differently with regard to trivia.  It we peek past the EOL and then get the token.
             ' The token may not have the correct trivia attached to it when we get it.  The solution is to attach the state to the token so we
@@ -125,7 +125,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         'Token* // Returns the token following tkOF, or NULL if we aren't looking at generic type syntax 
         'Parser::BeginsGeneric // A generic is signified by '(' [tkStatementTerminator] tkOF
 
-        Private Function BeginsGeneric(Optional nonArrayName As Boolean = False, Optional allowGenericsWithoutOf As Boolean = False) As Boolean
+        Private Function BeginsGeneric(Optional nonArrayName As Boolean, Optional allowGenericsWithoutOf As Boolean) As Boolean
 
             If CurrentToken.Kind = SyntaxKind.OpenParenToken Then
 
@@ -423,7 +423,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return False
         End Function
 
-        Private Function NextLineStartsWithStatementTerminator(Optional offset As Integer = 0) As Boolean
+        Private Function NextLineStartsWithStatementTerminator(Optional offset As Integer) As Boolean
             Debug.Assert(If(offset = 0, CurrentToken, PeekToken(offset)).IsEndOfLine)
 
             Dim kind = PeekToken(offset + 1).Kind

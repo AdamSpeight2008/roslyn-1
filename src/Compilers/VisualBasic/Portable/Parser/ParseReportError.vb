@@ -62,8 +62,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             ErrorId As ERRID,
             attributes As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax),
             modifiers As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of KeywordSyntax),
-            Optional createMissingIdentifier As Boolean = False,
-            Optional forceErrorOnFirstToken As Boolean = False) As StatementSyntax
+            Optional createMissingIdentifier As Boolean,
+            Optional forceErrorOnFirstToken As Boolean) As StatementSyntax
             ' // Create a statement with no operands. It will end up with its error flag set.
 
             Dim tokens = ResyncAt()

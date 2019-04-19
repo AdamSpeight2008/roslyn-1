@@ -32,7 +32,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                            receiver As BoundExpression,
                                            containerType As TypeSymbol,
                                            diagnostics As DiagnosticBag,
-                                           Optional suppressLateBindingResolutionDiagnostics As Boolean = False) As BoundExpression
+                                           Optional suppressLateBindingResolutionDiagnostics As Boolean) As BoundExpression
 
             receiver = AdjustReceiverAmbiguousTypeOrValue(receiver, diagnostics)
 
@@ -125,7 +125,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                            arguments As ImmutableArray(Of BoundExpression),
                                            argumentNames As ImmutableArray(Of String),
                                            diagnostics As DiagnosticBag,
-                                           Optional suppressLateBindingResolutionDiagnostics As Boolean = False) As BoundExpression
+                                           Optional suppressLateBindingResolutionDiagnostics As Boolean) As BoundExpression
 
             Debug.Assert(receiver IsNot Nothing AndAlso receiver.Kind <> BoundKind.TypeOrValueExpression)
             Debug.Assert(groupOpt Is Nothing OrElse groupOpt.ReceiverOpt Is Nothing OrElse groupOpt.ReceiverOpt.Kind <> BoundKind.TypeOrValueExpression)
