@@ -7,6 +7,21 @@
         <target state="new">Please use language version {0} or greater to use comments after line continuation character.</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_InvInsideConstBlock">
+        <source>Statement cannot appear within an Enum body.</source>
+        <target state="new">Statement cannot appear within an Enum body.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_InvInsideEndsConst">
+        <source>Statement cannot appear within an Const Block body. End of Const assumed.</source>
+        <target state="new">Statement cannot appear within an Const Block body. End of Const assumed.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_MissingEndConst">
+        <source>'Const' must end with a matching 'End Const'.</source>
+        <target state="new">'Const' must end with a matching 'End Const'.</target>
+        <note />
+      </trans-unit>
       <trans-unit id="ERR_MultipleAnalyzerConfigsInSameDir">
         <source>Multiple analyzer config files cannot be in the same directory ('{0}').</source>
         <target state="new">Multiple analyzer config files cannot be in the same directory ('{0}').</target>

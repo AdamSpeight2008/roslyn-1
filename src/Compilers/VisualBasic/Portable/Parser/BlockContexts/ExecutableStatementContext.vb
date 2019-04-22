@@ -121,6 +121,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         newContext = Me
                         Return LinkResult.NotUsed
                     End If
+                Case SyntaxKind.ConstBlockStatement
+                    ' Reuse as long as the statement does not have modifiers
+                    ' These statements parse differently when they appear at the top level and when they appear within a method body.
+                    ' Within a method body, if the statement begins with a modifier then the statement is parsed as a variable declaration (with an error).
+                    If Not DirectCast(node, ConstBlockStatementSyntax).Modifiers.Any() Then
+                        Return UseSyntax(node, newContext)
+                    Else
+                        newContext = Me
+                        Return LinkResult.NotUsed
+                    End If
 
                 Case _
                     SyntaxKind.SubNewStatement,

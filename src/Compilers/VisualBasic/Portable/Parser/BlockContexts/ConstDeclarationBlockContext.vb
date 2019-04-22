@@ -31,7 +31,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend Overrides Function ProcessSyntax(node As VisualBasicSyntaxNode) As BlockContext
             Select Case node.Kind
-                Case SyntaxKind.ConstBlockMemberDeclaration
+                Case SyntaxKind.ConstBlockMemberDeclaration, SyntaxKind.EmptyStatement
                     Add(node)
 
                 Case Else

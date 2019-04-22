@@ -223,7 +223,9 @@ Public Class ParseDeclarations
 "
 Module Module1
   Const String
+
     A = ""A""
+    ' A Comment
     B = ""BB""
   End Const
 End Module

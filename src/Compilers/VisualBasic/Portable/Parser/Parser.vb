@@ -786,6 +786,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     If Context.BlockKind = SyntaxKind.EnumBlock Then
                         Return ParseEnumMemberOrLabel(Nothing)
                     End If
+                    If Context.BlockKind = SyntaxKind.ConstBlock Then
+                        REturn ParseConstBlockMemberDeclarationOrLabel(Nothing)
+                    End If
 
                     ' Enables better error for wrong uses of the "Custom" modifier
                     Dim contextualKind As SyntaxKind = Nothing
@@ -1313,7 +1316,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     If Context.BlockKind = SyntaxKind.EnumBlock AndAlso Not modifiers.Any Then
                         statement = ParseEnumMemberOrLabel(attributes)
                     ElseIf Context.BlockKind = SyntaxKind.ConstBlock AndAlso Not modifiers.Any Then
-                        statement = ParseConstBlockMemberDeclaration(attributes)
+                        statement = ParseConstBlockMemberDeclarationOrLabel(attributes)
                     Else
                         Dim keyword As KeywordSyntax = Nothing
                         If TryIdentifierAsContextualKeyword(CurrentToken, keyword) Then
@@ -1574,12 +1577,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return equalsValue
         End Function
 
-        Private Function ParseConstBlockMemberDeclaration(
+        Private Function ParseConstBlockMemberDeclarationOrLabel(
                                                          attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax)
                                                          ) As StatementSyntax
-                    If Not attributes.Any() AndAlso ShouldParseAsLabel() Then
+            If Not attributes.Any() AndAlso ShouldParseAsLabel() Then
                 Return ParseLabel()
             End If
+            Return ParseConstBlockMemberDeclaration(attributes)
+        End Function
+
+        Private Function ParseConstBlockMemberDeclaration(attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax)
+                                                         ) As StatementSyntax
             Dim identifier = ParseIdentifier()
             Dim equalsValue = ParseEqualsExpr()
             Dim statement = SyntaxFactory.ConstBlockMemberDeclaration(Attributes, identifier, equalsValue)
@@ -1905,6 +1913,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case SyntaxKind.EnumKeyword
                     Return SyntaxKind.EndEnumStatement
 
+               Case SyntaxKind.ConstKeyword
+                    Return SyntaxKind.EndConstBlockStatement
+
                 Case SyntaxKind.InterfaceKeyword
                     Return SyntaxKind.EndInterfaceStatement
 
@@ -2022,7 +2033,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         SyntaxKind.GetKeyword,
                         SyntaxKind.SetKeyword,
                         SyntaxKind.DeclareKeyword,
-                        SyntaxKind.DelegateKeyword
+                        SyntaxKind.DelegateKeyword,
+                        SyntaxKind.ConstKeyword
                         Return True
 
                     Case Else

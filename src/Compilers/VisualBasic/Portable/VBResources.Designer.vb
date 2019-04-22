@@ -6467,6 +6467,24 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Statement cannot appear within an Enum body..
+        '''</summary>
+        Friend ReadOnly Property ERR_InvInsideConstBlock() As String
+            Get
+                Return ResourceManager.GetString("ERR_InvInsideConstBlock", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Statement cannot appear within an Const Block body. End of Const assumed..
+        '''</summary>
+        Friend ReadOnly Property ERR_InvInsideEndsConst() As String
+            Get
+                Return ResourceManager.GetString("ERR_InvInsideEndsConst", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Statement cannot appear within an Enum body. End of Enum assumed..
         '''</summary>
         Friend ReadOnly Property ERR_InvInsideEndsEnum() As String
@@ -7103,6 +7121,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend ReadOnly Property ERR_MissingEndBrack() As String
             Get
                 Return ResourceManager.GetString("ERR_MissingEndBrack", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to &apos;Const&apos; must end with a matching &apos;End Const&apos;..
+        '''</summary>
+        Friend ReadOnly Property ERR_MissingEndConst() As String
+            Get
+                Return ResourceManager.GetString("ERR_MissingEndConst", resourceCulture)
             End Get
         End Property
         
