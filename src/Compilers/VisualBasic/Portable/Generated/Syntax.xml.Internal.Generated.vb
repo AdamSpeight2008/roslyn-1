@@ -37051,6 +37051,218 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
+    Friend NotInheritable Class ConstDeclarationStatementSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend ReadOnly _attributeLists as GreenNode
+        Friend ReadOnly _modifiers as GreenNode
+        Friend ReadOnly _constKeyord as KeywordSyntax
+        Friend ReadOnly _identifier as IdentifierTokenSyntax
+        Friend ReadOnly _asClause as AsClauseSyntax
+        Friend ReadOnly _initializer as EqualsValueSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, attributeLists As GreenNode, modifiers As GreenNode, constKeyord As InternalSyntax.KeywordSyntax, identifier As InternalSyntax.IdentifierTokenSyntax, asClause As AsClauseSyntax, initializer As EqualsValueSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 6
+
+            If attributeLists IsNot Nothing Then
+                AdjustFlagsAndWidth(attributeLists)
+                Me._attributeLists = attributeLists
+            End If
+            If modifiers IsNot Nothing Then
+                AdjustFlagsAndWidth(modifiers)
+                Me._modifiers = modifiers
+            End If
+            AdjustFlagsAndWidth(constKeyord)
+            Me._constKeyord = constKeyord
+            AdjustFlagsAndWidth(identifier)
+            Me._identifier = identifier
+            AdjustFlagsAndWidth(asClause)
+            Me._asClause = asClause
+            AdjustFlagsAndWidth(initializer)
+            Me._initializer = initializer
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, attributeLists As GreenNode, modifiers As GreenNode, constKeyord As InternalSyntax.KeywordSyntax, identifier As InternalSyntax.IdentifierTokenSyntax, asClause As AsClauseSyntax, initializer As EqualsValueSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 6
+            Me.SetFactoryContext(context)
+
+            If attributeLists IsNot Nothing Then
+                AdjustFlagsAndWidth(attributeLists)
+                Me._attributeLists = attributeLists
+            End If
+            If modifiers IsNot Nothing Then
+                AdjustFlagsAndWidth(modifiers)
+                Me._modifiers = modifiers
+            End If
+            AdjustFlagsAndWidth(constKeyord)
+            Me._constKeyord = constKeyord
+            AdjustFlagsAndWidth(identifier)
+            Me._identifier = identifier
+            AdjustFlagsAndWidth(asClause)
+            Me._asClause = asClause
+            AdjustFlagsAndWidth(initializer)
+            Me._initializer = initializer
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), attributeLists As GreenNode, modifiers As GreenNode, constKeyord As InternalSyntax.KeywordSyntax, identifier As InternalSyntax.IdentifierTokenSyntax, asClause As AsClauseSyntax, initializer As EqualsValueSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 6
+
+            If attributeLists IsNot Nothing Then
+                AdjustFlagsAndWidth(attributeLists)
+                Me._attributeLists = attributeLists
+            End If
+            If modifiers IsNot Nothing Then
+                AdjustFlagsAndWidth(modifiers)
+                Me._modifiers = modifiers
+            End If
+            AdjustFlagsAndWidth(constKeyord)
+            Me._constKeyord = constKeyord
+            AdjustFlagsAndWidth(identifier)
+            Me._identifier = identifier
+            AdjustFlagsAndWidth(asClause)
+            Me._asClause = asClause
+            AdjustFlagsAndWidth(initializer)
+            Me._initializer = initializer
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 6
+          Dim _attributeLists = DirectCast(reader.ReadValue(), GreenNode)
+          If _attributeLists isnot Nothing 
+             AdjustFlagsAndWidth(_attributeLists)
+             Me._attributeLists = _attributeLists
+          End If
+          Dim _modifiers = DirectCast(reader.ReadValue(), GreenNode)
+          If _modifiers isnot Nothing 
+             AdjustFlagsAndWidth(_modifiers)
+             Me._modifiers = _modifiers
+          End If
+          Dim _constKeyord = DirectCast(reader.ReadValue(), KeywordSyntax)
+          If _constKeyord isnot Nothing 
+             AdjustFlagsAndWidth(_constKeyord)
+             Me._constKeyord = _constKeyord
+          End If
+          Dim _identifier = DirectCast(reader.ReadValue(), IdentifierTokenSyntax)
+          If _identifier isnot Nothing 
+             AdjustFlagsAndWidth(_identifier)
+             Me._identifier = _identifier
+          End If
+          Dim _asClause = DirectCast(reader.ReadValue(), AsClauseSyntax)
+          If _asClause isnot Nothing 
+             AdjustFlagsAndWidth(_asClause)
+             Me._asClause = _asClause
+          End If
+          Dim _initializer = DirectCast(reader.ReadValue(), EqualsValueSyntax)
+          If _initializer isnot Nothing 
+             AdjustFlagsAndWidth(_initializer)
+             Me._initializer = _initializer
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New ConstDeclarationStatementSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._attributeLists)
+          writer.WriteValue(Me._modifiers)
+          writer.WriteValue(Me._constKeyord)
+          writer.WriteValue(Me._identifier)
+          writer.WriteValue(Me._asClause)
+          writer.WriteValue(Me._initializer)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(ConstDeclarationStatementSyntax), Function(r) New ConstDeclarationStatementSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstDeclarationStatementSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <remarks>
+        ''' If nothing is present, an empty list is returned.
+        ''' </remarks>
+        Friend  ReadOnly Property AttributeLists As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)
+            Get
+                Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)(Me._attributeLists)
+            End Get
+        End Property
+
+        ''' <remarks>
+        ''' If nothing is present, an empty list is returned.
+        ''' </remarks>
+        Friend  ReadOnly Property Modifiers As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of KeywordSyntax)
+            Get
+                Return New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)(Me._modifiers)
+            End Get
+        End Property
+
+        Friend  ReadOnly Property ConstKeyord As InternalSyntax.KeywordSyntax
+            Get
+                Return Me._constKeyord
+            End Get
+        End Property
+
+        Friend  ReadOnly Property Identifier As InternalSyntax.IdentifierTokenSyntax
+            Get
+                Return Me._identifier
+            End Get
+        End Property
+
+        Friend  ReadOnly Property AsClause As InternalSyntax.AsClauseSyntax
+            Get
+                Return Me._asClause
+            End Get
+        End Property
+
+        Friend  ReadOnly Property Initializer As InternalSyntax.EqualsValueSyntax
+            Get
+                Return Me._initializer
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._attributeLists
+                Case 1
+                    Return Me._modifiers
+                Case 2
+                    Return Me._constKeyord
+                Case 3
+                    Return Me._identifier
+                Case 4
+                    Return Me._asClause
+                Case 5
+                    Return Me._initializer
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new ConstDeclarationStatementSyntax(Me.Kind, newErrors, GetAnnotations, _attributeLists, _modifiers, _constKeyord, _identifier, _asClause, _initializer)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new ConstDeclarationStatementSyntax(Me.Kind, GetDiagnostics, annotations, _attributeLists, _modifiers, _constKeyord, _identifier, _asClause, _initializer)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitConstDeclarationStatement(Me)
+        End Function
+
+    End Class
+
     Friend MustInherit Class VisualBasicSyntaxVisitor
         Public Overridable Function Visit(ByVal node As VisualBasicSyntaxNode) As VisualBasicSyntaxNode
             If node IsNot Nothing
@@ -38192,6 +38404,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return VisitDeclarationStatement(node)
         End Function
         Public Overridable Function VisitConstBlockMemberDeclaration(ByVal node As ConstBlockMemberDeclarationSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitDeclarationStatement(node)
+        End Function
+        Public Overridable Function VisitConstDeclarationStatement(ByVal node As ConstDeclarationStatementSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
             Return VisitDeclarationStatement(node)
         End Function
@@ -42443,6 +42659,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
         End Function
 
+        Public Overrides Function VisitConstDeclarationStatement(ByVal node As ConstDeclarationStatementSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newAttributeLists = VisitList(node.AttributeLists)
+            If node._attributeLists IsNot newAttributeLists.Node Then anyChanges = True
+            Dim newModifiers = VisitList(node.Modifiers)
+            If node._modifiers IsNot newModifiers.Node Then anyChanges = True
+            Dim newConstKeyord = DirectCast(Visit(node.ConstKeyord), KeywordSyntax)
+            If node._constKeyord IsNot newConstKeyord Then anyChanges = True
+            Dim newIdentifier = DirectCast(Visit(node.Identifier), IdentifierTokenSyntax)
+            If node._identifier IsNot newIdentifier Then anyChanges = True
+            Dim newAsClause = DirectCast(Visit(node._asClause), AsClauseSyntax)
+            If node._asClause IsNot newAsClause Then anyChanges = True
+            Dim newInitializer = DirectCast(Visit(node._initializer), EqualsValueSyntax)
+            If node._initializer IsNot newInitializer Then anyChanges = True
+
+            If anyChanges Then
+                Return New ConstDeclarationStatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newAttributeLists.Node, newModifiers.Node, newConstKeyord, newIdentifier, newAsClause, newInitializer)
+            Else
+                Return node
+            End If
+        End Function
+
     End Class
 
 End Namespace
@@ -42751,7 +42990,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
               GetType(BadDirectiveTriviaSyntax),
               GetType(ConstBlockSyntax),
               GetType(ConstBlockStatementSyntax),
-              GetType(ConstBlockMemberDeclarationSyntax)
+              GetType(ConstBlockMemberDeclarationSyntax),
+              GetType(ConstDeclarationStatementSyntax)
             }
         End Function
 
@@ -54893,6 +55133,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Return result
+        End Function
+
+
+        Friend Shared Function ConstDeclarationStatement(attributeLists As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), modifiers As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), constKeyord As KeywordSyntax, identifier As IdentifierTokenSyntax, asClause As AsClauseSyntax, initializer As EqualsValueSyntax) As ConstDeclarationStatementSyntax
+            Debug.Assert(constKeyord IsNot Nothing AndAlso constKeyord.Kind = SyntaxKind.ConstKeyword)
+            Debug.Assert(identifier IsNot Nothing AndAlso identifier.Kind = SyntaxKind.IdentifierToken)
+            Debug.Assert(asClause IsNot Nothing)
+            Debug.Assert(initializer IsNot Nothing)
+            Return New ConstDeclarationStatementSyntax(SyntaxKind.ConstDeclarationStatement, attributeLists.Node, modifiers.Node, constKeyord, identifier, asClause, initializer)
         End Function
 
     End Class
@@ -67046,6 +67295,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Return result
+        End Function
+
+
+        Friend Function ConstDeclarationStatement(attributeLists As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), modifiers As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), constKeyord As KeywordSyntax, identifier As IdentifierTokenSyntax, asClause As AsClauseSyntax, initializer As EqualsValueSyntax) As ConstDeclarationStatementSyntax
+            Debug.Assert(constKeyord IsNot Nothing AndAlso constKeyord.Kind = SyntaxKind.ConstKeyword)
+            Debug.Assert(identifier IsNot Nothing AndAlso identifier.Kind = SyntaxKind.IdentifierToken)
+            Debug.Assert(asClause IsNot Nothing)
+            Debug.Assert(initializer IsNot Nothing)
+            Return New ConstDeclarationStatementSyntax(SyntaxKind.ConstDeclarationStatement, attributeLists.Node, modifiers.Node, constKeyord, identifier, asClause, initializer, _factoryContext)
         End Function
 
     End Class

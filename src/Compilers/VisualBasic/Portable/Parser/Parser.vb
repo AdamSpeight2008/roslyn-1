@@ -716,7 +716,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     SyntaxKind.WithEventsKeyword,
                     SyntaxKind.OverloadsKeyword,
                     SyntaxKind.OverridesKeyword,
-                    SyntaxKind.ConstKeyword,
                     SyntaxKind.DimKeyword,
                     SyntaxKind.ReadOnlyKeyword,
                     SyntaxKind.WriteOnlyKeyword,
@@ -724,7 +723,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     SyntaxKind.NarrowingKeyword,
                     SyntaxKind.DefaultKeyword
                     Return ParseSpecifierDeclaration()
-
+                Case SyntaxKind.ConstKeyword
+                    Return ParseConstBlockOrStatment()
                 Case SyntaxKind.EnumKeyword
                     Return ParseEnumStatement()
 
@@ -1312,6 +1312,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case SyntaxKind.IdentifierToken
                     If Context.BlockKind = SyntaxKind.EnumBlock AndAlso Not modifiers.Any Then
                         statement = ParseEnumMemberOrLabel(attributes)
+                    ElseIf Context.BlockKind = SyntaxKind.ConstBlock AndAlso Not modifiers.Any Then
+                        statement = ParseConstBlockMemberDeclaration(attributes)
                     Else
                         Dim keyword As KeywordSyntax = Nothing
                         If TryIdentifierAsContextualKeyword(CurrentToken, keyword) Then
@@ -1438,6 +1440,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return statement
         End Function
 
+        #Region "Enum Block"
         ' /*********************************************************************
         ' *
         ' * Function:
@@ -1552,6 +1555,89 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Return statement
 
+        End Function
+        #End Region
+
+        Private Function TryParseTypeName(ByRef typename As TypeSyntax) AS Boolean
+            Dim tn = ParseTypeName()
+            Dim ok = tn IsNot Nothing
+            typename = If(ok, tn, nothing)
+            Return ok
+        End Function
+
+        Private Function ParseEqualsExpr() As EqualsValueSyntax
+            Debug.Assert(CurrentToken.Kind = SyntaxKind.EqualsToken, NameOf(ParseEqualsExpr) & " called on wrong token")
+            Dim equals = DirectCast(CurrentToken, PunctuationSyntax)
+            GetNextToken ' Get of [=]
+            Dim expr = ParseExpressionCore()
+            Dim equalsValue = SyntaxFactory.EqualsValue(equals,expr)
+            Return equalsValue
+        End Function
+
+        Private Function ParseConstBlockMemberDeclaration(
+                                                         attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax)
+                                                         ) As StatementSyntax
+                    If Not attributes.Any() AndAlso ShouldParseAsLabel() Then
+                Return ParseLabel()
+            End If
+            Dim identifier = ParseIdentifier()
+            Dim equalsValue = ParseEqualsExpr()
+            Dim statement = SyntaxFactory.ConstBlockMemberDeclaration(Attributes, identifier, equalsValue)
+            Return statement
+        End Function
+
+        Private Function ParseConstBlockOrStatment(
+                  Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax) = Nothing,
+                  Optional modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax) = Nothing
+                  ) As StatementSyntax
+            Debug.Assert(CurrentToken.Kind = SyntaxKind.ConstKeyword, NameOf(ParseConstBlockOrStatment) & " called on the wrong token.")
+            Dim constKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
+            GetNextToken() ' Get Off [Const]
+            Dim typename As TypeSyntax = Nothing
+            If TryParseTypeName(typename) Then
+                Return ParseRestAsConstBlock(attributes, modifiers, constKeyword, typename)
+            Else
+                Return ParseRestAsConstStatement(attributes, modifiers, constKeyword)
+            End If
+        End Function
+
+        Private Function ParseRestAsConstBlock(attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                               modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax),
+                                               constKeyword As KeywordSyntax,
+                                               typeName As TypeSyntax
+                                               ) As StatementSyntax
+            Dim r = SyntaxFactory.ConstBlockStatement(attributes, modifiers, constKeyword, typeName)
+            return r
+        End Function
+
+        Private Function ParseRestAsConstStatement(attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                                   modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax),
+                                                   constKeyword As KeywordSyntax
+                                                   ) As StatementSyntax
+            Dim identifier = ParseIdentifier()
+
+            If CurrentToken.Kind = SyntaxKind.OpenParenToken Then
+                ' Enums cannot be generic
+                Dim genericParameters = ReportSyntaxError(ParseGenericParameters, ERRID.ERR_GenericParamsOnInvalidMember)
+                identifier = identifier.AddTrailingSyntax(genericParameters)
+            End If
+
+            If identifier.ContainsDiagnostics Then
+                identifier = identifier.AddTrailingSyntax(ResyncAt({SyntaxKind.AsKeyword}))
+            End If
+
+            Dim asKeyword = DirectCast(CurrentToken, KeywordSyntax)
+            GetNextToken() ' get off [AS]
+            Dim typeName = ParseTypeName()
+            If typeName.ContainsDiagnostics Then
+               typeName = typeName.AddTrailingSyntax(ResyncAt())
+            End If
+            Dim asType = SyntaxFactory.SimpleAsClause(asKeyword, Nothing, typeName)
+            Dim value = ParseExpressionCore()
+            Dim equalsValue = ParseEqualsExpr
+          
+            Dim statement = SyntaxFactory.ConstDeclarationStatement(attributes, modifiers, constKeyword, identifier, asType, equalsValue)
+            Return statement
         End Function
 
         ' /*********************************************************************

@@ -419,8 +419,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                    SyntaxKind.SubKeyword,
                    SyntaxKind.FunctionKeyword,
                    SyntaxKind.OperatorKeyword,
-                   SyntaxKind.DelegateKeyword
-
+                   SyntaxKind.DelegateKeyword,
+                    SyntaxKind.ConstKeyword
                     Return True
             End Select
 
@@ -583,6 +583,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.NextStatement,
                      SyntaxKind.EndStructureStatement,
                      SyntaxKind.EndEnumStatement,
+                     SyntaxKind.EndConstBlockStatement,
                      SyntaxKind.EndPropertyStatement,
                      SyntaxKind.EndEventStatement,
                      SyntaxKind.EndInterfaceStatement,

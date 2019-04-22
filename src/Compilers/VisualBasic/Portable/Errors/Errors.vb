@@ -2024,5 +2024,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_InterpolatedStrings
         FEATURE_UnconstrainedTypeParameterInConditional
         FEATURE_CommentsAfterLineContinuation
+        ERR_MissingEndConst
+        ERR_InvInsideEndsConst
+        ERR_InvInsideConstBlock
     End Enum
 End Namespace

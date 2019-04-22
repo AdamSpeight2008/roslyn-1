@@ -217,6 +217,19 @@ Public Class ParseDeclarations
             ]]>)
     End Sub
 
+    <Fact, Trait("ConstBlock","")>
+    Public Sub ParseConstBlock
+      ParseAndVerify(
+"
+Module Module1
+  Const String
+    A = ""A""
+    B = ""BB""
+  End Const
+End Module
+")
+    End Sub
+
     <Fact>
     Public Sub Bug8037()
         ParseAndVerify(<![CDATA[

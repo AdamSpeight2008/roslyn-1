@@ -36877,4 +36877,201 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
+    Public NotInheritable Class ConstDeclarationStatementSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend _attributeLists as SyntaxNode
+        Friend _asClause as AsClauseSyntax
+        Friend _initializer as EqualsValueSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), attributeLists As SyntaxNode, modifiers As GreenNode, constKeyord As InternalSyntax.KeywordSyntax, identifier As InternalSyntax.IdentifierTokenSyntax, asClause As AsClauseSyntax, initializer As EqualsValueSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ConstDeclarationStatementSyntax(kind, errors, annotations, if(attributeLists IsNot Nothing, attributeLists.Green, Nothing), modifiers, constKeyord, identifier, DirectCast(asClause.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AsClauseSyntax), DirectCast(initializer.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EqualsValueSyntax)), Nothing, 0)
+        End Sub
+
+        ''' <remarks>
+        ''' If nothing is present, an empty list is returned.
+        ''' </remarks>
+        Public  ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
+            Get
+                Dim listNode = GetRedAtZero(_attributeLists)
+                Return new SyntaxList(Of AttributeListSyntax)(listNode)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the AttributeLists property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithAttributeLists(attributeLists as SyntaxList(Of AttributeListSyntax)) As ConstDeclarationStatementSyntax
+            return Update(attributeLists, Me.Modifiers, Me.ConstKeyord, Me.Identifier, Me.AsClause, Me.Initializer)
+        End Function
+
+        Public Shadows Function AddAttributeLists(ParamArray items As AttributeListSyntax()) As ConstDeclarationStatementSyntax
+            Return Me.WithAttributeLists(Me.AttributeLists.AddRange(items))
+        End Function
+
+        ''' <remarks>
+        ''' If nothing is present, an empty list is returned.
+        ''' </remarks>
+        Public  ReadOnly Property Modifiers As SyntaxTokenList
+            Get
+                Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ConstDeclarationStatementSyntax)._modifiers
+                If slot IsNot Nothing
+                    return new SyntaxTokenList(Me, slot, Me.GetChildPosition(1), Me.GetChildIndex(1))
+                End If
+                Return Nothing
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Modifiers property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithModifiers(modifiers as SyntaxTokenList) As ConstDeclarationStatementSyntax
+            return Update(Me.AttributeLists, modifiers, Me.ConstKeyord, Me.Identifier, Me.AsClause, Me.Initializer)
+        End Function
+
+        Public Shadows Function AddModifiers(ParamArray items As SyntaxToken()) As ConstDeclarationStatementSyntax
+            Return Me.WithModifiers(Me.Modifiers.AddRange(items))
+        End Function
+
+        Public  ReadOnly Property ConstKeyord As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ConstDeclarationStatementSyntax)._constKeyord, Me.GetChildPosition(2), Me.GetChildIndex(2))
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the ConstKeyord property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithConstKeyord(constKeyord as SyntaxToken) As ConstDeclarationStatementSyntax
+            return Update(Me.AttributeLists, Me.Modifiers, constKeyord, Me.Identifier, Me.AsClause, Me.Initializer)
+        End Function
+
+        Public  ReadOnly Property Identifier As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ConstDeclarationStatementSyntax)._identifier, Me.GetChildPosition(3), Me.GetChildIndex(3))
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Identifier property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithIdentifier(identifier as SyntaxToken) As ConstDeclarationStatementSyntax
+            return Update(Me.AttributeLists, Me.Modifiers, Me.ConstKeyord, identifier, Me.AsClause, Me.Initializer)
+        End Function
+
+        Public  ReadOnly Property AsClause As AsClauseSyntax
+            Get
+                Return GetRed(_asClause, 4)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the AsClause property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithAsClause(asClause as AsClauseSyntax) As ConstDeclarationStatementSyntax
+            return Update(Me.AttributeLists, Me.Modifiers, Me.ConstKeyord, Me.Identifier, asClause, Me.Initializer)
+        End Function
+
+        Public  ReadOnly Property Initializer As EqualsValueSyntax
+            Get
+                Return GetRed(_initializer, 5)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Initializer property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithInitializer(initializer as EqualsValueSyntax) As ConstDeclarationStatementSyntax
+            return Update(Me.AttributeLists, Me.Modifiers, Me.ConstKeyord, Me.Identifier, Me.AsClause, initializer)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me._attributeLists
+                Case 4
+                    Return Me._asClause
+                Case 5
+                    Return Me._initializer
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return GetRedAtZero(_attributeLists)
+                Case 4
+                    Return Me.AsClause
+                Case 5
+                    Return Me.Initializer
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitConstDeclarationStatement(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitConstDeclarationStatement(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="attributeLists">
+        ''' The value for the AttributeLists property.
+        ''' </param>
+        ''' <param name="modifiers">
+        ''' The value for the Modifiers property.
+        ''' </param>
+        ''' <param name="constKeyord">
+        ''' The value for the ConstKeyord property.
+        ''' </param>
+        ''' <param name="identifier">
+        ''' The value for the Identifier property.
+        ''' </param>
+        ''' <param name="asClause">
+        ''' The value for the AsClause property.
+        ''' </param>
+        ''' <param name="initializer">
+        ''' The value for the Initializer property.
+        ''' </param>
+        Public Function Update(attributeLists As SyntaxList(of AttributeListSyntax), modifiers As SyntaxTokenList, constKeyord As SyntaxToken, identifier As SyntaxToken, asClause As AsClauseSyntax, initializer As EqualsValueSyntax) As ConstDeclarationStatementSyntax
+            If attributeLists <> Me.AttributeLists OrElse modifiers <> Me.Modifiers OrElse constKeyord <> Me.ConstKeyord OrElse identifier <> Me.Identifier OrElse asClause IsNot Me.AsClause OrElse initializer IsNot Me.Initializer Then
+                Dim newNode = SyntaxFactory.ConstDeclarationStatement(attributeLists, modifiers, constKeyord, identifier, asClause, initializer)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
 End Namespace

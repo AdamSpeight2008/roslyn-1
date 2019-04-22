@@ -353,6 +353,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     endStatement = enumBlock.EndEnumStatement
                     Return True
 
+                Case SyntaxKind.ConstBlock
+                    Dim constBlock = DirectCast(possibleBlock, ConstBlockSyntax)
+                    beginStatement = constBlock.ConstBlockStatement
+                    body = constBlock.Members
+                    endStatement = constBlock.EndConstStatement
+                    Return True
+
                 Case SyntaxKind.SubBlock, SyntaxKind.FunctionBlock, SyntaxKind.ConstructorBlock,
                      SyntaxKind.OperatorBlock, SyntaxKind.GetAccessorBlock, SyntaxKind.SetAccessorBlock,
                      SyntaxKind.AddHandlerAccessorBlock, SyntaxKind.RemoveHandlerAccessorBlock, SyntaxKind.RaiseEventAccessorBlock

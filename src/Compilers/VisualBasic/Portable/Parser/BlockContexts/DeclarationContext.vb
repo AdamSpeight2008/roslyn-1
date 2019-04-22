@@ -61,6 +61,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Case SyntaxKind.EnumStatement
                     Return New EnumDeclarationBlockContext(DirectCast(node, StatementSyntax), Me)
+                Case SyntaxKind.ConstBlockStatement
+                    Return New ConstDeclarationBlockContext(DirectCast(node, StatementSyntax), Me)
 
                 Case SyntaxKind.ClassStatement
                     Return New TypeBlockContext(SyntaxKind.ClassBlock, DirectCast(node, StatementSyntax), Me)
@@ -201,7 +203,8 @@ HandleMethodBase:
                     SyntaxKind.FunctionBlock,
                     SyntaxKind.OperatorBlock,
                     SyntaxKind.PropertyBlock,
-                    SyntaxKind.EventBlock
+                    SyntaxKind.EventBlock,
+                    SyntaxKind.ConstBlock
 
                     'TODO - Does parser create Constructors?  Verify that code was ported correctly.
                     ' Handle any block that can be created by this context
@@ -215,8 +218,8 @@ HandleMethodBase:
                     SyntaxKind.DelegateFunctionStatement,
                     SyntaxKind.DeclareSubStatement,
                     SyntaxKind.DeclareFunctionStatement,
-                    SyntaxKind.EnumMemberDeclaration
-
+                    SyntaxKind.EnumMemberDeclaration,
+                    SyntaxKind.ConstBlockMemberDeclaration
                     Add(node)
 
                 Case SyntaxKind.LabelStatement
@@ -233,7 +236,7 @@ HandleMethodBase:
                     ' Do not report an error on End statements - it is reported on the block begin statement 
                     ' or an error that the beginning statement is missing is reported.
                     If Not SyntaxFacts.IsEndBlockLoopOrNextStatement(node.Kind) Then
-                        Debug.Assert(IsExecutableStatementOrItsPart(node))
+                        Debug.Assert(IsExecutableStatementOrItsPart(node), $"Node.Kind:={Node.kind}")
                         node = Parser.ReportSyntaxError(node, ERRID.ERR_ExecutableAsDeclaration)
                     End If
 
@@ -276,7 +279,8 @@ HandleMethodBase:
                     SyntaxKind.OptionStatement,
                     SyntaxKind.ImportsStatement,
                     SyntaxKind.InheritsStatement,
-                    SyntaxKind.ImplementsStatement
+                    SyntaxKind.ImplementsStatement,
+                    SyntaxKind.ConstBlockStatement
 
                     Return UseSyntax(node, newContext)
 
@@ -286,7 +290,8 @@ HandleMethodBase:
                     SyntaxKind.DelegateFunctionStatement,
                     SyntaxKind.DeclareSubStatement,
                     SyntaxKind.DeclareFunctionStatement,
-                    SyntaxKind.EnumMemberDeclaration
+                    SyntaxKind.EnumMemberDeclaration,
+                    SyntaxKind.ConstBlockMemberDeclaration
 
                     Return UseSyntax(node, newContext)
 
@@ -300,6 +305,10 @@ HandleMethodBase:
                 Case SyntaxKind.EnumBlock
 
                     Return UseSyntax(node, newContext, DirectCast(node, EnumBlockSyntax).EndEnumStatement.IsMissing)
+                    
+                Case SyntaxKind.ConstBlock
+
+                    Return UseSyntax(node, newContext, DirectCast(node, ConstBlockSyntax).EndConstStatement.IsMissing)
 
                 Case _
                     SyntaxKind.SubBlock,
@@ -417,6 +426,8 @@ HandleMethodBase:
 
                 Case SyntaxKind.EndEnumStatement
                     ErrorId = ERRID.ERR_InvalidEndEnum
+                Case SyntaxKind.EndEnumStatement
+                    ErrorId = ERRID.ERR_InvalidEndEnum'ERR_InvalidEndConst
 
                 Case SyntaxKind.EndInterfaceStatement
                     ErrorId = ERRID.ERR_InvalidEndInterface

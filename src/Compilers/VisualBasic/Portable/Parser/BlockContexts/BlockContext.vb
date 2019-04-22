@@ -625,6 +625,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     endStmt = SyntaxFactory.EndEnumStatement(missingEndKeyword, InternalSyntaxFactory.MissingKeyword(SyntaxKind.EnumKeyword))
                     errorId = ERRID.ERR_MissingEndEnum
 
+                Case SyntaxKind.ConstBlock
+                    endStmt = SyntaxFactory.EndConstBlockStatement(missingEndKeyword, InternalSyntaxFactory.MissingKeyword(SyntaxKind.ConstKeyword))
+                    errorId = ERRID.ERR_MissingEndConst
+
                 Case SyntaxKind.SubBlock,
                     SyntaxKind.ConstructorBlock
                     endStmt = SyntaxFactory.EndSubStatement(missingEndKeyword, InternalSyntaxFactory.MissingKeyword(SyntaxKind.SubKeyword))
@@ -744,6 +748,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Case SyntaxKind.EnumBlock
                     Return SyntaxKind.EndEnumStatement
+
+                Case SyntaxKind.ConstBlock
+                    Return SyntaxKind.EndConstBlockStatement
 
                 Case SyntaxKind.SubBlock,
                     SyntaxKind.ConstructorBlock,
