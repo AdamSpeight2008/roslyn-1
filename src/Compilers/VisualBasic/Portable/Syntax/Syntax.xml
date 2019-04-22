@@ -178,6 +178,8 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="EndBlock" />
         <native-equiv name="Statement.Opcodes.EndEnum" />
       </node-kind>
+      <node-kind name="EndConstBlockStatement">
+      </node-kind>
       <node-kind name="EndInterfaceStatement">
         <lm-equiv name="EndBlock" />
         <native-equiv name="Statement.Opcodes.EndInterface" />
@@ -9557,5 +9559,34 @@ Unify Enum declarations with other block type declarations.
       </description>
       <node-kind name="BadDirectiveTrivia"></node-kind>
     </node-structure>
+
+
+    <!--********************
+      -  Constant Block
+      **********************-->
+    <node-structure name="ConstBlockSyntax" parent="DeclarationStatementSyntax">
+      <node-kind name="ConstBlock"/>
+
+      <child name="ConstBlockStatement" kind="ConstBlockStatement"/>
+      <child name="Members" list="true" optional="true"  kind="ConstBlockMemberDeclaration|EmptyStatement" />
+      <child name="EndConstStatement" kind="EndConstBlockStatement" />
+    </node-structure>
+
+    <node-structure name="ConstBlockStatementSyntax" parent="DeclarationStatementSyntax">
+      <node-kind name="ConstBlockStatement" />
+      <child name="AttributeLists" optional="true" list="true" kind="AttributeList" />
+      <child name="Modifiers" optional="true" list="true" kind="PublicKeyword|PrivateKeyword|ProtectedKeyword|FriendKeyword|ShadowsKeyword" />
+      <child name="ConstKeyword" kind="ConstKeyword" />
+      <child name="UnderlyingType" kind="@TypeSyntax" />
+    </node-structure>
+
+    <node-structure name="ConstBlockMemberDeclarationSyntax" parent="DeclarationStatementSyntax">
+      <node-kind name="ConstBlockMemberDeclaration" />
+      <child name="AttributeLists" optional="true" list="true" kind="AttributeList" />
+      <child name="Identifier"  kind="IdentifierToken" />
+      <child name="Initializer" kind="@EqualsValueSyntax"/>
+    </node-structure>
+
+
   </definitions>
 </define-parse-tree>
