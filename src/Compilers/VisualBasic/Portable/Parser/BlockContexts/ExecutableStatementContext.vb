@@ -191,8 +191,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     SyntaxKind.SingleLineElseClause,
                     SyntaxKind.AttributeList,
                     SyntaxKind.ConstructorBlock,
-                    SyntaxKind.FieldDeclaration
-
+                    SyntaxKind.FieldDeclaration,
+                    SyntaxKind.ConstBlock
                     newContext = Me
                     Return LinkResult.Crumble
 

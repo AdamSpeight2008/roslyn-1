@@ -9586,14 +9586,5 @@ Unify Enum declarations with other block type declarations.
       <child name="Identifier"  kind="IdentifierToken" />
       <child name="Initializer" kind="@EqualsValueSyntax"/>
     </node-structure>
-    <node-structure name="ConstDeclarationStatementSyntax" parent="DeclarationStatementSyntax">
-      <node-kind name="ConstDeclarationStatement" />
-      <child name="AttributeLists" optional="true" list="true" kind="AttributeList" />
-      <child name="Modifiers" optional="true" list="true" kind="PublicKeyword|PrivateKeyword|ProtectedKeyword|FriendKeyword|ShadowsKeyword" />
-      <child name="ConstKeyord" kind="ConstKeyword"/>
-      <child name="Identifier"  kind="IdentifierToken" />
-      <child name="AsClause" optial="true" kind="@AsClauseSyntax" />
-      <child name="Initializer" kind="@EqualsValueSyntax"/>
-    </node-structure>
   </definitions>
 </define-parse-tree>

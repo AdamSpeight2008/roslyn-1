@@ -228,6 +228,7 @@ Module Module1
     ' A Comment
     B = ""BB""
   End Const
+  Const orig As String = ""Original""
 End Module
 ")
     End Sub

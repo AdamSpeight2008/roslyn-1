@@ -420,7 +420,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                    SyntaxKind.FunctionKeyword,
                    SyntaxKind.OperatorKeyword,
                    SyntaxKind.DelegateKeyword,
-                    SyntaxKind.ConstKeyword
+                     SyntaxKind.ConstBlockStatement
                     Return True
             End Select
 

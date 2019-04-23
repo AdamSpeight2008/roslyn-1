@@ -1849,7 +1849,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     SyntaxKind.DeclareSubStatement,
                     SyntaxKind.DeclareFunctionStatement,
                     SyntaxKind.DelegateFunctionStatement,
-                    SyntaxKind.DelegateSubStatement
+                    SyntaxKind.DelegateSubStatement,
+                    SyntaxKind.ConstBlockStatement
                     Return True
                 Case Else
                     Return False

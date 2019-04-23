@@ -3204,6 +3204,5 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ConstBlockStatement     = 1001
         ConstBlockMemberDeclaration  = 1002
         EndConstBlockStatement  = 1003
-        ConstDeclarationStatement = 1004
     End Enum
 End Namespace

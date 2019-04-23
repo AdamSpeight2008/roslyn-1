@@ -832,7 +832,7 @@ TryAgain:
                      SyntaxKind.DoWhileStatement,
                      SyntaxKind.DoUntilStatement,
                      SyntaxKind.ForStatement,
-                     SyntaxKind.ForEachStatement
+                     SyntaxKind.ForEachStatement', SyntaxKind.ConstDeclarationStatement
                     Return True
             End Select
 

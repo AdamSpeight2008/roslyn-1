@@ -724,7 +724,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     SyntaxKind.DefaultKeyword
                     Return ParseSpecifierDeclaration()
                 Case SyntaxKind.ConstKeyword
-                    Return ParseConstBlockOrStatment()
+                    Return ParseConstBlockOrStatement()
                 Case SyntaxKind.EnumKeyword
                     Return ParseEnumStatement()
 
@@ -1408,7 +1408,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                             SyntaxKind.EnumBlock,
                             SyntaxKind.PropertyBlock,
                             SyntaxKind.NamespaceBlock,
-                            SyntaxKind.CompilationUnit
+                            SyntaxKind.CompilationUnit,
+                            SyntaxKind.ConstBlock
 
                             ' if it's legal to declare a member in the current context then this statement should
                             ' be an IncompleteMemberSyntax
@@ -1561,15 +1562,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
         #End Region
 
-        Private Function TryParseTypeName(ByRef typename As TypeSyntax) AS Boolean
-            Dim tn = ParseTypeName()
-            Dim ok = tn IsNot Nothing
-            typename = If(ok, tn, nothing)
-            Return ok
-        End Function
+
 
         Private Function ParseEqualsExpr() As EqualsValueSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.EqualsToken, NameOf(ParseEqualsExpr) & " called on wrong token")
+            Debug.Assert(CurrentToken.Kind = SyntaxKind.EqualsToken, NameOf(ParseEqualsExpr) & " called on wrong token (kind " & CurrentToken.Kind &" )")
             Dim equals = DirectCast(CurrentToken, PunctuationSyntax)
             GetNextToken ' Get of [=]
             Dim expr = ParseExpressionCore()
@@ -1594,58 +1590,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return statement
         End Function
 
-        Private Function ParseConstBlockOrStatment(
+        Private Function ParseConstBlockOrStatement(
                   Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax) = Nothing,
                   Optional modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax) = Nothing
                   ) As StatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ConstKeyword, NameOf(ParseConstBlockOrStatment) & " called on the wrong token.")
-            Dim constKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken() ' Get Off [Const]
-            Dim typename As TypeSyntax = Nothing
-            If TryParseTypeName(typename) Then
-                Return ParseRestAsConstBlock(attributes, modifiers, constKeyword, typename)
+            Debug.Assert(CurrentToken.Kind = SyntaxKind.ConstKeyword, NameOf(ParseConstBlockOrStatement) & " called on the wrong token.")
+            Dim pe = PeekAheadFor(SyntaxKind.AsKeyword, SyntaxKind.EqualsToken)
+            If pe <> SyntaxKind.None Then
+                Return ParseDeclarationStatement()
             Else
-                Return ParseRestAsConstStatement(attributes, modifiers, constKeyword)
+                Return ParseRestAsConstBlock(attributes, modifiers)
             End If
         End Function
 
         Private Function ParseRestAsConstBlock(attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
-                                               modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax),
-                                               constKeyword As KeywordSyntax,
-                                               typeName As TypeSyntax
+                                               modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
                                                ) As StatementSyntax
+            Debug.Assert(CurrentToken.Kind = SyntaxKind.ConstKeyword, $"{NameOf(ParseRestAsConstBlock)} called on wrong token (Kind:= {CurrentToken.Kind} )")
+            Dim constKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
+            GetNextToken() ' Get Off [Const]
+            Dim typename As TypeSyntax = Nothing
+            typename =ParseTypeName()
             Dim r = SyntaxFactory.ConstBlockStatement(attributes, modifiers, constKeyword, typeName)
             return r
-        End Function
-
-        Private Function ParseRestAsConstStatement(attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
-                                                   modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax),
-                                                   constKeyword As KeywordSyntax
-                                                   ) As StatementSyntax
-            Dim identifier = ParseIdentifier()
-
-            If CurrentToken.Kind = SyntaxKind.OpenParenToken Then
-                ' Enums cannot be generic
-                Dim genericParameters = ReportSyntaxError(ParseGenericParameters, ERRID.ERR_GenericParamsOnInvalidMember)
-                identifier = identifier.AddTrailingSyntax(genericParameters)
-            End If
-
-            If identifier.ContainsDiagnostics Then
-                identifier = identifier.AddTrailingSyntax(ResyncAt({SyntaxKind.AsKeyword}))
-            End If
-
-            Dim asKeyword = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken() ' get off [AS]
-            Dim typeName = ParseTypeName()
-            If typeName.ContainsDiagnostics Then
-               typeName = typeName.AddTrailingSyntax(ResyncAt())
-            End If
-            Dim asType = SyntaxFactory.SimpleAsClause(asKeyword, Nothing, typeName)
-            Dim value = ParseExpressionCore()
-            Dim equalsValue = ParseEqualsExpr
-          
-            Dim statement = SyntaxFactory.ConstDeclarationStatement(attributes, modifiers, constKeyword, identifier, asType, equalsValue)
-            Return statement
         End Function
 
         ' /*********************************************************************

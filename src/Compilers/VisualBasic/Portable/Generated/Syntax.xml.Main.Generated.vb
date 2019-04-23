@@ -752,9 +752,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Function VisitConstBlockMemberDeclaration(ByVal node As ConstBlockMemberDeclarationSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
-        Public Overridable Function VisitConstDeclarationStatement(ByVal node As ConstDeclarationStatementSyntax) As TResult
-            Return Me.DefaultVisit(node)
-        End Function
     End Class
 
     Public MustInherit Class VisualBasicSyntaxVisitor
@@ -1497,9 +1494,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitConstBlockMemberDeclaration(ByVal node As ConstBlockMemberDeclarationSyntax)
-            Me.DefaultVisit(node): Return
-        End Sub
-        Public Overridable Sub VisitConstDeclarationStatement(ByVal node As ConstDeclarationStatementSyntax)
             Me.DefaultVisit(node): Return
         End Sub
     End Class
@@ -5745,29 +5739,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If anyChanges Then
                 Return New ConstBlockMemberDeclarationSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newAttributeLists.Node, newIdentifier, newInitializer)
-            Else
-                Return node
-            End If
-        End Function
-
-        Public Overrides Function VisitConstDeclarationStatement(ByVal node As ConstDeclarationStatementSyntax) As SyntaxNode
-            Dim anyChanges As Boolean = False
-
-            Dim newAttributeLists = VisitList(node.AttributeLists)
-            If node._attributeLists IsNot newAttributeLists.Node Then anyChanges = True
-            Dim newModifiers = VisitList(node.Modifiers)
-            If node.Modifiers.Node IsNot newModifiers.Node Then anyChanges = True
-            Dim newConstKeyord = DirectCast(VisitToken(node.ConstKeyord).Node, InternalSyntax.KeywordSyntax)
-            If node.ConstKeyord.Node IsNot newConstKeyord Then anyChanges = True
-            Dim newIdentifier = DirectCast(VisitToken(node.Identifier).Node, InternalSyntax.IdentifierTokenSyntax)
-            If node.Identifier.Node IsNot newIdentifier Then anyChanges = True
-            Dim newAsClause = DirectCast(Visit(node.AsClause), AsClauseSyntax)
-            If node.AsClause IsNot newAsClause Then anyChanges = True
-            Dim newInitializer = DirectCast(Visit(node.Initializer), EqualsValueSyntax)
-            If node.Initializer IsNot newInitializer Then anyChanges = True
-
-            If anyChanges Then
-                Return New ConstDeclarationStatementSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newAttributeLists.Node, newModifiers.Node, newConstKeyord, newIdentifier, newAsClause, newInitializer)
             Else
                 Return node
             End If
@@ -36102,8 +36073,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.YieldStatement,
                      SyntaxKind.ConstBlock,
                      SyntaxKind.ConstBlockStatement,
-                     SyntaxKind.ConstBlockMemberDeclaration,
-                     SyntaxKind.ConstDeclarationStatement
+                     SyntaxKind.ConstBlockMemberDeclaration
                 Case Else
                     Throw new ArgumentException("body")
              End Select
@@ -36401,8 +36371,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.YieldStatement,
                      SyntaxKind.ConstBlock,
                      SyntaxKind.ConstBlockStatement,
-                     SyntaxKind.ConstBlockMemberDeclaration,
-                     SyntaxKind.ConstDeclarationStatement
+                     SyntaxKind.ConstBlockMemberDeclaration
                 Case Else
                     Throw new ArgumentException("body")
              End Select
@@ -36708,8 +36677,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.YieldStatement,
                      SyntaxKind.ConstBlock,
                      SyntaxKind.ConstBlockStatement,
-                     SyntaxKind.ConstBlockMemberDeclaration,
-                     SyntaxKind.ConstDeclarationStatement
+                     SyntaxKind.ConstBlockMemberDeclaration
                 Case Else
                     Throw new ArgumentException("body")
              End Select
@@ -44265,53 +44233,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return SyntaxFactory.ConstBlockMemberDeclaration(Nothing, SyntaxFactory.Identifier(identifier), initializer)
         End Function
 
-
-        Public Shared Function ConstDeclarationStatement(attributeLists As SyntaxList(of AttributeListSyntax), modifiers As SyntaxTokenList, constKeyord As SyntaxToken, identifier As SyntaxToken, asClause As AsClauseSyntax, initializer As EqualsValueSyntax) As ConstDeclarationStatementSyntax
-            Select Case constKeyord.Kind()
-                Case SyntaxKind.ConstKeyword
-                Case Else
-                    Throw new ArgumentException("constKeyord")
-             End Select
-            Select Case identifier.Kind()
-                Case SyntaxKind.IdentifierToken
-                Case Else
-                    Throw new ArgumentException("identifier")
-             End Select
-            if asClause Is Nothing Then
-                Throw New ArgumentNullException(NameOf(asClause))
-            End If
-            Select Case asClause.Kind()
-                Case SyntaxKind.SimpleAsClause,
-                     SyntaxKind.AsNewClause
-                Case Else
-                    Throw new ArgumentException("asClause")
-             End Select
-            if initializer Is Nothing Then
-                Throw New ArgumentNullException(NameOf(initializer))
-            End If
-            Select Case initializer.Kind()
-                Case SyntaxKind.EqualsValue
-                Case Else
-                    Throw new ArgumentException("initializer")
-             End Select
-            Return New ConstDeclarationStatementSyntax(SyntaxKind.ConstDeclarationStatement, Nothing, Nothing, attributeLists.Node, modifiers.Node, DirectCast(constKeyord.Node, InternalSyntax.KeywordSyntax), DirectCast(identifier.Node, InternalSyntax.IdentifierTokenSyntax), asClause, initializer)
-        End Function
-
-
-        Public Shared Function ConstDeclarationStatement(attributeLists As SyntaxList(of AttributeListSyntax), modifiers As SyntaxTokenList, identifier As SyntaxToken, asClause As AsClauseSyntax, initializer As EqualsValueSyntax) As ConstDeclarationStatementSyntax
-            Return SyntaxFactory.ConstDeclarationStatement(attributeLists, modifiers, SyntaxFactory.Token(SyntaxKind.ConstKeyword), identifier, asClause, initializer)
-        End Function
-
-
-        Public Shared Function ConstDeclarationStatement(identifier As SyntaxToken, asClause As AsClauseSyntax, initializer As EqualsValueSyntax) As ConstDeclarationStatementSyntax
-            Return SyntaxFactory.ConstDeclarationStatement(Nothing, Nothing, SyntaxFactory.Token(SyntaxKind.ConstKeyword), identifier, asClause, initializer)
-        End Function
-
-
-        Public Shared Function ConstDeclarationStatement(identifier As String, asClause As AsClauseSyntax, initializer As EqualsValueSyntax) As ConstDeclarationStatementSyntax
-            Return SyntaxFactory.ConstDeclarationStatement(Nothing, Nothing, SyntaxFactory.Token(SyntaxKind.ConstKeyword), SyntaxFactory.Identifier(identifier), asClause, initializer)
-        End Function
-
     End Class
 End Namespace
 
@@ -44359,7 +44280,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 SyntaxKind.SelectKeyword,
                 SyntaxKind.StructureKeyword,
                 SyntaxKind.EnumKeyword,
-                SyntaxKind.ConstKeyword,
                 SyntaxKind.InterfaceKeyword,
                 SyntaxKind.ClassKeyword,
                 SyntaxKind.ModuleKeyword,
