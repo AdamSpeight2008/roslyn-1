@@ -200,10 +200,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return If(token Is Nothing, Nothing, token.Kind)
         End Function
 
-        Private Function PeekAheadForToken(ParamArray kinds As SyntaxKind()) As Integer
-            Dim token As SyntaxToken = Nothing
+        Private Function TryPeekAheadForToken(<Out> ByRef token As SyntaxToken,ParamArray kinds As SyntaxKind()) As Boolean
             Dim index = PeekAheadFor(s_isTokenOrKeywordFunc, kinds, token)
-            Return index
+            Return token IsNot Nothing
         End Function
 
         Private Function PeekAheadFor(Of TArg)(predicate As Func(Of SyntaxToken, TArg, Boolean), arg As TArg, <Out()> ByRef token As SyntaxToken) As Integer

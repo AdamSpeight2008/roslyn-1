@@ -663,7 +663,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Try
         End Function
 
-        Friend Function ParseDeclarationStatementInternal() As StatementSyntax
+        Friend Function ParseDeclarationStatementInternal(Optional IsConstModifier As Boolean=False) As StatementSyntax
             _cancellationToken.ThrowIfCancellationRequested()
 
             ' ParseEnumMember is now handled below with case NodeKind.Identifier
@@ -724,7 +724,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     SyntaxKind.DefaultKeyword
                     Return ParseSpecifierDeclaration()
                 Case SyntaxKind.ConstKeyword
-                    Return ParseConstBlockOrStatement()
+                    If IsConstModifier Then
+                        Return ParseSpecifierDeclaration()
+                    Else
+                        Return ParseConstBlockOrStatement()
+                    End If
                 Case SyntaxKind.EnumKeyword
                     Return ParseEnumStatement()
 
@@ -1073,7 +1077,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                                 SyntaxKind.PropertyKeyword,
                                 SyntaxKind.EventKeyword
                                 Return ParseSpecifierDeclaration(attributes, modifiers)
-
+                            Case SyntaxKind.ConstKeyword
+                                REturn ParseConstBlockOrStatement(attributes, modifiers)
                             Case SyntaxKind.IdentifierToken
                                 ' Check if begins event
                                 Dim contextualKind As SyntaxKind = Nothing
@@ -1233,7 +1238,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         SyntaxKind.ClassKeyword,
                         SyntaxKind.StructureKeyword,
                         SyntaxKind.EnumKeyword,
-                        SyntaxKind.ModuleKeyword
+                        SyntaxKind.ModuleKeyword,
+                        SyntaxKind.ConstKeyword
                     ' This used to return a BadStatement with ERRID_InvInsideEndsProc.
                     ' Just delegate to ParseDeclarationStatement and let the context add the error
                     Return ParseDeclarationStatementInternal()
@@ -1341,7 +1347,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Case SyntaxKind.EnumKeyword
                     statement = ParseEnumStatement(attributes, modifiers)
-
+                Case SyntaxKind.ConstKeyword
+                    statement = ParseConstBlockOrStatement(attributes, modifiers)
                 Case SyntaxKind.ModuleKeyword, SyntaxKind.ClassKeyword, SyntaxKind.StructureKeyword, SyntaxKind.InterfaceKeyword
                     statement = ParseTypeStatement(attributes, modifiers)
 
@@ -1562,10 +1569,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
         #End Region
 
-
+        Private Function CalledOnWrongToken(methodName As String,tokenKind As SyntaxKind) As String
+            Return $"{If(methodName,"")} called on wrong token. (Kind:{tokenKind.ToString()})"
+        End Function
+        Private Function CalledInWrongContext(methodName As String, contextKind As SyntaxKind) As String
+            Return $"{If(methodName,"")} called in wrong tcontext. (Context.Kind:{contextKind.ToString()})"
+        End Function
 
         Private Function ParseEqualsExpr() As EqualsValueSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.EqualsToken, NameOf(ParseEqualsExpr) & " called on wrong token (kind " & CurrentToken.Kind &" )")
+            Debug.Assert(CurrentToken.Kind = SyntaxKind.EqualsToken, CalledOnWrongToken(NameOf(ParseEqualsExpr),CurrentToken.Kind))
             Dim equals = DirectCast(CurrentToken, PunctuationSyntax)
             GetNextToken ' Get of [=]
             Dim expr = ParseExpressionCore()
@@ -1573,44 +1585,45 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return equalsValue
         End Function
 
-        Private Function ParseConstBlockMemberDeclarationOrLabel(
-                                                         attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax)
-                                                         ) As StatementSyntax
+        Private Function ParseConstBlockMemberDeclarationOrLabel _
+            (attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax)) As StatementSyntax
+            Debug.Assert(Context.BlockKind = SyntaxKind.ConstBlock, CalledInWrongContext(NameOf(ParseConstBlockMemberDeclarationOrLabel),Context.BlockKind))
             If Not attributes.Any() AndAlso ShouldParseAsLabel() Then
                 Return ParseLabel()
             End If
             Return ParseConstBlockMemberDeclaration(attributes)
         End Function
 
-        Private Function ParseConstBlockMemberDeclaration(attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax)
-                                                         ) As StatementSyntax
+        Private Function ParseConstBlockMemberDeclaration _
+            (attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax)) As StatementSyntax
+            Debug.Assert(Context.BlockKind = SyntaxKind.ConstBlock, CalledOnWrongToken(NameOf(ParseConstBlockMemberDeclaration),Context.BlockKind))
             Dim identifier = ParseIdentifier()
             Dim equalsValue = ParseEqualsExpr()
             Dim statement = SyntaxFactory.ConstBlockMemberDeclaration(Attributes, identifier, equalsValue)
             Return statement
         End Function
 
-        Private Function ParseConstBlockOrStatement(
-                  Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax) = Nothing,
-                  Optional modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax) = Nothing
-                  ) As StatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ConstKeyword, NameOf(ParseConstBlockOrStatement) & " called on the wrong token.")
-            Dim pe = PeekAheadFor(SyntaxKind.AsKeyword, SyntaxKind.EqualsToken)
-            If pe <> SyntaxKind.None Then
-                Return ParseDeclarationStatement()
+        Private Function ParseConstBlockOrStatement _
+            (Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax) = Nothing,
+             Optional modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax) = Nothing
+            ) As StatementSyntax
+            Debug.Assert(CurrentToken.Kind = SyntaxKind.ConstKeyword, CalledOnWrongToken(NameOf(ParseEqualsExpr),CurrentToken.Kind))
+            Dim tk As SyntaxToken = Nothing
+            If TryPeekAheadForToken(tk,SyntaxKind.AsKeyword, SyntaxKind.EqualsToken)
+                Return ParseDeclarationStatementInternal(IsConstModifier:=True)
             Else
                 Return ParseRestAsConstBlock(attributes, modifiers)
             End If
         End Function
 
-        Private Function ParseRestAsConstBlock(attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
-                                               modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
-                                               ) As StatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ConstKeyword, $"{NameOf(ParseRestAsConstBlock)} called on wrong token (Kind:= {CurrentToken.Kind} )")
+        Private Function ParseRestAsConstBlock _ 
+            (Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax) = Nothing,
+             Optional modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax) = Nothing
+             ) As StatementSyntax
+            Debug.Assert(CurrentToken.Kind = SyntaxKind.ConstKeyword,CalledOnWrongToken(NameOf(ParseEqualsExpr),CurrentToken.Kind))
             Dim constKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken() ' Get Off [Const]
-            Dim typename As TypeSyntax = Nothing
-            typename =ParseTypeName()
+            Dim typename As TypeSyntax = ParseTypeName()
             Dim r = SyntaxFactory.ConstBlockStatement(attributes, modifiers, constKeyword, typeName)
             return r
         End Function
