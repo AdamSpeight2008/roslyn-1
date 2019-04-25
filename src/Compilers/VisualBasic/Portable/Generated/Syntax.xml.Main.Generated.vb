@@ -5820,7 +5820,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case SyntaxKind.RaiseEventKeyword:
                 Case SyntaxKind.WhileKeyword:
                 Case SyntaxKind.TryKeyword:
-                Case SyntaxKind.SyncLockKeyword
+                Case SyntaxKind.SyncLockKeyword:
+                Case SyntaxKind.ConstKeyword
                 Case Else
                     Throw new ArgumentException("blockKeyword")
              End Select
@@ -6030,29 +6031,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Throw new ArgumentException("endKeyword")
              End Select
             Select Case blockKeyword.Kind()
-                Case SyntaxKind.IfKeyword:
-                Case SyntaxKind.UsingKeyword:
-                Case SyntaxKind.WithKeyword:
-                Case SyntaxKind.SelectKeyword:
-                Case SyntaxKind.StructureKeyword:
-                Case SyntaxKind.EnumKeyword:
-                Case SyntaxKind.InterfaceKeyword:
-                Case SyntaxKind.ClassKeyword:
-                Case SyntaxKind.ModuleKeyword:
-                Case SyntaxKind.NamespaceKeyword:
-                Case SyntaxKind.SubKeyword:
-                Case SyntaxKind.FunctionKeyword:
-                Case SyntaxKind.GetKeyword:
-                Case SyntaxKind.SetKeyword:
-                Case SyntaxKind.PropertyKeyword:
-                Case SyntaxKind.OperatorKeyword:
-                Case SyntaxKind.EventKeyword:
-                Case SyntaxKind.AddHandlerKeyword:
-                Case SyntaxKind.RemoveHandlerKeyword:
-                Case SyntaxKind.RaiseEventKeyword:
-                Case SyntaxKind.WhileKeyword:
-                Case SyntaxKind.TryKeyword:
-                Case SyntaxKind.SyncLockKeyword
+                Case SyntaxKind.ConstKeyword
                 Case Else
                     Throw new ArgumentException("blockKeyword")
              End Select
@@ -6063,14 +6042,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' Represents an "End XXX" statement, where XXX is a single keyword.
         ''' </summary>
-        ''' <param name="blockKeyword">
-        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
-        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
-        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
-        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
-        ''' </param>
-        Public Shared Function EndConstBlockStatement(blockKeyword As SyntaxToken) As EndBlockStatementSyntax
-            Return SyntaxFactory.EndConstBlockStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), blockKeyword)
+        Public Shared Function EndConstBlockStatement() As EndBlockStatementSyntax
+            Return SyntaxFactory.EndConstBlockStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ConstKeyword))
         End Function
 
 
@@ -6721,6 +6694,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Return SyntaxKind.StructureKeyword
                 Case SyntaxKind.EndEnumStatement
                     Return SyntaxKind.EnumKeyword
+                Case SyntaxKind.EndConstBlockStatement
+                    Return SyntaxKind.ConstKeyword
                 Case SyntaxKind.EndInterfaceStatement
                     Return SyntaxKind.InterfaceKeyword
                 Case SyntaxKind.EndClassStatement
@@ -44164,8 +44139,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        Public Shared Function ConstBlock(constBlockStatement As ConstBlockStatementSyntax, endConstStatement As EndBlockStatementSyntax) As ConstBlockSyntax
-            Return SyntaxFactory.ConstBlock(constBlockStatement, Nothing, endConstStatement)
+        Public Shared Function ConstBlock(constBlockStatement As ConstBlockStatementSyntax, members As SyntaxList(of StatementSyntax)) As ConstBlockSyntax
+            Return SyntaxFactory.ConstBlock(constBlockStatement, members, SyntaxFactory.EndConstBlockStatement())
+        End Function
+
+
+        Public Shared Function ConstBlock(constBlockStatement As ConstBlockStatementSyntax) As ConstBlockSyntax
+            Return SyntaxFactory.ConstBlock(constBlockStatement, Nothing, SyntaxFactory.EndConstBlockStatement())
         End Function
 
 
@@ -44280,6 +44260,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 SyntaxKind.SelectKeyword,
                 SyntaxKind.StructureKeyword,
                 SyntaxKind.EnumKeyword,
+                SyntaxKind.ConstKeyword,
                 SyntaxKind.InterfaceKeyword,
                 SyntaxKind.ClassKeyword,
                 SyntaxKind.ModuleKeyword,

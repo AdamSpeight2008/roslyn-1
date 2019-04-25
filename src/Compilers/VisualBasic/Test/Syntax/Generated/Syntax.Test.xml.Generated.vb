@@ -45,7 +45,7 @@ Partial Public Class GeneratedTests
         End Function
 
         Private Shared Function GenerateGreenEndConstBlockStatement() As InternalSyntax.EndBlockStatementSyntax
-            return InternalSyntax.SyntaxFactory.EndConstBlockStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.EndKeyword, String.Empty, Nothing, Nothing), new InternalSyntax.KeywordSyntax(SyntaxKind.IfKeyword, String.Empty, Nothing, Nothing))
+            return InternalSyntax.SyntaxFactory.EndConstBlockStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.EndKeyword, String.Empty, Nothing, Nothing), new InternalSyntax.KeywordSyntax(SyntaxKind.ConstKeyword, String.Empty, Nothing, Nothing))
         End Function
 
         Private Shared Function GenerateGreenEndInterfaceStatement() As InternalSyntax.EndBlockStatementSyntax
@@ -9638,7 +9638,7 @@ Partial Public Class GeneratedTests
         Private Shared Function GenerateRedEndConstBlockStatement() As EndBlockStatementSyntax
             Dim exceptionTest as boolean = false
             Try
-            SyntaxFactory.EndConstBlockStatement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), SyntaxFactory.Token(SyntaxKind.IfKeyword))
+            SyntaxFactory.EndConstBlockStatement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), SyntaxFactory.Token(SyntaxKind.ConstKeyword))
             catch e as ArgumentException
             exceptionTest = true
             End Try
@@ -9661,7 +9661,7 @@ Partial Public Class GeneratedTests
             Debug.Assert(exceptionTest)
             exceptionTest = false
 
-            return SyntaxFactory.EndConstBlockStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.IfKeyword))
+            return SyntaxFactory.EndConstBlockStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ConstKeyword))
         End Function
 
         Private Shared Function GenerateRedEndInterfaceStatement() As EndBlockStatementSyntax

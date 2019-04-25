@@ -42981,7 +42981,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Shared Function EndConstBlockStatement(endKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As EndBlockStatementSyntax
             Debug.Assert(endKeyword IsNot Nothing AndAlso endKeyword.Kind = SyntaxKind.EndKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso SyntaxFacts.IsEndBlockStatementBlockKeyword(blockKeyword.Kind))
+            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.ConstKeyword)
 
             Dim hash As Integer
             Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.EndConstBlockStatement, endKeyword, blockKeyword, hash)
@@ -55134,7 +55134,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Function EndConstBlockStatement(endKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As EndBlockStatementSyntax
             Debug.Assert(endKeyword IsNot Nothing AndAlso endKeyword.Kind = SyntaxKind.EndKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso SyntaxFacts.IsEndBlockStatementBlockKeyword(blockKeyword.Kind))
+            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.ConstKeyword)
 
             Dim hash As Integer
             Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.EndConstBlockStatement, endKeyword, blockKeyword, _factoryContext, hash)

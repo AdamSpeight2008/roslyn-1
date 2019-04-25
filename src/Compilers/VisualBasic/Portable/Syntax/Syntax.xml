@@ -285,6 +285,7 @@ Unify Enum declarations with other block type declarations.
         <kind name="WhileKeyword" node-kind="EndWhileStatement"/>
         <kind name="TryKeyword" node-kind="EndTryStatement"/>
         <kind name="SyncLockKeyword" node-kind="EndSyncLockStatement"/>
+        <kind name="ConstKeyword" node-kind="EndConstBlockStatement"/>
       </child>
     </node-structure>
 
