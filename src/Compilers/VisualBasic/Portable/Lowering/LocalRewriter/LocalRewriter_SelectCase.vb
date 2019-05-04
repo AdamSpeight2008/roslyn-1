@@ -272,14 +272,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
       Dim visitedWhenCondition = VisitExpression(curCaseBlock.CaseStatement.WhenCondition.Condition)
       If visitedWhenCondition IsNot Nothing Then
-                If rewrittenCaseCondition Is Nothing Then
-                 rewrittenCaseCondition =  Make_Parenthesized(visitedWhenCondition)
-                        else
-          rewrittenCaseCondition= Make_AndAlso(
-                                   Make_Parenthesized(rewrittenCaseCondition),
-                                   Make_Parenthesized(visitedWhenCondition))
-             End If
-        End If
+         If rewrittenCaseCondition IsNot Nothing Then
+            rewrittenCaseCondition = Make_AndAlso(
+                                       Make_Parenthesized(rewrittenCaseCondition),
+                                       Make_Parenthesized(visitedWhenCondition))
+         End If
+      End If
+
       Dim rewrittenBody = DirectCast(VisitBlock(curCaseBlock.Body), BoundBlock)
 
       If generateUnstructuredExceptionHandlingResumeCode AndAlso startFrom < caseBlocks.Length - 1 Then
@@ -307,29 +306,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
          If instrument Then
             rewrittenCaseCondition = _instrumenterOpt.InstrumentSelectStatementCaseCondition(selectStatement, rewrittenCaseCondition, _currentMethodOrLambda, lazyConditionalBranchLocal)
          End If
-         'If visitedWhenCondition IsNot Nothing Then
-         '   Dim rewrittenWithGuard = DirectCast( RewriteIfStatement( 
-         '                           curCaseBlock.CaseStatement.WhenCondition.Syntax,
-         '                           visitedWhenCondition,
-         '                           rewrittenBody,
-         '                           nothing,
-         '                           instrumentationTargetOpt:=If(instrument, curCaseBlock, Nothing),
-         '                           unstructuredExceptionHandlingResumeTarget), BoundIfStatement)
-         '   rewrittenBody = rewrittenBody.Update(rewrittenBody.StatementListSyntax,
-         '                                     rewrittenBody.Locals, 
-         '                                     ImmutableArray(Of BoundStatement).Empty.Add(rewrittenWithGuard))
-         'End If
-               
-         ' EnC: We need to insert a hidden sequence point to handle function remapping in case 
-         ' the containing method is edited while methods invoked in the condition are being executed.
-         rewrittenStatement = RewriteIfStatement(
+                'If visitedWhenCondition IsNot Nothing Then
+                '    Dim rewrittenWithGuard = DirectCast(RewriteIfStatement(
+                '                            curCaseBlock.CaseStatement.WhenCondition.Syntax,
+                '                            visitedWhenCondition,
+                '                            rewrittenBody,
+                '                            Nothing,
+                '                            instrumentationTargetOpt:=If(instrument, curCaseBlock, Nothing),
+                '                            unstructuredExceptionHandlingResumeTarget), BoundIfStatement)
+                '    rewrittenBody = rewrittenBody.Update(rewrittenBody.StatementListSyntax,
+                '                                      rewrittenBody.Locals,
+                '                                      ImmutableArray(Of BoundStatement).Empty.Add(rewrittenWithGuard))
+                'End If
+
+                ' EnC: We need to insert a hidden sequence point to handle function remapping in case 
+                ' the containing method is edited while methods invoked in the condition are being executed.
+                rewrittenStatement = RewriteIfStatement(
               syntaxNode:=curCaseBlock.Syntax,
               rewrittenCondition:=rewrittenCaseCondition,
               rewrittenConsequence:=rewrittenBody,
               rewrittenAlternative:=RewriteCaseBlocksRecursive(selectStatement, generateUnstructuredExceptionHandlingResumeCode, caseBlocks, startFrom + 1, lazyConditionalBranchLocal),
               unstructuredExceptionHandlingResumeTarget:=unstructuredExceptionHandlingResumeTarget,
               instrumentationTargetOpt:=If(instrument, curCaseBlock, Nothing))
-      End If
+            End If
 
 
       Return rewrittenStatement
