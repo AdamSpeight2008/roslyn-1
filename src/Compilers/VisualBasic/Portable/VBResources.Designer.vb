@@ -6440,6 +6440,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Invalid usage, requires only one variable..
+        '''</summary>
+        Friend ReadOnly Property ERR_InvalidUsingWithStatement() As String
+            Get
+                Return ResourceManager.GetString("ERR_InvalidUsingWithStatement", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to The specified version string does not conform to the required format - major[.minor[.build|*[.revision|*]]].
         '''</summary>
         Friend ReadOnly Property ERR_InvalidVersionFormat() As String

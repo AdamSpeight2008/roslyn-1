@@ -646,7 +646,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             If TryGetTokenAndEatNewLine(SyntaxKind.EqualsToken, equalsToken) Then
 
-                ' Dev10_545918 - Allow implicit line continuation after '=' 
+                ' Dev10_545918 - Allow implicit line continuation after '='
 
                 fromValue = ParseExpressionCore()
 
@@ -775,7 +775,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Expression* .Parser::ParseForLoopControlVariable( [ ParseTree::BlockStatement* ForBlock ] [ _In_ Token* ForStart ] [ _Out_ ParseTree::VariableDeclarationStatement** Decl ] [ _Inout_ bool& ErrorInConstruct ] )
         Private Function ParseForLoopControlVariable() As VisualBasicSyntaxNode
 
-            'TODO - davidsch - I have kept this code as-is but it seems that it would be better to parse the common prefix of 
+            'TODO - davidsch - I have kept this code as-is but it seems that it would be better to parse the common prefix of
             ' ParseVariable and ParseForLoopVariableDeclaration instead of peeking for 'AS', 'IN', '='
 
             Select Case (CurrentToken.Kind)
@@ -1708,7 +1708,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                     Dim clause As WhileOrUntilClauseSyntax = SyntaxFactory.WhileOrUntilClause(kind, keyword, InternalSyntaxFactory.MissingExpression)
 
-                    ' Dev10 places the error only on the current token. 
+                    ' Dev10 places the error only on the current token.
                     ' This marks the entire clause which seems better.
                     optionalWhileOrUntilClause = ReportSyntaxError(ResyncAt(clause), ERRID.ERR_Syntax)
                     Return True
@@ -1790,7 +1790,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Dim optionalExpression As ExpressionSyntax = Nothing
             Dim variables As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of VariableDeclaratorSyntax) = Nothing
-
+            Dim optionalWithKeyword As KeywordSyntax = Nothing
             Dim nextToken As SyntaxToken = PeekToken(1)
 
             ' change from Dev10: allowing as new with multiple variable names, e.g. "Using a, b As New C1()"
@@ -1804,11 +1804,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 optionalExpression = ParseExpressionCore()
             End If
 
+            If CurrentToken.Kind = SyntaxKind.WithKeyword Then
+                optionalWithKeyword = DirectCast(CurrentToken, KeywordSyntax)
+                GetNextToken()
+                optionalWithKeyword = CheckFeatureAvailability(of KeywordSyntax)(Feature.UsingWithStatement, optionalWithKeyword)
+                If variables.Count <> 1 Then
+                    optionalWithKeyword = ReportSyntaxError(optionalWithKeyword, ERRID.ERR_InvalidUsingWithStatement)
+                End If
+            End If
+
             'TODO - not resyncing here may cause errors to differ from Dev10.
 
             'No need to resync on error.  This will be handled by GetStatementTerminator
 
-            Dim statement = SyntaxFactory.UsingStatement(usingKeyword, optionalExpression, variables)
+            Dim statement = SyntaxFactory.UsingStatement(usingKeyword, optionalExpression, variables, optionalWithKeyword)
 
             Return statement
         End Function

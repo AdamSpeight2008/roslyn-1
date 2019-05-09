@@ -2025,5 +2025,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_UnconstrainedTypeParameterInConditional
         FEATURE_CommentsAfterLineContinuation
         FEATURE_UsingWithStatement
+        ERR_InvalidUsingWithStatement
     End Enum
 End Namespace

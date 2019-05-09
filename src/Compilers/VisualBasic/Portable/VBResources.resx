@@ -5546,6 +5546,9 @@
   <data name="ERR_MultipleAnalyzerConfigsInSameDir" xml:space="preserve">
     <value>Multiple analyzer config files cannot be in the same directory ('{0}').</value>
   </data>
+  <data name="ERR_InvalidUsingWithStatement" xml:space="preserve">
+    <value>Invalid usage, requires only one variable.</value>
+  </data>
   <data name="FEATUE_UsingWithStatement" xml:space="preserve">
     <value>Using With statements</value>
   </data>
