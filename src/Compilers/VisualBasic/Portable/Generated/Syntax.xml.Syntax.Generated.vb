@@ -19004,8 +19004,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), usingKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, variables As SyntaxNode, withKeyword As InternalSyntax.KeywordSyntax)
-            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.UsingStatementSyntax(kind, errors, annotations, usingKeyword, if(expression IsNot Nothing , DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), Nothing) , if(variables IsNot Nothing, variables.Green, Nothing), withKeyword), Nothing, 0)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), usingKeyword As InternalSyntax.KeywordSyntax, withKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, variables As SyntaxNode)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.UsingStatementSyntax(kind, errors, annotations, usingKeyword, withKeyword, if(expression IsNot Nothing , DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), Nothing) , if(variables IsNot Nothing, variables.Green, Nothing)), Nothing, 0)
         End Sub
 
         ''' <summary>
@@ -19023,59 +19023,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value.
         ''' </summary>
         Public Shadows Function WithUsingKeyword(usingKeyword as SyntaxToken) As UsingStatementSyntax
-            return Update(usingKeyword, Me.Expression, Me.Variables, Me.WithKeyword)
-        End Function
-
-        ''' <summary>
-        ''' If the Using statement is of a form that does not declare a new variable, this
-        ''' is the expression used in the using. Otherwise, Nothing is returned.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
-        Public  ReadOnly Property Expression As ExpressionSyntax
-            Get
-                Return GetRed(_expression, 1)
-            End Get
-        End Property
-
-        ''' <summary>
-        ''' Returns a copy of this with the Expression property changed to the specified
-        ''' value. Returns this instance if the specified value is the same as the current
-        ''' value.
-        ''' </summary>
-        Public Shadows Function WithExpression(expression as ExpressionSyntax) As UsingStatementSyntax
-            return Update(Me.UsingKeyword, expression, Me.Variables, Me.WithKeyword)
-        End Function
-
-        ''' <summary>
-        ''' If the Using statement is of a form that declares one or more new variables,
-        ''' this is the list of variable declarations. Otherwise, Nothing is returned.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
-        Public  ReadOnly Property Variables As SeparatedSyntaxList(Of VariableDeclaratorSyntax)
-            Get
-                Dim listNode = GetRed(_variables, 2)
-                If listNode IsNot Nothing
-                    Return new SeparatedSyntaxList(Of VariableDeclaratorSyntax)(listNode, Me.GetChildIndex(2))
-                End If
-                Return Nothing
-            End Get
-        End Property
-
-        ''' <summary>
-        ''' Returns a copy of this with the Variables property changed to the specified
-        ''' value. Returns this instance if the specified value is the same as the current
-        ''' value.
-        ''' </summary>
-        Public Shadows Function WithVariables(variables as SeparatedSyntaxList(Of VariableDeclaratorSyntax)) As UsingStatementSyntax
-            return Update(Me.UsingKeyword, Me.Expression, variables, Me.WithKeyword)
-        End Function
-
-        Public Shadows Function AddVariables(ParamArray items As VariableDeclaratorSyntax()) As UsingStatementSyntax
-            Return Me.WithVariables(Me.Variables.AddRange(items))
+            return Update(usingKeyword, Me.WithKeyword, Me.Expression, Me.Variables)
         End Function
 
         ''' <summary>
@@ -19088,7 +19036,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.UsingStatementSyntax)._withKeyword
                 If slot IsNot Nothing
-                    return new SyntaxToken(Me, slot, Me.GetChildPosition(3), Me.GetChildIndex(3))
+                    return new SyntaxToken(Me, slot, Me.GetChildPosition(1), Me.GetChildIndex(1))
                 End If
                 Return Nothing
             End Get
@@ -19100,14 +19048,66 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value.
         ''' </summary>
         Public Shadows Function WithWithKeyword(withKeyword as SyntaxToken) As UsingStatementSyntax
-            return Update(Me.UsingKeyword, Me.Expression, Me.Variables, withKeyword)
+            return Update(Me.UsingKeyword, withKeyword, Me.Expression, Me.Variables)
+        End Function
+
+        ''' <summary>
+        ''' If the Using statement is of a form that does not declare a new variable, this
+        ''' is the expression used in the using. Otherwise, Nothing is returned.
+        ''' </summary>
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
+        Public  ReadOnly Property Expression As ExpressionSyntax
+            Get
+                Return GetRed(_expression, 2)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Expression property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithExpression(expression as ExpressionSyntax) As UsingStatementSyntax
+            return Update(Me.UsingKeyword, Me.WithKeyword, expression, Me.Variables)
+        End Function
+
+        ''' <summary>
+        ''' If the Using statement is of a form that declares one or more new variables,
+        ''' this is the list of variable declarations. Otherwise, Nothing is returned.
+        ''' </summary>
+        ''' <remarks>
+        ''' If nothing is present, an empty list is returned.
+        ''' </remarks>
+        Public  ReadOnly Property Variables As SeparatedSyntaxList(Of VariableDeclaratorSyntax)
+            Get
+                Dim listNode = GetRed(_variables, 3)
+                If listNode IsNot Nothing
+                    Return new SeparatedSyntaxList(Of VariableDeclaratorSyntax)(listNode, Me.GetChildIndex(3))
+                End If
+                Return Nothing
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Variables property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithVariables(variables as SeparatedSyntaxList(Of VariableDeclaratorSyntax)) As UsingStatementSyntax
+            return Update(Me.UsingKeyword, Me.WithKeyword, Me.Expression, variables)
+        End Function
+
+        Public Shadows Function AddVariables(ParamArray items As VariableDeclaratorSyntax()) As UsingStatementSyntax
+            Return Me.WithVariables(Me.Variables.AddRange(items))
         End Function
 
         Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
             Select case i
-                Case 1
-                    Return Me._expression
                 Case 2
+                    Return Me._expression
+                Case 3
                     Return Me._variables
                 Case Else
                      Return Nothing
@@ -19116,10 +19116,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
         Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
             Select case i
-                Case 1
-                    Return Me.Expression
                 Case 2
-                    Return GetRed(_variables, 2)
+                    Return Me.Expression
+                Case 3
+                    Return GetRed(_variables, 3)
                 Case Else
                      Return Nothing
             End Select
@@ -19141,18 +19141,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <param name="usingKeyword">
         ''' The value for the UsingKeyword property.
         ''' </param>
+        ''' <param name="withKeyword">
+        ''' The value for the WithKeyword property.
+        ''' </param>
         ''' <param name="expression">
         ''' The value for the Expression property.
         ''' </param>
         ''' <param name="variables">
         ''' The value for the Variables property.
         ''' </param>
-        ''' <param name="withKeyword">
-        ''' The value for the WithKeyword property.
-        ''' </param>
-        Public Function Update(usingKeyword As SyntaxToken, expression As ExpressionSyntax, variables As SeparatedSyntaxList(Of VariableDeclaratorSyntax), withKeyword As SyntaxToken) As UsingStatementSyntax
-            If usingKeyword <> Me.UsingKeyword OrElse expression IsNot Me.Expression OrElse variables <> Me.Variables OrElse withKeyword <> Me.WithKeyword Then
-                Dim newNode = SyntaxFactory.UsingStatement(usingKeyword, expression, variables, withKeyword)
+        Public Function Update(usingKeyword As SyntaxToken, withKeyword As SyntaxToken, expression As ExpressionSyntax, variables As SeparatedSyntaxList(Of VariableDeclaratorSyntax)) As UsingStatementSyntax
+            If usingKeyword <> Me.UsingKeyword OrElse withKeyword <> Me.WithKeyword OrElse expression IsNot Me.Expression OrElse variables <> Me.Variables Then
+                Dim newNode = SyntaxFactory.UsingStatement(usingKeyword, withKeyword, expression, variables)
                 Dim annotations = Me.GetAnnotations()
                 If annotations IsNot Nothing AndAlso annotations.Length > 0
                     return newNode.WithAnnotations(annotations)

@@ -20139,7 +20139,7 @@ Partial Public Class GeneratedTests
         Public Sub TestRedUsingStatement()
             dim objectUnderTest = GenerateRedUsingStatement()
             Assert.NotNull(objectUnderTest.usingKeyword)
-            Dim withObj = objectUnderTest.WithUsingKeyword(objectUnderTest.UsingKeyword).WithExpression(objectUnderTest.Expression).WithVariables(objectUnderTest.Variables).WithWithKeyword(objectUnderTest.WithKeyword)
+            Dim withObj = objectUnderTest.WithUsingKeyword(objectUnderTest.UsingKeyword).WithWithKeyword(objectUnderTest.WithKeyword).WithExpression(objectUnderTest.Expression).WithVariables(objectUnderTest.Variables)
             Assert.Equal(withobj, objectUnderTest)
         End Sub
 

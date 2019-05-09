@@ -4518,6 +4518,12 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name=""></native-equiv>
       </child>
 
+      <child name="WithKeyword" kind="WithKeyword" optional="true">
+        <description>The "With" keyword.</description>
+        <lm-equiv name="WithKeyword"></lm-equiv>
+        <native-equiv name=""></native-equiv>
+      </child>
+
       <child name="Expression" optional="true" kind="@ExpressionSyntax">
         <description>
           If the Using statement is of a form that does not declare a new variable, this is the expression
@@ -4536,11 +4542,7 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name="Declarations"></native-equiv>
       </child>
 
-      <child name="WithKeyword" kind="WithKeyword" optional="true">
-        <description>The "With" keyword.</description>
-        <lm-equiv name="WithKeyword"></lm-equiv>
-        <native-equiv name=""></native-equiv>
-      </child>
+
 
     </node-structure>
 

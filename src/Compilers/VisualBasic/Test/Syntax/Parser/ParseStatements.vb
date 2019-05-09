@@ -168,14 +168,14 @@ Public Class ParseStatements
         ParseAndVerify(<![CDATA[
                 Module Module1
                     Sub Goo()
-                        using e0 with
+                        using with e0
                         end using
 
-                        'using e1 as new C With
-                        'end using
+                        using with e1 as new C
+                        end using
 
-                        'using e3 as new with {.goo="bar"} With
-                        'end using
+                        using with e3 as new with {.goo="bar"}
+                        end using
                     end sub
                End Module
             ]]>)

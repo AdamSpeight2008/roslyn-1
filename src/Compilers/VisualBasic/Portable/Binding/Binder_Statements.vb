@@ -4365,7 +4365,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
 
         Private Function RebindAsUsingWith(usingStatement As UsingStatementSyntax, node As UsingBlockSyntax, targert As ExpressionSyntax, diagnostics As DiagnosticBag ) As BoundStatement
-           Dim newstatement = usingstatement.Update(usingstatement.UsingKeyword, usingstatement.Expression, usingstatement.Variables, nothing)
+           Dim newstatement = usingstatement.Update(usingstatement.UsingKeyword, nothing, usingstatement.Expression, usingstatement.Variables)
           Dim ws = SyntaxFactory.WithStatement(targert)
          Dim ews = SyntaxFactory.EndWithStatement()
                     Dim nwb = SyntaxFactory.WithBlock(ws, node.Statements, ews)

@@ -1040,11 +1040,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("usingKeyword")
              End Select
-            Return New UsingStatementSyntax(SyntaxKind.UsingStatement, Nothing, Nothing, DirectCast(usingKeyword.Node, InternalSyntax.KeywordSyntax), expression, variables.Node, nothing)
+            Return New UsingStatementSyntax(SyntaxKind.UsingStatement, nothing, Nothing, Nothing, DirectCast(usingKeyword.Node, InternalSyntax.KeywordSyntax), expression, variables.Node)
         End Function
-        'Public Shared Function UsingStatement(expression As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax,
-        '                                      variables As Microsoft.CodeAnalysis.SeparatedSyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.VariableDeclaratorSyntax),
-        '                                      withKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.UsingStatementSyntax'
     End Class
 
 End Namespace
@@ -1053,7 +1050,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     Partial Class UsingStatementSyntax
 
-                ''' <summary>
+        ''' <summary>
         ''' Returns a copy of this with the specified changes. Returns this instance if
         ''' there are no actual changes.
         ''' </summary>
@@ -1066,11 +1063,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <param name="variables">
         ''' The value for the Variables property.
         ''' </param>
-        Public Function Update(usingKeyword As Microsoft.CodeAnalysis.SyntaxToken,
-                                expression As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax,
-                                variables As Microsoft.CodeAnalysis.SeparatedSyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.VariableDeclaratorSyntax)
-                                ) As Microsoft.CodeAnalysis.VisualBasic.Syntax.UsingStatementSyntax
-            Return Update(usingKeyword, expression, variables, nothing)
-            End Function
-        End Class
+        Public Function Update(usingKeyword As SyntaxToken,
+                                expression As ExpressionSyntax,
+                                variables As SeparatedSyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.VariableDeclaratorSyntax)
+                                ) As UsingStatementSyntax
+            Return Update(usingKeyword:= usingKeyword, withKeyword:= nothing, expression:= expression,variables:= variables)
+        End Function
+
+    End Class
+
 End Namespace

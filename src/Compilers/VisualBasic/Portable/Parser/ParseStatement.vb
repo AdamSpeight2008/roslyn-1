@@ -1791,6 +1791,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim optionalExpression As ExpressionSyntax = Nothing
             Dim variables As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of VariableDeclaratorSyntax) = Nothing
             Dim optionalWithKeyword As KeywordSyntax = Nothing
+
+            If CurrentToken.Kind = SyntaxKind.WithKeyword Then
+                optionalWithKeyword = DirectCast(CurrentToken, KeywordSyntax)
+                GetNextToken()
+                optionalWithKeyword = CheckFeatureAvailability(of KeywordSyntax)(Feature.UsingWithStatement, optionalWithKeyword)
+
+            End If
+
             Dim nextToken As SyntaxToken = PeekToken(1)
 
             ' change from Dev10: allowing as new with multiple variable names, e.g. "Using a, b As New C1()"
@@ -1804,20 +1812,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 optionalExpression = ParseExpressionCore()
             End If
 
-            If CurrentToken.Kind = SyntaxKind.WithKeyword Then
-                optionalWithKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                GetNextToken()
-                optionalWithKeyword = CheckFeatureAvailability(of KeywordSyntax)(Feature.UsingWithStatement, optionalWithKeyword)
-                If variables.Count <> 1 Then
+                If optionalExpression Is Nothing AndAlso variables.Count <> 1 Then
                     optionalWithKeyword = ReportSyntaxError(optionalWithKeyword, ERRID.ERR_InvalidUsingWithStatement)
                 End If
-            End If
 
             'TODO - not resyncing here may cause errors to differ from Dev10.
 
             'No need to resync on error.  This will be handled by GetStatementTerminator
 
-            Dim statement = SyntaxFactory.UsingStatement(usingKeyword, optionalExpression, variables, optionalWithKeyword)
+            Dim statement = SyntaxFactory.UsingStatement(usingKeyword, optionalWithKeyword, optionalExpression, variables)
 
             Return statement
         End Function

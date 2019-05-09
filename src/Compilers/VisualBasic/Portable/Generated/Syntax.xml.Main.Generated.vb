@@ -3554,15 +3554,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim newUsingKeyword = DirectCast(VisitToken(node.UsingKeyword).Node, InternalSyntax.KeywordSyntax)
             If node.UsingKeyword.Node IsNot newUsingKeyword Then anyChanges = True
+            Dim newWithKeyword = DirectCast(VisitToken(node.WithKeyword).Node, InternalSyntax.KeywordSyntax)
+            If node.WithKeyword.Node IsNot newWithKeyword Then anyChanges = True
             Dim newExpression = DirectCast(Visit(node.Expression), ExpressionSyntax)
             If node.Expression IsNot newExpression Then anyChanges = True
             Dim newVariables = VisitList(node.Variables)
             If node._variables IsNot newVariables.Node Then anyChanges = True
-            Dim newWithKeyword = DirectCast(VisitToken(node.WithKeyword).Node, InternalSyntax.KeywordSyntax)
-            If node.WithKeyword.Node IsNot newWithKeyword Then anyChanges = True
 
             If anyChanges Then
-                Return New UsingStatementSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newUsingKeyword, newExpression, newVariables.Node, newWithKeyword)
+                Return New UsingStatementSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newUsingKeyword, newWithKeyword, newExpression, newVariables.Node)
             Else
                 Return node
             End If
@@ -20053,6 +20053,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="usingKeyword">
         ''' The "Using" keyword.
         ''' </param>
+        ''' <param name="withKeyword">
+        ''' The "With" keyword.
+        ''' </param>
         ''' <param name="expression">
         ''' If the Using statement is of a form that does not declare a new variable, this
         ''' is the expression used in the using. Otherwise, Nothing is returned.
@@ -20061,16 +20064,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' If the Using statement is of a form that declares one or more new variables,
         ''' this is the list of variable declarations. Otherwise, Nothing is returned.
         ''' </param>
-        ''' <param name="withKeyword">
-        ''' The "With" keyword.
-        ''' </param>
-        Public Shared Function UsingStatement(usingKeyword As SyntaxToken, expression As ExpressionSyntax, variables As SeparatedSyntaxList(Of VariableDeclaratorSyntax), withKeyword As SyntaxToken) As UsingStatementSyntax
+        Public Shared Function UsingStatement(usingKeyword As SyntaxToken, withKeyword As SyntaxToken, expression As ExpressionSyntax, variables As SeparatedSyntaxList(Of VariableDeclaratorSyntax)) As UsingStatementSyntax
             Select Case usingKeyword.Kind()
                 Case SyntaxKind.UsingKeyword
                 Case Else
                     Throw new ArgumentException("usingKeyword")
              End Select
-            Return New UsingStatementSyntax(SyntaxKind.UsingStatement, Nothing, Nothing, DirectCast(usingKeyword.Node, InternalSyntax.KeywordSyntax), expression, variables.Node, DirectCast(withKeyword.Node, InternalSyntax.KeywordSyntax))
+            Return New UsingStatementSyntax(SyntaxKind.UsingStatement, Nothing, Nothing, DirectCast(usingKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(withKeyword.Node, InternalSyntax.KeywordSyntax), expression, variables.Node)
         End Function
 
 
@@ -20088,7 +20088,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' this is the list of variable declarations. Otherwise, Nothing is returned.
         ''' </param>
         Public Shared Function UsingStatement(expression As ExpressionSyntax, variables As SeparatedSyntaxList(Of VariableDeclaratorSyntax)) As UsingStatementSyntax
-            Return SyntaxFactory.UsingStatement(SyntaxFactory.Token(SyntaxKind.UsingKeyword), expression, variables, Nothing)
+            Return SyntaxFactory.UsingStatement(SyntaxFactory.Token(SyntaxKind.UsingKeyword), Nothing, expression, variables)
         End Function
 
 
