@@ -134,7 +134,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     ' Switch back to the unbound lambda node since bound lambda represents a lambda already
                     ' converted to whatever target type was provided by the context within the statement.
                     ' NOTE: Using the UnboundLambda in this way might result in new entries in its trial-binding
-                    ' cache, but that won't affect future semantic model queries because it will already have 
+                    ' cache, but that won't affect future semantic model queries because it will already have
                     ' been bound (possibly for error recovery) on insertion into the syntax-to-bound-node map
                     ' and the result of that binding is also cached.  That is, even though the list of trial-bindings
                     ' may change, it will never again be consumed for error recovery (only as a cache), so there
@@ -148,7 +148,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     End If
 
                 Case BoundKind.ArrayCreation
-                    ' Switch back to the array literal node when we have it 
+                    ' Switch back to the array literal node when we have it
                     Dim arrayLiteral = DirectCast(boundExpression, BoundArrayCreation).ArrayLiteralOpt
 
                     If arrayLiteral IsNot Nothing Then
@@ -260,10 +260,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         ''' <summary>
         ''' Return True if the statement can be bound by a Binder on its own.
-        ''' For example Catch statement cannot be bound on its own, only 
+        ''' For example Catch statement cannot be bound on its own, only
         ''' as part of Try block. Similarly, Next statement cannot be bound on its own,
         ''' only as part of For statement.
-        ''' 
+        '''
         ''' Only handles statements that are in executable code.
         ''' </summary>
         Private Shared Function IsStandaloneStatement(node As StatementSyntax) As Boolean
@@ -867,7 +867,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim summary As BoundNodeSummary = GetBoundNodeSummary(node)
 
-            ' decide whether we should use highest or lowest bound node here 
+            ' decide whether we should use highest or lowest bound node here
             ' https://github.com/dotnet/roslyn/issues/22179
             Dim result As BoundNode = summary.HighestBoundNode
 
@@ -1190,7 +1190,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Get
         End Property
 
-        ''' <summary> 
+        ''' <summary>
         ''' The SyntaxTree that is bound
         ''' </summary>
         Public Overrides ReadOnly Property SyntaxTree As SyntaxTree
@@ -1203,12 +1203,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         '' This class manages a cache of bound nodes and binders for all the executable code under the root SyntaxNode
         '' of this SemanticModel.
-        '' 
+        ''
         '' The basic strategy is that a mapping from SyntaxNode -> ImmutableArray(Of BoundNode) is maintained, where
         '' the bound nodes are in top-down order. If we need to find the bound nodes associated with a syntax node, we
         '' first check the cache. If its not there, then we bind the enclosing statement which is NOT inside a lambda
         '' (statements inside lambda may not have type information inferred for them). We then do a walk over the resulting
-        '' bound statement, placing all bound nodes into the mapping. We also place binders for lambda and queries into a 
+        '' bound statement, placing all bound nodes into the mapping. We also place binders for lambda and queries into a
         '' map, so that we can answer GetEnclosingBinder questions.
 
         ' The bound nodes associated with syntaxnode, from highest in the tree to lowest.
@@ -1222,7 +1222,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ' If implicit variable declaration is in play, then we must bind everything
         ' up front in order to get all implicit local variables declared.
         ' Because order of declaration is important, and any expression could declare
-        ' an implicit local, we have to bind the whole method body from start to finish. 
+        ' an implicit local, we have to bind the whole method body from start to finish.
         Private Sub EnsureFullyBoundIfImplicitVariablesAllowed()
             If Me.RootBinder.ImplicitVariableDeclarationAllowed AndAlso Not Me.RootBinder.AllImplicitVariableDeclarationsAreHandled Then
                 _rwLock.EnterWriteLock()
@@ -1248,7 +1248,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         ''' <summary>
-        ''' Get the correct enclosing binder for the given position, taking into account  
+        ''' Get the correct enclosing binder for the given position, taking into account
         ''' block constructs and lambdas.
         ''' </summary>
         ''' <param name="memberBinder">Binder for the method body, lambda body, or field initializer. The
@@ -1337,8 +1337,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Return binder
 
                 ElseIf InWithStatementExpressionInterior(current) Then
-                    ' Expression from With statement is supposed to be bound using 
-                    ' the binder for the syntax node enclosing With statement 
+                    ' Expression from With statement is supposed to be bound using
+                    ' the binder for the syntax node enclosing With statement
                     Debug.Assert(current.Parent.Kind = SyntaxKind.WithStatement)
                     Debug.Assert(current.Parent.Parent.Kind = SyntaxKind.WithBlock)
 
@@ -1424,7 +1424,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Function GetAggregateClauseLambdaBinder(aggregate As AggregateClauseSyntax, position As Integer) As Binder
             Dim binder As Binder = Nothing
 
-            ' If position were in context of an additional query operator that operator would have handled it, unless there were 
+            ' If position were in context of an additional query operator that operator would have handled it, unless there were
             ' no need for a special binder.
             ' We only need to worry about Variables and the Into clause.
 
@@ -1495,10 +1495,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Function GetJoinClauseLambdaBinder(join As JoinClauseSyntax, position As Integer) As Binder
             Dim binder As Binder = Nothing
 
-            ' If position were in context of an additional join that join would have handled it, unless there were 
+            ' If position were in context of an additional join that join would have handled it, unless there were
             ' no need for a special binder.
             ' If position is in context of the collection range variable, we don't need a special binder.
-            ' If position is in context of an 'On' clause, there is a binder that we need to return. 
+            ' If position is in context of an 'On' clause, there is a binder that we need to return.
 
             If Not join.OnKeyword.IsMissing AndAlso join.OnKeyword.SpanStart <= position AndAlso SyntaxFacts.InSpanOrEffectiveTrailingOfNode(join, position) Then
                 Dim binders As ImmutableArray(Of Binder) = GetQueryClauseLambdaBinders(join)
@@ -1534,7 +1534,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 If SyntaxFacts.InSpanOrEffectiveTrailingOfNode(item, position) OrElse position < item.SpanStart Then
 
-                    ' The first collection variable in a query or in an Aggregate clause doesn't have special binder 
+                    ' The first collection variable in a query or in an Aggregate clause doesn't have special binder
                     ' stored for it in the bound tree, the binder is inherited from outer context in that case.
                     If i > 0 OrElse
                       (item.Parent.Kind <> SyntaxKind.AggregateClause AndAlso
@@ -1689,7 +1689,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Return binders
                 End If
 
-                ' NOTE: this is a fix for the case when we cannot find a bound node 
+                ' NOTE: this is a fix for the case when we cannot find a bound node
                 '       because the syntax is under unsupported construction
                 If boundNode Is Nothing OrElse boundNode.Kind <> BoundKind.NoOpStatement OrElse Not boundNode.HasErrors Then
                     AssertIfShouldHaveFound(node)
@@ -1743,7 +1743,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                             Return binder IsNot Nothing
                         End If
 
-                        ' NOTE: this is a fix for the case when we cannot find a bound node 
+                        ' NOTE: this is a fix for the case when we cannot find a bound node
                         '       because the syntax is under unsupported construction
                         If boundNode Is Nothing OrElse boundNode.Kind <> BoundKind.NoOpStatement OrElse Not boundNode.HasErrors Then
                             AssertIfShouldHaveFound(initialization)
@@ -1760,14 +1760,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Shared Function InWithStatementExpressionInterior(node As SyntaxNode) As Boolean
 
             Dim expression = TryCast(node, ExpressionSyntax)
-            If expression IsNot Nothing Then
-                Dim parent As VisualBasicSyntaxNode = expression.Parent
-                If parent IsNot Nothing AndAlso parent.Kind = SyntaxKind.WithStatement Then
-                    parent = parent.Parent
-                    Return parent IsNot Nothing AndAlso parent.Kind = SyntaxKind.WithBlock AndAlso parent.Parent IsNot Nothing
-                End If
+            If expression Is Nothing Then Return False
+            Dim parent As VisualBasicSyntaxNode = expression.Parent
+            If parent IsNot Nothing Then Return False
+            If parent.Kind = SyntaxKind.WithStatement Then
+               parent = parent.Parent
+               Return parent IsNot Nothing AndAlso parent.Kind = SyntaxKind.WithBlock AndAlso parent.Parent IsNot Nothing
+            ElseIf parent.Kind = SyntaxKind.UsingStatement Then
+                parent = parent.Parent
+                 If parent Is Nothing Then Return False
+                 Dim ubs = TryCast(parent, UsingBlockSyntax)
+                 If ubs Is Nothing Then Return False
+                 Dim us = ubs.UsingStatement
+                 If us Is Nothing Then Return Nothing
+                 Return (us.WithKeyword.IsMissing = False) AndAlso parent.Parent IsNOt Nothing
             End If
-
             Return False
         End Function
 
@@ -1915,7 +1922,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' in case it's part of a CollectionInitializer (outer most or top level initializer).
         ''' </summary>
         ''' <param name="syntax">The syntax node to check.</param>
-        ''' <returns><c>True</c> if the syntax node represents an expression syntax, but it's not 
+        ''' <returns><c>True</c> if the syntax node represents an expression syntax, but it's not
         ''' an expression from the VB language point of view; otherwise <c>False</c>.</returns>
         Private Shared Function IsNonExpressionCollectionInitializer(syntax As SyntaxNode) As Boolean
             Dim parent As SyntaxNode = syntax.Parent
@@ -1939,7 +1946,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Debug.Assert(_rwLock.IsWriteLockHeld)
 
             If _guardedNodeMap.ContainsKey(bindingRoot) Then
-                ' We've already bound this. No need to bind it again (saves a bit of 
+                ' We've already bound this. No need to bind it again (saves a bit of
                 ' work below).
                 Return
             End If
@@ -1957,8 +1964,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If Not _guardedNodeMap.ContainsKey(bindingRoot) Then
                 ' Generally 'bindingRoot' is supposed to be found in node map at this point,
-                ' but it will not happen in some scenarios such as for field or property 
-                ' initializers, let's add it to prevent re-binding 
+                ' but it will not happen in some scenarios such as for field or property
+                ' initializers, let's add it to prevent re-binding
 
                 Debug.Assert(bindingRoot.Kind = SyntaxKind.FieldDeclaration OrElse
                              bindingRoot.Kind = SyntaxKind.PropertyStatement OrElse
@@ -2013,15 +2020,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         ''' <summary>
         ''' The incremental binder is used when binding statements. Whenever a statement
-        ''' is bound, it checks the bound node cache to see if that statement was bound, 
-        ''' and returns it instead of rebinding it. 
-        ''' 
+        ''' is bound, it checks the bound node cache to see if that statement was bound,
+        ''' and returns it instead of rebinding it.
+        '''
         ''' FOr example, we might have:
         '''    While x > goo()
         '''      y = y * x
         '''      z = z + y
         '''    End While
-        ''' 
+        '''
         ''' We might first get semantic info about "z", and thus bind just the statement
         ''' "z = z + y". Later, we might bind the entire While block. While binding the while
         ''' block, we can reuse the binding we did of "z = z + y".
@@ -2076,7 +2083,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Debug.Assert((TypeOf boundStmt Is BoundStatement))
                     Return boundStmt
                 Else
-                    ' Already bound. Return the top-most bound node associated with the statement. 
+                    ' Already bound. Return the top-most bound node associated with the statement.
                     Return DirectCast(boundNodes.First, BoundStatement)
                 End If
             End Function
@@ -2098,13 +2105,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         ''' <summary>
         ''' Traverse a tree of bound nodes, and update the following maps inside the SemanticModel:
-        ''' 
+        '''
         '''     guardedNodeMap  - a map from syntax node to bound nodes. Bound nodes are added in the order they are bound
         '''                       traversing the tree, so they will be in order from upper to lower node.
-        ''' 
+        '''
         '''     guardedQueryBindersMap - a map from query-specific syntax node to an array of binders used to
         '''                              bind various children of the node.
-        ''' 
+        '''
         '''     guardedAnonymousTypeBinderMap - a map from Anonymous Type initializer's FieldInitializerSyntax to
         '''                                     Binder.AnonymousTypeFieldInitializerBinder used to bind its expression.
         '''</summary>
@@ -2140,7 +2147,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         nodeCache(key) = additionalNodes(key)
                     Else
 #If DEBUG Then
-                        ' It's possible that GuardedIncrementalBind was previously called with a subtree of bindingRoot. If 
+                        ' It's possible that GuardedIncrementalBind was previously called with a subtree of bindingRoot. If
                         ' this is the case, then we'll see an entry in the map. Since the incremental binder should also have seen the
                         ' pre-existing map entry, the entry in addition map should be identical.
                         ' Another, more unfortunate, possibility is that we've had to re-bind the syntax and the new bound
@@ -2194,7 +2201,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                          BoundKind.LValuePlaceholder,
                                          BoundKind.WithLValueExpressionPlaceholder,
                                          BoundKind.WithRValueExpressionPlaceholder
-                                        ' Don't cache compiler generated nodes 
+                                        ' Don't cache compiler generated nodes
                                         Return False
                                 End Select
                             End If
@@ -2282,7 +2289,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         Me.Visit(boundGroup)
 
                     ElseIf node.Method.IsShared Then
-                        ' NOTE: in this case the receiver is nothing, but we still 
+                        ' NOTE: in this case the receiver is nothing, but we still
                         '       want to visit it if we find it in the method group
                         Me.Visit(boundGroup.ReceiverOpt)
                     End If
@@ -2305,7 +2312,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         Me.Visit(node.PropertyGroupOpt)
 
                     ElseIf node.PropertySymbol.IsShared Then
-                        ' NOTE: in this case the receiver is nothing but we still 
+                        ' NOTE: in this case the receiver is nothing but we still
                         '       want to visit it if we find it in the property group
                         Me.Visit(boundGroup.ReceiverOpt)
                     End If
@@ -2399,7 +2406,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         Me.Visit(boundGroup)
 
                     ElseIf node.Method.IsShared Then
-                        ' NOTE: in this case the receiver is nothing, but we still 
+                        ' NOTE: in this case the receiver is nothing, but we still
                         '       want to visit it if we find it in the method group
                         Me.Visit(boundGroup.ReceiverOpt)
                     End If
@@ -2415,7 +2422,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 ' This is a compound assignment.
                 ' Don't cache the left node now, in order to provide accurate type information,
-                ' it should be cached when we visit its placeholder instead. 
+                ' it should be cached when we visit its placeholder instead.
                 ' Visiting the right side should take care of this.
                 If _placeholderReplacementMap Is Nothing Then
                     _placeholderReplacementMap = New Dictionary(Of BoundValuePlaceholderBase, BoundExpression)()
@@ -2449,7 +2456,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Public Overrides Function VisitByRefArgumentWithCopyBack(node As BoundByRefArgumentWithCopyBack) As BoundNode
                 ' Don't cache the OriginalArgument node now, in order to provide accurate type information,
-                ' it should be cached when we visit its InPlaceholder instead. 
+                ' it should be cached when we visit its InPlaceholder instead.
                 ' Visiting the InConversion should take care of this.
                 If _placeholderReplacementMap Is Nothing Then
                     _placeholderReplacementMap = New Dictionary(Of BoundValuePlaceholderBase, BoundExpression)()

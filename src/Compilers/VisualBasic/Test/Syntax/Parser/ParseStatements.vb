@@ -175,6 +175,7 @@ Public Class ParseStatements
                         end using
 
                         using with e3 as new with {.goo="bar"}
+                          Console.WriteLine(.goo)
                         end using
                     end sub
                End Module
