@@ -7,9 +7,19 @@
         <target state="new">Please use language version {0} or greater to use comments after line continuation character.</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_InvalidUsingWithStatement">
+        <source>Invalid usage, requires only one variable.</source>
+        <target state="new">Invalid usage, requires only one variable.</target>
+        <note />
+      </trans-unit>
       <trans-unit id="ERR_MultipleAnalyzerConfigsInSameDir">
         <source>Multiple analyzer config files cannot be in the same directory ('{0}').</source>
         <target state="new">Multiple analyzer config files cannot be in the same directory ('{0}').</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATUE_UsingWithStatement">
+        <source>Using With statements</source>
+        <target state="new">Using With statements</target>
         <note />
       </trans-unit>
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">

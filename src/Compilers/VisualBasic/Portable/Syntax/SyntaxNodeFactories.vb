@@ -267,7 +267,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         ''' <summary>
-        ''' Try parse the attribute represented as a stand-alone string like [cref="A.B"] and recognize 
+        ''' Try parse the attribute represented as a stand-alone string like [cref="A.B"] and recognize
         ''' 'cref' and 'name' attributes like in documentation-comment mode. This method should only be
         '''  used internally from code handling documentation comment includes.
         ''' </summary>
@@ -1016,5 +1016,61 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return InvocationExpression(expression, Nothing)
         End Function
 
+
+
+        ''' <summary>
+        ''' The Using statement that begins a Using block. This statement always occurs as
+        ''' the Begin of a UsingBlock, and the body of the Using is the Body of that
+        ''' UsingBlock.
+        ''' </summary>
+        ''' <param name="usingKeyword">
+        ''' The "Using" keyword.
+        ''' </param>
+        ''' <param name="expression">
+        ''' If the Using statement is of a form that does not declare a new variable, this
+        ''' is the expression used in the using. Otherwise, Nothing is returned.
+        ''' </param>
+        ''' <param name="variables">
+        ''' If the Using statement is of a form that declares one or more new variables,
+        ''' this is the list of variable declarations. Otherwise, Nothing is returned.
+        ''' </param>
+        Public Shared Function UsingStatement(usingKeyword As SyntaxToken, expression As ExpressionSyntax, variables As SeparatedSyntaxList(Of VariableDeclaratorSyntax)) As UsingStatementSyntax
+            Select Case usingKeyword.Kind()
+                Case SyntaxKind.UsingKeyword
+                Case Else
+                    Throw new ArgumentException("usingKeyword")
+             End Select
+            Return New UsingStatementSyntax(SyntaxKind.UsingStatement, Nothing, Nothing, DirectCast(usingKeyword.Node, InternalSyntax.KeywordSyntax), expression, variables.Node, nothing)
+        End Function
+        'Public Shared Function UsingStatement(expression As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax,
+        '                                      variables As Microsoft.CodeAnalysis.SeparatedSyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.VariableDeclaratorSyntax),
+        '                                      withKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.UsingStatementSyntax'
     End Class
+
+End Namespace
+Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
+
+
+    Partial Class UsingStatementSyntax
+
+                ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="usingKeyword">
+        ''' The value for the UsingKeyword property.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The value for the Expression property.
+        ''' </param>
+        ''' <param name="variables">
+        ''' The value for the Variables property.
+        ''' </param>
+        Public Function Update(usingKeyword As Microsoft.CodeAnalysis.SyntaxToken,
+                                expression As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax,
+                                variables As Microsoft.CodeAnalysis.SeparatedSyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.VariableDeclaratorSyntax)
+                                ) As Microsoft.CodeAnalysis.VisualBasic.Syntax.UsingStatementSyntax
+            Return Update(usingKeyword, expression, variables, nothing)
+            End Function
+        End Class
 End Namespace

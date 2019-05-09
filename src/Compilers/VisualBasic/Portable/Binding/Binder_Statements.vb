@@ -184,9 +184,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     '     nested block (e.g. two nested SyncLocks + end sub in the inner one). Then there will be parser
                     '     generated "End XXX" statements which are only marked as "missing", because the diagnostic will be
                     '     attached to the begin of the block. Both of these missing end statements have a 0 width which causes
-                    '     them to be in the same region of a textspan. In that situation the inner end statement may be bound 
-                    '     separately (outside of the block context) and we need to relax the assertion below to allow missing 
-                    '     end statements as well (the list of statements was taken from the parser method CreateMissingEnd, 
+                    '     them to be in the same region of a textspan. In that situation the inner end statement may be bound
+                    '     separately (outside of the block context) and we need to relax the assertion below to allow missing
+                    '     end statements as well (the list of statements was taken from the parser method CreateMissingEnd,
                     '     where only the ones that can appear in a method body have been selected).
                     '
                     '   We simply need to ignore this, the error is already created by the parser.
@@ -294,14 +294,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim localForFunctionValue As LocalSymbol
 
             If methodSymbol.IsIterator OrElse (methodSymbol.IsAsync AndAlso methodSymbol.ReturnType.Equals(Compilation.GetWellKnownType(WellKnownType.System_Threading_Tasks_Task))) Then
-                ' We are actually not using FunctionValue of such method in Return statements and referencing it explicitly is an error. 
+                ' We are actually not using FunctionValue of such method in Return statements and referencing it explicitly is an error.
                 localForFunctionValue = Nothing
             Else
                 localForFunctionValue = Me.GetLocalForFunctionValue()
             End If
 
             If localForFunctionValue IsNot Nothing Then
-                ' Declare local variable for function return 
+                ' Declare local variable for function return
                 Dim localDeclaration = New BoundLocalDeclaration(methodBlock.BlockStatement,
                                                                  localForFunctionValue,
                                                                  Nothing)
@@ -423,7 +423,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Private ReadOnly _binder As Binder
             Private ReadOnly _diagnostics As DiagnosticBag
-            Private _containsOnError As Boolean ' The block contains an [On Error] statement. 
+            Private _containsOnError As Boolean ' The block contains an [On Error] statement.
             Private _containsTry As Boolean ' The block contains a Try block.
             Private _containsResume As Boolean ' The block contains a [Resume [...]] or an [On Error Resume Next] statement. And this is a syntax node for the first of them.
             Private _resumeWithoutLabel As StatementSyntax ' The first [Resume], [Resume Next] or [On Error Resume Next] statement, if any.
@@ -720,7 +720,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     End If
                 End If
 
-                '  check redim array rank 
+                '  check redim array rank
                 If Not redimClauseHasErrors Then
                     If boundIndices.Length = 0 Then
                         ' redim rank cannot be 0
@@ -755,7 +755,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     )
             Next
 
-            '  done with all clauses, build a bound redim statement 
+            '  done with all clauses, build a bound redim statement
             Return New BoundRedimStatement(node, operands.ToImmutableAndFree())
         End Function
 
@@ -809,7 +809,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 Return New BoundGotoStatement(node, symbol, boundLabel, hasErrors:=hasErrors)
             Else
-                ' if the bound label is e.g. a bad bound expression because of a non-existent label, 
+                ' if the bound label is e.g. a bad bound expression because of a non-existent label,
                 ' make this a bad statement.
                 Return New BoundBadStatement(node, ImmutableArray.Create(Of BoundNode)(boundLabelExpression), hasErrors:=True)
             End If
@@ -894,7 +894,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim labelToken As SyntaxToken = node.LabelToken
             Dim labelName = labelToken.ValueText
 
-            ' A label symbol will always be found because all labels without syntax errors are put into the 
+            ' A label symbol will always be found because all labels without syntax errors are put into the
             ' label map in the blockbasebinder.
             Dim result = LookupResult.GetInstance()
             Lookup(result, labelName, 0, LookupOptions.LabelsOnly, useSiteDiagnostics:=Nothing)
@@ -983,7 +983,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim boundLocalDeclarations As ImmutableArray(Of BoundLocalDeclarationBase) = BindVariableDeclarators(node.Declarators, diagnostics)
 
-            ' NOTE: Always create bound Dim statement to make 
+            ' NOTE: Always create bound Dim statement to make
             '       sure syntax node has a bound node associated with it
             Return New BoundDimStatement(node, boundLocalDeclarations, Nothing)
         End Function
@@ -1095,14 +1095,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 boundArrayBounds = BindArrayBounds(name.ArrayBounds, diagnostics)
             End If
 
-            ' We don't bind the value here and pass it into ComputeVariableType because there is a chicken and egg problem.  
-            ' If the symbol has a type either from the type character or the as clause then we must first set the symbol 
+            ' We don't bind the value here and pass it into ComputeVariableType because there is a chicken and egg problem.
+            ' If the symbol has a type either from the type character or the as clause then we must first set the symbol
             ' to that type before binding the expression.  For example,
-            ' 
-            ' Dim i% = i 
+            '
+            ' Dim i% = i
 
-            ' is valid.  If  "i" were bound before the "i%" was resolved then i would not have a type and the expression 
-            ' would have an error. ComputeVariableType will only bind the value if the symbol does not have an explicit 
+            ' is valid.  If  "i" were bound before the "i%" was resolved then i would not have a type and the expression
+            ' would have an error. ComputeVariableType will only bind the value if the symbol does not have an explicit
             ' type.
 
             Dim type As TypeSymbol = ComputeVariableType(symbol,
@@ -1206,7 +1206,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         declarationInitializer = BadExpression(asNew, declarationInitializer, type).MakeCompilerGenerated()
                     ElseIf declarationInitializer IsNot Nothing AndAlso Not declarationInitializer.HasErrors AndAlso
                            Not type.IsSameTypeIgnoringAll(declarationInitializer.Type) Then
-                        ' An error must have been reported elsewhere.    
+                        ' An error must have been reported elsewhere.
                         declarationInitializer = BadExpression(asNew, declarationInitializer, declarationInitializer.Type).MakeCompilerGenerated()
                     End If
                 End If
@@ -1232,7 +1232,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     If Not type.IsValidTypeForConstField() Then
                         ' "Constants must be of an intrinsic or enumerated type, not a class, structure, type parameter, or array type."
                         ' arrays get the squiggles under the identifier name
-                        ' other data types get the squiggles under the type part of the as clause 
+                        ' other data types get the squiggles under the type part of the as clause
                         errSyntax = If(asClauseOpt IsNot Nothing AndAlso Not type.IsArrayType, DirectCast(asClauseOpt.Type, VisualBasicSyntaxNode), name)
                         ReportDiagnostic(diagnostics, errSyntax, ERRID.ERR_ConstAsNonConstant)
                     Else
@@ -1251,7 +1251,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Compute the type of a local symbol using the type character, as clause and equals value expression.
         ''' 1. Try to compute the type based on the identifier/modified identifier and as clause.  If there is a type then we're done.
         ''' 2. If OptionInfer is on then evaluate the expression and use that to infer the type.
-        ''' 
+        '''
         ''' ComputeVariableType will only bind the value if the symbol does not have an explicit type.
         ''' </summary>
         ''' <param name="symbol">The local symbol</param>
@@ -1332,14 +1332,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
 
             If hasExplicitType AndAlso Not (symbol.IsConst AndAlso type.SpecialType = SpecialType.System_Object) Then
-                ' There is an explicit type or TypeCharacter.  Return the type. 
+                ' There is an explicit type or TypeCharacter.  Return the type.
                 ' Constants are special.  Don't return here when a constant is typed as object.
                 Return type
             End If
 
             ' The default type is Object.  Infer a type if OptionInfer is on.
             ' Don't infer types for static locals.
-            ' Always infer type of constant. 
+            ' Always infer type of constant.
             If OptionInfer AndAlso Not symbol.IsStatic AndAlso Not symbol.IsConst Then
                 If equalsValueOpt IsNot Nothing Then
                     Dim valueSyntax As ExpressionSyntax = equalsValueOpt.Value
@@ -1385,10 +1385,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                             If type IsNot inferredType AndAlso arrayLiteral IsNot Nothing Then
 
-                                ' Normally ReportArrayLiteralInferredElementTypeDiagnostics is handled in ReclassifyArrayLiteralExpression.  
-                                ' ReportArrayLiteralInferredElementTypeDiagnostics depends on being able to compare the variable type with 
+                                ' Normally ReportArrayLiteralInferredElementTypeDiagnostics is handled in ReclassifyArrayLiteralExpression.
+                                ' ReportArrayLiteralInferredElementTypeDiagnostics depends on being able to compare the variable type with
                                 ' the inferred type. When the symbols are the same, it assumes the variable got its type from the expression.
-                                ' Because the modified identifier created a new array type symbol, we report errors now.  
+                                ' Because the modified identifier created a new array type symbol, we report errors now.
                                 ReportArrayLiteralInferredTypeDiagnostics(arrayLiteral, localDiagnostics)
                             End If
 
@@ -1748,8 +1748,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Dim result = LookupResult.GetInstance()
                 Lookup(result, identifier.ValueText, 0, Nothing, useSiteDiagnostics:=Nothing)
 
-                ' A local symbol will always be found because all local declarations are put into the 
-                ' local map in the blockbasebinder. 
+                ' A local symbol will always be found because all local declarations are put into the
+                ' local map in the blockbasebinder.
                 Debug.Assert(result.HasSingleSymbol AndAlso result.IsGood)
                 Dim lookupSymbol = DirectCast(result.SingleSymbol, LocalSymbol)
                 result.Free()
@@ -1920,7 +1920,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                         ' NOTE: the setMethod could not be present, while it would still be
                         '       possible to write to the property in a case
-                        '       where the property is a getter-only autoproperty 
+                        '       where the property is a getter-only autoproperty
                         '       and the writing is happening in the corresponding constructor or initializer
                         If setMethod IsNot Nothing Then
                             ReportDiagnosticsIfObsolete(diagnostics, setMethod, node)
@@ -2202,7 +2202,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 original = BadExpression(targetSyntax, stringType).MakeCompilerGenerated()
             End If
 
-            ' SemanticModel should be able to find node corresponding to the MidExpressionSyntax, which has type String and no associated symbols. 
+            ' SemanticModel should be able to find node corresponding to the MidExpressionSyntax, which has type String and no associated symbols.
             ' Wrapping 'original' with BoundParenthesized node tied to MidExpressionSyntax should suffice for this purpose.
             Dim right As BoundExpression = New BoundMidResult(node,
                                                               New BoundParenthesized(midExpression, original, original.Type),
@@ -2303,7 +2303,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         Dim badShape As Boolean = False
                         Dim useSiteError As DiagnosticInfo = Nothing
 
-                        ' Decrease noise in diagnostics, if event is "bad", we already complained about it. 
+                        ' Decrease noise in diagnostics, if event is "bad", we already complained about it.
                         If eventSymbol.GetUseSiteErrorInfo() Is Nothing Then
                             useSiteError = method.GetUseSiteErrorInfo()
                         End If
@@ -2377,7 +2377,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return errorRecovery
             End If
 
-            'NOTE this may bind to extension methods. 
+            'NOTE this may bind to extension methods.
             'It could be unnecessary perf hit, but it will happen only in error cases (event not found)
             'so is not a big concern.
             Dim result As BoundExpression
@@ -2630,7 +2630,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End If
 
                 If Not warn Then
-                    ' 2. 
+                    ' 2.
                     If IsOrInheritsFromOrImplementsInterface(boundExpression.Type, WellKnownType.Windows_Foundation_IAsyncAction, useSiteDiagnostics:=Nothing) OrElse
                        IsOrInheritsFromOrImplementsInterface(boundExpression.Type, WellKnownType.Windows_Foundation_IAsyncActionWithProgress_T, useSiteDiagnostics:=Nothing) OrElse
                        IsOrInheritsFromOrImplementsInterface(boundExpression.Type, WellKnownType.Windows_Foundation_IAsyncOperation_T, useSiteDiagnostics:=Nothing) OrElse
@@ -2919,7 +2919,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 hasErrors = Not VerifyForControlVariableDeclaration(declaratorSyntax, diagnostics)
 
                 ' 10.9.3
-                ' 1. If the loop control variable is an identifier with an As clause, the identifier defines a new local variable of 
+                ' 1. If the loop control variable is an identifier with an As clause, the identifier defines a new local variable of
                 ' the type specified in the As clause, scoped to the entire For Each loop.
                 Dim asClauseOpt = declaratorSyntax.AsClause
                 Dim names = declaratorSyntax.Names
@@ -2950,7 +2950,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     diagnostics.Add(node, useSiteDiagnostics)
 
                     ' If a local symbol is found then check whether this local corresponds to this identifier.  If it does then
-                    ' this is local is an inferred local for the for block.  This local does not have a type yet. Return the 
+                    ' this is local is an inferred local for the for block.  This local does not have a type yet. Return the
                     ' local and infer the type when the from/to or for-each collection expressions are available for binding.
 
                     If result.IsGood AndAlso
@@ -2967,7 +2967,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     result.Free()
                 End If
 
-                ' it's something else than a simple name (e.g. qualified name ...), so we're going to bind it and 
+                ' it's something else than a simple name (e.g. qualified name ...), so we're going to bind it and
                 ' check if the bound node meets the expectation (e.g. is a field or a local)
                 If Not isInferredLocal Then
                     If Not TryBindLoopControlVariable(controlVariableSyntax, controlVariable, diagnostics) Then
@@ -3017,7 +3017,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     ' should be the most common case: a next without a variable
                     nextVariables = ImmutableArray(Of BoundExpression).Empty
                 ElseIf controlVariableList.Count = 1 Then
-                    ' avoid creating an ArrayBuilder for the second most common case, where the control variable 
+                    ' avoid creating an ArrayBuilder for the second most common case, where the control variable
                     ' of the current loop is used.
                     Dim boundVariable = BindExpression(controlVariableList(0), diagnostics)
                     boundVariable = ReclassifyAsValue(boundVariable, diagnostics)
@@ -3031,7 +3031,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         boundVariable = ReclassifyAsValue(boundVariable, diagnostics)
                         nextVariableBuilder.Add(boundVariable)
 
-                        ' due to incremental binding, there might be other binders in between Me and the containing 
+                        ' due to incremental binding, there might be other binders in between Me and the containing
                         ' StatementListBinder.
                         ' each next variable will be bound with the responsible binder for this for loop
                         Do
@@ -3145,8 +3145,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 stepValue = MakeRValueAndIgnoreDiagnostics(stepValue)
             End If
 
-            ' get special types that are used by the rewriters later on to report use site errors     
-            ' TODO: update the types to the ones that get really used by the rewriter. In case of using an index of an user 
+            ' get special types that are used by the rewriters later on to report use site errors
+            ' TODO: update the types to the ones that get really used by the rewriter. In case of using an index of an user
             ' defined type there is no need to get the integer type.
             Dim integerType = GetSpecialType(SpecialType.System_Int32, node, diagnostics)
             Dim booleanType = GetSpecialType(SpecialType.System_Boolean, node, diagnostics)
@@ -3201,7 +3201,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         stepValue.HasErrors OrElse
                         controlVariableOpt.HasErrors
 
-            ' Bind the loop body and the next variables 
+            ' Bind the loop body and the next variables
             Dim loopBody As BoundBlock = Nothing
             Dim nextVariables As ImmutableArray(Of BoundExpression) = Nothing
             Me.BindForLoopBodyAndNextControlVariables(node, nextVariables, loopBody, diagnostics)
@@ -3397,7 +3397,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim collectionSyntax = collection.Syntax
 
-            ' Note: the conversion is from the array's element type (if rank = 1), char, or the return type of 
+            ' Note: the conversion is from the array's element type (if rank = 1), char, or the return type of
             ' the current's get method
             If currentType IsNot Nothing AndAlso Not controlVariableOpt.HasErrors Then
                 Dim controlVariableType = controlVariableOpt.Type
@@ -3463,7 +3463,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Else
                     Debug.Assert(enumeratorType.SpecialType = SpecialType.System_Collections_IEnumerator)
 
-                    ' Instead of if TypeOf(e) is IDisposable, we'll do a TryCast(e, IDisposable) and call Dispose if the result 
+                    ' Instead of if TypeOf(e) is IDisposable, we'll do a TryCast(e, IDisposable) and call Dispose if the result
                     ' was not Nothing.
 
                     ' create TryCast
@@ -3483,7 +3483,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End If
             End If
 
-            ' Bind the loop body and the next variables 
+            ' Bind the loop body and the next variables
             Dim loopBody As BoundBlock = Nothing
             Dim nextVariables As ImmutableArray(Of BoundExpression) = Nothing
             Me.BindForLoopBodyAndNextControlVariables(node, nextVariables, loopBody, diagnostics)
@@ -3538,9 +3538,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         ''' <summary>
-        ''' This function tries to bind the given controlVariableSyntax. 
+        ''' This function tries to bind the given controlVariableSyntax.
         ''' If it was an identifier of a valid target, the bound node is written to controlVariable and true is returned.
-        ''' If something else was bound, that is not legal as a control variable (e.g. a property), a BoundBadNode is written 
+        ''' If something else was bound, that is not legal as a control variable (e.g. a property), a BoundBadNode is written
         ''' to controlVariable and false is returned.
         ''' If nothing declared was found, false is returned and controlVariable is set to nothing. In this case it's safe to
         ''' create a new local for the loop node.
@@ -3562,7 +3562,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return False
             End If
 
-            ' VB Spec 10.9.3 2.1: If the result of this resolution is classified as a variable, then 
+            ' VB Spec 10.9.3 2.1: If the result of this resolution is classified as a variable, then
             ' the loop control variable is that variable.
             If Not VerifyForLoopControlReference(controlVariable, diagnostics) Then
                 controlVariable = New BoundBadExpression(controlVariableSyntax,
@@ -3578,7 +3578,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         ''' <summary>
-        ''' If the control variable was bound to a non bad expression, this function checks if the 
+        ''' If the control variable was bound to a non bad expression, this function checks if the
         ''' bound expression is a variable and reports diagnostics appropriately.
         ''' It reports the errors from 10.9.3 2.2
         ''' </summary>
@@ -3651,16 +3651,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Class
 
         ''' <summary>
-        ''' Verifies that the collection is either a string, and array or matches the design pattern criteria and reports 
+        ''' Verifies that the collection is either a string, and array or matches the design pattern criteria and reports
         ''' diagnostics appropriately.
         ''' </summary>
         ''' <param name="collection">The collection of the for each statement.</param>
-        ''' <param name="currentType">If the collection meets all criteria, currentType contains the type of the element from 
+        ''' <param name="currentType">If the collection meets all criteria, currentType contains the type of the element from
         ''' the collection that get's returned by the current property.</param>
-        ''' <param name="elementType">Element type of the collection, could be different from <paramref name="currentType"/>. 
+        ''' <param name="elementType">Element type of the collection, could be different from <paramref name="currentType"/>.
         ''' For example, based on the pattern <paramref name="currentType"/> for an array is Object, but the <paramref name="elementType"/>
         ''' is the element type of the array.</param>
-        ''' <param name="isEnumerable">if set to <c>true</c>, the collection is enumerable (matches design pattern, IEnumerable 
+        ''' <param name="isEnumerable">if set to <c>true</c>, the collection is enumerable (matches design pattern, IEnumerable
         ''' or IEnumerable(Of T); otherwise (string or arrays) it's set to false.</param>
         ''' <param name="diagnostics">The diagnostics.</param>
         ''' <returns>The collection which might have been converted to IEnumerable or IEnumerable(Of T) if needed.</returns>
@@ -3720,10 +3720,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 diagnostics.AddRange(detailedDiagnostics)
                 elementType = currentType
-                ' TODO(rbeckers) check if the long note about spurious errors in Dev10 (statement_semantics.cpp, line 5250) needs 
-                ' to be copied. 
-                ' We only pass in a temporary diagnostic bag into this method. The method itself only adds to it in case of 
-                ' ambiguous lookups or a failed overload resolution for the current property access. 
+                ' TODO(rbeckers) check if the long note about spurious errors in Dev10 (statement_semantics.cpp, line 5250) needs
+                ' to be copied.
+                ' We only pass in a temporary diagnostic bag into this method. The method itself only adds to it in case of
+                ' ambiguous lookups or a failed overload resolution for the current property access.
                 isEnumerable = True
             Else
                 ' using a temporary diagnostic bag to only report use site errors for IEnumerable or IEnumerable(Of T) if they are used.
@@ -3747,7 +3747,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     ienumerableUseSiteDiagnostics.Free()
 
                     If matchingInterfaces.Count > 1 Then
-                        ' matchingInterfaces is a hash set, so it's enough to check if the count is more than one. 
+                        ' matchingInterfaces is a hash set, so it's enough to check if the count is more than one.
                         ' Duplicates found while analyzing type parameter constraints do not occur this way like in Dev10.
                         ReportDiagnostic(diagnostics,
                                          collectionSyntax,
@@ -3987,17 +3987,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         '''
         ''' This function ONLY checks for part (1). Callers are expected to check for (2)/(3) themselves. The
         ''' scenario where something satisfies (2/3) but not (1) is
-        '''   Class C 
+        '''   Class C
         '''       Implements IEnumerable
         '''       Function g1() as IEnumerator implements IEnumerable.GetEnumerator : End Function
-        ''' 
+        '''
         ''' Clearly this class does not have a method _named_ GetEnumerator, but it does implement IEnumerable.
         ''' </remarks>
         ''' <param name="collectionType">The type of the for each collection.</param>
         ''' <param name="collection">The bound collection expression.</param>
         ''' <param name="currentType">Return type of the property named "Current" if found.</param>
         ''' <param name="boundGetEnumeratorCall">A bound call to GetEnumerator on the collection if found.</param>
-        ''' <param name="boundEnumeratorPlaceholder">A bound placeholder value for the collection local if GetEnumerator 
+        ''' <param name="boundEnumeratorPlaceholder">A bound placeholder value for the collection local if GetEnumerator
         ''' was bound successful</param>
         ''' <param name="boundMoveNextCall">A bound call to MoveNext on the instance returned by GetEnumerator if found.</param>
         ''' <param name="boundCurrentAccess">A bound property access for "Current" on the instance returned by GetEnumerator if found.</param>
@@ -4028,10 +4028,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             ' This method will add diagnostics (errors and warnings) to the given diagnostic bag. It might clean it while processing
             ' the collection type to reduce noise which is why only a new/empty diagnostic bag should be passed to this method.
-            ' 
+            '
             ' The diagnostics returned by this method should be added to the general diagnostic bag in case of a successful match
-            ' of the collection design pattern to e.g. report warnings. 
-            ' If the collection does not match the collection design pattern and the collection is not and does not implement or 
+            ' of the collection design pattern to e.g. report warnings.
+            ' If the collection does not match the collection design pattern and the collection is not and does not implement or
             ' inherits IEnumerable(Of T) or IEnumerable then the diagnostics can be used to give a more detailed reason instead
             ' of the generic "collection {0} does not match design pattern".
             ' To provide more detailed information that is close to the output of Dev10 we are collection diagnostics from
@@ -4237,7 +4237,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     End If
                 Next
 
-                ' if there are instance methods in the results, there will be no extension methods. 
+                ' if there are instance methods in the results, there will be no extension methods.
                 ' Therefore we need to check separately.
                 If result.Symbols(0).Kind = SymbolKind.Method AndAlso
                     Not DirectCast(result.Symbols(0), MethodSymbol).IsReducedExtensionMethod Then
@@ -4279,7 +4279,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ''' <param name="derivedType">The possible derived type.</param>
         ''' <param name="interfaceType">Type of the interface.</param>
-        ''' <param name="useSiteDiagnostics"/> 
+        ''' <param name="useSiteDiagnostics"/>
         ''' <param name="matchingInterfaces">A list of matching interfaces.</param>
         ''' <returns>
         '''   <c>true</c> if derivedType is, inherits from or implements the interface; otherwise, <c>false</c>.
@@ -4291,8 +4291,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Optional matchingInterfaces As HashSet(Of NamedTypeSymbol) = Nothing
         ) As Boolean
 
-            ' this is a more specialized version of the Dev10 code for IsOrInheritsFromOrImplements (type_helpers.cpp 
-            ' line 1210++) just covering Interfaces. 
+            ' this is a more specialized version of the Dev10 code for IsOrInheritsFromOrImplements (type_helpers.cpp
+            ' line 1210++) just covering Interfaces.
 
             Debug.Assert(interfaceType.IsDefinition)
 
@@ -4363,6 +4363,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return Me.ContainingBinder.CreateBoundWithBlock(node, boundBlockBinder, diagnostics)
         End Function
 
+
+        Private Function RebindAsUsingWith(usingStatement As UsingStatementSyntax, node As UsingBlockSyntax, targert As ExpressionSyntax, diagnostics As DiagnosticBag ) As BoundStatement
+           Dim newstatement = usingstatement.Update(usingstatement.UsingKeyword, usingstatement.Expression, usingstatement.Variables, nothing)
+          Dim ws = SyntaxFactory.WithStatement(targert)
+         Dim ews = SyntaxFactory.EndWithStatement()
+                    Dim nwb = SyntaxFactory.WithBlock(ws, node.Statements, ews)
+                    dim nb = node.WithUsingStatement(newstatement)
+                    nb = nb.WithStatements(new SyntaxList(Of StatementSyntax)(nwb))
+                    node = nb
+                    return BindUsingBlock(node, diagnostics)
+        End Function
         ''' <summary>
         ''' Initially binding using blocks.
         ''' A Using statement names a resource that is supposed to be disposed on completion.
@@ -4398,6 +4409,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                              node,
                                              diagnostics)
 
+            If usingStatement.Expression IsNot Nothing Then
+                If usingStatement.WithKeyword.IsMissing = False Then
+                    Return RebindAsUsingWith(usingStatement,node, usingStatement.Expression, diagnostics)
+                End If
+            End If
+
             Dim placeholderInfo = New Dictionary(Of TypeSymbol, ValueTuple(Of BoundRValuePlaceholder, BoundExpression, BoundExpression))()
 
             If usingVariableDeclarationCount > 0 Then
@@ -4406,16 +4423,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ' this will bind the declaration, infer the local's type if needed and binds the initialization expression.
                 ' implicit variable declarations are handled in that method as well (Option Explicit Off)
                 resourceList = usingBinder.BindVariableDeclarators(usingVariableDeclarations, diagnostics)
-
+                If usingVariableDeclarationCount = 1 Then
+                    Dim f=resourceList(0)
+                    Return RebindAsUsingWith(usingStatement,node, DirectCast(f.Syntax,ExpressionSyntax), diagnostics)
+                End If
                 ' now that the variable declarations and initialization expression are bound, report
                 ' using statement related diagnostics.
                 For resourceIndex = 0 To usingVariableDeclarationCount - 1
                     Dim localDeclarations = resourceList(resourceIndex)
                     Dim declarationSyntax = localDeclarations.Syntax
 
-                    ' bound locals have the identifier syntax as their syntax, but for error messages we want to 
+                    ' bound locals have the identifier syntax as their syntax, but for error messages we want to
                     ' show squiggles under the whole declaration.
-                    ' There is one exception to this rule: the parent is a declarator and has multiple names then 
+                    ' There is one exception to this rule: the parent is a declarator and has multiple names then
                     ' the identifier syntax should be used to be able to distinguish between the error locations.
                     ' e.g. dim x, y as Integer = 23
                     Dim syntaxNodeForErrors As SyntaxNode
@@ -4430,7 +4450,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         syntaxNodeForErrors = declarationSyntax
                     End If
 
-                    ' check if all declared variables are initialized                    
+                    ' check if all declared variables are initialized
                     If localDeclarations.Kind = BoundKind.LocalDeclaration Then
                         Dim boundLocalDeclaration = DirectCast(localDeclarations, BoundLocalDeclaration)
 
@@ -4479,6 +4499,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End If
             End If
 
+
             ' Bind the body of the using statement.
             Dim usingBody As BoundBlock = BindBlock(node, node.Statements, diagnostics).MakeCompilerGenerated()
             Dim usingInfo As New UsingInfo(node, placeholderInfo)
@@ -4516,7 +4537,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ' Explicit array sizes in declarators imply creating an array this is not supported.
             ' The resource variable type needs to implement System.IDisposable and System.Array is known to not implement it.
             If declarationType.IsArrayType Then
-                ' this diagnostic will be reported even if a missing initializer was reported before. This is a change 
+                ' this diagnostic will be reported even if a missing initializer was reported before. This is a change
                 ' from Dev10 which stopped "binding" at the first error
                 ReportDiagnostic(diagnostics,
                                  syntaxNode,
@@ -4596,12 +4617,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         Dim typeParameter = DirectCast(type, TypeParameterSymbol)
 
                         ' there is currently no way to only get the type constraint from a type parameter. So we're
-                        ' iterating over all of them 
+                        ' iterating over all of them
                         Dim processedValueTypes As Boolean = False
                         For Each constraintType In DirectCast(type, TypeParameterSymbol).ConstraintTypesNoUseSiteDiagnostics
                             ' TODO: if this constraint is a type parameter as well, dig into its constraints as well.
 
-                            ' there is a case where a type constraint of a type parameter is a concrete structure, 
+                            ' there is a case where a type constraint of a type parameter is a concrete structure,
                             ' therefore we'll need to check the type constraint as well.
                             ' See TypeParameter.IsValueType for more information
                             If constraintType.IsValueType Then
@@ -4639,7 +4660,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         ' This method decides if a WRN_MutableStructureInUsing should be shown for a given type of the Using variable.
-        ' The purpose of this function is to avoid code duplication in 'CheckForMutableStructureConstraints'. 
+        ' The purpose of this function is to avoid code duplication in 'CheckForMutableStructureConstraints'.
         ' This is not a general purpose helper.
         Private Shared Function ShouldReportMutableStructureInUsing(structureType As TypeSymbol) As Boolean
             Debug.Assert(structureType.IsValueType)
@@ -4665,7 +4686,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' Binds a sync lock block.
         ''' A SyncLock come in the following form:
-        ''' 
+        '''
         ''' SyncLock &lt;expression&gt;
         '''     &lt;body&gt;
         ''' End SyncLock
@@ -5076,7 +5097,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             End If
 
-            ' It is either nongeneric iterator or an error (which should be already reported). 
+            ' It is either nongeneric iterator or an error (which should be already reported).
             Return ErrorTypeSymbol.UnknownResultType
         End Function
 
@@ -5213,7 +5234,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                         Return New BoundResumeStatement(node, symbol, boundLabel, hasErrors:=Not IsValidLabelForGoto(symbol, node.Label, diagnostics))
                     Else
-                        ' if the bound label is e.g. a bad bound expression because of a non-existent label, 
+                        ' if the bound label is e.g. a bad bound expression because of a non-existent label,
                         ' make this a bad statement.
                         Return New BoundResumeStatement(node, Nothing, boundLabelExpression, hasErrors:=True)
                     End If
@@ -5252,7 +5273,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                         Return New BoundOnErrorStatement(node, symbol, boundLabel, hasErrors:=Not IsValidLabelForGoto(symbol, onError.Label, diagnostics))
                     Else
-                        ' if the bound label is e.g. a bad bound expression because of a non-existent label, 
+                        ' if the bound label is e.g. a bad bound expression because of a non-existent label,
                         ' make this a bad statement.
                         Return New BoundOnErrorStatement(node, Nothing, boundLabelExpression, hasErrors:=True)
                     End If
