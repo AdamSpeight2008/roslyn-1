@@ -38,6 +38,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         PrivateProtected
         UnconstrainedTypeParameterInConditional
         CommentsAfterLineContinuation
+        UsingWithStatement
     End Enum
 
     Friend Module FeatureExtensions
@@ -99,6 +100,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case Feature.UnconstrainedTypeParameterInConditional,
                     Feature.CommentsAfterLineContinuation
                     Return LanguageVersion.VisualBasic16
+
+                Case Feature.UsingWithStatement ' TODO: PROTOTYPE
+                    Return LanguageVersion.VisualBasic15
 
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(feature)
@@ -171,7 +175,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return ERRID.FEATURE_UnconstrainedTypeParameterInConditional
                 Case Feature.CommentsAfterLineContinuation
                     Return ERRID.FEATURE_CommentsAfterLineContinuation
-                Case Else
+                 Case Feature.UsingWithStatement
+                    Return ERRID.FEATURE_UsingWithStatement
+               Case Else
                     Throw ExceptionUtilities.UnexpectedValue(feature)
             End Select
         End Function

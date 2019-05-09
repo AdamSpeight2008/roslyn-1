@@ -19004,8 +19004,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), usingKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, variables As SyntaxNode)
-            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.UsingStatementSyntax(kind, errors, annotations, usingKeyword, if(expression IsNot Nothing , DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), Nothing) , if(variables IsNot Nothing, variables.Green, Nothing)), Nothing, 0)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), usingKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, variables As SyntaxNode, withKeyword As InternalSyntax.KeywordSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.UsingStatementSyntax(kind, errors, annotations, usingKeyword, if(expression IsNot Nothing , DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), Nothing) , if(variables IsNot Nothing, variables.Green, Nothing), withKeyword), Nothing, 0)
         End Sub
 
         ''' <summary>
@@ -19023,7 +19023,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value.
         ''' </summary>
         Public Shadows Function WithUsingKeyword(usingKeyword as SyntaxToken) As UsingStatementSyntax
-            return Update(usingKeyword, Me.Expression, Me.Variables)
+            return Update(usingKeyword, Me.Expression, Me.Variables, Me.WithKeyword)
         End Function
 
         ''' <summary>
@@ -19045,7 +19045,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value.
         ''' </summary>
         Public Shadows Function WithExpression(expression as ExpressionSyntax) As UsingStatementSyntax
-            return Update(Me.UsingKeyword, expression, Me.Variables)
+            return Update(Me.UsingKeyword, expression, Me.Variables, Me.WithKeyword)
         End Function
 
         ''' <summary>
@@ -19071,11 +19071,36 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value.
         ''' </summary>
         Public Shadows Function WithVariables(variables as SeparatedSyntaxList(Of VariableDeclaratorSyntax)) As UsingStatementSyntax
-            return Update(Me.UsingKeyword, Me.Expression, variables)
+            return Update(Me.UsingKeyword, Me.Expression, variables, Me.WithKeyword)
         End Function
 
         Public Shadows Function AddVariables(ParamArray items As VariableDeclaratorSyntax()) As UsingStatementSyntax
             Return Me.WithVariables(Me.Variables.AddRange(items))
+        End Function
+
+        ''' <summary>
+        ''' The "With" keyword.
+        ''' </summary>
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
+        Public  ReadOnly Property WithKeyword As SyntaxToken
+            Get
+                Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.UsingStatementSyntax)._withKeyword
+                If slot IsNot Nothing
+                    return new SyntaxToken(Me, slot, Me.GetChildPosition(3), Me.GetChildIndex(3))
+                End If
+                Return Nothing
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the WithKeyword property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithWithKeyword(withKeyword as SyntaxToken) As UsingStatementSyntax
+            return Update(Me.UsingKeyword, Me.Expression, Me.Variables, withKeyword)
         End Function
 
         Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
@@ -19122,9 +19147,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <param name="variables">
         ''' The value for the Variables property.
         ''' </param>
-        Public Function Update(usingKeyword As SyntaxToken, expression As ExpressionSyntax, variables As SeparatedSyntaxList(Of VariableDeclaratorSyntax)) As UsingStatementSyntax
-            If usingKeyword <> Me.UsingKeyword OrElse expression IsNot Me.Expression OrElse variables <> Me.Variables Then
-                Dim newNode = SyntaxFactory.UsingStatement(usingKeyword, expression, variables)
+        ''' <param name="withKeyword">
+        ''' The value for the WithKeyword property.
+        ''' </param>
+        Public Function Update(usingKeyword As SyntaxToken, expression As ExpressionSyntax, variables As SeparatedSyntaxList(Of VariableDeclaratorSyntax), withKeyword As SyntaxToken) As UsingStatementSyntax
+            If usingKeyword <> Me.UsingKeyword OrElse expression IsNot Me.Expression OrElse variables <> Me.Variables OrElse withKeyword <> Me.WithKeyword Then
+                Dim newNode = SyntaxFactory.UsingStatement(usingKeyword, expression, variables, withKeyword)
                 Dim annotations = Me.GetAnnotations()
                 If annotations IsNot Nothing AndAlso annotations.Length > 0
                     return newNode.WithAnnotations(annotations)

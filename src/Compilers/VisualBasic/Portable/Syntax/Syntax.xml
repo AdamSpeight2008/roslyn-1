@@ -7,52 +7,52 @@
 Most significant structural changes from native/LM trees:
 
    End statements are now part of the statement they belong to, instead of separate. Each kind of Block statement
-   has its own node kind. Block is used for a block of statements. 
+   has its own node kind. Block is used for a block of statements.
 
    ? (nullable) modifier is not part of identifiers, instead part of declarator and type.
 
    Language model did not have separate node for parenthesized argument list. Seemed like it occurred enough places to be worth its own node.
-   
+
    AsClause node added to represent "As" plus a type and a derived class AsNewClause used for As New. Used in various places. Centralizes
    the fields associated with these constructs so that common code can use them.
-   
+
    Instead of a single ArgumentNode, 3 different possible nodes: SimpleArgument, NamedArgument, RangeArgument
-   
+
    HandlesClause, ImplementsClause split into own nodes that contain a list.
 
    Property declarations and Auto property declarations are merged into a single node type
-   
+
    Parameters with and without optional values are merged into a single node type (is this really a good idea?)
-   
-   Variable declarations with normal type, "New" type and initializer merged into a single node type. 
-   
+
+   Variable declarations with normal type, "New" type and initializer merged into a single node type.
+
    Most uses of "IdentifierNode" in LM became "Identifier" instead (which is more than a simple renaming, since IdentifierNode derived from NameNode in
    LM, but Identifier just inherits Token node and SimpleName is what inherits Name).
-   
+
    If and ElseIf statements unified into a single structure with two kinds.
-   
+
    CallStatement (renamed Invocation) has a single child of type CallOrIndex, instead of the target and argument list separated.
-   
-   The way literals are represented is tricky. We have to have all expression inherit Expression, but also all tokens inherit Token. So we 
+
+   The way literals are represented is tricky. We have to have all expression inherit Expression, but also all tokens inherit Token. So we
    have a Literal node, with different Kinds and a Token field that has the token.
-   
+
    QualifiedExpression split into MemberAccess (.identifier, !identifier, .@identifier) and XmlMemberAccess (.<x>, .@<x>, ...<x>), in order
    to get better typing of the right hand side.
-   
+
    NewExpression, NewObjectInitializerExpression, CollectionInitializerExpression combined into NewObject.
-   
+
    Lambda now represents by abstract class and two derived classes.
-    
+
    LinqExpression and LinqOperatorExpression the same class. Use NULL source for the first query operator.
-   
+
    Unify FromItem and LinqSource into the same node (CollectionRangeVariable).
-   
+
    When FromExpression was used as the source of an Aggregate, instead use JoinOrAggregateSource.
-   
+
    Remove CrossJoin node, just represent as FromOperators with a source.
 -->
 
-<!-- 
+<!--
 
 General TODO:
 
@@ -1241,7 +1241,7 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="Method" />
         <native-equiv name="Statement.Opcodes.ProcedureBody" />
       </node-kind>
-      
+
       <child name="SubOrFunctionStatement" order="10">
         <description>The "Sub" or "Function" statement that begins the block.</description>
         <kind name="SubStatement" node-kind="SubBlock"/>
@@ -1534,7 +1534,7 @@ Unify Enum declarations with other block type declarations.
         <kind name ="SubKeyword" node-kind="SubStatement" />
         <kind name ="FunctionKeyword" node-kind="FunctionStatement" />
       </child>
-      
+
       <child name="Identifier" kind="IdentifierToken" order="20">
         <description>The name of the method being declared.</description>
         <lm-equiv name="Name"></lm-equiv>
@@ -1587,7 +1587,7 @@ Unify Enum declarations with other block type declarations.
           The "Sub" keyword.
         </description>
       </child>
-      
+
       <child name="NewKeyword" kind="NewKeyword" order="20">
         <description>The "New" keyword in the constructor declaration.</description>
         <lm-equiv name="NewKeyword"></lm-equiv>
@@ -1624,7 +1624,7 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="StringMode"></lm-equiv>
         <native-equiv name="StringMode"></native-equiv>
       </child>
-      
+
       <child name="SubOrFunctionKeyword" order="10">
         <description>
           The "Sub" or "Function" keyword.
@@ -1632,7 +1632,7 @@ Unify Enum declarations with other block type declarations.
         <kind name ="SubKeyword" node-kind="DeclareSubStatement" />
         <kind name ="FunctionKeyword" node-kind="DeclareFunctionStatement" />
       </child>
-      
+
       <child name="Identifier" kind="IdentifierToken" order="20">
         <description>The name of the method being declared.</description>
         <lm-equiv name="Name"></lm-equiv>
@@ -1699,7 +1699,7 @@ Unify Enum declarations with other block type declarations.
         <kind name ="SubKeyword" node-kind="DelegateSubStatement" />
         <kind name ="FunctionKeyword" node-kind="DelegateFunctionStatement" />
       </child>
-      
+
       <child name="Identifier" kind="IdentifierToken" order="20">
         <description>The name of the delegate being declared.</description>
         <lm-equiv name="Name"></lm-equiv>
@@ -1744,7 +1744,7 @@ Unify Enum declarations with other block type declarations.
           The "Event" keyword that introduces this event declaration.
         </description>
       </child>
-      
+
       <child name="Identifier" kind="IdentifierToken" order="20">
         <description>The name of the event being declared.</description>
         <lm-equiv name="Name"></lm-equiv>
@@ -1781,13 +1781,13 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="Operator" />
         <native-equiv name="Statements.Opcodes.OperatorDeclaration" />
       </node-kind>
-      
+
       <child name="OperatorKeyword" kind="OperatorKeyword" order="10">
         <description>
           The "Operator" keyword that introduces this operator declaration.
         </description>
       </child>
-      
+
       <child name="OperatorToken"  kind="CTypeKeyword|IsTrueKeyword|IsFalseKeyword|NotKeyword|PlusToken|MinusToken|AsteriskToken|SlashToken|CaretToken|BackslashToken|AmpersandToken|LessThanLessThanToken|GreaterThanGreaterThanToken|ModKeyword|OrKeyword|XorKeyword|AndKeyword|LikeKeyword|EqualsToken|LessThanGreaterThanToken|LessThanToken|LessThanEqualsToken|GreaterThanEqualsToken|GreaterThanToken" order="20">
         <description>The operator being defined.</description>
         <lm-equiv name="Operator"></lm-equiv>
@@ -1829,7 +1829,7 @@ Unify Enum declarations with other block type declarations.
           The "Property" keyword that introduces this property declaration.
         </description>
       </child>
-      
+
       <child name="Identifier" kind="IdentifierToken" order="20">
         <description>The name of the property being declared.</description>
         <lm-equiv name="Name"></lm-equiv>
@@ -1881,7 +1881,7 @@ Unify Enum declarations with other block type declarations.
       <node-kind name="RaiseEventAccessorStatement">
         <lm-equiv name="Statement.Opcodes.RaiseEventDeclaration" />
       </node-kind>
-    
+
       <child name="AccessorKeyword" order="10">
         <description>
           The "Get", "Set", "AddHandler", "RemoveHandler", or "RaiseEvent" keyword that introduces this accessor declaration.
@@ -1897,7 +1897,7 @@ Unify Enum declarations with other block type declarations.
     <!--********************
       -  ImplementsClause
       **********************-->
-    <!-- REVIEW: share this with the Implements statement that is inside a class? Its is structurally similar, 
+    <!-- REVIEW: share this with the Implements statement that is inside a class? Its is structurally similar,
     but used for different things. -->
     <node-structure name="ImplementsClauseSyntax" parent="VisualBasicSyntaxNode">
       <description>
@@ -2024,7 +2024,7 @@ Unify Enum declarations with other block type declarations.
     </node-structure>
 
     <!--********************
-      -  HandlesClauseItem: 
+      -  HandlesClauseItem:
       **********************-->
     <node-structure name="HandlesClauseItemSyntax" parent="VisualBasicSyntaxNode">
       <description>Represents a single handled event in a "Handles ..." clause.</description>
@@ -4535,6 +4535,13 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="Declarations"></lm-equiv>
         <native-equiv name="Declarations"></native-equiv>
       </child>
+
+      <child name="WithKeyword" kind="WithKeyword" optional="true">
+        <description>The "With" keyword.</description>
+        <lm-equiv name="WithKeyword"></lm-equiv>
+        <native-equiv name=""></native-equiv>
+      </child>
+
     </node-structure>
 
     <!--****************
@@ -4935,7 +4942,7 @@ Unify Enum declarations with other block type declarations.
       -  Literal
       ******************-->
     <node-structure name="LiteralExpressionSyntax" parent="ExpressionSyntax">
-      <!-- TODO: This seems kind of indirect, but I'm not sure how else to do it. It would be nice if 
+      <!-- TODO: This seems kind of indirect, but I'm not sure how else to do it. It would be nice if
       the particular tokens directly inherited Expression. -->
       <description>
         Represents a literal. The kind of literal is determined by the Kind property: IntegerLiteral, CharacterLiteral,
@@ -5052,7 +5059,7 @@ Unify Enum declarations with other block type declarations.
       <child name="Arguments" optional="false" list="true" optional-elements="false" separator-kind="CommaToken" separator-name="CommaTokens" kind="@SimpleArgumentSyntax">
         <description>The list of tuple arguments.</description>
       </child>
-      
+
       <child name="CloseParenToken" kind="CloseParenToken">
         <description>The ")" token</description>
       </child>
@@ -5075,7 +5082,7 @@ Unify Enum declarations with other block type declarations.
       <child name="Elements" optional="false" list="true" optional-elements="false" separator-kind="CommaToken" separator-name="CommaTokens" kind="@TupleElementSyntax">
         <description>The list of tuple elements.</description>
       </child>
-      
+
       <child name="CloseParenToken" kind="CloseParenToken">
         <description>The ")" token</description>
       </child>
@@ -5120,7 +5127,7 @@ Unify Enum declarations with other block type declarations.
         <description>A simple "As" clause specifying the type of the tuple element.</description>
       </child>
     </node-structure>
-    
+
     <!--****************
       -  SpecialInstance
       ******************-->
@@ -7116,8 +7123,8 @@ Unify Enum declarations with other block type declarations.
 
     </node-structure>
 
-    <!-- DTD Object Model 
-      
+    <!-- DTD Object Model
+
       <node-structure name="XmlDocumentTypeSyntax" parent="XmlNodeSyntax">
           <node-kind name="XmlDocumentType">
           </node-kind>
@@ -7125,7 +7132,7 @@ Unify Enum declarations with other block type declarations.
           <child name="BeginDocTypeToken" kind="BeginDocTypeToken"></child>
           <child name="Name" kind="XmlNameToken"></child>
           <child name="ExternalID" kind="XmlSystemID|XmlPublicID" optional="true"></child>
-                
+
           <child name="InternalSubSet" kind="XmlInternalSubset" optional="true"></child>
           <child name="GreaterThanToken" kind="GreaterThanToken"></child>
       </node-structure>
@@ -7158,7 +7165,7 @@ Unify Enum declarations with other block type declarations.
           <child name="Text" kind="XmlTextLiteralToken" optional="true"></child>
           <child name="CloseBracketToken" kind="CloseBracketToken"></child>
       </node-structure>
-      
+
       -->
 
     <node-structure name="XmlDeclarationOptionSyntax" parent="VisualBasicSyntaxNode">
@@ -7653,15 +7660,15 @@ Unify Enum declarations with other block type declarations.
 
       <node-kind name="CrefReference" />
 
-      <!-- 
+      <!--
         General form is:
             [mandatory] TypeSyntax      /// note that name may be CrefOperatorReferenceSyntax or
                                         /// QualifiedCrefNameSyntax like:
                                         ///    A.B(Of T).Operator+
                                         ///    Operator CType
-                                        
+
             [ optional] Signature       /// Signature in format '([TypeA{,... TypeB...}])'
-            
+
             [ optional] AsClause        /// As clause with CType returning type
       -->
 

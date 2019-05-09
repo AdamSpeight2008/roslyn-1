@@ -18122,10 +18122,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Friend ReadOnly _usingKeyword as KeywordSyntax
         Friend ReadOnly _expression as ExpressionSyntax
         Friend ReadOnly _variables as GreenNode
+        Friend ReadOnly _withKeyword as KeywordSyntax
 
-        Friend Sub New(ByVal kind As SyntaxKind, usingKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, variables As GreenNode)
+        Friend Sub New(ByVal kind As SyntaxKind, usingKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, variables As GreenNode, withKeyword As InternalSyntax.KeywordSyntax)
             MyBase.New(kind)
-            MyBase._slotCount = 3
+            MyBase._slotCount = 4
 
             AdjustFlagsAndWidth(usingKeyword)
             Me._usingKeyword = usingKeyword
@@ -18137,12 +18138,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 AdjustFlagsAndWidth(variables)
                 Me._variables = variables
             End If
+            If withKeyword IsNot Nothing Then
+                AdjustFlagsAndWidth(withKeyword)
+                Me._withKeyword = withKeyword
+            End If
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, usingKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, variables As GreenNode, context As ISyntaxFactoryContext)
+        Friend Sub New(ByVal kind As SyntaxKind, usingKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, variables As GreenNode, withKeyword As InternalSyntax.KeywordSyntax, context As ISyntaxFactoryContext)
             MyBase.New(kind)
-            MyBase._slotCount = 3
+            MyBase._slotCount = 4
             Me.SetFactoryContext(context)
 
             AdjustFlagsAndWidth(usingKeyword)
@@ -18155,12 +18160,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 AdjustFlagsAndWidth(variables)
                 Me._variables = variables
             End If
+            If withKeyword IsNot Nothing Then
+                AdjustFlagsAndWidth(withKeyword)
+                Me._withKeyword = withKeyword
+            End If
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), usingKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, variables As GreenNode)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), usingKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, variables As GreenNode, withKeyword As InternalSyntax.KeywordSyntax)
             MyBase.New(kind, errors, annotations)
-            MyBase._slotCount = 3
+            MyBase._slotCount = 4
 
             AdjustFlagsAndWidth(usingKeyword)
             Me._usingKeyword = usingKeyword
@@ -18172,12 +18181,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 AdjustFlagsAndWidth(variables)
                 Me._variables = variables
             End If
+            If withKeyword IsNot Nothing Then
+                AdjustFlagsAndWidth(withKeyword)
+                Me._withKeyword = withKeyword
+            End If
 
         End Sub
 
         Friend Sub New(reader as ObjectReader)
           MyBase.New(reader)
-            MyBase._slotCount = 3
+            MyBase._slotCount = 4
           Dim _usingKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
           If _usingKeyword isnot Nothing 
              AdjustFlagsAndWidth(_usingKeyword)
@@ -18193,6 +18206,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
              AdjustFlagsAndWidth(_variables)
              Me._variables = _variables
           End If
+          Dim _withKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
+          If _withKeyword isnot Nothing 
+             AdjustFlagsAndWidth(_withKeyword)
+             Me._withKeyword = _withKeyword
+          End If
         End Sub
         Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New UsingStatementSyntax(o)
 
@@ -18202,6 +18220,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           writer.WriteValue(Me._usingKeyword)
           writer.WriteValue(Me._expression)
           writer.WriteValue(Me._variables)
+          writer.WriteValue(Me._withKeyword)
         End Sub
 
         Shared Sub New()
@@ -18247,6 +18266,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
+        ''' <summary>
+        ''' The "With" keyword.
+        ''' </summary>
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
+        Friend  ReadOnly Property WithKeyword As InternalSyntax.KeywordSyntax
+            Get
+                Return Me._withKeyword
+            End Get
+        End Property
+
         Friend Overrides Function GetSlot(i as Integer) as GreenNode
             Select case i
                 Case 0
@@ -18255,6 +18286,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return Me._expression
                 Case 2
                     Return Me._variables
+                Case 3
+                    Return Me._withKeyword
                 Case Else
                      Debug.Assert(false, "child index out of range")
                      Return Nothing
@@ -18263,11 +18296,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 
         Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
-            Return new UsingStatementSyntax(Me.Kind, newErrors, GetAnnotations, _usingKeyword, _expression, _variables)
+            Return new UsingStatementSyntax(Me.Kind, newErrors, GetAnnotations, _usingKeyword, _expression, _variables, _withKeyword)
         End Function
 
         Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
-            Return new UsingStatementSyntax(Me.Kind, GetDiagnostics, annotations, _usingKeyword, _expression, _variables)
+            Return new UsingStatementSyntax(Me.Kind, GetDiagnostics, annotations, _usingKeyword, _expression, _variables, _withKeyword)
         End Function
 
         Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
@@ -39813,9 +39846,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             If node._expression IsNot newExpression Then anyChanges = True
             Dim newVariables = VisitList(node.Variables)
             If node._variables IsNot newVariables.Node Then anyChanges = True
+            Dim newWithKeyword = DirectCast(Visit(node.WithKeyword), KeywordSyntax)
+            If node._withKeyword IsNot newWithKeyword Then anyChanges = True
 
             If anyChanges Then
-                Return New UsingStatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newUsingKeyword, newExpression, newVariables.Node)
+                Return New UsingStatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newUsingKeyword, newExpression, newVariables.Node, newWithKeyword)
             Else
                 Return node
             End If
@@ -48683,21 +48718,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' If the Using statement is of a form that declares one or more new variables,
         ''' this is the list of variable declarations. Otherwise, Nothing is returned.
         ''' </param>
-        Friend Shared Function UsingStatement(usingKeyword As KeywordSyntax, expression As ExpressionSyntax, variables As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)) As UsingStatementSyntax
+        ''' <param name="withKeyword">
+        ''' The "With" keyword.
+        ''' </param>
+        Friend Shared Function UsingStatement(usingKeyword As KeywordSyntax, expression As ExpressionSyntax, variables As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode), withKeyword As KeywordSyntax) As UsingStatementSyntax
             Debug.Assert(usingKeyword IsNot Nothing AndAlso usingKeyword.Kind = SyntaxKind.UsingKeyword)
-
-            Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.UsingStatement, usingKeyword, expression, variables.Node, hash)
-            If cached IsNot Nothing Then
-                Return DirectCast(cached, UsingStatementSyntax)
-            End If
-
-            Dim result = New UsingStatementSyntax(SyntaxKind.UsingStatement, usingKeyword, expression, variables.Node)
-            If hash >= 0 Then
-                SyntaxNodeCache.AddNode(result, hash)
-            End If
-
-            Return result
+            Return New UsingStatementSyntax(SyntaxKind.UsingStatement, usingKeyword, expression, variables.Node, withKeyword)
         End Function
 
 
@@ -60759,21 +60785,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' If the Using statement is of a form that declares one or more new variables,
         ''' this is the list of variable declarations. Otherwise, Nothing is returned.
         ''' </param>
-        Friend Function UsingStatement(usingKeyword As KeywordSyntax, expression As ExpressionSyntax, variables As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)) As UsingStatementSyntax
+        ''' <param name="withKeyword">
+        ''' The "With" keyword.
+        ''' </param>
+        Friend Function UsingStatement(usingKeyword As KeywordSyntax, expression As ExpressionSyntax, variables As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode), withKeyword As KeywordSyntax) As UsingStatementSyntax
             Debug.Assert(usingKeyword IsNot Nothing AndAlso usingKeyword.Kind = SyntaxKind.UsingKeyword)
-
-            Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.UsingStatement, usingKeyword, expression, variables.Node, _factoryContext, hash)
-            If cached IsNot Nothing Then
-                Return DirectCast(cached, UsingStatementSyntax)
-            End If
-
-            Dim result = New UsingStatementSyntax(SyntaxKind.UsingStatement, usingKeyword, expression, variables.Node, _factoryContext)
-            If hash >= 0 Then
-                SyntaxNodeCache.AddNode(result, hash)
-            End If
-
-            Return result
+            Return New UsingStatementSyntax(SyntaxKind.UsingStatement, usingKeyword, expression, variables.Node, withKeyword, _factoryContext)
         End Function
 
 
