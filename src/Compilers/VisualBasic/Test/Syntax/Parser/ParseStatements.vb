@@ -181,7 +181,16 @@ Public Class ParseStatements
                End Module
             ]]>)
     End Sub
-
+    Public Sub ParseUsingWith_1()
+        ParseAndVerify(<![CDATA[
+                Module Module1
+                    Sub Goo()
+                      Using With e
+                      End Using
+                    end sub
+               End Module
+            ]]>)
+    End Sub
     <Fact>
     Public Sub ParseUsingMultipleVariablesInAsNew()
         ParseAndVerify(<![CDATA[
@@ -4808,9 +4817,11 @@ End Module
             </errors>)
     End Sub
 
+#Region "Bug17574_XmlAttributeAccess Tests"
+
     <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
     <Fact()>
-    Public Sub Bug17574_XmlAttributeAccess()
+    Public Sub Bug17574_XmlAttributeAccess_00()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4822,6 +4833,11 @@ End Module
             <errors>
                 <error id="31146" message="XML name expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_01()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4833,6 +4849,11 @@ End Module
             <errors>
                 <error id="31146" message="XML name expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_02()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4841,6 +4862,11 @@ Module M
     End Sub
 End Module
 ]]>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_03()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4852,6 +4878,11 @@ End Module
             <errors>
                 <error id="31146" message="XML name expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_04()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4863,6 +4894,11 @@ End Module
             <errors>
                 <error id="31146" message="XML name expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_05()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4871,6 +4907,11 @@ Module M
     End Sub
 End Module
 ]]>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_06()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4882,6 +4923,11 @@ End Module
             <errors>
                 <error id="31146" message="XML name expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_07()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4893,6 +4939,11 @@ End Module
             <errors>
                 <error id="31146" message="XML name expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_08()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4904,6 +4955,11 @@ End Module
             <errors>
                 <error id="31146" message="XML name expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_09()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4915,6 +4971,11 @@ End Module
             <errors>
                 <error id="31146" message="XML name expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_10()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4926,6 +4987,11 @@ End Module
             <errors>
                 <error id="31146" message="XML name expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_11()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4937,6 +5003,11 @@ End Module
             <errors>
                 <error id="31146" message="XML name expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_12()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4945,6 +5016,11 @@ Module M
     End Sub
 End Module
 ]]>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_13()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4953,6 +5029,11 @@ Module M
     End Sub
 End Module
 ]]>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_14()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4964,6 +5045,11 @@ End Module
             <errors>
                 <error id="31146" message="XML name expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_15()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4972,6 +5058,11 @@ Module M
     End Sub
 End Module
 ]]>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_16()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4981,6 +5072,11 @@ Module M
     End Sub
 End Module
 ]]>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_17()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -4993,6 +5089,11 @@ End Module
                 <error id="31146" message="XML name expected." start="66" end="66"/>
                 <error id="30636" message="'>' expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_18()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -5006,6 +5107,11 @@ End Module
                 <error id="31146" message="XML name expected." start="63" end="63"/>
                 <error id="30636" message="'>' expected." start="63" end="63"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_19()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -5018,6 +5124,11 @@ End Module
                 <error id="31146" message="XML name expected." start="66" end="66"/>
                 <error id="30636" message="'>' expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_20()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -5029,6 +5140,11 @@ End Module
             <errors>
                 <error id="30636" message="'>' expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_21()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -5041,6 +5157,11 @@ End Module
                 <error id="31146" message="XML name expected." start="66" end="66"/>
                 <error id="30636" message="'>' expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_22()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -5053,11 +5174,16 @@ End Module
                 <error id="31146" message="XML name expected." start="66" end="66"/>
                 <error id="30636" message="'>' expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_23()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
         Dim x As Object
-        x = x.@<p:
+        x = x.@<p: 
     End Sub
 End Module
 ]]>,
@@ -5066,11 +5192,16 @@ End Module
                 <error id="31146" message="XML name expected." start="66" end="66"/>
                 <error id="30636" message="'>' expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_24()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
         Dim x As Object
-        x = x.@<p :
+        x = x.@<p : 
     End Sub
 End Module
 ]]>,
@@ -5080,6 +5211,11 @@ End Module
                 <error id="31146" message="XML name expected." start="66" end="66"/>
                 <error id="30636" message="'>' expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_25()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -5092,6 +5228,11 @@ End Module
                 <error id="31146" message="XML name expected." start="66" end="66"/>
                 <error id="30636" message="'>' expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_26()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -5104,6 +5245,11 @@ End Module
                 <error id="31146" message="XML name expected." start="66" end="66"/>
                 <error id="30636" message="'>' expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_27()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -5116,6 +5262,11 @@ End Module
                 <error id="31146" message="XML name expected." start="66" end="66"/>
                 <error id="30636" message="'>' expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_28()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -5129,6 +5280,11 @@ End Module
                 <error id="31146" message="XML name expected." start="66" end="66"/>
                 <error id="30636" message="'>' expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_29()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -5142,6 +5298,11 @@ End Module
                 <error id="31146" message="XML name expected." start="66" end="66"/>
                 <error id="30636" message="'>' expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_30()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -5153,6 +5314,11 @@ End Module
             <errors>
                 <error id="30636" message="'>' expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_31()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -5166,6 +5332,11 @@ End Module
                 <error id="31146" message="XML name expected." start="66" end="66"/>
                 <error id="30636" message="'>' expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_32()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -5180,6 +5351,11 @@ End Module
                 <error id="31146" message="XML name expected." start="66" end="66"/>
                 <error id="30636" message="'>' expected." start="66" end="66"/>
             </errors>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_33()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -5188,6 +5364,11 @@ Module M
     End Sub
 End Module
 ]]>)
+    End Sub
+
+    <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
+    <Fact()>
+    Public Sub Bug17574_XmlAttributeAccess_34()
         ParseAndVerify(<![CDATA[
 Module M
     Sub M()
@@ -5198,6 +5379,8 @@ Module M
 End Module
 ]]>)
     End Sub
+
+#End Region
 
     <WorkItem(531102, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/531102")>
     <Fact()>

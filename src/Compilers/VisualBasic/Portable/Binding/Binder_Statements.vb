@@ -4363,17 +4363,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return Me.ContainingBinder.CreateBoundWithBlock(node, boundBlockBinder, diagnostics)
         End Function
 
-
-        Private Function RebindAsUsingWith(usingStatement As UsingStatementSyntax, node As UsingBlockSyntax, targert As ExpressionSyntax, diagnostics As DiagnosticBag ) As BoundStatement
-           Dim newstatement = usingstatement.Update(usingstatement.UsingKeyword, nothing, usingstatement.Expression, usingstatement.Variables)
-          Dim ws = SyntaxFactory.WithStatement(targert)
-         Dim ews = SyntaxFactory.EndWithStatement()
-                    Dim nwb = SyntaxFactory.WithBlock(ws, node.Statements, ews)
-                    dim nb = node.WithUsingStatement(newstatement)
-                    nb = nb.WithStatements(new SyntaxList(Of StatementSyntax)(nwb))
-                    node = nb
-                    return BindUsingBlock(node, diagnostics)
-        End Function
         ''' <summary>
         ''' Initially binding using blocks.
         ''' A Using statement names a resource that is supposed to be disposed on completion.
@@ -4395,25 +4384,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         '''      end using
         '''</summary>
         Public Function BindUsingBlock(node As UsingBlockSyntax, diagnostics As DiagnosticBag) As BoundStatement
-            Dim usingBinder = Me.GetBinder(node)
+            Dim useExpr = False
+            Dim useVari = False
+            Dim HasWith = node.UsingStatement.WithKeyword.Node IsNot Nothing
+            Dim usingBinder = GetBinder(node)
             Debug.Assert(usingBinder IsNot Nothing)
+            Dim usingStatement As UsingStatementSyntax = node.UsingStatement
 
             Dim resourceList As ImmutableArray(Of BoundLocalDeclarationBase) = Nothing
             Dim resourceExpression As BoundExpression = Nothing
 
-            Dim usingStatement = node.UsingStatement
+
             Dim usingVariableDeclarations = usingStatement.Variables
             Dim usingVariableDeclarationCount = usingVariableDeclarations.Count
 
             Dim iDisposable = GetSpecialType(SpecialType.System_IDisposable,
                                              node,
                                              diagnostics)
-
-            If usingStatement.Expression IsNot Nothing Then
-                If usingStatement.WithKeyword.IsMissing = False Then
-                    Return RebindAsUsingWith(usingStatement,node, usingStatement.Expression, diagnostics)
-                End If
-            End If
 
             Dim placeholderInfo = New Dictionary(Of TypeSymbol, ValueTuple(Of BoundRValuePlaceholder, BoundExpression, BoundExpression))()
 
@@ -4423,10 +4410,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ' this will bind the declaration, infer the local's type if needed and binds the initialization expression.
                 ' implicit variable declarations are handled in that method as well (Option Explicit Off)
                 resourceList = usingBinder.BindVariableDeclarators(usingVariableDeclarations, diagnostics)
-                If usingVariableDeclarationCount = 1 Then
-                    Dim f=resourceList(0)
-                    Return RebindAsUsingWith(usingStatement,node, DirectCast(f.Syntax,ExpressionSyntax), diagnostics)
-                End If
                 ' now that the variable declarations and initialization expression are bound, report
                 ' using statement related diagnostics.
                 For resourceIndex = 0 To usingVariableDeclarationCount - 1
@@ -4481,6 +4464,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         Next
                     End If
                 Next
+                If HasWith and resourceList.Count = 1 Then
+                    useVari = True
+                End If
 
             Else
                 ' the using block has an expression as resource
@@ -4497,15 +4483,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                             iDisposable,
                                             diagnostics)
                 End If
+                If HasWith Then
+                    useExpr = True
+                End If
+            End If
+            If HasWith AndAlso useExpr = False AndAlso useVari=False Then
+                Diagnostics.Add(ERRID.ERR_InvalidUsingWithStatement, node.UsingStatement.WithKeyword.GetLocation())
             End If
 
-
             ' Bind the body of the using statement.
-            Dim usingBody As BoundBlock = BindBlock(node, node.Statements, diagnostics).MakeCompilerGenerated()
+            Dim usingBody  =  BindBlock(node,node.Statements, diagnostics).MakeCompilerGenerated()
             Dim usingInfo As New UsingInfo(node, placeholderInfo)
             Dim locals As ImmutableArray(Of LocalSymbol) = GetUsingBlockLocals(usingBinder)
 
-            Return New BoundUsingStatement(node, resourceList, resourceExpression, usingBody, usingInfo, locals)
+            Return New BoundUsingStatement(node, resourceList, resourceExpression, DirectCast( usingBody, BoundBlock), usingInfo, locals)
         End Function
 
         Private Function GetUsingBlockLocals(currentBinder As Binder) As ImmutableArray(Of LocalSymbol)
