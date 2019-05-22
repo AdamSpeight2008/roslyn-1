@@ -15,14 +15,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Friend Class RegionReachableWalker
         Inherits AbstractRegionControlFlowPass
 
-        Friend Overloads Shared Sub Analyze(info As FlowAnalysisInfo, region As FlowAnalysisRegionInfo,
-                                            <Out()> ByRef startPointIsReachable As Boolean, <Out()> ByRef endPointIsReachable As Boolean)
+        Friend Overloads Shared Sub Analyze(
+                                             info   As FlowAnalysisInfo,
+                                             region As FlowAnalysisRegionInfo,
+                                 <Out> ByRef startPointIsReachable As Boolean,
+                                 <Out> ByRef endPointIsReachable As Boolean
+                                           )
 
-            Dim walker = New RegionReachableWalker(info, region)
+            Dim walker As New RegionReachableWalker(info, region)
             Try
                 If walker.Analyze() Then
                     startPointIsReachable = If(walker._regionStartPointIsReachable.HasValue, walker._regionStartPointIsReachable.Value, True)
-                    endPointIsReachable = If(walker._regionEndPointIsReachable.HasValue, walker._regionEndPointIsReachable.Value, walker.State.Alive)
+                    endPointIsReachable   = If(walker._regionEndPointIsReachable.HasValue, walker._regionEndPointIsReachable.Value, walker.State.Alive)
                 Else
                     startPointIsReachable = True
                     startPointIsReachable = False

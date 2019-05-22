@@ -4,7 +4,9 @@ Imports System.Collections.Immutable
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
+
     Partial Friend Class SymbolDisplayVisitor
+
         Public Overrides Sub VisitArrayType(symbol As IArrayTypeSymbol)
             'See spec section 12.1 for the order of rank specifiers
             'e.g. int[][,][,,] is stored as
@@ -44,9 +46,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim insertStars As Boolean = format.MiscellaneousOptions.IncludesOption(SymbolDisplayMiscellaneousOptions.UseAsterisksInMultiDimensionalArrays)
             AddPunctuation(SyntaxKind.OpenParenToken)
             If symbol.Rank > 1 Then
-                If insertStars Then
-                    AddPunctuation(SyntaxKind.AsteriskToken)
-                End If
+                If insertStars Then AddPunctuation(SyntaxKind.AsteriskToken)
             Else
                 Dim array = TryCast(symbol, ArrayTypeSymbol)
 
@@ -59,10 +59,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim i As Integer = 0
             While i < symbol.Rank - 1
                 AddPunctuation(SyntaxKind.CommaToken)
-                If insertStars Then
-                    AddPunctuation(SyntaxKind.AsteriskToken)
-                End If
-                i = i + 1
+                If insertStars Then AddPunctuation(SyntaxKind.AsteriskToken)
+                i += 1
             End While
             AddPunctuation(SyntaxKind.CloseParenToken)
         End Sub
@@ -77,22 +75,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Public Overrides Sub VisitTypeParameter(symbol As ITypeParameterSymbol)
-            If isFirstSymbolVisited Then
-                AddTypeParameterVarianceIfRequired(symbol)
-            End If
-
+            If isFirstSymbolVisited Then AddTypeParameterVarianceIfRequired(symbol)
             builder.Add(CreatePart(SymbolDisplayPartKind.TypeParameterName, symbol, symbol.Name, False))
         End Sub
 
         Public Overrides Sub VisitNamedType(symbol As INamedTypeSymbol)
-            If Me.IsMinimizing AndAlso TryAddAlias(symbol, builder) Then
-                Return
-            End If
-
+            If IsMinimizing AndAlso TryAddAlias(symbol, builder) Then Return
+  
             If format.MiscellaneousOptions.IncludesOption(SymbolDisplayMiscellaneousOptions.UseSpecialTypes) Then
-                If AddSpecialTypeKeyword(symbol) Then
-                    Return
-                End If
+                If AddSpecialTypeKeyword(symbol) Then Return
 
                 If Not format.MiscellaneousOptions.IncludesOption(SymbolDisplayMiscellaneousOptions.ExpandNullable) Then
                     If ITypeSymbolHelpers.IsNullableType(symbol) AndAlso symbol IsNot symbol.OriginalDefinition Then
@@ -103,7 +94,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End If
             End If
 
-            If Me.IsMinimizing OrElse symbol.IsTupleType Then
+            If IsMinimizing OrElse symbol.IsTupleType Then
                 MinimallyQualify(symbol)
                 Return
             End If
@@ -119,8 +110,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         AddKeyword(SyntaxKind.SubKeyword)
                     Else
                         If invokeMethod.ReturnsByRef AndAlso format.MemberOptions.IncludesOption(SymbolDisplayMemberOptions.IncludeRef) Then
-                            AddKeyword(SyntaxKind.ByRefKeyword)
-                            AddSpace()
+                            AddKeyword(SyntaxKind.ByRefKeyword, True)
                         End If
 
                         AddKeyword(SyntaxKind.FunctionKeyword)
@@ -179,8 +169,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Dim invokeMethod = symbol.DelegateInvokeMethod
                     If Not invokeMethod.ReturnsVoid Then
                         AddSpace()
-                        AddKeyword(SyntaxKind.AsKeyword)
-                        AddSpace()
+                        AddKeyword(SyntaxKind.AsKeyword, True)
                         invokeMethod.ReturnType.Accept(Me.NotFirstVisitor())
                     End If
                 End If
@@ -245,21 +234,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
 
             Select Case symbol.TypeKind
-                Case TypeKind.Class,
-                     TypeKind.Submission
-                    partKind = SymbolDisplayPartKind.ClassName
-                Case TypeKind.Delegate
-                    partKind = SymbolDisplayPartKind.DelegateName
-                Case TypeKind.Enum
-                    partKind = SymbolDisplayPartKind.EnumName
-                Case TypeKind.Interface
-                    partKind = SymbolDisplayPartKind.InterfaceName
-                Case TypeKind.Module
-                    partKind = SymbolDisplayPartKind.ModuleName
-                Case TypeKind.Struct
-                    partKind = SymbolDisplayPartKind.StructName
-                Case TypeKind.Error
-                    partKind = SymbolDisplayPartKind.ErrorTypeName
+                Case TypeKind.Class,    
+                     TypeKind.Submission    : partKind = SymbolDisplayPartKind.ClassName
+                Case TypeKind.Delegate      : partKind = SymbolDisplayPartKind.DelegateName
+                Case TypeKind.Enum          : partKind = SymbolDisplayPartKind.EnumName
+                Case TypeKind.Interface     : partKind = SymbolDisplayPartKind.InterfaceName
+                Case TypeKind.Module        : partKind = SymbolDisplayPartKind.ModuleName
+                Case TypeKind.Struct        : partKind = SymbolDisplayPartKind.StructName
+                Case TypeKind.Error         : partKind = SymbolDisplayPartKind.ErrorTypeName
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(symbol.TypeKind)
             End Select
@@ -279,8 +261,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ElseIf symbol.Arity > 0 AndAlso format.GenericsOptions.IncludesOption(SymbolDisplayGenericsOptions.IncludeTypeParameters) AndAlso Not skipTypeArguments Then
                 If isMissingMetadataType OrElse symbol.IsUnboundGenericType Then
                     AddPunctuation(SyntaxKind.OpenParenToken)
-                    AddKeyword(SyntaxKind.OfKeyword)
-                    AddSpace()
+                    AddKeyword(SyntaxKind.OfKeyword, True)
                     Dim i As Integer = 0
                     While i < symbol.Arity - 1
                         AddPunctuation(SyntaxKind.CommaToken)
@@ -330,17 +311,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Shared Function CanUseTupleTypeName(tupleSymbol As INamedTypeSymbol) As Boolean
             Dim currentUnderlying As INamedTypeSymbol = tupleSymbol.TupleUnderlyingType
 
-            If currentUnderlying.Arity = 1 Then
-                Return False
-            End If
+            If currentUnderlying.Arity = 1 Then Return False
 
             While currentUnderlying.Arity = TupleTypeSymbol.RestPosition
                 tupleSymbol = DirectCast(currentUnderlying.TypeArguments(TupleTypeSymbol.RestPosition - 1), INamedTypeSymbol)
                 Debug.Assert(tupleSymbol.IsTupleType)
 
-                If HasNonDefaultTupleElements(tupleSymbol) Then
-                    Return False
-                End If
+                If HasNonDefaultTupleElements(tupleSymbol) Then Return False
 
                 currentUnderlying = tupleSymbol.TupleUnderlyingType
             End While
@@ -362,19 +339,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             For i As Integer = 0 To elements.Length - 1
                 Dim element = elements(i)
 
-                If i <> 0 Then
-                    AddPunctuation(SyntaxKind.CommaToken)
-                    AddSpace()
-                End If
+                If i <> 0 Then AddPunctuation(SyntaxKind.CommaToken, True)
 
                 If Not element.IsImplicitlyDeclared Then
                     builder.Add(CreatePart(SymbolDisplayPartKind.FieldName, symbol, element.Name, noEscaping:=False))
                     AddSpace()
-                    AddKeyword(SyntaxKind.AsKeyword)
-                    AddSpace()
+                    AddKeyword(SyntaxKind.AsKeyword, True)
                 End If
 
-                element.Type.Accept(Me.NotFirstVisitor)
+                element.Type.Accept(NotFirstVisitor)
             Next
 
             AddPunctuation(SyntaxKind.CloseParenToken)
@@ -392,9 +365,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Function AddSpecialTypeKeyword(symbol As INamedTypeSymbol) As Boolean
             Dim type = symbol.SpecialType
             Dim specialTypeName = type.TryGetKeywordText()
-            If specialTypeName Is Nothing Then
-                Return False
-            End If
+            If specialTypeName Is Nothing Then Return False
 
             builder.Add(CreatePart(SymbolDisplayPartKind.Keyword, symbol, specialTypeName, False))
             Return True
@@ -411,62 +382,45 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     AddSpace()
                 Else
                     Dim keyword = GetTypeKindKeyword(symbol.TypeKind)
-                    If keyword = SyntaxKind.None Then
-                        Return
-                    End If
+                    If keyword = SyntaxKind.None Then Return
 
-                    AddKeyword(keyword)
-                    AddSpace()
+                    AddKeyword(keyword, True)
                 End If
             End If
         End Sub
 
         Private Shared Function GetTypeKindKeyword(typeKind As TypeKind) As SyntaxKind
             Select Case typeKind
-                Case TypeKind.Enum
-                    Return SyntaxKind.EnumKeyword
-                Case TypeKind.Class
-                    Return SyntaxKind.ClassKeyword
-                Case TypeKind.Delegate
-                    Return SyntaxKind.DelegateKeyword
-                Case TypeKind.Interface
-                    Return SyntaxKind.InterfaceKeyword
-                Case TypeKind.Module
-                    Return SyntaxKind.ModuleKeyword
-                Case TypeKind.Struct
-                    Return SyntaxKind.StructureKeyword
-                Case Else
-                    Return SyntaxKind.None
+                   Case TypeKind.Enum       : Return SyntaxKind.EnumKeyword
+                   Case TypeKind.Class      : Return SyntaxKind.ClassKeyword
+                   Case TypeKind.Delegate   : Return SyntaxKind.DelegateKeyword
+                   Case TypeKind.Interface  : Return SyntaxKind.InterfaceKeyword
+                   Case TypeKind.Module     : Return SyntaxKind.ModuleKeyword
+                   Case TypeKind.Struct     : Return SyntaxKind.StructureKeyword
+                   Case Else                : Return SyntaxKind.None
             End Select
         End Function
 
         Private Sub AddTypeParameterVarianceIfRequired(symbol As ITypeParameterSymbol)
-            If format.GenericsOptions.IncludesOption(SymbolDisplayGenericsOptions.IncludeVariance) Then
-                Select Case symbol.Variance
-                    Case VarianceKind.In
-                        AddKeyword(SyntaxKind.InKeyword)
-                        AddSpace()
-                    Case VarianceKind.Out
-                        AddKeyword(SyntaxKind.OutKeyword)
-                        AddSpace()
-                End Select
-            End If
+            If Not format.GenericsOptions.IncludesOption(SymbolDisplayGenericsOptions.IncludeVariance) Then Exit Sub
+            Select Case symbol.Variance
+                   Case VarianceKind.In
+                        AddKeyword(SyntaxKind.InKeyword, True)
+                   Case VarianceKind.Out
+                        AddKeyword(SyntaxKind.OutKeyword, True)
+            End Select
         End Sub
 
         Private Sub AddTypeArguments(typeArguments As ImmutableArray(Of ITypeSymbol),
                                      Optional modifiersSource As INamedTypeSymbol = Nothing)
             AddPunctuation(SyntaxKind.OpenParenToken)
-            AddKeyword(SyntaxKind.OfKeyword)
-            AddSpace()
+            AddKeyword(SyntaxKind.OfKeyword, True)
 
             Dim first As Boolean = True
             For i As Integer = 0 To typeArguments.Length - 1
                 Dim typeArg = typeArguments(i)
 
-                If Not first Then
-                    AddPunctuation(SyntaxKind.CommaToken)
-                    AddSpace()
-                End If
+                If Not first Then AddPunctuation(SyntaxKind.CommaToken, True)
 
                 first = False
 
@@ -479,12 +433,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         AddTypeParameterConstraints(typeParam)
                     End If
                 Else
-                    typeArg.Accept(Me.NotFirstVisitorNamespaceOrType())
+                    typeArg.Accept(NotFirstVisitorNamespaceOrType())
                 End If
 
-                If modifiersSource IsNot Nothing Then
-                    AddCustomModifiersIfRequired(modifiersSource.GetTypeArgumentCustomModifiers(i))
-                End If
+                If modifiersSource IsNot Nothing Then AddCustomModifiersIfRequired(modifiersSource.GetTypeArgumentCustomModifiers(i))
             Next
 
             AddPunctuation(SyntaxKind.CloseParenToken)
@@ -513,8 +465,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
 
             AddSpace()
-            AddKeyword(SyntaxKind.AsKeyword)
-            AddSpace()
+            AddKeyword(SyntaxKind.AsKeyword, True)
 
             If constraintCount > 1 Then
                 AddPunctuation(SyntaxKind.OpenBraceToken)
@@ -530,27 +481,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
 
             For Each baseType In constraintTypes
-                If needComma Then
-                    AddPunctuation(SyntaxKind.CommaToken)
-                    AddSpace()
-                End If
-
+                If needComma Then AddPunctuation(SyntaxKind.CommaToken, True)
                 baseType.Accept(Me.NotFirstVisitor())
                 needComma = True
             Next
 
             If typeParam.HasConstructorConstraint Then
-                If needComma Then
-                    AddPunctuation(SyntaxKind.CommaToken)
-                    AddSpace()
-                End If
+                If needComma Then AddPunctuation(SyntaxKind.CommaToken, True)
                 AddKeyword(SyntaxKind.NewKeyword)
             End If
 
-            If constraintCount > 1 Then
-                AddPunctuation(SyntaxKind.CloseBraceToken)
-            End If
+            If constraintCount > 1 Then AddPunctuation(SyntaxKind.CloseBraceToken)
         End Sub
 
     End Class
+
 End Namespace

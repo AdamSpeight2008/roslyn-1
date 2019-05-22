@@ -17,7 +17,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Inherits AbstractRegionControlFlowPass
 
         Friend Overloads Shared Function Analyze(info As FlowAnalysisInfo, region As FlowAnalysisRegionInfo, ByRef succeeded As Boolean?) As IEnumerable(Of LabelStatementSyntax)
-            Dim walker = New EntryPointsWalker(info, region)
+            Dim walker As New EntryPointsWalker(info, region)
             Try
                 succeeded = walker.Analyze()
                 Return If(succeeded, walker._entryPoints, SpecializedCollections.EmptyEnumerable(Of LabelStatementSyntax)())

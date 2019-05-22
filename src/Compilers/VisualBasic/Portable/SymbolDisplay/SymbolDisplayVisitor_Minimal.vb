@@ -5,12 +5,14 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
+
     Partial Friend Class SymbolDisplayVisitor
+
         Protected Overrides Function ShouldRestrictMinimallyQualifyLookupToNamespacesAndTypes() As Boolean
             Dim token = semanticModelOpt.SyntaxTree.GetRoot().FindToken(positionOpt)
             Dim startNode = token.Parent
 
-            Return SyntaxFacts.IsInNamespaceOrTypeContext(TryCast(startNode, ExpressionSyntax)) OrElse Me.inNamespaceOrType
+            Return SyntaxFacts.IsInNamespaceOrTypeContext(TryCast(startNode, ExpressionSyntax)) OrElse inNamespaceOrType
         End Function
 
         Private Sub MinimallyQualify(symbol As INamespaceSymbol, emittedName As String, parentsEmittedName As String)
@@ -35,9 +37,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 semanticModelOpt.LookupSymbols(positionOpt, name:=symbol.Name))
             Dim lookupResult As NamespaceSymbol = Nothing
 
-            If symbols.Length = 1 Then
-                lookupResult = TryCast(symbols(0), NamespaceSymbol)
-            End If
+            If symbols.Length = 1 Then lookupResult = TryCast(symbols(0), NamespaceSymbol)
 
             ' It is possible to get NamespaceSymbol with compilation extent here.
             ' Let's check this case.
@@ -62,8 +62,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     If containingNamespace.IsGlobalNamespace Then
 
                         Debug.Assert(format.GlobalNamespaceStyle = SymbolDisplayGlobalNamespaceStyle.Included OrElse
-                                          format.GlobalNamespaceStyle = SymbolDisplayGlobalNamespaceStyle.Omitted OrElse
-                                          format.GlobalNamespaceStyle = SymbolDisplayGlobalNamespaceStyle.OmittedAsContaining)
+                                     format.GlobalNamespaceStyle = SymbolDisplayGlobalNamespaceStyle.Omitted OrElse
+                                     format.GlobalNamespaceStyle = SymbolDisplayGlobalNamespaceStyle.OmittedAsContaining)
 
                         If format.GlobalNamespaceStyle = SymbolDisplayGlobalNamespaceStyle.Included Then
                             AddGlobalNamespace(containingNamespace)
@@ -124,61 +124,47 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             builder As ArrayBuilder(Of SymbolDisplayPart)) As Boolean
 
             Dim [alias] = GetAliasSymbol(symbol)
-            If Not [alias] Is Nothing Then
-                ' We must verify that the alias actually binds back to the thing it's aliasing. It's
-                ' possible there's another symbol with the same name as the alias that binds first
+            If [alias] Is Nothing Then Return False
+            ' We must verify that the alias actually binds back to the thing it's aliasing. It's
+            ' possible there's another symbol with the same name as the alias that binds first
 
-                Dim aliasName = [alias].Name
-                Dim boundSymbols = semanticModelOpt.LookupNamespacesAndTypes(positionOpt, name:=aliasName)
+            Dim aliasName = [alias].Name
+            Dim boundSymbols = semanticModelOpt.LookupNamespacesAndTypes(positionOpt, name:=aliasName)
 
-                If boundSymbols.Length = 1 Then
-                    Dim boundAlias = TryCast(boundSymbols(0), IAliasSymbol)
-                    If boundAlias IsNot Nothing AndAlso boundAlias.Target.Equals(symbol) Then
-                        builder.Add(CreatePart(SymbolDisplayPartKind.AliasName, [alias], aliasName, False))
-                        Return True
-                    End If
-                End If
+            If boundSymbols.Length <> 1 Then Return False
+            Dim boundAlias = TryCast(boundSymbols(0), IAliasSymbol)
+            If boundAlias IsNot Nothing AndAlso boundAlias.Target.Equals(symbol) Then
+                builder.Add(CreatePart(SymbolDisplayPartKind.AliasName, [alias], aliasName, False))
+                Return True
             End If
-
             Return False
         End Function
 
         Private Function GetAliasSymbol(symbol As INamespaceOrTypeSymbol) As IAliasSymbol
-            If Not Me.IsMinimizing Then
-                Return Nothing
-            End If
+            If Not IsMinimizing Then Return Nothing
 
             Dim token = semanticModelOpt.SyntaxTree.GetRoot().FindToken(positionOpt)
             Dim startNode = token.Parent
 
             ' NOTE(cyrusn): If we're in an imports clause, we can't use aliases.
             Dim clause = startNode.AncestorsAndSelf().OfType(Of ImportsClauseSyntax).FirstOrDefault()
-            If clause IsNot Nothing Then
-                Return Nothing
-            End If
-
+            If clause IsNot Nothing Then Return Nothing
+ 
             Dim compilation = semanticModelOpt.Compilation
 
             Dim sourceModule = DirectCast(compilation.SourceModule, SourceModuleSymbol)
             Dim sourceFile = sourceModule.TryGetSourceFile(DirectCast(GetSyntaxTree(DirectCast(semanticModelOpt, SemanticModel)), VisualBasicSyntaxTree))
             Debug.Assert(sourceFile IsNot Nothing)
 
-            If Not sourceFile.AliasImportsOpt Is Nothing Then
-                For Each [alias] In sourceFile.AliasImportsOpt.Values
-                    If [alias].Alias.Target = DirectCast(symbol, NamespaceOrTypeSymbol) Then
-                        Return [alias].Alias
-                    End If
-                Next
-            End If
-
+            If sourceFile.AliasImportsOpt Is Nothing Then Return Nothing
+            For Each [alias] In sourceFile.AliasImportsOpt.Values
+                If [alias].Alias.Target = DirectCast(symbol, NamespaceOrTypeSymbol) Then Return [alias].Alias
+            Next
             Return Nothing
         End Function
 
         Private Function GetSyntaxTree(semanticModel As SemanticModel) As SyntaxTree
-            If Not semanticModel.IsSpeculativeSemanticModel Then
-                Return semanticModel.SyntaxTree
-            End If
-
+            If Not semanticModel.IsSpeculativeSemanticModel Then Return semanticModel.SyntaxTree
             Debug.Assert(semanticModel.ParentModel IsNot Nothing)
             Debug.Assert(Not semanticModel.ParentModel.IsSpeculativeSemanticModel)
             Return semanticModel.ParentModel.SyntaxTree
@@ -201,9 +187,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private Function IsDerivedFromAttributeType(ByVal derivedType As INamedTypeSymbol) As Boolean
             Return semanticModelOpt IsNot Nothing AndAlso
-                DirectCast(derivedType, NamedTypeSymbol).IsOrDerivedFromWellKnownClass(WellKnownType.System_Attribute,
+                   DirectCast(derivedType, NamedTypeSymbol).IsOrDerivedFromWellKnownClass(WellKnownType.System_Attribute,
                                                                                        DirectCast(semanticModelOpt.Compilation, VisualBasicCompilation),
                                                                                        useSiteDiagnostics:=Nothing)
         End Function
+
     End Class
+
 End Namespace

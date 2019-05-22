@@ -103,11 +103,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Select
         End Function
 
+        Private Function MakeEscapedIdentifier(identifier As String) As String
+                Return "[" & identifier & "]"
+        End Function
         Private Function EscapeIdentifier(identifier As String) As String
 
             ' always escape keywords, 
             If SyntaxFacts.GetKeywordKind(identifier) <> SyntaxKind.None Then
-                Return String.Format("[{0}]", identifier)
+                Return MakeEscapedIdentifier(identifier)
             End If
 
             ' The minimal flag is e.g. used by the service layer when generating code (example: simplify name).
@@ -142,7 +145,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                          SyntaxKind.AscendingKeyword,
                          SyntaxKind.DescendingKeyword,
                          SyntaxKind.PreserveKeyword
-                        Return String.Format("[{0}]", identifier)
+                        Return MakeEscapedIdentifier(identifier)
                 End Select
             End If
 
@@ -296,16 +299,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             builder.Add(CreatePart(SymbolDisplayPartKind.Operator, Nothing, SyntaxFacts.GetText(operatorKind), False))
         End Sub
 
-        Private Sub AddPunctuation(punctuationKind As SyntaxKind)
+        Private Sub AddPunctuation(punctuationKind As SyntaxKind, optional followedBySpace As Boolean = False)
             builder.Add(CreatePart(SymbolDisplayPartKind.Punctuation, Nothing, SyntaxFacts.GetText(punctuationKind), False))
+            if followedBySpace Then AddSpace()
         End Sub
 
         Private Sub AddPseudoPunctuation(text As String)
             builder.Add(CreatePart(SymbolDisplayPartKind.Punctuation, Nothing, text, False))
         End Sub
 
-        Private Sub AddKeyword(keywordKind As SyntaxKind)
+        Private Sub AddKeyword(keywordKind As SyntaxKind, Optional followedBySpace As Boolean = False)
             builder.Add(CreatePart(SymbolDisplayPartKind.Keyword, Nothing, SyntaxFacts.GetText(keywordKind), False))
+            If followedBySpace Then AddSpace()
         End Sub
 
         Private Sub AddAccessibilityIfRequired(symbol As ISymbol)
@@ -366,4 +371,5 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
     End Class
+
 End Namespace

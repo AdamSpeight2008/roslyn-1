@@ -67,27 +67,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         Public NotOverridable Overrides ReadOnly Property EndPointIsReachable As Boolean
             Get
-                If _regionStartPointIsReachable Is Nothing Then
-                    ComputeReachability()
-                End If
+                If _regionStartPointIsReachable Is Nothing Then ComputeReachability()
                 Return DirectCast(_regionEndPointIsReachable, Boolean)
             End Get
         End Property
 
         Public NotOverridable Overrides ReadOnly Property StartPointIsReachable As Boolean
             Get
-                If _regionStartPointIsReachable Is Nothing Then
-                    ComputeReachability()
-                End If
+                If _regionStartPointIsReachable Is Nothing Then ComputeReachability()
                 Return DirectCast(_regionStartPointIsReachable, Boolean)
             End Get
         End Property
 
         Private Sub ComputeReachability()
             Dim startPointIsReachable As Boolean = False
-            Dim endPointIsReachable As Boolean = False
+            Dim endPointIsReachable   As Boolean = False
 
-            If Me._context.Failed Then
+            If _context.Failed Then
                 startPointIsReachable = True
                 endPointIsReachable = True
             Else

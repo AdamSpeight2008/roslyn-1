@@ -17,7 +17,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Inherits AbstractRegionControlFlowPass
 
         Friend Overloads Shared Function Analyze(info As FlowAnalysisInfo, region As FlowAnalysisRegionInfo) As IEnumerable(Of StatementSyntax)
-            Dim walker = New ExitPointsWalker(info, region)
+            Dim walker As New ExitPointsWalker(info, region)
             Try
                 Return If(walker.Analyze(), walker._branchesOutOf.ToImmutable(), SpecializedCollections.EmptyEnumerable(Of StatementSyntax)())
             Finally
@@ -37,10 +37,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Protected Overrides Sub Free()
-            Me._branchesOutOf.Free()
-            Me._branchesOutOf = Nothing
-            Me._labelsInside.Free()
-            Me._labelsInside = Nothing
+            _branchesOutOf.Free()
+            _branchesOutOf = Nothing
+            _labelsInside.Free()
+            _labelsInside = Nothing
             MyBase.Free()
         End Sub
 
@@ -49,9 +49,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overrides Function VisitLabelStatement(node As BoundLabelStatement) As BoundNode
             ' The syntax can be a label or an end block statement when the label represents an exit
             Dim syntax = node.Syntax
-            If IsInside Then
-                _labelsInside.Add(node.Label)
-            End If
+            If IsInside Then _labelsInside.Add(node.Label)
             Return MyBase.VisitLabelStatement(node)
         End Function
 
@@ -88,37 +86,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overrides Function VisitSelectStatement(node As BoundSelectStatement) As BoundNode
-            If IsInside Then
-                _labelsInside.Add(node.ExitLabel)
-            End If
+            If IsInside Then _labelsInside.Add(node.ExitLabel)
             Return MyBase.VisitSelectStatement(node)
         End Function
 
         Protected Overrides Sub LeaveRegion()
-            '  Process the pending returns only from this region. 
-            For Each pending In Me.PendingBranches
-                If IsInsideRegion(pending.Branch.Syntax.Span) Then
-                    Select Case pending.Branch.Kind
-                        Case BoundKind.GotoStatement
-                            If _labelsInside.Contains((TryCast((pending.Branch), BoundGotoStatement)).Label) Then
-                                Continue For
-                            End If
-                        Case BoundKind.ExitStatement
-                            If _labelsInside.Contains((TryCast((pending.Branch), BoundExitStatement)).Label) Then
-                                Continue For
-                            End If
-                        Case BoundKind.ContinueStatement
-                            If _labelsInside.Contains((TryCast((pending.Branch), BoundContinueStatement)).Label) Then
-                                Continue For
-                            End If
-                        Case BoundKind.YieldStatement
-                        Case BoundKind.ReturnStatement
+            '  Process the pending returns only from this region.
+            For Each pending In PendingBranches
+                If Not IsInsideRegion(pending.Branch.Syntax.Span) Then Continue For
+                Select Case pending.Branch.Kind
+                       Case BoundKind.GotoStatement
+                            If _labelsInside.Contains((TryCast((pending.Branch), BoundGotoStatement)).Label) Then Continue For
+                       Case BoundKind.ExitStatement
+                            If _labelsInside.Contains((TryCast((pending.Branch), BoundExitStatement)).Label) Then Continue For
+                       Case BoundKind.ContinueStatement
+                            If _labelsInside.Contains((TryCast((pending.Branch), BoundContinueStatement)).Label) Then Continue For
+                       Case BoundKind.YieldStatement
+                       Case BoundKind.ReturnStatement
                             ' These are always included (we don't dive into lambda expressions)
-                        Case Else
+                       Case Else
                             Throw ExceptionUtilities.UnexpectedValue(pending.Branch.Kind) ' there are no other branch statements
-                    End Select
-                    _branchesOutOf.Add(DirectCast(pending.Branch.Syntax, StatementSyntax))
-                End If
+                End Select
+                _branchesOutOf.Add(DirectCast(pending.Branch.Syntax, StatementSyntax))
             Next
 
             MyBase.LeaveRegion()

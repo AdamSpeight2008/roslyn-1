@@ -68,6 +68,14 @@
     <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes" Version="$(MicrosoftVisualStudioSDKEmbedInteropTypesVersion)" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="OptionPages\ExperimentationPage.cs" />
+    <Compile Update="OptionPages\InternalComponentsOnOffPage.cs" />
+    <Compile Update="OptionPages\InternalDiagnosticsPage.cs" />
+    <Compile Update="OptionPages\InternalFeaturesOnOffPage.cs" />
+    <Compile Update="OptionPages\InternalOptionsControl.cs" />
+    <Compile Update="OptionPages\InternalSolutionCrawlerPage.cs" />
+    <Compile Update="OptionPages\PerformanceFunctionIdPage.cs" />
+    <Compile Update="OptionPages\PerformanceLoggersPage.cs" />
     <Compile Update="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -75,7 +83,6 @@
     </Compile>
     <Compile Update="Telemetry\TelemetryPanel.xaml.cs">
       <DependentUpon>TelemetryPanel.xaml</DependentUpon>
-      <SubType>Code</SubType>
     </Compile>
     <Compile Update="VenusMargin\ProjectionBufferMargin.xaml.cs">
       <DependentUpon>ProjectionBufferMargin.xaml</DependentUpon>

@@ -122,21 +122,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </remarks>
         Public Function FormatPrimitive(obj As Object, quoteStrings As Boolean, useHexadecimalNumbers As Boolean) As String
             Dim options = ObjectDisplayOptions.None
-            If quoteStrings Then
-                options = options Or ObjectDisplayOptions.UseQuotes Or ObjectDisplayOptions.EscapeNonPrintableCharacters
-            End If
-            If useHexadecimalNumbers Then
-                options = options Or ObjectDisplayOptions.UseHexadecimalNumbers
-            End If
+            If quoteStrings Then options = options Or UseQuotesAndEscapeNonPrintableCharacters
+            If useHexadecimalNumbers Then options = options Or ObjectDisplayOptions.UseHexadecimalNumbers
             Return ObjectDisplay.FormatPrimitive(obj, options)
         End Function
+
+        Private Const UseQuotesAndEscapeNonPrintableCharacters As ObjectDisplayOptions = ObjectDisplayOptions.UseQuotes Or ObjectDisplayOptions.EscapeNonPrintableCharacters
 
         Friend Sub AddSymbolDisplayParts(parts As ArrayBuilder(Of SymbolDisplayPart), str As String)
             Dim pooledBuilder = PooledStringBuilder.GetInstance()
             Dim sb = pooledBuilder.Builder
 
             Dim lastKind = -1
-            For Each token As Integer In ObjectDisplay.TokenizeString(str, ObjectDisplayOptions.UseQuotes Or ObjectDisplayOptions.UseHexadecimalNumbers Or ObjectDisplayOptions.EscapeNonPrintableCharacters)
+            For Each token As Integer In ObjectDisplay.TokenizeString(str, UseQuotesAndEscapeNonPrintableCharacters Or ObjectDisplayOptions.UseHexadecimalNumbers)
                 Dim kind = token >> 16
 
                 ' merge contiguous tokens of the same kind into a single part
@@ -164,16 +162,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
 
             If ObjectDisplay.IsPrintable(c) Then
-                parts.Add(New SymbolDisplayPart(SymbolDisplayPartKind.StringLiteral, Nothing, """" & c & """c"))
+                parts.Add(New SymbolDisplayPart(SymbolDisplayPartKind.StringLiteral, Nothing, DoubleQuote & c & DoubleQuote & "c"))
                 Return
             End If
 
             ' non-printable, add "ChrW(codepoint)"
             Dim codepoint = AscW(c)
-            parts.Add(New SymbolDisplayPart(SymbolDisplayPartKind.MethodName, Nothing, "ChrW"))
-            parts.Add(New SymbolDisplayPart(SymbolDisplayPartKind.Punctuation, Nothing, "("))
+            parts.Add(DisplayPart_ChrW)
+            parts.Add(DisplayPart_LParens)
             parts.Add(New SymbolDisplayPart(SymbolDisplayPartKind.NumericLiteral, Nothing, "&H" & codepoint.ToString("X")))
-            parts.Add(New SymbolDisplayPart(SymbolDisplayPartKind.Punctuation, Nothing, ")"))
+            parts.Add(DisplayPart_RParens)
         End Sub
+
+        Private ReadOnly DisplayPart_ChrW As New SymbolDisplayPart(SymbolDisplayPartKind.MethodName, Nothing, "ChrW")
+        Private ReadOnly DisplayPart_LParens As New SymbolDisplayPart(SymbolDisplayPartKind.Punctuation, Nothing, "(")
+        Private ReadOnly DisplayPart_RParens As New SymbolDisplayPart(SymbolDisplayPartKind.Punctuation, Nothing, ")")
+
     End Module
 End Namespace

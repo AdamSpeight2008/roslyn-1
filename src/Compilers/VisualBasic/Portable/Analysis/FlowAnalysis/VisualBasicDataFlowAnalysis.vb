@@ -20,10 +20,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Friend Class VisualBasicDataFlowAnalysis
         Inherits DataFlowAnalysis
 
+        Private Shared s_pool As ObjectPool(Of PooledHashSet(Of Symbol)) = PooledHashSet(Of Symbol).CreatePool()
+
         Private ReadOnly _context As RegionAnalysisContext
 
         Private _variablesDeclared As ImmutableArray(Of ISymbol)
-        Private _unassignedVariables As HashSet(Of Symbol)
+        Private _unassignedVariables As PooledHashSet(Of Symbol)
         Private _dataFlowsIn As ImmutableArray(Of ISymbol)
         Private _dataFlowsOut As ImmutableArray(Of ISymbol)
         Private _alwaysAssigned As ImmutableArray(Of ISymbol)
@@ -56,10 +58,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Get
         End Property
 
-        Private ReadOnly Property UnassignedVariables As HashSet(Of Symbol)
+        Private ReadOnly Property UnassignedVariables As PooledHashSet(Of Symbol)
             Get
                 If _unassignedVariables Is Nothing Then
-                    Dim result = If(Me._context.Failed, New HashSet(Of Symbol)(),
+                    Dim result = If(Me._context.Failed,  s_pool.Allocate(),
                                     UnassignedVariablesWalker.Analyze(_context.AnalysisInfo))
                     Interlocked.CompareExchange(_unassignedVariables, result, Nothing)
                 End If
@@ -187,13 +189,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     capturedOutside:=capturedOutside)
             End If
 
-            ImmutableInterlocked.InterlockedCompareExchange(Me._readInside, Normalize(readInside), Nothing)
-            ImmutableInterlocked.InterlockedCompareExchange(Me._writtenInside, Normalize(writtenInside), Nothing)
-            ImmutableInterlocked.InterlockedCompareExchange(Me._readOutside, Normalize(readOutside), Nothing)
-            ImmutableInterlocked.InterlockedCompareExchange(Me._writtenOutside, Normalize(writtenOutside), Nothing)
-            ImmutableInterlocked.InterlockedCompareExchange(Me._captured, Normalize(captured), Nothing)
-            ImmutableInterlocked.InterlockedCompareExchange(Me._capturedInside, Normalize(capturedInside), Nothing)
-            ImmutableInterlocked.InterlockedCompareExchange(Me._capturedOutside, Normalize(capturedOutside), Nothing)
+            ImmutableInterlocked.InterlockedCompareExchange(_readInside, Normalize(readInside), Nothing)
+            ImmutableInterlocked.InterlockedCompareExchange(_writtenInside, Normalize(writtenInside), Nothing)
+            ImmutableInterlocked.InterlockedCompareExchange(_readOutside, Normalize(readOutside), Nothing)
+            ImmutableInterlocked.InterlockedCompareExchange(_writtenOutside, Normalize(writtenOutside), Nothing)
+            ImmutableInterlocked.InterlockedCompareExchange(_captured, Normalize(captured), Nothing)
+            ImmutableInterlocked.InterlockedCompareExchange(_capturedInside, Normalize(capturedInside), Nothing)
+            ImmutableInterlocked.InterlockedCompareExchange(_capturedOutside, Normalize(capturedOutside), Nothing)
         End Sub
 
         ''' <summary>
@@ -212,27 +214,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides ReadOnly Property CapturedInside As ImmutableArray(Of ISymbol)
             Get
-                If Me._capturedInside.IsDefault Then
-                    AnalyzeReadWrite()
-                End If
-
-                Return Me._capturedInside
+                If _capturedInside.IsDefault Then AnalyzeReadWrite()
+                Return _capturedInside
             End Get
         End Property
 
         Public Overrides ReadOnly Property CapturedOutside As ImmutableArray(Of ISymbol)
             Get
-                If Me._capturedOutside.IsDefault Then
-                    AnalyzeReadWrite()
-                End If
-
-                Return Me._capturedOutside
+                If _capturedOutside.IsDefault Then AnalyzeReadWrite()
+                Return _capturedOutside
             End Get
         End Property
 
         Friend ReadOnly Property InvalidRegionDetectedInternal As Boolean
             Get
-                Return If(Me.Succeeded, False, Me._invalidRegionDetected)
+                Return If(Me._Succeeded, False, Me._invalidRegionDetected)
             End Get
         End Property
 

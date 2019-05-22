@@ -4,6 +4,7 @@ Imports System.Collections.Generic
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.PooledObjects
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -14,22 +15,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' <remarks></remarks>
     Friend NotInheritable Class UnassignedVariablesWalker
         Inherits DataFlowPass
+        Implements IDisposable
 
         ' TODO: normalize the result by removing variables that are unassigned in an unmodified flow analysis.
         Private Sub New(info As FlowAnalysisInfo)
             MyBase.New(info, suppressConstExpressionsSupport:=False, trackStructsWithIntrinsicTypedFields:=True)
         End Sub
 
-        Friend Overloads Shared Function Analyze(info As FlowAnalysisInfo) As HashSet(Of Symbol)
+        Friend Overloads Shared Function Analyze(info As FlowAnalysisInfo) As PooledHashSet(Of Symbol)
             Dim walker = New UnassignedVariablesWalker(info)
             Try
-                Return If(walker.Analyze(), walker._result, New HashSet(Of Symbol)())
+                Return If(walker.Analyze(), walker._result, s_pool.Allocate())
             Finally
                 walker.Free()
             End Try
         End Function
 
-        Private ReadOnly _result As HashSet(Of Symbol) = New HashSet(Of Symbol)()
+        Private ReadOnly _result As PooledHashSet(Of Symbol) = s_pool.Allocate()
 
         Protected Overrides Sub ReportUnassigned(local As Symbol,
                                                  node As SyntaxNode,
@@ -80,6 +82,33 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return True
             End Get
         End Property
+
+#Region "IDisposable Support"
+        Private disposedValue As Boolean ' To detect redundant calls
+
+        ' IDisposable
+        Protected Sub Dispose(disposing As Boolean)
+            If Not disposedValue Then
+                If disposing Then
+                    ' TODO: dispose managed state (managed objects).
+                    _result.Free()
+                End If
+
+                ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
+                ' TODO: set large fields to null.
+            End If
+            disposedValue = True
+        End Sub
+
+
+        ' This code added by Visual Basic to correctly implement the disposable pattern.
+        Public Sub Dispose() Implements IDisposable.Dispose
+            ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            Dispose(True)
+            ' TODO: uncomment the following line if Finalize() is overridden above.
+            ' GC.SuppressFinalize(Me)
+        End Sub
+#End Region
 
     End Class
 

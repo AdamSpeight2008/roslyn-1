@@ -70,6 +70,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJsonVersion)" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Options\AbstractOptionPage.cs" />
+    <Compile Update="Options\AbstractOptionPageControl.cs" />
     <Compile Update="Options\GridOptionPreviewControl.xaml.cs">
       <DependentUpon>GridOptionPreviewControl.xaml</DependentUpon>
     </Compile>

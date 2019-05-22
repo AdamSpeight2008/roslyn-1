@@ -14,14 +14,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay
 #Enable Warning CA1200 ' Avoid using cref tags with a prefix
     Friend Module ObjectDisplay
 
-        Private Const s_nullChar As Char = ChrW(0)
-        Private Const s_back As Char = ChrW(8)
-        Private Const s_Cr As Char = ChrW(13)
-        Private Const s_formFeed As Char = ChrW(12)
-        Private Const s_Lf As Char = ChrW(10)
-        Private Const s_tab As Char = ChrW(9)
-        Private Const s_verticalTab As Char = ChrW(11)
-
         ''' <summary>
         ''' Returns a string representation of an object of primitive type.
         ''' </summary>
@@ -144,7 +136,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay
 
             If IsPrintable(c) OrElse Not options.IncludesOption(ObjectDisplayOptions.EscapeNonPrintableCharacters) Then
                 Return If(options.IncludesOption(ObjectDisplayOptions.UseQuotes),
-                    """" & EscapeQuote(c) & """c",
+                 CharInfo.DoubleQuote & EscapeQuote(c) & CharInfo.DoubleQuote & "c",
                     c.ToString())
             End If
 
@@ -158,14 +150,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay
         End Function
 
         Private Function EscapeQuote(c As Char) As String
-            Return If(c = """", """""", c)
+            Return If(c = CharInfo.DoubleQuote, CharInfo.DoubleQuoteDoubleQuote , c)
         End Function
+
 
         Friend Function FormatLiteral(value As SByte, options As ObjectDisplayOptions, Optional cultureInfo As CultureInfo = Nothing) As String
             ValidateOptions(options)
 
             If options.IncludesOption(ObjectDisplayOptions.UseHexadecimalNumbers) Then
-                Return "&H" & If(value >= 0, value.ToString("X2"), CInt(value).ToString("X8"))
+                If Value >= 0 Then
+                    Return $"&H{value:X2}"
+                Else
+                    Return $"&H{value:X8}"
+                End If
             Else
                 Return value.ToString(GetFormatCulture(cultureInfo))
             End If
@@ -175,7 +172,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay
             ValidateOptions(options)
 
             If options.IncludesOption(ObjectDisplayOptions.UseHexadecimalNumbers) Then
-                Return "&H" & value.ToString("X2")
+                Return $"&H{value:X2}"
             Else
                 Return value.ToString(GetFormatCulture(cultureInfo))
             End If
@@ -188,8 +185,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay
             Dim sb = pooledBuilder.Builder
 
             If options.IncludesOption(ObjectDisplayOptions.UseHexadecimalNumbers) Then
-                sb.Append("&H")
-                sb.Append(If(value >= 0, value.ToString("X4"), CInt(value).ToString("X8")))
+                If value >= 0 Then
+                    sb.Append($"&H{value:X4}")
+                Else
+                    sb.Append($"&H{value:X8}")
+                End If
             Else
                 sb.Append(value.ToString(GetFormatCulture(cultureInfo)))
             End If
@@ -208,8 +208,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay
             Dim sb = pooledBuilder.Builder
 
             If options.IncludesOption(ObjectDisplayOptions.UseHexadecimalNumbers) Then
-                sb.Append("&H")
-                sb.Append(value.ToString("X4"))
+                sb.Append($"&H{value:X4}")
             Else
                 sb.Append(value.ToString(GetFormatCulture(cultureInfo)))
             End If
@@ -228,8 +227,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay
             Dim sb = pooledBuilder.Builder
 
             If options.IncludesOption(ObjectDisplayOptions.UseHexadecimalNumbers) Then
-                sb.Append("&H")
-                sb.Append(value.ToString("X8"))
+                sb.Append($"&H{value:X8}")
             Else
                 sb.Append(value.ToString(GetFormatCulture(cultureInfo)))
             End If
@@ -248,8 +246,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay
             Dim sb = pooledBuilder.Builder
 
             If options.IncludesOption(ObjectDisplayOptions.UseHexadecimalNumbers) Then
-                sb.Append("&H")
-                sb.Append(value.ToString("X8"))
+                sb.Append($"&H{value:X8}")
             Else
                 sb.Append(value.ToString(GetFormatCulture(cultureInfo)))
             End If
@@ -268,8 +265,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay
             Dim sb = pooledBuilder.Builder
 
             If options.IncludesOption(ObjectDisplayOptions.UseHexadecimalNumbers) Then
-                sb.Append("&H")
-                sb.Append(value.ToString("X16"))
+                sb.Append($"&H{value:X16}")
             Else
                 sb.Append(value.ToString(GetFormatCulture(cultureInfo)))
             End If
@@ -288,8 +284,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay
             Dim sb = pooledBuilder.Builder
 
             If options.IncludesOption(ObjectDisplayOptions.UseHexadecimalNumbers) Then
-                sb.Append("&H")
-                sb.Append(value.ToString("X16"))
+                sb.Append($"&H{value:X16}")
             Else
                 sb.Append(value.ToString(GetFormatCulture(cultureInfo)))
             End If
@@ -350,11 +345,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay
         End Function
 
         Private Function Space() As Integer
-            Return (SymbolDisplayPartKind.Space << 16) Or AscW(" "c)
+            Return (SymbolDisplayPartKind.Space << 16) Or AscW(CharInfo.SPACE)
         End Function
 
         Private Function Quotes() As Integer
-            Return (SymbolDisplayPartKind.StringLiteral << 16) Or AscW("""")
+            Return (SymbolDisplayPartKind.StringLiteral << 16) Or AscW(CharInfo.DoubleQuote)
         End Function
 
         ' TODO: consider making "token" returned by this function a structure to abstract bit masking operations
@@ -388,7 +383,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay
                     wellKnown = Nothing
                     shouldEscape = False
                     isCrLf = False
-                ElseIf c = s_Cr AndAlso i < str.Length AndAlso str(i) = s_Lf Then
+                ElseIf c = CharInfo.CR AndAlso i < str.Length AndAlso str(i) = CharInfo.LF Then
                     wellKnown = "vbCrLf"
                     shouldEscape = True
                     isCrLf = True
@@ -444,8 +439,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay
 
                         startNewConcatenand = True
                     ElseIf (isCrLf) Then
-                        Yield Character(s_Cr)
-                        Yield Character(s_Lf)
+                        Yield Character(CharInfo.CR)
+                        Yield Character(CharInfo.LF)
                     Else
                         Yield Character(c)
                     End If
@@ -464,7 +459,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay
                     End If
 
                     lastConcatenandWasQuoted = True
-                    If c = """"c AndAlso useQuotes Then
+                    If c = CharInfo.DoubleQuote AndAlso useQuotes Then
                         Yield Quotes()
                         Yield Quotes()
                     Else
@@ -503,19 +498,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay
 
         Friend Function GetWellKnownCharacterName(c As Char) As String
             Select Case c
-                Case s_nullChar
+                Case CharInfo.NULLChar
                     Return "vbNullChar"
-                Case s_back
+                Case CharInfo.BACK
                     Return "vbBack"
-                Case s_Cr
+                Case CharInfo.CR
                     Return "vbCr"
-                Case s_formFeed
+                Case CharInfo.FORM_FEED
                     Return "vbFormFeed"
-                Case s_Lf
+                Case CharInfo.LF
                     Return "vbLf"
-                Case s_tab
+                Case CharInfo.TAB
                     Return "vbTab"
-                Case s_verticalTab
+                Case CharInfo.VTAB
                     Return "vbVerticalTab"
             End Select
 

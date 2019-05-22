@@ -34,12 +34,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Friend Reported As Boolean ' reported unreachable statement
 
             Public Sub New(live As Boolean, reported As Boolean)
-                Me.Alive = live
+                Alive = live
                 Me.Reported = reported
             End Sub
 
             ''' <summary> Produce a duplicate of this flow analysis state. </summary>
-            Public Function Clone() As LocalState Implements AbstractFlowPass(Of LocalState).AbstractLocalState.Clone
+            Public Function Clone() As LocalState Implements AbstractLocalState.Clone
                 Return Me
             End Function
 

@@ -71,10 +71,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overrides Function VisitAggregateClause(node As BoundAggregateClause) As BoundNode
-            If node.CapturedGroupOpt IsNot Nothing Then
-                VisitRvalue(node.CapturedGroupOpt)
-            End If
-
+            If node.CapturedGroupOpt IsNot Nothing Then VisitRvalue(node.CapturedGroupOpt)
             VisitRvalue(node.UnderlyingExpression)
             Return Nothing
         End Function

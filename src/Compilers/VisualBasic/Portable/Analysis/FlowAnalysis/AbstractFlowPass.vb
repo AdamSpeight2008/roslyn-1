@@ -21,6 +21,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Partial Friend MustInherit Class AbstractFlowPass(Of LocalState As AbstractLocalState)
         Inherits BoundTreeVisitor
 
+        Friend Shared s_pool As ObjectPool(Of PooledHashSet(Of Symbol)) = PooledHashSet(Of Symbol).CreatePool()
+
+
         ''' <summary>
         ''' The compilation in which the analysis is taking place.  This is needed to determine which
         ''' conditional methods will be compiled and which will be omitted.
@@ -118,18 +121,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                   _info.Symbol.Kind = SymbolKind.Method OrElse
                                   _info.Symbol.Kind = SymbolKind.Parameter)
 
-            Me.compilation = _info.Compilation
-            Me.symbol = _info.Symbol
-            Me.MeParameter = Me.symbol.GetMeParameter()
-            Me._methodOrInitializerMainNode = _info.Node
+            compilation = _info.Compilation
+            symbol = _info.Symbol
+            Me.MeParameter = symbol.GetMeParameter()
+            _methodOrInitializerMainNode = _info.Node
 
-            Me._firstInRegion = _region.FirstInRegion
-            Me._lastInRegion = _region.LastInRegion
+            _firstInRegion = _region.FirstInRegion
+            _lastInRegion = _region.LastInRegion
             Me._region = _region.Region
 
             Me.TrackUnassignments = trackUnassignments
-            Me._loopHeadState = If(trackUnassignments, New Dictionary(Of BoundLoopStatement, LocalState)(), Nothing)
-            Me._suppressConstantExpressions = suppressConstExpressionsSupport
+            _loopHeadState = If(trackUnassignments, New Dictionary(Of BoundLoopStatement, LocalState)(), Nothing)
+            _suppressConstantExpressions = suppressConstExpressionsSupport
         End Sub
 
         Protected Overridable Sub InitForScan()
@@ -141,35 +144,31 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         ''' <summary> Set conditional state </summary>
         Private Sub SetConditionalState(_whenTrue As LocalState, _whenFalse As LocalState)
-            Me.State = Nothing
-            Me.StateWhenTrue = _whenTrue
-            Me.StateWhenFalse = _whenFalse
-            Me.IsConditionalState = True
+            State = Nothing
+            StateWhenTrue = _whenTrue
+            StateWhenFalse = _whenFalse
+            IsConditionalState = True
         End Sub
 
         ''' <summary> Set unconditional state </summary>
         Protected Sub SetState(_state As LocalState)
-            Me.State = _state
-            If Me.IsConditionalState Then
-                Me.StateWhenTrue = Nothing
-                Me.StateWhenFalse = Nothing
-                Me.IsConditionalState = False
-            End If
+            State = _state
+            If Not IsConditionalState Then Exit Sub
+            StateWhenTrue = Nothing
+            StateWhenFalse = Nothing
+            IsConditionalState = False
         End Sub
 
         ''' <summary> Split state </summary>
         Protected Sub Split()
-            If Not Me.IsConditionalState Then
-                SetConditionalState(Me.State, Me.State.Clone())
-            End If
+            If Not IsConditionalState Then SetConditionalState(State, State.Clone())
         End Sub
 
         ''' <summary> Intersect and unsplit state </summary>
         Protected Sub Unsplit()
-            If Me.IsConditionalState Then
-                Me.IntersectWith(Me.StateWhenTrue, Me.StateWhenFalse)
-                Me.SetState(Me.StateWhenTrue)
-            End If
+            If Not Me.IsConditionalState Then Exit Sub
+            IntersectWith(StateWhenTrue, StateWhenFalse)
+            SetState(StateWhenTrue)
         End Sub
 
         ''' <summary>
@@ -193,47 +192,41 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <returns>False if the region is invalid</returns>
         Protected Overridable Function Scan() As Boolean
             ' Clear diagnostics reported in the previous iteration
-            Me.diagnostics.Clear()
+            diagnostics.Clear()
 
             ' initialize
-            Me._regionPlace = RegionPlace.Before
-            Me.SetState(ReachableState())
-            Me.backwardBranchChanged = False
+            _regionPlace = RegionPlace.Before
+            SetState(ReachableState())
+            backwardBranchChanged = False
 
-            If Me._nesting IsNot Nothing Then
-                Me._nesting.Free()
-            End If
-            Me._nesting = ArrayBuilder(Of Integer).GetInstance()
+            If _nesting IsNot Nothing Then _nesting.Free()
+            _nesting = ArrayBuilder(Of Integer).GetInstance()
 
             InitForScan()
 
             ' pending branches should be restored after each iteration
-            Dim oldPending As SavedPending = Me.SavePending()
-            Visit(Me._methodOrInitializerMainNode)
-            Me.RestorePending(oldPending)
-            Me._labelsSeen.Clear()
+            Dim oldPending As SavedPending = SavePending()
+            Visit(_methodOrInitializerMainNode)
+            RestorePending(oldPending)
+            _labelsSeen.Clear()
 
             ' if we are tracking regions, we must have left the region by now;
             ' otherwise the region was erroneous which must have been detected earlier
-            Return Me._firstInRegion Is Nothing OrElse Me._regionPlace = RegionPlace.After
+            Return _firstInRegion Is Nothing OrElse Me._regionPlace = RegionPlace.After
         End Function
 
         ''' <returns>False if the region is invalid</returns>
         Protected Overridable Function Analyze() As Boolean
             Do
-                If Not Me.Scan() Then
-                    Return False
-                End If
-            Loop While Me.backwardBranchChanged
+                If Not Scan() Then Return False
+            Loop While backwardBranchChanged
             Return True
         End Function
 
         Protected Overridable Sub Free()
-            If Me._nesting IsNot Nothing Then
-                Me._nesting.Free()
-            End If
-            Me.diagnostics.Free()
-            Me._pendingBranches.Free()
+            If _nesting IsNot Nothing Then _nesting.Free()
+            diagnostics.Free()
+            _pendingBranches.Free()
         End Sub
 
         ''' <summary>
@@ -288,9 +281,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <remarks></remarks>
         Private Function LabelState(label As LabelSymbol) As LocalState
             Dim result As LabelStateAndNesting = Nothing
-            If _labels.TryGetValue(label, result) Then
-                Return result.State
-            End If
+            If _labels.TryGetValue(label, result) Then Return result.State
             Return UnreachableState()
         End Function
 
@@ -298,55 +289,34 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Set the current state to one that indicates that it is unreachable.
         ''' </summary>
         Protected Sub SetUnreachable()
-            Me.SetState(UnreachableState())
+            SetState(UnreachableState())
         End Sub
 
         Private Function IsConstantTrue(node As BoundExpression) As Boolean
-            If Me._suppressConstantExpressions Then
-                Return False
-            End If
-
-            If Not node.IsConstant Then
-                Return False
-            End If
+            If _suppressConstantExpressions Then Return False
+            If Not node.IsConstant Then Return False
             Dim constantValue = node.ConstantValueOpt
-            If constantValue.Discriminator <> ConstantValueTypeDiscriminator.Boolean Then
-                Return False
-            End If
+            If constantValue.Discriminator <> ConstantValueTypeDiscriminator.Boolean Then Return False
             Return constantValue.BooleanValue
         End Function
 
         Private Function IsConstantFalse(node As BoundExpression) As Boolean
-            If Me._suppressConstantExpressions Then
-                Return False
-            End If
-
-            If Not node.IsConstant Then
-                Return False
-            End If
+            If _suppressConstantExpressions Then Return False
+            If Not node.IsConstant Then Return False
             Dim constantValue = node.ConstantValueOpt
-            If constantValue.Discriminator <> ConstantValueTypeDiscriminator.Boolean Then
-                Return False
-            End If
+            If constantValue.Discriminator <> ConstantValueTypeDiscriminator.Boolean Then Return False
             Return Not constantValue.BooleanValue
         End Function
 
         Private Function IsConstantNull(node As BoundExpression) As Boolean
-            If Me._suppressConstantExpressions Then
-                Return False
-            End If
-
-            If Not node.IsConstant Then
-                Return False
-            End If
+            If _suppressConstantExpressions Then Return False
+            If Not node.IsConstant Then Return False
             Return node.ConstantValueOpt.IsNull
         End Function
 
         Protected Shared Function IsNonPrimitiveValueType(type As TypeSymbol) As Boolean
             Debug.Assert(type IsNot Nothing)
-            If Not type.IsValueType Then
-                Return False
-            End If
+            If Not type.IsValueType Then Return False
             Select Case type.SpecialType
                 Case SpecialType.None,
                      SpecialType.System_Nullable_T,
@@ -365,13 +335,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="node"></param>
         ''' <remarks></remarks>
         Private Sub LoopHead(node As BoundLoopStatement)
-            If Me.TrackUnassignments Then
-                Dim previousState As LocalState
-                If Me._loopHeadState.TryGetValue(node, previousState) Then
-                    IntersectWith(Me.State, previousState)
-                End If
-                Me._loopHeadState(node) = Me.State.Clone()
-            End If
+            If Not TrackUnassignments Then Exit Sub
+            Dim previousState As LocalState
+            If _loopHeadState.TryGetValue(node, previousState) Then IntersectWith(State, previousState)
+            _loopHeadState(node) = State.Clone()
+
         End Sub
 
         ''' <summary>
@@ -380,12 +348,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="node"></param>
         ''' <remarks></remarks>
         Private Sub LoopTail(node As BoundLoopStatement)
-            If Me.TrackUnassignments Then
-                Dim oldState = Me._loopHeadState(node)
-                If IntersectWith(oldState, Me.State) Then
-                    Me._loopHeadState(node) = oldState
-                    Me.backwardBranchChanged = True
-                End If
+            If Not TrackUnassignments Then Exit Sub
+            Dim oldState = Me._loopHeadState(node)
+            If IntersectWith(oldState, Me.State) Then
+               _loopHeadState(node) = oldState
+               backwardBranchChanged = True
             End If
         End Sub
 

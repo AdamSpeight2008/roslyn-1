@@ -240,11 +240,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Protected Overrides Function Dump(state As LocalState) As String
-            Dim builder As New StringBuilder()
-            builder.Append("[assigned ")
-            AppendBitNames(state.Assigned, builder)
-            builder.Append("]")
-            Return builder.ToString()
+            Dim builder = PooledStringBuilder.GetInstance()
+            With builder
+            .builder.Append("[assigned ")
+            AppendBitNames(state.Assigned, .builder)
+            .builder.Append("]")
+            end with
+            Return builder.ToStringAndFree()
         End Function
 
         Protected Sub AppendBitNames(a As BitVector, builder As StringBuilder)

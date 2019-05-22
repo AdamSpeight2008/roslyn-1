@@ -5,6 +5,7 @@ Imports System.Collections.Immutable
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.PooledObjects
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -17,17 +18,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' </summary>
     Friend Class DataFlowsOutWalker
         Inherits AbstractRegionDataFlowPass
+        Implements IDisposable
 
         Private ReadOnly _dataFlowsIn As ImmutableArray(Of ISymbol)
-        Private ReadOnly _originalUnassigned As HashSet(Of Symbol)
-        Private ReadOnly _dataFlowsOut As New HashSet(Of Symbol)()
+        Private ReadOnly _originalUnassigned As PooledHashSet(Of Symbol)
+        Private ReadOnly _dataFlowsOut As PooledHashSet(Of Symbol) = s_pool.Allocate()
 #If DEBUG Then
         ' we'd like to ensure that only variables get returned in DataFlowsOut that were assigned to inside the region.
-        Private ReadOnly _assignedInside As HashSet(Of Symbol) = New HashSet(Of Symbol)()
+        Private ReadOnly _assignedInside As PooledHashSet(Of Symbol) = s_pool.Allocate()
 #End If
-
         Private Sub New(info As FlowAnalysisInfo, region As FlowAnalysisRegionInfo,
-                unassignedVariables As HashSet(Of Symbol), originalUnassigned As HashSet(Of Symbol), dataFlowsIn As ImmutableArray(Of ISymbol))
+                unassignedVariables As PooledHashSet(Of Symbol), originalUnassigned As PooledHashSet(Of Symbol), dataFlowsIn As ImmutableArray(Of ISymbol))
 
             MyBase.New(info, region, unassignedVariables, trackUnassignments:=True, trackStructsWithIntrinsicTypedFields:=True)
 
@@ -36,10 +37,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Friend Overloads Shared Function Analyze(info As FlowAnalysisInfo, region As FlowAnalysisRegionInfo,
-                                                 unassignedVariables As HashSet(Of Symbol), dataFlowsIn As ImmutableArray(Of ISymbol)) As HashSet(Of Symbol)
+                                                 unassignedVariables As PooledHashSet(Of Symbol), dataFlowsIn As ImmutableArray(Of ISymbol)) As PooledHashSet(Of Symbol)
 
             ' remove static locals from unassigned, otherwise they will never reach ReportUnassigned(...)
-            Dim unassignedWithoutStatic As New HashSet(Of Symbol)
+            Dim unassignedWithoutStatic = s_pool.Allocate()
             For Each var In unassignedVariables
                 If var.Kind <> SymbolKind.Local OrElse Not DirectCast(var, LocalSymbol).IsStatic Then
                     unassignedWithoutStatic.Add(var)
@@ -55,9 +56,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Debug.Assert(Not success OrElse Not result.Any(Function(variable) Not walker._assignedInside.Contains(variable)))
 #End If
 
-                Return If(success, result, New HashSet(Of Symbol)())
+                Return If(success, result, s_pool.Allocate())
             Finally
                 walker.Free()
+                unassignedVariables.Free()
             End Try
         End Function
 
@@ -199,6 +201,42 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 MyBase.AssignLocalOnDeclaration(local, node)
             End If
         End Sub
+
+#Region "IDisposable Support"
+        Private disposedValue As Boolean ' To detect redundant calls
+
+        ' IDisposable
+        Protected Overridable Sub Dispose(disposing As Boolean)
+            If Not disposedValue Then
+                If disposing Then
+                   _originalUnassigned?.Free()
+                   _dataFlowsOut?.Free()
+#If DEBUG Then
+      _assignedInside?.Free()
+                    #End If
+                End If
+
+                ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
+                ' TODO: set large fields to null.
+            End If
+            disposedValue = True
+        End Sub
+
+        ' TODO: override Finalize() only if Dispose(disposing As Boolean) above has code to free unmanaged resources.
+        'Protected Overrides Sub Finalize()
+        '    ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+        '    Dispose(False)
+        '    MyBase.Finalize()
+        'End Sub
+
+        ' This code added by Visual Basic to correctly implement the disposable pattern.
+        Public Sub Dispose() Implements IDisposable.Dispose
+            ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            Dispose(True)
+            ' TODO: uncomment the following line if Finalize() is overridden above.
+            ' GC.SuppressFinalize(Me)
+        End Sub
+#End Region
 
     End Class
 

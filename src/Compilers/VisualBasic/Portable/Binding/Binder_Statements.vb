@@ -133,7 +133,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 Case SyntaxKind.EmptyStatement
                     Return New BoundNoOpStatement(node)
-
                 Case SyntaxKind.SubBlock,
                      SyntaxKind.FunctionBlock,
                      SyntaxKind.ConstructorBlock,

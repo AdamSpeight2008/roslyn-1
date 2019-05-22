@@ -16,10 +16,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Friend MustInherit Class AbstractRegionDataFlowPass
         Inherits DataFlowPass
 
-        Friend Sub New(info As FlowAnalysisInfo, region As FlowAnalysisRegionInfo,
-                       Optional initiallyAssignedVariables As HashSet(Of Symbol) = Nothing,
-                       Optional trackUnassignments As Boolean = False,
-                       Optional trackStructsWithIntrinsicTypedFields As Boolean = False)
+        Friend Sub New(
+                        info    As FlowAnalysisInfo,
+                        region  As FlowAnalysisRegionInfo,
+               Optional initiallyAssignedVariables As HashSet(Of Symbol) = Nothing,
+               Optional trackUnassignments As Boolean = False,
+               Optional trackStructsWithIntrinsicTypedFields As Boolean = False
+                      )
 
             MyBase.New(info, region, False, initiallyAssignedVariables, trackUnassignments, trackStructsWithIntrinsicTypedFields)
         End Sub
@@ -44,18 +47,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Property
 
         Public Overrides Function VisitParameter(node As BoundParameter) As BoundNode
-            If node.ParameterSymbol.ContainingSymbol.IsQueryLambdaMethod Then
-                Return Nothing
-            End If
-
+            If node.ParameterSymbol.ContainingSymbol.IsQueryLambdaMethod Then Return Nothing
             Return MyBase.VisitParameter(node)
         End Function
 
         Protected Overrides Function CreateLocalSymbolForVariables(declarations As ImmutableArray(Of BoundLocalDeclaration)) As LocalSymbol
-            If declarations.Length = 1 Then
-                Return declarations(0).LocalSymbol
-            End If
-
+            If declarations.Length = 1 Then Return declarations(0).LocalSymbol
             Dim locals(declarations.Length - 1) As LocalSymbol
             For i = 0 To declarations.Length - 1
                 locals(i) = declarations(i).LocalSymbol

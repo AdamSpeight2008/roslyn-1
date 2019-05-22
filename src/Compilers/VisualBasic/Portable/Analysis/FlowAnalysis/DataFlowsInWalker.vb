@@ -4,6 +4,7 @@ Imports System.Collections.Generic
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.PooledObjects
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -16,6 +17,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' </summary>
     Friend Class DataFlowsInWalker
         Inherits AbstractRegionDataFlowPass
+        Implements IDisposable
 
         ' TODO: normalize the result by removing variables that are unassigned in an unmodified flow analysis.
         Private Sub New(info As FlowAnalysisInfo, region As FlowAnalysisRegionInfo, unassignedVariables As HashSet(Of Symbol))
@@ -45,7 +47,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Try
         End Function
 
-        Private ReadOnly _dataFlowsIn As HashSet(Of Symbol) = New HashSet(Of Symbol)()
+        Private ReadOnly _dataFlowsIn As PooledHashSet(Of Symbol) = s_pool.Allocate()
 
         Private Function ResetState(state As LocalState) As LocalState
             Dim unreachable As Boolean = Not state.Reachable
@@ -138,6 +140,32 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 MyBase.AssignLocalOnDeclaration(local, node)
             End If
         End Sub
+
+#Region "IDisposable Support"
+        Private disposedValue As Boolean ' To detect redundant calls
+
+        ' IDisposable
+        Protected Overridable Sub Dispose(disposing As Boolean)
+            If Not disposedValue Then
+                If disposing Then
+                    ' TODO: dispose managed state (managed objects).
+                    _dataFlowsIn.Free()
+                End If
+
+                ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
+                ' TODO: set large fields to null.
+            End If
+            disposedValue = True
+        End Sub
+
+        ' This code added by Visual Basic to correctly implement the disposable pattern.
+        Public Sub Dispose() Implements IDisposable.Dispose
+            ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            Dispose(True)
+            ' TODO: uncomment the following line if Finalize() is overridden above.
+            ' GC.SuppressFinalize(Me)
+        End Sub
+#End Region
 
     End Class
 

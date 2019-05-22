@@ -3,6 +3,7 @@
 Imports System.Reflection
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
+
     Partial Friend Class SymbolDisplayVisitor
 
         Protected Overrides Sub AddBitwiseOr()
@@ -41,5 +42,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 AddKeyword(SyntaxKind.NothingKeyword)
             End If
         End Sub
+
     End Class
+
 End Namespace

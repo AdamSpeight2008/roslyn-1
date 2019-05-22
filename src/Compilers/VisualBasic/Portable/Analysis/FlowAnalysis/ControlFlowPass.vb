@@ -33,9 +33,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Protected Overrides Sub Visit(node As BoundNode, dontLeaveRegion As Boolean)
             ' Expressions must be visited if regions can be on expression boundaries. 
-            If Not (TypeOf node Is BoundExpression) Then
-                MyBase.Visit(node, dontLeaveRegion)
-            End If
+            If TypeOf node IsNot BoundExpression Then MyBase.Visit(node, dontLeaveRegion)
         End Sub
 
         ''' <summary>
@@ -53,9 +51,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Try
                 walker.Analyze()
-                If diagnostics IsNot Nothing Then
-                    diagnostics.AddRange(walker.diagnostics)
-                End If
+                If diagnostics IsNot Nothing Then diagnostics.AddRange(walker.diagnostics)
                 Return walker.State.Alive
             Catch ex As CancelledByStackGuardException When diagnostics IsNot Nothing
                 ex.AddAnError(diagnostics)
@@ -120,7 +116,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 MyBase.VisitTryBlock(tryBlock, node, tryState)
 
             Else
-                Dim oldPendings As SavedPending = Me.SavePending()
+                Dim oldPendings As SavedPending = SavePending()
                 MyBase.VisitTryBlock(tryBlock, node, tryState)
 
                 ' NOTE: C# generates errors for 'yield return' inside try statement here;
@@ -131,19 +127,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Protected Overrides Sub VisitCatchBlock(node As BoundCatchBlock, ByRef finallyState As LocalState)
-            Dim oldPendings As SavedPending = Me.SavePending()
+            Dim oldPendings As SavedPending = SavePending()
             MyBase.VisitCatchBlock(node, finallyState)
 
-            For Each branch In Me.PendingBranches
-                if branch.Branch.Kind = BoundKind.YieldStatement
-                    Me.diagnostics.Add(ERRID.ERR_BadYieldInTryHandler, branch.Branch.Syntax.GetLocation)
-                End If
+            For Each branch In PendingBranches
+                if branch.Branch.Kind = BoundKind.YieldStatement Then diagnostics.Add(ERRID.ERR_BadYieldInTryHandler, branch.Branch.Syntax.GetLocation)
             Next
 
             ' NOTE: VB generates error ERR_GotoIntoTryHandler in binding, but
             '       we still want to 'nest' pendings' state for catch statements
 
-            Me.RestorePending(oldPendings)
+            RestorePending(oldPendings)
         End Sub
 
         Protected Overrides Sub VisitFinallyBlock(finallyBlock As BoundStatement, ByRef endState As LocalState)
@@ -151,7 +145,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim oldPending2 As SavedPending = SavePending() ' track only the branches out of the finally block
             MyBase.VisitFinallyBlock(finallyBlock, endState)
             RestorePending(oldPending2) ' resolve branches that remain within the finally block
-            For Each branch In Me.PendingBranches
+            For Each branch In PendingBranches
 
                 Dim syntax = branch.Branch.Syntax
                 Dim errorLocation As SyntaxNodeOrToken
@@ -172,7 +166,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 End If
 
-                Me.diagnostics.Add(errId, errorLocation.GetLocation())
+                diagnostics.Add(errId, errorLocation.GetLocation())
             Next
 
             RestorePending(oldPending1)

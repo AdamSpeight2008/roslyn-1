@@ -27,7 +27,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If method.IsImplicitlyDeclared AndAlso method.AssociatedSymbol IsNot Nothing AndAlso
                method.AssociatedSymbol.IsMyGroupCollectionProperty Then
-                diagBag = DiagnosticBag.GetInstance()
+               diagBag = DiagnosticBag.GetInstance()
             End If
 
             FlowAnalysisPass.Analyze(method, body, diagBag)

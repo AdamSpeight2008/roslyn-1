@@ -19,7 +19,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Shared Sub Analyze(method As MethodSymbol, block As BoundBlock, diagnostics As DiagnosticBag)
             Dim compilation = method.DeclaringCompilation
             Dim sourceMethod As SourceMethodSymbol = TryCast(method, SourceMethodSymbol)
-            Analyze(compilation, method, block, diagnostics)
+            Analyze(compilation, sourceMethod, block, diagnostics)
         End Sub
 
         Private Shared Sub Analyze(compilation As VisualBasicCompilation, method As MethodSymbol, block As BoundBlock, diagnostics As DiagnosticBag)

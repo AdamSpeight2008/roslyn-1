@@ -19,8 +19,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Protected Overrides Function IntersectWith(ByRef self As LocalState, ByRef other As LocalState) As Boolean
             If self.Reachable = other.Reachable Then
                 If self.Assigned.Capacity <> other.Assigned.Capacity Then
-                    Me.Normalize(self)
-                    Me.Normalize(other)
+                    Normalize(self)
+                    Normalize(other)
                 End If
                 Return IntersectBitArrays(self.Assigned, other.Assigned)
 
@@ -125,7 +125,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ''' </summary>
             ''' <returns></returns>
             Public Function Clone() As LocalState Implements AbstractFlowPass(Of LocalState).AbstractLocalState.Clone
-                Return New LocalState(Me.Assigned.Clone())
+                Return New LocalState(Assigned.Clone())
             End Function
 
             Public Function IsAssigned(slot As Integer) As Boolean
@@ -135,20 +135,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Function
 
             Public Sub Assign(slot As Integer)
-                If slot <> SlotKind.NotTracked Then
-                    Me.Assigned(slot) = True
-                End If
+                If slot <> SlotKind.NotTracked Then Assigned(slot) = True
             End Sub
 
             Public Sub Unassign(slot As Integer)
-                If slot <> SlotKind.NotTracked Then
-                    Me.Assigned(slot) = False
-                End If
+                If slot <> SlotKind.NotTracked Then Assigned(slot) = False
             End Sub
 
             Public ReadOnly Property Reachable As Boolean
                 Get
-                    Return Me.Assigned.Capacity <= 0 OrElse Not Me.IsAssigned(SlotKind.Unreachable)
+                    Return Assigned.Capacity <= 0 OrElse Not IsAssigned(SlotKind.Unreachable)
                 End Get
             End Property
 

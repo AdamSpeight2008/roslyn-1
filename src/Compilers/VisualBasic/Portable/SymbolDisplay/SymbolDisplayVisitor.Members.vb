@@ -37,8 +37,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                Not IsEnumMember(symbol) Then
 
                 AddSpace()
-                AddKeyword(SyntaxKind.AsKeyword)
-                AddSpace()
+                AddKeyword(SyntaxKind.AsKeyword, True)
 
                 symbol.Type.Accept(Me.NotFirstVisitor())
 
@@ -51,8 +50,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 symbol.HasConstantValue Then
 
                 AddSpace()
-                AddPunctuation(SyntaxKind.EqualsToken)
-                AddSpace()
+                AddPunctuation(SyntaxKind.EqualsToken, True)
                 AddConstantValue(symbol.Type, symbol.ConstantValue, preferNumericValueOrExpandedFlagsForEnum:=IsEnumMember(symbol))
             End If
         End Sub
@@ -63,17 +61,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If format.PropertyStyle = SymbolDisplayPropertyStyle.ShowReadWriteDescriptor Then
                 If (symbol.IsReadOnly) Then
-                    AddKeyword(SyntaxKind.ReadOnlyKeyword)
-                    AddSpace()
+                    AddKeyword(SyntaxKind.ReadOnlyKeyword, True)
                 ElseIf (symbol.IsWriteOnly) Then
-                    AddKeyword(SyntaxKind.WriteOnlyKeyword)
-                    AddSpace()
+                    AddKeyword(SyntaxKind.WriteOnlyKeyword, True)
                 End If
             End If
 
             If format.MemberOptions.IncludesOption(SymbolDisplayMemberOptions.IncludeModifiers) AndAlso symbol.IsIndexer Then
-                AddKeyword(SyntaxKind.DefaultKeyword)
-                AddSpace()
+                AddKeyword(SyntaxKind.DefaultKeyword, True)
             End If
 
             If symbol.ReturnsByRef AndAlso format.MemberOptions.IncludesOption(SymbolDisplayMemberOptions.IncludeRef) Then
@@ -84,12 +79,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If format.KindOptions.IncludesOption(SymbolDisplayKindOptions.IncludeMemberKeyword) Then
                 If IsWithEventsProperty(symbol) Then
-                    AddKeyword(SyntaxKind.WithEventsKeyword)
+                    AddKeyword(SyntaxKind.WithEventsKeyword, True)
                 Else
-                    AddKeyword(SyntaxKind.PropertyKeyword)
+                    AddKeyword(SyntaxKind.PropertyKeyword, True)
                 End If
-
-                AddSpace()
             End If
 
             Dim includedContainingType = False
@@ -111,9 +104,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If format.MemberOptions.IncludesOption(SymbolDisplayMemberOptions.IncludeType) Then
                 AddSpace()
-                AddKeyword(SyntaxKind.AsKeyword)
-                AddSpace()
-                symbol.Type.Accept(Me.NotFirstVisitor)
+                AddKeyword(SyntaxKind.AsKeyword, True)
+               symbol.Type.Accept(Me.NotFirstVisitor)
 
                 AddCustomModifiersIfRequired(symbol.TypeCustomModifiers)
             End If
@@ -124,8 +116,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             AddMemberModifiersIfRequired(symbol)
 
             If format.KindOptions.IncludesOption(SymbolDisplayKindOptions.IncludeMemberKeyword) Then
-                AddKeyword(SyntaxKind.EventKeyword)
-                AddSpace()
+                AddKeyword(SyntaxKind.EventKeyword, True)
             End If
 
             Dim visitedParents As Boolean = False
@@ -151,8 +142,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     'events with parameters - no need for return type here
                 Else
                     AddSpace()
-                    AddKeyword(SyntaxKind.AsKeyword)
-                    AddSpace()
+                    AddKeyword(SyntaxKind.AsKeyword, True)
                     symbol.Type.Accept(Me.NotFirstVisitor)
                 End If
             End If
@@ -205,29 +195,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If format.KindOptions.IncludesOption(SymbolDisplayKindOptions.IncludeMemberKeyword) Then
                 Select Case symbol.MethodKind
                     Case MethodKind.Constructor, MethodKind.StaticConstructor
-                        AddKeyword(SyntaxKind.SubKeyword)
-                        AddSpace()
+                        AddKeyword(SyntaxKind.SubKeyword, True)
 
                     Case MethodKind.PropertyGet
                         If format.CompilerInternalOptions.IncludesOption(SymbolDisplayCompilerInternalOptions.UseMetadataMethodNames) Then
-                            AddKeyword(SyntaxKind.FunctionKeyword)
-                            AddSpace()
+                            AddKeyword(SyntaxKind.FunctionKeyword, True)
                         Else
-                            AddKeyword(SyntaxKind.PropertyKeyword)
-                            AddSpace()
-                            AddKeyword(SyntaxKind.GetKeyword)
-                            AddSpace()
+                            AddKeyword(SyntaxKind.PropertyKeyword, True)
+                            AddKeyword(SyntaxKind.GetKeyword, True)
                         End If
 
                     Case MethodKind.PropertySet
                         If format.CompilerInternalOptions.IncludesOption(SymbolDisplayCompilerInternalOptions.UseMetadataMethodNames) Then
-                            AddKeyword(SyntaxKind.SubKeyword)
-                            AddSpace()
+                            AddKeyword(SyntaxKind.SubKeyword, True)
                         Else
-                            AddKeyword(SyntaxKind.PropertyKeyword)
-                            AddSpace()
-                            AddKeyword(SyntaxKind.SetKeyword)
-                            AddSpace()
+                            AddKeyword(SyntaxKind.PropertyKeyword, True)
+                            AddKeyword(SyntaxKind.SetKeyword, True)
                         End If
 
                     Case MethodKind.EventAdd,
@@ -235,8 +218,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         MethodKind.EventRaise
 
                         If format.CompilerInternalOptions.IncludesOption(SymbolDisplayCompilerInternalOptions.UseMetadataMethodNames) Then
-                            AddKeyword(SyntaxKind.SubKeyword)
-                            AddSpace()
+                            AddKeyword(SyntaxKind.SubKeyword, True)
                         Else
                             AddKeyword(
                                 If(
@@ -245,36 +227,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                     If(
                                         symbol.MethodKind = MethodKind.EventRemove,
                                         SyntaxKind.RemoveHandlerKeyword,
-                                        SyntaxKind.RaiseEventKeyword)))
-                            AddSpace()
-                            AddKeyword(SyntaxKind.EventKeyword)
-                            AddSpace()
+                                        SyntaxKind.RaiseEventKeyword)), True)
+                            AddKeyword(SyntaxKind.EventKeyword, True)
                         End If
 
                     Case MethodKind.Conversion
                         If format.CompilerInternalOptions.IncludesOption(SymbolDisplayCompilerInternalOptions.UseMetadataMethodNames) Then
-                            AddKeyword(SyntaxKind.FunctionKeyword)
-                            AddSpace()
+                            AddKeyword(SyntaxKind.FunctionKeyword, True)
                         Else
                             If CaseInsensitiveComparison.Equals(symbol.Name, WellKnownMemberNames.ImplicitConversionName) Then
-                                AddKeyword(SyntaxKind.WideningKeyword)
-                                AddSpace()
+                                AddKeyword(SyntaxKind.WideningKeyword, True)
                             Else
-                                AddKeyword(SyntaxKind.NarrowingKeyword)
-                                AddSpace()
+                                AddKeyword(SyntaxKind.NarrowingKeyword, True)
                             End If
 
-                            AddKeyword(SyntaxKind.OperatorKeyword)
-                            AddSpace()
-                        End If
+                            AddKeyword(SyntaxKind.OperatorKeyword, True)
+                         End If
 
                     Case MethodKind.UserDefinedOperator, MethodKind.BuiltinOperator
                         If format.CompilerInternalOptions.IncludesOption(SymbolDisplayCompilerInternalOptions.UseMetadataMethodNames) Then
-                            AddKeyword(SyntaxKind.FunctionKeyword)
-                            AddSpace()
+                            AddKeyword(SyntaxKind.FunctionKeyword, True)
                         Else
-                            AddKeyword(SyntaxKind.OperatorKeyword)
-                            AddSpace()
+                            AddKeyword(SyntaxKind.OperatorKeyword, True)
                         End If
 
                     Case MethodKind.Ordinary,
@@ -283,11 +257,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                          MethodKind.AnonymousFunction
 
                         If symbol.ReturnsVoid Then
-                            AddKeyword(SyntaxKind.SubKeyword)
-                            AddSpace()
-                        Else
-                            AddKeyword(SyntaxKind.FunctionKeyword)
-                            AddSpace()
+                            AddKeyword(SyntaxKind.SubKeyword, True)
+                         Else
+                            AddKeyword(SyntaxKind.FunctionKeyword, True)
                         End If
 
                     Case Else
@@ -399,8 +371,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Case Else
                         If Not method.ReturnsVoid Then
                             AddSpace()
-                            AddKeyword(SyntaxKind.AsKeyword)
-                            AddSpace()
+                            AddKeyword(SyntaxKind.AsKeyword, True)
                             method.ReturnType.Accept(Me.NotFirstVisitor())
                         End If
                 End Select
@@ -420,23 +391,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 Select Case data.CharacterSet
                     Case Cci.Constants.CharSet_None, CharSet.Ansi
-                        AddKeyword(SyntaxKind.AnsiKeyword)
-                        AddSpace()
+                        AddKeyword(SyntaxKind.AnsiKeyword, True)
 
                     Case Cci.Constants.CharSet_Auto
-                        AddKeyword(SyntaxKind.AutoKeyword)
-                        AddSpace()
+                        AddKeyword(SyntaxKind.AutoKeyword, True)
 
                     Case CharSet.Unicode
-                        AddKeyword(SyntaxKind.UnicodeKeyword)
-                        AddSpace()
+                        AddKeyword(SyntaxKind.UnicodeKeyword, True)
 
                     Case Else
                         Throw ExceptionUtilities.UnexpectedValue(data.CharacterSet)
                 End Select
 
-                AddKeyword(If(method.ReturnsVoid, SyntaxKind.SubKeyword, SyntaxKind.FunctionKeyword))
-                AddSpace()
+                AddKeyword(If(method.ReturnsVoid, SyntaxKind.SubKeyword, SyntaxKind.FunctionKeyword), True)
             End If
 
             AddMethodName(method)
@@ -446,8 +413,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 If data.ModuleName IsNot Nothing Then
                     AddSpace()
-                    AddKeyword(SyntaxKind.LibKeyword)
-                    AddSpace()
+                    AddKeyword(SyntaxKind.LibKeyword, True)
 
                     builder.Add(CreatePart(SymbolDisplayPartKind.StringLiteral, Nothing, Quote(data.ModuleName), noEscaping:=True))
                     spaceNeeded = True
@@ -455,8 +421,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 If data.EntryPointName IsNot Nothing Then
                     AddSpace()
-                    AddKeyword(SyntaxKind.AliasKeyword)
-                    AddSpace()
+                    AddKeyword(SyntaxKind.AliasKeyword, True)
 
                     builder.Add(CreatePart(SymbolDisplayPartKind.StringLiteral, Nothing, Quote(data.EntryPointName), noEscaping:=True))
                     spaceNeeded = True
@@ -473,7 +438,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Private Shared Function Quote(str As String) As String
-            Return """"c & str.Replace("""", """""") & """"c
+            Return CharInfo.DoubleQuote & str.Replace(CharInfo.DoubleQuote, CharInfo.DoubleQuoteDoubleQuote) & CharInfo.DoubleQuote
         End Function
 
         Public Overrides Sub VisitParameter(symbol As IParameterSymbol)
@@ -486,15 +451,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If format.ParameterOptions.IncludesOption(SymbolDisplayParameterOptions.IncludeParamsRefOut) Then
                 If symbol.RefKind <> RefKind.None AndAlso IsExplicitByRefParameter(symbol) Then
-                    AddKeyword(SyntaxKind.ByRefKeyword)
-                    AddSpace()
-
+                    AddKeyword(SyntaxKind.ByRefKeyword, True)
                     AddCustomModifiersIfRequired(symbol.RefCustomModifiers, leadingSpace:=False, trailingSpace:=True)
                 End If
 
                 If symbol.IsParams Then
-                    AddKeyword(SyntaxKind.ParamArrayKeyword)
-                    AddSpace()
+                    AddKeyword(SyntaxKind.ParamArrayKeyword, True)
                 End If
             End If
 
@@ -506,8 +468,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If format.ParameterOptions.IncludesOption(SymbolDisplayParameterOptions.IncludeType) Then
                 If format.ParameterOptions.IncludesOption(SymbolDisplayParameterOptions.IncludeName) Then
                     AddSpace()
-                    AddKeyword(SyntaxKind.AsKeyword)
-                    AddSpace()
+                    AddKeyword(SyntaxKind.AsKeyword, True)
                 End If
 
                 symbol.Type.Accept(Me.NotFirstVisitor())
@@ -516,9 +477,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If format.ParameterOptions.IncludesOption(SymbolDisplayParameterOptions.IncludeDefaultValue) AndAlso symbol.HasExplicitDefaultValue Then
                 AddSpace()
-                AddPunctuation(SyntaxKind.EqualsToken)
-                AddSpace()
-
+                AddPunctuation(SyntaxKind.EqualsToken, True)
                 AddConstantValue(symbol.Type, symbol.ExplicitDefaultValue)
             End If
 
@@ -529,7 +488,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
         End Sub
 
-        Private Sub AddCustomModifiersIfRequired(customModifiers As ImmutableArray(Of CustomModifier), Optional leadingSpace As Boolean = True, Optional trailingSpace As Boolean = False)
+        Private Sub AddCustomModifiersIfRequired(
+                                                  customModifiers As ImmutableArray(Of CustomModifier),
+                                         Optional leadingSpace    As Boolean = True,
+                                         Optional trailingSpace As Boolean = False
+                                                )
             If Me.format.CompilerInternalOptions.IncludesOption(SymbolDisplayCompilerInternalOptions.IncludeCustomModifiers) AndAlso Not customModifiers.IsEmpty Then
                 Const IL_KEYWORD_MODOPT = "modopt"
                 Const IL_KEYWORD_MODREQ = "modreq"
@@ -556,15 +519,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private Sub AddFieldModifiersIfRequired(symbol As IFieldSymbol)
             If format.MemberOptions.IncludesOption(SymbolDisplayMemberOptions.IncludeModifiers) AndAlso Not IsEnumMember(symbol) Then
-                If symbol.IsConst Then
-                    AddKeyword(SyntaxKind.ConstKeyword)
-                    AddSpace()
-                End If
-
-                If symbol.IsReadOnly Then
-                    AddKeyword(SyntaxKind.ReadOnlyKeyword)
-                    AddSpace()
-                End If
+                If symbol.IsConst Then AddKeyword(SyntaxKind.ConstKeyword, True)
+                If symbol.IsReadOnly Then AddKeyword(SyntaxKind.ReadOnlyKeyword, True)
             End If
         End Sub
 
@@ -581,55 +537,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                    (containingType Is Nothing OrElse containingType.TypeKind <> TypeKind.Module) AndAlso
                    Not isConst Then
 
-                    AddKeyword(SyntaxKind.SharedKeyword)
-                    AddSpace()
+                    AddKeyword(SyntaxKind.SharedKeyword, True)
                 End If
 
                 ' WithEvents visualize as if they are fields.
                 If Not IsWithEventsProperty(symbol) Then
-                    If symbol.IsAbstract Then
-                        AddKeyword(SyntaxKind.MustOverrideKeyword)
-                        AddSpace()
-                    End If
-
-                    If symbol.IsSealed Then
-                        AddKeyword(SyntaxKind.NotOverridableKeyword)
-                        AddSpace()
-                    End If
-
-                    If symbol.IsVirtual Then
-                        AddKeyword(SyntaxKind.OverridableKeyword)
-                        AddSpace()
-                    End If
-
+                    If symbol.IsAbstract Then AddKeyword(SyntaxKind.MustOverrideKeyword, True)
+                    If symbol.IsSealed   Then AddKeyword(SyntaxKind.NotOverridableKeyword, True)
+                    If symbol.IsVirtual  Then AddKeyword(SyntaxKind.OverridableKeyword, True)
                     ' Overloads is only available for VisualBasic symbols.
-                    If IsOverloads(symbol) AndAlso Not symbol.IsOverride Then
-                        AddKeyword(SyntaxKind.OverloadsKeyword)
-                        AddSpace()
-                    End If
-
-                    If symbol.IsOverride Then
-                        AddKeyword(SyntaxKind.OverridesKeyword)
-                        AddSpace()
-                    End If
+                    If IsOverloads(symbol) AndAlso Not symbol.IsOverride Then AddKeyword(SyntaxKind.OverloadsKeyword, True)
+                    If symbol.IsOverride Then AddKeyword(SyntaxKind.OverridesKeyword, True)
                 End If
             End If
         End Sub
 
         Private Sub AddParametersIfRequired(isExtensionMethod As Boolean, parameters As ImmutableArray(Of IParameterSymbol))
-            If format.ParameterOptions = SymbolDisplayParameterOptions.None Then
-                Return
-            End If
+            If format.ParameterOptions = SymbolDisplayParameterOptions.None Then Return
 
             Dim first As Boolean = True
             For Each param In parameters
-                If Not first Then
-                    AddPunctuation(SyntaxKind.CommaToken)
-                    AddSpace()
-                End If
-
+                If Not first Then AddPunctuation(SyntaxKind.CommaToken, True)
                 first = False
-                param.Accept(Me.NotFirstVisitor())
+                param.Accept(NotFirstVisitor())
             Next
         End Sub
 

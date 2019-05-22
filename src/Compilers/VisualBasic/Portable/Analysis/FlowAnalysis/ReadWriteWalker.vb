@@ -6,6 +6,7 @@ Imports System.Diagnostics
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.PooledObjects
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' <summary>
@@ -13,33 +14,38 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' </summary>
     Friend Class ReadWriteWalker
         Inherits AbstractRegionDataFlowPass
+        Implements IDisposable
 
-        Friend Overloads Shared Sub Analyze(info As FlowAnalysisInfo, region As FlowAnalysisRegionInfo,
-                                            ByRef readInside As IEnumerable(Of Symbol),
-                                            ByRef writtenInside As IEnumerable(Of Symbol),
-                                            ByRef readOutside As IEnumerable(Of Symbol),
-                                            ByRef writtenOutside As IEnumerable(Of Symbol),
-                                            ByRef captured As IEnumerable(Of Symbol),
-                                            ByRef capturedInside As IEnumerable(Of Symbol),
-                                            ByRef capturedOutside As IEnumerable(Of Symbol))
 
-            Dim walker = New ReadWriteWalker(info, region)
+        Friend Overloads Shared Sub Analyze _ 
+            ( info              As FlowAnalysisInfo,
+              region            As FlowAnalysisRegionInfo,
+        ByRef readInside        As IEnumerable(Of Symbol),
+        ByRef writtenInside     As IEnumerable(Of Symbol),
+        ByRef readOutside       As IEnumerable(Of Symbol),
+        ByRef writtenOutside    As IEnumerable(Of Symbol),
+        ByRef captured          As IEnumerable(Of Symbol),
+        ByRef capturedInside    As IEnumerable(Of Symbol),
+        ByRef capturedOutside   As IEnumerable(Of Symbol)
+            )
+
+            Dim walker As New ReadWriteWalker(info, region)
             Try
                 If walker.Analyze() Then
-                    readInside = walker._readInside
-                    writtenInside = walker._writtenInside
-                    readOutside = walker._readOutside
-                    writtenOutside = walker._writtenOutside
-                    captured = walker._captured
-                    capturedInside = walker._capturedInside
+                    readInside      = walker._readInside
+                    writtenInside   = walker._writtenInside
+                    readOutside     = walker._readOutside
+                    writtenOutside  = walker._writtenOutside
+                    captured        = walker._captured
+                    capturedInside  = walker._capturedInside
                     capturedOutside = walker._capturedOutside
                 Else
-                    readInside = Enumerable.Empty(Of Symbol)()
-                    writtenInside = readInside
-                    readOutside = readInside
-                    writtenOutside = readInside
-                    captured = readInside
-                    capturedInside = readInside
+                    readInside      = Enumerable.Empty(Of Symbol)()
+                    writtenInside   = readInside
+                    readOutside     = readInside
+                    writtenOutside  = readInside
+                    captured        = readInside
+                    capturedInside  = readInside
                     capturedOutside = readInside
                 End If
             Finally
@@ -47,13 +53,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Try
         End Sub
 
-        Private ReadOnly _readInside As HashSet(Of Symbol) = New HashSet(Of Symbol)()
-        Private ReadOnly _writtenInside As HashSet(Of Symbol) = New HashSet(Of Symbol)()
-        Private ReadOnly _readOutside As HashSet(Of Symbol) = New HashSet(Of Symbol)()
-        Private ReadOnly _writtenOutside As HashSet(Of Symbol) = New HashSet(Of Symbol)()
-        Private ReadOnly _captured As HashSet(Of Symbol) = New HashSet(Of Symbol)()
-        Private ReadOnly _capturedInside As HashSet(Of Symbol) = New HashSet(Of Symbol)()
-        Private ReadOnly _capturedOutside As HashSet(Of Symbol) = New HashSet(Of Symbol)()
+        Private ReadOnly _readInside        As PooledHashSet(Of Symbol) = s_pool.Allocate()
+        Private ReadOnly _writtenInside     As PooledHashSet(Of Symbol) = s_pool.Allocate()
+        Private ReadOnly _readOutside       As PooledHashSet(Of Symbol) = s_pool.Allocate()
+        Private ReadOnly _writtenOutside    As PooledHashSet(Of Symbol) = s_pool.Allocate()
+        Private ReadOnly _captured          As PooledHashSet(Of Symbol) = s_pool.Allocate()
+        Private ReadOnly _capturedInside    As PooledHashSet(Of Symbol) = s_pool.Allocate()
+        Private ReadOnly _capturedOutside   As PooledHashSet(Of Symbol) = s_pool.Allocate()
 
         Private _currentMethodOrLambda As Symbol
         Private _currentQueryLambda As BoundQueryLambda
@@ -121,7 +127,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             NoteReceiverReadOrWritten(fieldAccess, Me._writtenInside)
         End Sub
 
-        Private Sub NoteReceiverReadOrWritten(fieldAccess As BoundFieldAccess, readOrWritten As HashSet(Of Symbol))
+        Private Sub NoteReceiverReadOrWritten(fieldAccess As BoundFieldAccess, readOrWritten As PooledHashSet(Of Symbol))
             If fieldAccess.FieldSymbol.IsShared Then Return
             If fieldAccess.FieldSymbol.ContainingType.IsReferenceType Then Return
             Dim receiver = fieldAccess.ReceiverOpt
@@ -222,6 +228,38 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             MyBase.New(info, region)
             _currentMethodOrLambda = symbol
         End Sub
+
+#Region "IDisposable Support"
+        Private disposedValue As Boolean ' To detect redundant calls
+
+        ' IDisposable
+        Protected Overridable Sub Dispose(disposing As Boolean)
+            If Not disposedValue Then
+                If disposing Then
+                    ' TODO: dispose managed state (managed objects).
+                    _readInside.Free()
+                    _writtenInside.Free()
+                    _readOutside.Free()
+                    _writtenOutside.Free()
+                    _captured.Free()
+                    _capturedInside.Free()
+                    _capturedOutside.Free()
+                End If
+
+                ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
+                ' TODO: set large fields to null.
+            End If
+            disposedValue = True
+        End Sub
+
+        ' This code added by Visual Basic to correctly implement the disposable pattern.
+        Public Sub Dispose() Implements IDisposable.Dispose
+            ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            Dispose(True)
+            ' TODO: uncomment the following line if Finalize() is overridden above.
+            ' GC.SuppressFinalize(Me)
+        End Sub
+#End Region
 
     End Class
 

@@ -29,6 +29,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BasicVSResources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Options\AdvancedOptionPage.vb" />
     <Compile Update="Options\AdvancedOptionPageControl.xaml.vb">
       <DependentUpon>AdvancedOptionPageControl.xaml</DependentUpon>
     </Compile>
@@ -91,9 +92,13 @@
     <Folder Include="My Project\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Options\Formatting\CodeStylePage.vb" />
+    <Compile Update="Options\IntelliSenseOptionPage.vb" />
     <Compile Update="Options\IntelliSenseOptionPageControl.xaml.vb">
       <DependentUpon>IntelliSenseOptionPageControl.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Options\NamingStylesOptionPage.vb" />
+    <Compile Update="Options\StyleOptionPage.vb" />
     <Content Include="VisualBasicPackageRegistration.pkgdef" />
   </ItemGroup>
 </Project>

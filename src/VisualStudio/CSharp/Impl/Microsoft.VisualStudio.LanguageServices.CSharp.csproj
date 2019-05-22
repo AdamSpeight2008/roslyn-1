@@ -59,15 +59,24 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CSharpVSResources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Options\AdvancedOptionPage.cs" />
     <Compile Update="Options\AdvancedOptionPageControl.xaml.cs">
       <DependentUpon>AdvancedOptionPageControl.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Options\Formatting\CodeStylePage.cs" />
+    <Compile Update="Options\Formatting\FormattingIndentationOptionPage.cs" />
+    <Compile Update="Options\Formatting\FormattingNewLinesPage.cs" />
+    <Compile Update="Options\Formatting\FormattingOptionPage.cs" />
     <Compile Update="Options\Formatting\FormattingOptionPageControl.xaml.cs">
       <DependentUpon>FormattingOptionPageControl.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Options\Formatting\FormattingSpacingPage.cs" />
+    <Compile Update="Options\Formatting\FormattingWrappingPage.cs" />
+    <Compile Update="Options\IntelliSenseOptionPage.cs" />
     <Compile Update="Options\IntelliSenseOptionPageControl.xaml.cs">
       <DependentUpon>IntelliSenseOptionPageControl.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Options\NamingStylesOptionPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="CSharpVSResources.resx">
