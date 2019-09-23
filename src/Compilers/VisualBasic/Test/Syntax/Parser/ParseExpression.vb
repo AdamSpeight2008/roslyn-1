@@ -255,6 +255,19 @@ Public Class ParseExpressionTest
         ParseExpression("TypeOf a is b")
         ParseExpression(<Text>TypeOf a is 
                                        b</Text>)
+        ParseExpression("TypeOf a isnot b")
+        ParseExpression(<Text>TypeOf a isnot 
+                                       b</Text>)
+    End Sub
+
+    <Fact>
+    Public Sub ParseTypeOfMany()
+        ParseExpression("TypeOf a is (Of t1, t2, t3)")
+        ParseExpression(<Text>TypeOf a is 
+                                       (Of t1, t2, t3)</Text>)
+        ParseExpression("TypeOf a isnot (Of t1, t2, t3)")
+        ParseExpression(<Text>TypeOf a isnot
+                                       (Of t1, t2, t3)</Text>)
     End Sub
 
     <Fact>
