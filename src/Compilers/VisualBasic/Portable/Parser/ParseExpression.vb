@@ -920,7 +920,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </summary>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function ParseTypeOf() As TypeOfExpressionSyntax
+        Private Function ParseTypeOf() As AbstractTypeOfExpressionSyntax
             Debug.Assert(CurrentToken.Kind = SyntaxKind.TypeOfKeyword, "must be at TypeOf.")
             Dim [typeOf] As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -953,13 +953,30 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 operatorToken = DirectCast(HandleUnexpectedToken(SyntaxKind.IsKeyword), KeywordSyntax)
             End If
 
-            Dim typeName = ParseGeneralType()
+            ' Check to see if the next token is an Of,
+            '   as this is used for indicating a type list eg (Of t1, t2, t3)
+            ' Otherwise treat it as type name.
+            If PeekNextToken.Kind = SyntaxKind.OfKeyword Then
+                dim allowEmptyGenericArguments = False
+                dim allowNonEmptyGenericArguments = True
+                Dim types = ParseGenericArguments(allowEmptyGenericArguments, allowNonEmptyGenericArguments)
 
-            Dim kind As SyntaxKind = If(operatorToken.Kind = SyntaxKind.IsNotKeyword,
-                                        SyntaxKind.TypeOfIsNotExpression,
-                                        SyntaxKind.TypeOfIsExpression)
+                Dim kind As SyntaxKind = If(operatorToken.Kind = SyntaxKind.IsNotKeyword,
+                                            SyntaxKind.TypeOfIsManyExpression,
+                                            SyntaxKind.TypeOfIsNotManyExpression)
 
-            Return SyntaxFactory.TypeOfExpression(kind, [typeOf], exp, operatorToken, typeName)
+                Return SyntaxFactory.TypeOfManyExpression(kind, [typeOf], exp, operatorToken, types)
+            Else
+                Dim typeName = ParseGeneralType()
+
+                Dim kind As SyntaxKind = If(operatorToken.Kind = SyntaxKind.IsNotKeyword,
+                                            SyntaxKind.TypeOfIsNotExpression,
+                                            SyntaxKind.TypeOfIsExpression)
+
+                Return SyntaxFactory.TypeOfExpression(kind, [typeOf], exp, operatorToken, typeName)
+            End If
+
+
         End Function
 
         ' /*********************************************************************

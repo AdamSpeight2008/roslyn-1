@@ -263,6 +263,16 @@ Public Class ParseExpressionTest
     End Sub
 
     <Fact>
+    Public Sub ParseTypeOfMany()
+        ParseExpression("TypeOf a is (Of t1, t2, t3)")
+        ParseExpression(<Text>TypeOf a is 
+                                       (Of t1, t2, t3)</Text>)
+        ParseExpression("TypeOf a isnot (Of t1, t2, t3)")
+        ParseExpression(<Text>TypeOf a isnot
+                                       (Of t1, t2, t3)</Text>)
+    End Sub
+
+    <Fact>
     Public Sub ParseGetType()
         ParseExpression("gettype(a)")
         ParseExpression("gettype(a(of ))")
