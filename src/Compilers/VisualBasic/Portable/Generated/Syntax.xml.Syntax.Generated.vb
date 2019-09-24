@@ -21601,6 +21601,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         Inherits AbstractTypeOfExpressionSyntax
 
         Friend _type as TypeSyntax
+        Friend _intoVariable as TypeOfIntoVariableSyntax
 
         Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
             MyBase.New(green, parent, startLocation)
@@ -21608,8 +21609,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, type As TypeSyntax)
-            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfExpressionSyntax(kind, errors, annotations, typeOfKeyword, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), operatorToken, DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeSyntax)), Nothing, 0)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, type As TypeSyntax, intoVariable As TypeOfIntoVariableSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfExpressionSyntax(kind, errors, annotations, typeOfKeyword, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), operatorToken, DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeSyntax), if(intoVariable IsNot Nothing , DirectCast(intoVariable.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfIntoVariableSyntax), Nothing) ), Nothing, 0)
         End Sub
 
         ''' <summary>
@@ -21635,7 +21636,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value.
         ''' </summary>
         Public Shadows Function WithTypeOfKeyword(typeOfKeyword as SyntaxToken) As TypeOfExpressionSyntax
-            return Update(Me.Kind, typeOfKeyword, Me.Expression, Me.OperatorToken, Me.Type)
+            return Update(Me.Kind, typeOfKeyword, Me.Expression, Me.OperatorToken, Me.Type, Me.IntoVariable)
         End Function
 
         ''' <summary>
@@ -21661,7 +21662,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value.
         ''' </summary>
         Public Shadows Function WithExpression(expression as ExpressionSyntax) As TypeOfExpressionSyntax
-            return Update(Me.Kind, Me.TypeOfKeyword, expression, Me.OperatorToken, Me.Type)
+            return Update(Me.Kind, Me.TypeOfKeyword, expression, Me.OperatorToken, Me.Type, Me.IntoVariable)
         End Function
 
         ''' <summary>
@@ -21687,7 +21688,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value.
         ''' </summary>
         Public Shadows Function WithOperatorToken(operatorToken as SyntaxToken) As TypeOfExpressionSyntax
-            return Update(Me.Kind, Me.TypeOfKeyword, Me.Expression, operatorToken, Me.Type)
+            return Update(Me.Kind, Me.TypeOfKeyword, Me.Expression, operatorToken, Me.Type, Me.IntoVariable)
         End Function
 
         ''' <summary>
@@ -21704,7 +21705,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' Returns this instance if the specified value is the same as the current value.
         ''' </summary>
         Public Shadows Function WithType(type as TypeSyntax) As TypeOfExpressionSyntax
-            return Update(Me.Kind, Me.TypeOfKeyword, Me.Expression, Me.OperatorToken, type)
+            return Update(Me.Kind, Me.TypeOfKeyword, Me.Expression, Me.OperatorToken, type, Me.IntoVariable)
+        End Function
+
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
+        Public  ReadOnly Property IntoVariable As TypeOfIntoVariableSyntax
+            Get
+                Return GetRed(_intoVariable, 4)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the IntoVariable property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithIntoVariable(intoVariable as TypeOfIntoVariableSyntax) As TypeOfExpressionSyntax
+            return Update(Me.Kind, Me.TypeOfKeyword, Me.Expression, Me.OperatorToken, Me.Type, intoVariable)
         End Function
 
         Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
@@ -21713,6 +21732,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
                     Return Me._expression
                 Case 3
                     Return Me._type
+                Case 4
+                    Return Me._intoVariable
                 Case Else
                      Return Nothing
             End Select
@@ -21724,6 +21745,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
                     Return Me.Expression
                 Case 3
                     Return Me.Type
+                Case 4
+                    Return Me.IntoVariable
                 Case Else
                      Return Nothing
             End Select
@@ -21757,9 +21780,103 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <param name="type">
         ''' The value for the Type property.
         ''' </param>
-        Public Function Update(kind As SyntaxKind, typeOfKeyword As SyntaxToken, expression As ExpressionSyntax, operatorToken As SyntaxToken, type As TypeSyntax) As TypeOfExpressionSyntax
-            If kind <> Me.Kind OrElse typeOfKeyword <> Me.TypeOfKeyword OrElse expression IsNot Me.Expression OrElse operatorToken <> Me.OperatorToken OrElse type IsNot Me.Type Then
-                Dim newNode = SyntaxFactory.TypeOfExpression(kind, typeOfKeyword, expression, operatorToken, type)
+        ''' <param name="intoVariable">
+        ''' The value for the IntoVariable property.
+        ''' </param>
+        Public Function Update(kind As SyntaxKind, typeOfKeyword As SyntaxToken, expression As ExpressionSyntax, operatorToken As SyntaxToken, type As TypeSyntax, intoVariable As TypeOfIntoVariableSyntax) As TypeOfExpressionSyntax
+            If kind <> Me.Kind OrElse typeOfKeyword <> Me.TypeOfKeyword OrElse expression IsNot Me.Expression OrElse operatorToken <> Me.OperatorToken OrElse type IsNot Me.Type OrElse intoVariable IsNot Me.IntoVariable Then
+                Dim newNode = SyntaxFactory.TypeOfExpression(kind, typeOfKeyword, expression, operatorToken, type, intoVariable)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    Public NotInheritable Class TypeOfIntoVariableSyntax
+        Inherits ExpressionSyntax
+
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), intoKeyword As InternalSyntax.KeywordSyntax, variable As InternalSyntax.IdentifierTokenSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfIntoVariableSyntax(kind, errors, annotations, intoKeyword, variable), Nothing, 0)
+        End Sub
+
+        Public  ReadOnly Property IntoKeyword As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfIntoVariableSyntax)._intoKeyword, Me.Position, 0)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the IntoKeyword property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithIntoKeyword(intoKeyword as SyntaxToken) As TypeOfIntoVariableSyntax
+            return Update(intoKeyword, Me.Variable)
+        End Function
+
+        Public  ReadOnly Property Variable As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfIntoVariableSyntax)._variable, Me.GetChildPosition(1), Me.GetChildIndex(1))
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Variable property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithVariable(variable as SyntaxToken) As TypeOfIntoVariableSyntax
+            return Update(Me.IntoKeyword, variable)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitTypeOfIntoVariable(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitTypeOfIntoVariable(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="intoKeyword">
+        ''' The value for the IntoKeyword property.
+        ''' </param>
+        ''' <param name="variable">
+        ''' The value for the Variable property.
+        ''' </param>
+        Public Function Update(intoKeyword As SyntaxToken, variable As SyntaxToken) As TypeOfIntoVariableSyntax
+            If intoKeyword <> Me.IntoKeyword OrElse variable <> Me.Variable Then
+                Dim newNode = SyntaxFactory.TypeOfIntoVariable(intoKeyword, variable)
                 Dim annotations = Me.GetAnnotations()
                 If annotations IsNot Nothing AndAlso annotations.Length > 0
                     return newNode.WithAnnotations(annotations)

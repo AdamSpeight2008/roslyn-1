@@ -3204,5 +3204,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         TypeOfManyExpression = 1001
         TypeOfIsManyExpression = 1002
         TypeOfIsNotManyExpression = 1003
+        TypeOfIntoVariable = 1004
     End Enum
 End Namespace

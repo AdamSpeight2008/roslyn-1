@@ -5284,8 +5284,13 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="TargetType"></lm-equiv>
         <native-equiv name="TargetType"></native-equiv>
       </child>
+      <child name="IntoVariable" kind="@TypeOfIntoVariableSyntax" optional="true" />
     </node-structure>
-
+    <node-structure name="TypeOfIntoVariableSyntax" parent="ExpressionSyntax">
+      <node-kind name="TypeOfIntoVariable" />
+      <child name="IntoKeyword" kind="IntoKeyword" />
+      <child name="Variable"    kind="@IdentifierTokenSyntax" />
+    </node-structure>
     <node-structure name="TypeOfManyExpressionSyntax" parent="AbstractTypeOfExpressionSyntax">
       <node-kind name="TypeOfIsManyExpression">
         <lm-equiv name="IsType" />
@@ -5300,6 +5305,8 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name="TargetTypes"></native-equiv>
       </child>
     </node-structure>
+
+
 
     <!--****************
       -  GetXmlNamespaceExpression

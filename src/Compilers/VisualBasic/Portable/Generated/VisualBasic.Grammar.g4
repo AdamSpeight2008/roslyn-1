@@ -1201,6 +1201,7 @@ expression
   | ternary_conditional_expression
   | tuple_expression
   | type
+  | type_of_into_variable
   | unary_expression
   | xml_member_access_expression
   | xml_node
@@ -1212,7 +1213,11 @@ abstract_type_of_expression
   ;
 
 type_of_expression
-  : 'TypeOf' expression ('Is' | 'IsNot') type
+  : 'TypeOf' expression ('Is' | 'IsNot') type type_of_into_variable?
+  ;
+
+type_of_into_variable
+  : 'Into' identifier_token
   ;
 
 type_of_many_expression

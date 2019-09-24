@@ -20972,42 +20972,60 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Inherits AbstractTypeOfExpressionSyntax
 
         Friend ReadOnly _type as TypeSyntax
+        Friend ReadOnly _intoVariable as TypeOfIntoVariableSyntax
 
-        Friend Sub New(ByVal kind As SyntaxKind, typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, type As TypeSyntax)
+        Friend Sub New(ByVal kind As SyntaxKind, typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, type As TypeSyntax, intoVariable As TypeOfIntoVariableSyntax)
             MyBase.New(kind, typeOfKeyword, expression, operatorToken)
-            MyBase._slotCount = 4
+            MyBase._slotCount = 5
 
             AdjustFlagsAndWidth(type)
             Me._type = type
+            If intoVariable IsNot Nothing Then
+                AdjustFlagsAndWidth(intoVariable)
+                Me._intoVariable = intoVariable
+            End If
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, type As TypeSyntax, context As ISyntaxFactoryContext)
+        Friend Sub New(ByVal kind As SyntaxKind, typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, type As TypeSyntax, intoVariable As TypeOfIntoVariableSyntax, context As ISyntaxFactoryContext)
             MyBase.New(kind, typeOfKeyword, expression, operatorToken)
-            MyBase._slotCount = 4
+            MyBase._slotCount = 5
             Me.SetFactoryContext(context)
 
             AdjustFlagsAndWidth(type)
             Me._type = type
+            If intoVariable IsNot Nothing Then
+                AdjustFlagsAndWidth(intoVariable)
+                Me._intoVariable = intoVariable
+            End If
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, type As TypeSyntax)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, type As TypeSyntax, intoVariable As TypeOfIntoVariableSyntax)
             MyBase.New(kind, errors, annotations, typeOfKeyword, expression, operatorToken)
-            MyBase._slotCount = 4
+            MyBase._slotCount = 5
 
             AdjustFlagsAndWidth(type)
             Me._type = type
+            If intoVariable IsNot Nothing Then
+                AdjustFlagsAndWidth(intoVariable)
+                Me._intoVariable = intoVariable
+            End If
 
         End Sub
 
         Friend Sub New(reader as ObjectReader)
           MyBase.New(reader)
-            MyBase._slotCount = 4
+            MyBase._slotCount = 5
           Dim _type = DirectCast(reader.ReadValue(), TypeSyntax)
           If _type isnot Nothing 
              AdjustFlagsAndWidth(_type)
              Me._type = _type
+          End If
+          Dim _intoVariable = DirectCast(reader.ReadValue(), TypeOfIntoVariableSyntax)
+          If _intoVariable isnot Nothing 
+             AdjustFlagsAndWidth(_intoVariable)
+             Me._intoVariable = _intoVariable
           End If
         End Sub
         Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New TypeOfExpressionSyntax(o)
@@ -21016,6 +21034,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Friend Overrides Sub WriteTo(writer as ObjectWriter)
           MyBase.WriteTo(writer)
           writer.WriteValue(Me._type)
+          writer.WriteValue(Me._intoVariable)
         End Sub
 
         Shared Sub New()
@@ -21035,6 +21054,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
+        Friend  ReadOnly Property IntoVariable As InternalSyntax.TypeOfIntoVariableSyntax
+            Get
+                Return Me._intoVariable
+            End Get
+        End Property
+
         Friend Overrides Function GetSlot(i as Integer) as GreenNode
             Select case i
                 Case 0
@@ -21045,6 +21073,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return Me._operatorToken
                 Case 3
                     Return Me._type
+                Case 4
+                    Return Me._intoVariable
                 Case Else
                      Debug.Assert(false, "child index out of range")
                      Return Nothing
@@ -21053,15 +21083,125 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 
         Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
-            Return new TypeOfExpressionSyntax(Me.Kind, newErrors, GetAnnotations, _typeOfKeyword, _expression, _operatorToken, _type)
+            Return new TypeOfExpressionSyntax(Me.Kind, newErrors, GetAnnotations, _typeOfKeyword, _expression, _operatorToken, _type, _intoVariable)
         End Function
 
         Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
-            Return new TypeOfExpressionSyntax(Me.Kind, GetDiagnostics, annotations, _typeOfKeyword, _expression, _operatorToken, _type)
+            Return new TypeOfExpressionSyntax(Me.Kind, GetDiagnostics, annotations, _typeOfKeyword, _expression, _operatorToken, _type, _intoVariable)
         End Function
 
         Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
             Return visitor.VisitTypeOfExpression(Me)
+        End Function
+
+    End Class
+
+    Friend NotInheritable Class TypeOfIntoVariableSyntax
+        Inherits ExpressionSyntax
+
+        Friend ReadOnly _intoKeyword as KeywordSyntax
+        Friend ReadOnly _variable as IdentifierTokenSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, intoKeyword As InternalSyntax.KeywordSyntax, variable As InternalSyntax.IdentifierTokenSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(intoKeyword)
+            Me._intoKeyword = intoKeyword
+            AdjustFlagsAndWidth(variable)
+            Me._variable = variable
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, intoKeyword As InternalSyntax.KeywordSyntax, variable As InternalSyntax.IdentifierTokenSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(intoKeyword)
+            Me._intoKeyword = intoKeyword
+            AdjustFlagsAndWidth(variable)
+            Me._variable = variable
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), intoKeyword As InternalSyntax.KeywordSyntax, variable As InternalSyntax.IdentifierTokenSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(intoKeyword)
+            Me._intoKeyword = intoKeyword
+            AdjustFlagsAndWidth(variable)
+            Me._variable = variable
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _intoKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
+          If _intoKeyword isnot Nothing 
+             AdjustFlagsAndWidth(_intoKeyword)
+             Me._intoKeyword = _intoKeyword
+          End If
+          Dim _variable = DirectCast(reader.ReadValue(), IdentifierTokenSyntax)
+          If _variable isnot Nothing 
+             AdjustFlagsAndWidth(_variable)
+             Me._variable = _variable
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New TypeOfIntoVariableSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._intoKeyword)
+          writer.WriteValue(Me._variable)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(TypeOfIntoVariableSyntax), Function(r) New TypeOfIntoVariableSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeOfIntoVariableSyntax(Me, parent, startLocation)
+        End Function
+
+        Friend  ReadOnly Property IntoKeyword As InternalSyntax.KeywordSyntax
+            Get
+                Return Me._intoKeyword
+            End Get
+        End Property
+
+        Friend  ReadOnly Property Variable As InternalSyntax.IdentifierTokenSyntax
+            Get
+                Return Me._variable
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._intoKeyword
+                Case 1
+                    Return Me._variable
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new TypeOfIntoVariableSyntax(Me.Kind, newErrors, GetAnnotations, _intoKeyword, _variable)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new TypeOfIntoVariableSyntax(Me.Kind, GetDiagnostics, annotations, _intoKeyword, _variable)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitTypeOfIntoVariable(Me)
         End Function
 
     End Class
@@ -37400,6 +37540,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(node IsNot Nothing)
             Return VisitAbstractTypeOfExpression(node)
         End Function
+        Public Overridable Function VisitTypeOfIntoVariable(ByVal node As TypeOfIntoVariableSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitExpression(node)
+        End Function
         Public Overridable Function VisitTypeOfManyExpression(ByVal node As TypeOfManyExpressionSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
             Return VisitAbstractTypeOfExpression(node)
@@ -40281,9 +40425,26 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             If node._operatorToken IsNot newOperatorToken Then anyChanges = True
             Dim newType = DirectCast(Visit(node._type), TypeSyntax)
             If node._type IsNot newType Then anyChanges = True
+            Dim newIntoVariable = DirectCast(Visit(node._intoVariable), TypeOfIntoVariableSyntax)
+            If node._intoVariable IsNot newIntoVariable Then anyChanges = True
 
             If anyChanges Then
-                Return New TypeOfExpressionSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newTypeOfKeyword, newExpression, newOperatorToken, newType)
+                Return New TypeOfExpressionSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newTypeOfKeyword, newExpression, newOperatorToken, newType, newIntoVariable)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitTypeOfIntoVariable(ByVal node As TypeOfIntoVariableSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newIntoKeyword = DirectCast(Visit(node.IntoKeyword), KeywordSyntax)
+            If node._intoKeyword IsNot newIntoKeyword Then anyChanges = True
+            Dim newVariable = DirectCast(Visit(node.Variable), IdentifierTokenSyntax)
+            If node._variable IsNot newVariable Then anyChanges = True
+
+            If anyChanges Then
+                Return New TypeOfIntoVariableSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newIntoKeyword, newVariable)
             Else
                 Return node
             End If
@@ -42261,6 +42422,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
               GetType(GetTypeExpressionSyntax),
               GetType(AbstractTypeOfExpressionSyntax),
               GetType(TypeOfExpressionSyntax),
+              GetType(TypeOfIntoVariableSyntax),
               GetType(TypeOfManyExpressionSyntax),
               GetType(GetXmlNamespaceExpressionSyntax),
               GetType(MemberAccessExpressionSyntax),
@@ -50171,12 +50333,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="type">
         ''' The name of the type being tested against.
         ''' </param>
-        Friend Shared Function TypeOfIsExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, type As TypeSyntax) As TypeOfExpressionSyntax
+        Friend Shared Function TypeOfIsExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, type As TypeSyntax, intoVariable As TypeOfIntoVariableSyntax) As TypeOfExpressionSyntax
             Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
             Debug.Assert(expression IsNot Nothing)
             Debug.Assert(operatorToken IsNot Nothing AndAlso operatorToken.Kind = SyntaxKind.IsKeyword)
             Debug.Assert(type IsNot Nothing)
-            Return New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsExpression, typeOfKeyword, expression, operatorToken, type)
+            Return New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsExpression, typeOfKeyword, expression, operatorToken, type, intoVariable)
         End Function
 
 
@@ -50192,12 +50354,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="type">
         ''' The name of the type being tested against.
         ''' </param>
-        Friend Shared Function TypeOfIsNotExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, type As TypeSyntax) As TypeOfExpressionSyntax
+        Friend Shared Function TypeOfIsNotExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, type As TypeSyntax, intoVariable As TypeOfIntoVariableSyntax) As TypeOfExpressionSyntax
             Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
             Debug.Assert(expression IsNot Nothing)
             Debug.Assert(operatorToken IsNot Nothing AndAlso operatorToken.Kind = SyntaxKind.IsNotKeyword)
             Debug.Assert(type IsNot Nothing)
-            Return New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsNotExpression, typeOfKeyword, expression, operatorToken, type)
+            Return New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsNotExpression, typeOfKeyword, expression, operatorToken, type, intoVariable)
         End Function
 
 
@@ -50217,13 +50379,32 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="type">
         ''' The name of the type being tested against.
         ''' </param>
-        Friend Shared Function TypeOfExpression(kind As SyntaxKind, typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, type As TypeSyntax) As TypeOfExpressionSyntax
+        Friend Shared Function TypeOfExpression(kind As SyntaxKind, typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, type As TypeSyntax, intoVariable As TypeOfIntoVariableSyntax) As TypeOfExpressionSyntax
             Debug.Assert(SyntaxFacts.IsTypeOfExpression(kind))
             Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
             Debug.Assert(expression IsNot Nothing)
             Debug.Assert(operatorToken IsNot Nothing AndAlso SyntaxFacts.IsTypeOfExpressionOperatorToken(operatorToken.Kind))
             Debug.Assert(type IsNot Nothing)
-            Return New TypeOfExpressionSyntax(kind, typeOfKeyword, expression, operatorToken, type)
+            Return New TypeOfExpressionSyntax(kind, typeOfKeyword, expression, operatorToken, type, intoVariable)
+        End Function
+
+
+        Friend Shared Function TypeOfIntoVariable(intoKeyword As KeywordSyntax, variable As IdentifierTokenSyntax) As TypeOfIntoVariableSyntax
+            Debug.Assert(intoKeyword IsNot Nothing AndAlso intoKeyword.Kind = SyntaxKind.IntoKeyword)
+            Debug.Assert(variable IsNot Nothing AndAlso variable.Kind = SyntaxKind.IdentifierToken)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.TypeOfIntoVariable, intoKeyword, variable, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, TypeOfIntoVariableSyntax)
+            End If
+
+            Dim result = New TypeOfIntoVariableSyntax(SyntaxKind.TypeOfIntoVariable, intoKeyword, variable)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
         End Function
 
 
@@ -62307,12 +62488,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="type">
         ''' The name of the type being tested against.
         ''' </param>
-        Friend Function TypeOfIsExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, type As TypeSyntax) As TypeOfExpressionSyntax
+        Friend Function TypeOfIsExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, type As TypeSyntax, intoVariable As TypeOfIntoVariableSyntax) As TypeOfExpressionSyntax
             Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
             Debug.Assert(expression IsNot Nothing)
             Debug.Assert(operatorToken IsNot Nothing AndAlso operatorToken.Kind = SyntaxKind.IsKeyword)
             Debug.Assert(type IsNot Nothing)
-            Return New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsExpression, typeOfKeyword, expression, operatorToken, type, _factoryContext)
+            Return New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsExpression, typeOfKeyword, expression, operatorToken, type, intoVariable, _factoryContext)
         End Function
 
 
@@ -62328,12 +62509,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="type">
         ''' The name of the type being tested against.
         ''' </param>
-        Friend Function TypeOfIsNotExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, type As TypeSyntax) As TypeOfExpressionSyntax
+        Friend Function TypeOfIsNotExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, type As TypeSyntax, intoVariable As TypeOfIntoVariableSyntax) As TypeOfExpressionSyntax
             Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
             Debug.Assert(expression IsNot Nothing)
             Debug.Assert(operatorToken IsNot Nothing AndAlso operatorToken.Kind = SyntaxKind.IsNotKeyword)
             Debug.Assert(type IsNot Nothing)
-            Return New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsNotExpression, typeOfKeyword, expression, operatorToken, type, _factoryContext)
+            Return New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsNotExpression, typeOfKeyword, expression, operatorToken, type, intoVariable, _factoryContext)
         End Function
 
 
@@ -62353,13 +62534,32 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="type">
         ''' The name of the type being tested against.
         ''' </param>
-        Friend Function TypeOfExpression(kind As SyntaxKind, typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, type As TypeSyntax) As TypeOfExpressionSyntax
+        Friend Function TypeOfExpression(kind As SyntaxKind, typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, type As TypeSyntax, intoVariable As TypeOfIntoVariableSyntax) As TypeOfExpressionSyntax
             Debug.Assert(SyntaxFacts.IsTypeOfExpression(kind))
             Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
             Debug.Assert(expression IsNot Nothing)
             Debug.Assert(operatorToken IsNot Nothing AndAlso SyntaxFacts.IsTypeOfExpressionOperatorToken(operatorToken.Kind))
             Debug.Assert(type IsNot Nothing)
-            Return New TypeOfExpressionSyntax(kind, typeOfKeyword, expression, operatorToken, type, _factoryContext)
+            Return New TypeOfExpressionSyntax(kind, typeOfKeyword, expression, operatorToken, type, intoVariable, _factoryContext)
+        End Function
+
+
+        Friend Function TypeOfIntoVariable(intoKeyword As KeywordSyntax, variable As IdentifierTokenSyntax) As TypeOfIntoVariableSyntax
+            Debug.Assert(intoKeyword IsNot Nothing AndAlso intoKeyword.Kind = SyntaxKind.IntoKeyword)
+            Debug.Assert(variable IsNot Nothing AndAlso variable.Kind = SyntaxKind.IdentifierToken)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.TypeOfIntoVariable, intoKeyword, variable, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, TypeOfIntoVariableSyntax)
+            End If
+
+            Dim result = New TypeOfIntoVariableSyntax(SyntaxKind.TypeOfIntoVariable, intoKeyword, variable, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
         End Function
 
 

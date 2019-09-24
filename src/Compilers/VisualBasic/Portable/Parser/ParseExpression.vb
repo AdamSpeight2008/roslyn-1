@@ -341,6 +341,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case SyntaxKind.TypeOfKeyword
                     term = ParseTypeOf()
 
+                ''Case SyntaxKind.IntoKeyword
+                ''    term = ParseTypeOfIntoExpression()
+
                 Case SyntaxKind.GetTypeKeyword
                     term = ParseGetType()
 
@@ -968,15 +971,39 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Return SyntaxFactory.TypeOfManyExpression(kind, [typeOf], exp, operatorToken, types)
             Else
                 Dim typeName = ParseGeneralType()
+                Dim variable As TypeOfIntoVariableSyntax = Nothing
+
 
                 Dim kind As SyntaxKind = If(operatorToken.Kind = SyntaxKind.IsNotKeyword,
                                             SyntaxKind.TypeOfIsNotExpression,
                                             SyntaxKind.TypeOfIsExpression)
 
-                Return SyntaxFactory.TypeOfExpression(kind, [typeOf], exp, operatorToken, typeName)
+                If CurrentToken.ContextualKind = SyntaxKind.IntoKeyword Then
+                    variable = ParseTypeOfIntoVariable()
+                    If variable IsNot Nothing Then
+                        If kind <> SyntaxKind.TypeOfIsExpression Then
+                            variable = ReportSyntaxError(variable, ERRID.ERR_UnsupportedType1)
+                        End If
+                    End If
+                End If
+                Return SyntaxFactory.TypeOfExpression(kind, [typeOf], exp, operatorToken, typeName, variable)
+            End If
+        End Function
+
+        Private Function ParseTypeOfIntoVariable() As TypeOfIntoVariableSyntax
+            Dim intoKeyword As KeywordSyntax    = Nothing
+            Dim variable    As IdentifierTokenSyntax = Nothing
+
+            If TryTokenAsContextualKeyword(CurrentToken, SyntaxKind.IntoKeyword, intoKeyword) Then
+                GetNextToken()
+            Else
+                intoKeyword = DirectCast(HandleUnexpectedToken(SyntaxKind.IntoKeyword), KeywordSyntax)
             End If
 
+            variable = ParseIdentifier()
 
+            ' Create an instance of into expresion
+            Return SyntaxFactory.TypeOfIntoVariable(intoKeyword, variable)
         End Function
 
         ' /*********************************************************************

@@ -254,12 +254,20 @@ Public Class ParseExpressionTest
 
     <Fact>
     Public Sub ParseTypeOf()
+        ' TypeOf expr Is type
         ParseExpression("TypeOf a is b")
         ParseExpression(<Text>TypeOf a is 
                                        b</Text>)
+        ' TypeOf expr IsNot type
         ParseExpression("TypeOf a isnot b")
         ParseExpression(<Text>TypeOf a isnot 
                                        b</Text>)
+    End Sub
+
+    <Fact>
+    Public Sub ParseIntoExpression()
+        ' TypeOf expr Is type Into variable
+        ParseExpression("TypeOf expr is thistype Into result")
     End Sub
 
     <Fact>
