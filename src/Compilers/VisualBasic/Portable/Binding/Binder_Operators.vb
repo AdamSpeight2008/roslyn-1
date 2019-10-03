@@ -165,7 +165,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         End If
 
                     Case SyntaxKind.OrElseExpression,
-                         SyntaxKind.AndAlsoExpression
+                         SyntaxKind.AndAlsoExpression,
+                         SyntaxKind.IntoVariableExpression
                         Exit Select
 
                     Case Else

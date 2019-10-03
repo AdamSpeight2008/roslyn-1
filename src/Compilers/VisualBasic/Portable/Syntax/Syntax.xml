@@ -5305,7 +5305,13 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name="TargetTypes"></native-equiv>
       </child>
     </node-structure>
-
+    
+    <node-structure name="ExpressionIntoVariableExpressionSyntax" parent="ExpressionSyntax">
+      <node-kind name="ExpressionIntoVariableExpression" />
+      <child name="Expression" kind="@ExpressionSyntax" />
+      <child name="IntoKeyword" kind="IntoKeyword"  />
+      <child name="Variable"    kind="IdentifierName" />
+    </node-structure>
 
 
     <!--****************

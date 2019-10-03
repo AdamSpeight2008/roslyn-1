@@ -258,16 +258,29 @@ Public Class ParseExpressionTest
         ParseExpression("TypeOf a is b")
         ParseExpression(<Text>TypeOf a is 
                                        b</Text>)
+        End Sub
+    <Fact>
+    Public Sub ParseTypeOf_IsNot()
         ' TypeOf expr IsNot type
         ParseExpression("TypeOf a isnot b")
-        ParseExpression(<Text>TypeOf a isnot 
+        ParseExpression(<Text>TypeOf a IsNot 
                                        b</Text>)
     End Sub
 
+        <Fact>
+    Public Sub ParseTypeOfIs_IntoVariable()
+        ' TypeOf expr Is type
+        ParseExpression("TypeOf expr is type into result")
+        ParseExpression(<Text>TypeOf a is 
+                                       b into result</Text>)
+    End Sub
+
     <Fact>
-    Public Sub ParseIntoExpression()
-        ' TypeOf expr Is type Into variable
-        ParseExpression("TypeOf expr is thistype Into result")
+    Public Sub ParseTypeOfIsNot_IntoVariable()
+        ' TypeOf expr IsNot type
+        Dim e1 = ParseExpression("TypeOf expr isnot type into result", true)
+        Dim e2 = ParseExpression(<Text>TypeOf a isnot 
+                                       b into result</Text>.Value, true)
     End Sub
 
     <Fact>

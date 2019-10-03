@@ -37,9 +37,24 @@
         <target state="translated">Целевая среда выполнения не поддерживает доступ "Protected", "Protected Friend" или "Private Protected" для элемента интерфейса.</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_TypeOfIsNotExpressionDoesNotSupportIntoVariable">
+        <source>TypeOf expression using IsNot doesn't support feature {0}</source>
+        <target state="new">TypeOf expression using IsNot doesn't support feature {0}</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">
         <source>comments after line continuation</source>
         <target state="translated">комментарии после продолжения строки</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_IntoVariable">
+        <source>IntoVariable</source>
+        <target state="new">IntoVariable</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_TypeOfMany">
+        <source>TypeOf Many</source>
+        <target state="new">TypeOf Many</target>
         <note />
       </trans-unit>
       <trans-unit id="FEATURE_UnconstrainedTypeParameterInConditional">

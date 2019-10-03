@@ -37,9 +37,24 @@
         <target state="translated">目標執行階段不支援對介面成員的 'Protected'、'Protected Friend' 或 'Private Protected' 存取範圍。</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_TypeOfIsNotExpressionDoesNotSupportIntoVariable">
+        <source>TypeOf expression using IsNot doesn't support feature {0}</source>
+        <target state="new">TypeOf expression using IsNot doesn't support feature {0}</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">
         <source>comments after line continuation</source>
         <target state="translated">行接續符號後註解</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_IntoVariable">
+        <source>IntoVariable</source>
+        <target state="new">IntoVariable</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_TypeOfMany">
+        <source>TypeOf Many</source>
+        <target state="new">TypeOf Many</target>
         <note />
       </trans-unit>
       <trans-unit id="FEATURE_UnconstrainedTypeParameterInConditional">

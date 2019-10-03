@@ -37,9 +37,24 @@
         <target state="translated">目标运行时不支持对接口的成员使用 "Protected"、"Protected Friend" 或 "Private Protected" 辅助功能。</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_TypeOfIsNotExpressionDoesNotSupportIntoVariable">
+        <source>TypeOf expression using IsNot doesn't support feature {0}</source>
+        <target state="new">TypeOf expression using IsNot doesn't support feature {0}</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">
         <source>comments after line continuation</source>
         <target state="translated">行继续符之后的注释</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_IntoVariable">
+        <source>IntoVariable</source>
+        <target state="new">IntoVariable</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_TypeOfMany">
+        <source>TypeOf Many</source>
+        <target state="new">TypeOf Many</target>
         <note />
       </trans-unit>
       <trans-unit id="FEATURE_UnconstrainedTypeParameterInConditional">

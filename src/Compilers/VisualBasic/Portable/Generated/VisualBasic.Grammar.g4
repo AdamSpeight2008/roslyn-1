@@ -1187,6 +1187,7 @@ expression
   | get_xml_namespace_expression
   | instance_expression
   | interpolated_string_expression
+  | into_variable_expression
   | invocation_expression
   | label
   | lambda_expression
@@ -1443,6 +1444,10 @@ interpolation_alignment_clause
 
 interpolation_format_clause
   : ':' interpolated_string_text_token
+  ;
+
+into_variable_expression
+  : expression 'Into' identifier_name
   ;
 
 invocation_expression

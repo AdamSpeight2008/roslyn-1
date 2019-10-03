@@ -5581,3 +5581,13 @@
     <value>Attribute is not supported in VB</value>
   </data>
 </root>
+  <data name="ERR_TypeOfIsNotExpressionDoesNotSupportIntoVariable" xml:space="preserve">
+    <value>TypeOf expression using IsNot doesn't support feature {0}</value>
+  </data>
+  <data name="FEATURE_IntoVariable" xml:space="preserve">
+    <value>IntoVariable</value>
+  </data>
+  <data name="FEATURE_TypeOfMany" xml:space="preserve">
+    <value>TypeOf Many</value>
+  </data>
+</root>

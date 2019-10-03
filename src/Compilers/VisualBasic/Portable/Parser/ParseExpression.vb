@@ -917,6 +917,35 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return SyntaxFactory.ObjectCreationExpression(NewKeyword, Nothing, Type, Arguments, Nothing)
         End Function
 
+        Private Function TryParseCurrentTokenAsContextualKeyword(
+                                                                kind As SyntaxKind,
+                             <Out> ByRef keyword As KeywordSyntax,
+                                Optional consume As Boolean = True
+                                        ) As Boolean
+            If TryIdentifierAsContextualKeyword(CurrentToken, keyword) Then
+                If keyword.Kind = kind Then
+                    If Consume Then GetNextToken()
+                    Return True
+                Else
+                    keyword = HandleUnexpectedKeyword(kind)
+                    Return Nothing
+                End If
+            Else
+                keyword = nothing
+            End If
+            Return False
+        End Function
+        Private Function TryParseKeyword(kind As SyntaxKind, <Out> ByRef keyword As KeywordSyntax, Optional Consume As Boolean = True) As Boolean
+            If Not SyntaxFacts.IsKeywordKind(kind) Then Return False
+            keyword = DirectCast(CurrentToken, KeywordSyntax)
+            If keyword.Kind = kind Then
+                If Consume Then GetNextToken()
+                Return True
+            End If
+            keyword = HandleUnexpectedKeyword(kind)
+            Return False
+        End Function
+
         ''' <summary>
         ''' Parse TypeOf ... Is ... or TypeOf ... IsNot ...
         ''' TypeOfExpression -> "TypeOf" Expression "Is|IsNot" LineTerminator? TypeName
@@ -940,70 +969,69 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Dim current As SyntaxToken = CurrentToken
 
-            If current.Kind = SyntaxKind.IsKeyword OrElse
-               current.Kind = SyntaxKind.IsNotKeyword Then
-
-                operatorToken = DirectCast(current, KeywordSyntax)
-
-                If operatorToken.Kind = SyntaxKind.IsNotKeyword Then
-                    operatorToken = CheckFeatureAvailability(Feature.TypeOfIsNot, operatorToken)
-                End If
-
-                GetNextToken()
-
-                TryEatNewLine(ScannerState.VB)
+            If TryParseKeyword(SyntaxKind.IsKeyword, operatorToken) Then
+                TryEatNewLine()
+            ElseIf TryParseKeyword(SyntaxKind.IsNotKeyword, operatorToken) THen
+                operatorToken = CheckFeatureAvailability(Feature.TypeOfIsNot, operatorToken)
+                TryEatNewLine()
             Else
                 operatorToken = DirectCast(HandleUnexpectedToken(SyntaxKind.IsKeyword), KeywordSyntax)
             End If
 
-            ' Check to see if the next token is an Of,
-            '   as this is used for indicating a type list eg (Of t1, t2, t3)
-            ' Otherwise treat it as type name.
-            If PeekNextToken.Kind = SyntaxKind.OfKeyword Then
-                dim allowEmptyGenericArguments = False
-                dim allowNonEmptyGenericArguments = True
-                Dim types = ParseGenericArguments(allowEmptyGenericArguments, allowNonEmptyGenericArguments)
-
-                Dim kind As SyntaxKind = If(operatorToken.Kind = SyntaxKind.IsNotKeyword,
-                                            SyntaxKind.TypeOfIsManyExpression,
-                                            SyntaxKind.TypeOfIsNotManyExpression)
-
-                Return SyntaxFactory.TypeOfManyExpression(kind, [typeOf], exp, operatorToken, types)
+            If IsStartOfTypeArgumentList() Then
+                Return ParseTypeOf_Many([typeOf], exp, operatorToken)
             Else
-                Dim typeName = ParseGeneralType()
-                Dim variable As TypeOfIntoVariableSyntax = Nothing
-
-
-                Dim kind As SyntaxKind = If(operatorToken.Kind = SyntaxKind.IsNotKeyword,
-                                            SyntaxKind.TypeOfIsNotExpression,
-                                            SyntaxKind.TypeOfIsExpression)
-
-                If CurrentToken.ContextualKind = SyntaxKind.IntoKeyword Then
-                    variable = ParseTypeOfIntoVariable()
-                    If variable IsNot Nothing Then
-                        If kind <> SyntaxKind.TypeOfIsExpression Then
-                            variable = ReportSyntaxError(variable, ERRID.ERR_UnsupportedType1)
-                        End If
-                    End If
-                End If
-                Return SyntaxFactory.TypeOfExpression(kind, [typeOf], exp, operatorToken, typeName, variable)
+                Return ParseTypeOf_OrIntoVariable([typeOf], exp, operatorToken)
             End If
         End Function
 
-        Private Function ParseTypeOfIntoVariable() As TypeOfIntoVariableSyntax
-            Dim intoKeyword As KeywordSyntax    = Nothing
-            Dim variable    As IdentifierTokenSyntax = Nothing
+        Private Function ParseTypeOf_OrIntoVariable([typeOf] As KeywordSyntax, exp As ExpressionSyntax, operatorToken As KeywordSyntax) As ExpressionSyntax
+            Dim typeName = ParseGeneralType()
+            Dim result As ExpressionSyntax = Nothing
+            Select Case operatorToken.Kind
+                   Case SyntaxKind.IsKeyword    : result = SyntaxFactory.TypeOfIsExpression([typeOf], exp, operatorToken, typeName)
+                   Case SyntaxKind.IsNotKeyword : result = SyntaxFactory.TypeOfIsNotExpression([typeof], exp, operatorToken, typeName)
+                   Case Else : Throw new ArgumentException(nameof(ParseTypeOf_OrIntoVariable))
+            End Select
+            If CurrentToken.ContextualKind = SyntaxKind.IntoKeyword Then result = ParseTypeOfIntoVariable(result)
+            Return result
+        End Function
 
-            If TryTokenAsContextualKeyword(CurrentToken, SyntaxKind.IntoKeyword, intoKeyword) Then
-                GetNextToken()
-            Else
-                intoKeyword = DirectCast(HandleUnexpectedToken(SyntaxKind.IntoKeyword), KeywordSyntax)
+        Private Function ParseTypeOf_Many([typeOf] As KeywordSyntax, exp As ExpressionSyntax, operatorToken As KeywordSyntax) As ExpressionSyntax
+            dim allowEmptyGenericArguments = False
+            dim allowNonEmptyGenericArguments = True
+            Dim types = ParseGenericArguments(allowEmptyGenericArguments, allowNonEmptyGenericArguments)
+            Dim kind  = If(operatorToken.Kind = SyntaxKind.IsNotKeyword, SyntaxKind.TypeOfIsManyExpression, SyntaxKind.TypeOfIsNotManyExpression)
+
+            Return SyntaxFactory.TypeOfManyExpression(kind, [typeOf], exp, operatorToken, types)
+        End Function
+
+        Private Function IsStartOfTypeArgumentList() As Boolean
+            ' Check to see if the next token is an Of,
+            '   as this is used for indicating a type list eg (Of t1, t2, t3)
+            Return CurrentToken.Kind = SyntaxKind.OpenParenToken And PeekNextToken.Kind = SyntaxKind.OfKeyword
+        End Function
+
+        Private Function ParseTypeOfIntoVariable(expr As ExpressionSyntax) As ExpressionSyntax
+            Dim intoKeyword As KeywordSyntax        = Nothing
+            Dim variable    As IdentifierNameSyntax = Nothing
+            Dim valid_variable = TryParseCurrentTokenAsContextualKeyword(SyntaxKind.IntoKeyword, intoKeyword, Consume:=True)
+            intoKeyword = CheckFeatureAvailability(Feature.IntoVariable, intoKeyword)
+
+            variable = ParseIdentifierNameAllowingKeyword()
+            iF variable.ContainsDiagnostics Then variable = ReportSyntaxError(variable, ERRID.ERR_ExpectedIdentifier)
+            Dim tr = TryCast(expr, TypeOfExpressionSyntax)
+            If tr IsNot Nothing Then
+                if tr.OperatorToken.Kind <> SyntaxKind.IsKeyword Then
+                   expr = ReportSyntaxError(of ExpressionSyntax)(expr, ERRID.ERR_TypeOfIsNotExpressionDoesNotSupportIntoVariable, Feature.IntoVariable.GetResourceId)
+                End If
             End If
 
             variable = ParseIdentifier()
 
             ' Create an instance of into expresion
-            Return SyntaxFactory.TypeOfIntoVariable(intoKeyword, variable)
+            Dim result= SyntaxFactory.IntoVariableExpression(expr, intoKeyword, variable)
+            Return result
         End Function
 
         ' /*********************************************************************

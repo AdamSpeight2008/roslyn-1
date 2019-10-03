@@ -3201,9 +3201,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ConflictMarkerTrivia = 792
         AbstractTypeOfExpression = 1000
-        TypeOfManyExpression = 1001
-        TypeOfIsManyExpression = 1002
-        TypeOfIsNotManyExpression = 1003
-        TypeOfIntoVariable = 1004
+        TypeOfExpression = 1001
+        TypeOfManyExpression = 1002
+        TypeOfIsManyExpression = 1003
+        TypeOfIsNotManyExpression = 1004
+        IntoVariableExpression = 1005
     End Enum
 End Namespace

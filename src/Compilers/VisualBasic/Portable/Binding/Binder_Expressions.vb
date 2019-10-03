@@ -168,6 +168,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                     Return BindTypeOfExpression(DirectCast(node, TypeOfExpressionSyntax), diagnostics)
 
+                Case SyntaxKind.ExpressionIntoVariableExpression
+                    Return BindExpressionIntoVariableExpression(DirectCast(node, ExpressionIntoVariableExpressionSyntax), diagnostics)
+
                 Case SyntaxKind.BinaryConditionalExpression
                     Return BindBinaryConditionalExpression(DirectCast(node, BinaryConditionalExpressionSyntax), diagnostics)
 
@@ -790,6 +793,46 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Return New BoundTypeOf(node, operand, operatorIsIsNot, targetType, resultType)
 
+            Dim expr = TryCast( node.Expression, TypeOfManyExpressionSyntax)
+            Dim targetTypes As BoundTypeArguments = BindTypeArguments(node.Types, diagnostics)
+
+            If operand.HasErrors OrElse operandType.IsErrorType() OrElse targetTypes.HasErrors() Then
+                ' If operand is bad or either the source or target types have errors, bail out preventing more cascading errors.
+                Return New BoundTypeOfMany(node, targetTypes, operand, operatorIsIsNot, resultType)
+            End If
+
+            If Not operandType.IsReferenceType AndAlso
+               Not operandType.IsTypeParameter() Then
+
+                ReportDiagnostic(diagnostics, node.Expression, ERRID.ERR_TypeOfRequiresReferenceType1, operandType)
+
+            Else
+                For each targetType In targetTypes.Arguments
+                    If targetType.IsErrorType Then Continue For
+                    node = ValidateConversionIsPossible(node, operandType, targetType, diagnostics)
+                Next
+            end if
+
+            operand = ApplyPossibleImplicitConversion(node, operandType, operand, diagnostics)
+
+            Return New BoundTypeOfMany(node, targetTypes, operand, operatorIsIsNot, resultType)
+
+        End Function
+
+        Friend Function BindExpressionIntoVariableExpression(node as ExpressionIntoVariableExpressionSyntax, diagnostics As DiagnosticBag) As BoundExpression
+            Dim BLExpr = BindExpression(node.Expression, diagnostics)
+            If TypeOf BLExpr Is BoundTypeOf Then
+                Dim BTExpr = DirectCast(BLExpr, BoundTypeOf)
+                Dim BRExpr = BindAssignmentTarget(node.Variable,diagnostics)
+                Return New BoundExpressionIntoVariable(node, BtExpr, BRExpr, BTExpr.TargetType)
+            Else
+                Return New BoundBadExpression(node,
+                                              LookupResultKind.NotCreatable,
+                                              ImmutableArray(Of Symbol).Empty,
+                                              ImmutableArray(Of BoundExpression).Empty,
+                                              Nothing,
+                                              hasErrors:=True)
+            End If
         End Function
 
         ''' <summary>

@@ -37,9 +37,24 @@
         <target state="translated">Le runtime cible ne prend pas en charge l'accessibilité 'Protected', 'Protected Friend' ou 'Private Protected' pour un membre d'interface.</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_TypeOfIsNotExpressionDoesNotSupportIntoVariable">
+        <source>TypeOf expression using IsNot doesn't support feature {0}</source>
+        <target state="new">TypeOf expression using IsNot doesn't support feature {0}</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">
         <source>comments after line continuation</source>
         <target state="translated">commentaires après la continuation de la ligne</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_IntoVariable">
+        <source>IntoVariable</source>
+        <target state="new">IntoVariable</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_TypeOfMany">
+        <source>TypeOf Many</source>
+        <target state="new">TypeOf Many</target>
         <note />
       </trans-unit>
       <trans-unit id="FEATURE_UnconstrainedTypeParameterInConditional">
