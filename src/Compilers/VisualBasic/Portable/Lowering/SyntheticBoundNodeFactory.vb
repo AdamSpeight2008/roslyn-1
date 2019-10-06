@@ -360,6 +360,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return Block(locals, ImmutableArray.Create(Of BoundStatement)(statements))
         End Function
 
+        Public Function [Boolean]() As NamedTypeSymbol
+            Return SpecialType(CodeAnalysis.SpecialType.System_Boolean)
+        End Function
+
+        Public Function [Object]() As NamedTypeSymbol
+            Return SpecialType(CodeAnalysis.SpecialType.System_Object)
+        End Function
+
         Public Function StatementList() As BoundStatementList
             Return StatementList(ImmutableArray(Of BoundStatement).Empty)
         End Function

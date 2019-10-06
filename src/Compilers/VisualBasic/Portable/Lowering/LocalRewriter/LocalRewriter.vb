@@ -330,7 +330,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                    Not DirectCast(DirectCast(node, BoundObjectCreationExpressionBase).InitializerOpt, BoundObjectInitializerExpression).CreateTemporaryLocalForInitialization Then
                     Debug.Assert(result.Type.IsVoidType())
                 Else
-                    Debug.Assert(result.Type.IsSameTypeIgnoringAll(node.Type))
+                    Debug.Assert(result.Type.IsSameTypeIgnoringAll(node.Type), $"Result Type: {result.Type.ToString} OtherType: {node.Type.ToString}")
                 End If
             End If
 #End If
