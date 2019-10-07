@@ -252,13 +252,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 'End If
 
 
-                'If initializer.Value IsNot Nothing Then
+                If initializer.Value IsNot Nothing Then
 
-                '    If initializer.Value.ContainsDiagnostics Then
-                '        initializer = SyntaxFactory.EqualsValue(initializer.EqualsToken,
-                '                                                ResyncAt(initializer.Value, SyntaxKind.CommaToken, SyntaxKind.CloseParenToken))
-                '    End If
-                'End If
+                    If initializer.Value.ContainsDiagnostics Then
+                        initializer = SyntaxFactory.EqualsValue(initializer.EqualsToken,
+                                                                ResyncAt(initializer.Value, SyntaxKind.CommaToken, SyntaxKind.CloseParenToken))
+                    End If
+                End If
             Else
 
             End If

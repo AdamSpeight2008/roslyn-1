@@ -909,5 +909,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                          node.Type))
         End Function
 
+        Public Overrides Function VisitParameter(node As BoundParameter) As BoundNode
+            ' TODO - Move these errors (ERRID.ERR_DefaultValueForNonOptionalParamout, ERRID.ERR_ObsoleteOptionalWithoutValue) of the parser. 
+            ' These are semantic errors. The grammar allows the syntax. 
+            Dim parameter = TryCast(node.Syntax, Syntax.ParameterSyntax)
+            If parameter Is Nothing Then Return node
+            Dim modifiers = parameter.Modifiers
+            Dim initializer = parameter.Default
+
+            If Not (modifiers.Any AndAlso modifiers.Any(SyntaxKind.OptionalKeyword)) Then
+                _diagnostics.Add(ErrorFactory.ErrorInfo(ERRID.ERR_DefaultValueForNonOptionalParam), initializer.EqualsToken.GetLocation())
+            ElseIf modifiers.Any AndAlso modifiers.Any(SyntaxKind.OptionalKeyword) Then
+                '_diagnostics.Add(ErrorFactory.ErrorInfo(ERRID.ERR_ObsoleteOptionalWithoutValue), initializer.EqualsToken.GetLocation())
+                If initializer Is Nothing Then
+                    Dim equalsValue = SyntaxFactory.EqualsValue(SyntaxFactory.NothingLiteralExpression(SyntaxFactory.ParseToken("Nothing")))
+
+                    Dim newParameter = SyntaxFactory.Parameter(parameter.AttributeLists, modifiers, parameter.Identifier, parameter.AsClause, equalsValue)
+                    Dim np As New BoundParameter(newParameter, node.ParameterSymbol, node.Type)
+                    np.SetWasCompilerGenerated()
+                    Return np
+                End If
+            End If
+            Return node
+        End Function
     End Class
 End Namespace

@@ -1443,9 +1443,10 @@ End Class
                 ]]>,
             <errors>
                 <error id="30200"/>
-                <error id="30201"/>
-                <error id="30812"/>
+
             </errors>)
+        ' <error id = "30201" />
+        '<error id="30812"/>
     End Sub
 
     <Fact()>
@@ -2245,9 +2246,10 @@ End Module
             ]]>,
         <errors>
             <error id="30642"/>
-            <error id="30812"/>
-            <error id="30201"/>
+
         </errors>)
+        '<error id="30812"/>
+        '<error id="30201"/> 
     End Sub
 
     <Fact()>
@@ -2556,10 +2558,11 @@ End Module
                     End Function
                 End Class
             ]]>.Value
-        ParseAndVerify(code, <errors>
-                                 <error id="30812"/>
-                                 <error id="30201"/>
-                             </errors>)
+        ParseAndVerify(code, expectedErrors:=Nothing)
+        '<errors>
+        '    <error id="30812"/>
+        '    <error id="30201"/>
+        '</errors>
     End Sub
 
     <Fact()>
@@ -3470,9 +3473,9 @@ End Class
 
         ParseAndVerify(code, <errors>
                                  <error id="36714"/>
-                                 <error id="32024"/>
-                                 <error id="32024"/>
                              </errors>)
+        ' <error id = "32024" />
+        '<error id="32024"/>
     End Sub
 
     ' changed in roslyn
