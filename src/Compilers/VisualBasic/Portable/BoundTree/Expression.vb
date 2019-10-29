@@ -220,4 +220,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Get
         End Property
     End Class
+
+    Partial Friend Class BoundExpressionIntoVariable
+        Protected Overrides ReadOnly Property Children As ImmutableArray(Of BoundNode)
+            Get
+                Return ImmutableArray.Create(Of BoundNode)(Me.Expression, Me.Variable)
+            End Get
+        End Property
+    End Class
 End Namespace

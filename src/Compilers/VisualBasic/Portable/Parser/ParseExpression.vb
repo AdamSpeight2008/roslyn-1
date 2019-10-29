@@ -937,7 +937,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
         Private Function TryParseKeyword(kind As SyntaxKind, <Out> ByRef keyword As KeywordSyntax, Optional Consume As Boolean = True) As Boolean
             If Not SyntaxFacts.IsKeywordKind(kind) Then Return False
-            keyword = DirectCast(CurrentToken, KeywordSyntax)
+            keyword = TryCast(CurrentToken, KeywordSyntax)
+            If keyword Is Nothing Then Return False
             If keyword.Kind = kind Then
                 If Consume Then GetNextToken()
                 Return True
