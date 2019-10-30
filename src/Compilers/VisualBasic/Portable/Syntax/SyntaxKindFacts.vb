@@ -76,7 +76,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Select
         End Function
 
-        Private Shared ReadOnly s_reservedKeywords As SyntaxKind() = New SyntaxKind() {
+        Private Shared ReadOnly s_reservedKeywords As SyntaxKind() = {
             SyntaxKind.AddressOfKeyword,
             SyntaxKind.AddHandlerKeyword,
             SyntaxKind.AliasKeyword,
@@ -239,7 +239,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return s_reservedKeywords
         End Function
 
-        Private Shared ReadOnly s_contextualKeywords As SyntaxKind() = New SyntaxKind() {
+        Private Shared ReadOnly s_contextualKeywords As SyntaxKind() = {
             SyntaxKind.AggregateKeyword,
             SyntaxKind.AllKeyword,
             SyntaxKind.AnsiKeyword,
@@ -295,7 +295,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return s_contextualKeywords
         End Function
 
-        Private Shared ReadOnly s_punctuationKinds As SyntaxKind() = New SyntaxKind() {
+        Private Shared ReadOnly s_punctuationKinds As SyntaxKind() = {
             SyntaxKind.ExclamationToken,
             SyntaxKind.AtToken,
             SyntaxKind.CommaToken,
@@ -346,21 +346,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return s_punctuationKinds
         End Function
 
-        Private Shared ReadOnly s_preprocessorKeywords As SyntaxKind() = New SyntaxKind() {
-                                                            SyntaxKind.IfKeyword,
-                                                            SyntaxKind.ThenKeyword,
-                                                            SyntaxKind.ElseIfKeyword,
-                                                            SyntaxKind.ElseKeyword,
-                                                            SyntaxKind.EndIfKeyword,
-                                                            SyntaxKind.EndKeyword,
-                                                            SyntaxKind.RegionKeyword,
-                                                            SyntaxKind.ConstKeyword,
-                                                            SyntaxKind.ReferenceKeyword,
-                                                            SyntaxKind.EnableKeyword,
-                                                            SyntaxKind.DisableKeyword,
-                                                            SyntaxKind.WarningKeyword,
-                                                            SyntaxKind.ExternalSourceKeyword,
-                                                            SyntaxKind.ExternalChecksumKeyword}
+        Private Shared ReadOnly s_preprocessorKeywords As SyntaxKind() = {
+            SyntaxKind.IfKeyword,
+            SyntaxKind.ThenKeyword,
+            SyntaxKind.ElseIfKeyword,
+            SyntaxKind.ElseKeyword,
+            SyntaxKind.EndIfKeyword,
+            SyntaxKind.EndKeyword,
+            SyntaxKind.RegionKeyword,
+            SyntaxKind.ConstKeyword,
+            SyntaxKind.ReferenceKeyword,
+            SyntaxKind.EnableKeyword,
+            SyntaxKind.DisableKeyword,
+            SyntaxKind.WarningKeyword,
+            SyntaxKind.ExternalSourceKeyword,
+            SyntaxKind.ExternalChecksumKeyword}
 
         ''' <summary>
         ''' Get preprocessor keywords
@@ -764,8 +764,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Select
         End Function
 
-        Private Shared ReadOnly s_contextualKeywordToSyntaxKindMap As Dictionary(Of String, SyntaxKind) =
-            New Dictionary(Of String, SyntaxKind)(IdentifierComparison.Comparer) From
+        Private Shared ReadOnly s_contextualKeywordToSyntaxKindMap As New Dictionary(Of String, SyntaxKind)(IdentifierComparison.Comparer) From
             {
                    {"aggregate", SyntaxKind.AggregateKeyword},
                    {"all", SyntaxKind.AllKeyword},
@@ -822,8 +821,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return If(s_contextualKeywordToSyntaxKindMap.TryGetValue(text, kind), kind, SyntaxKind.None)
         End Function
 
-        Private Shared ReadOnly s_preprocessorKeywordToSyntaxKindMap As Dictionary(Of String, SyntaxKind) =
-            New Dictionary(Of String, SyntaxKind)(IdentifierComparison.Comparer) From
+        Private Shared ReadOnly s_preprocessorKeywordToSyntaxKindMap As New Dictionary(Of String, SyntaxKind)(IdentifierComparison.Comparer) From
             {
                    {"if", SyntaxKind.IfKeyword},
                    {"elseif", SyntaxKind.ElseIfKeyword},

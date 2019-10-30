@@ -1093,8 +1093,9 @@ End Namespace
             Loop
         End Using
 
-        cu = SyntaxFactory.ParseCompilationUnit(builder.ToString())
-
+        Dim newcode = builder.ToString
+        cu = SyntaxFactory.ParseCompilationUnit(newcode)
+        Dim c = cu.GetDiagnostics()
         Assert.False(cu.ContainsDiagnostics, "Transformed tree has diagnostics.")
 
     End Sub

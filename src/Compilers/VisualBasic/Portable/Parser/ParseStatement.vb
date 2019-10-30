@@ -5,6 +5,7 @@
 '-----------------------------------------------------------------------------
 Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax
 Imports InternalSyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SyntaxFactory
+Imports Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SyntaxNodeExtensions
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
@@ -236,107 +237,109 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return statement
 
         End Function
+        Private Function TryParseComma(ByRef comma As PunctuationSyntax) As Boolean
+            Return TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma)
+        End Function
+
+        Private Function TryParseKeyword(ofKind As SyntaxKind, byref keyword As KeywordSyntax, Optional eatNewline As Boolean = False) As Boolean
+            keyword = ParseKeyword(ofKind, eatNewline)
+            Return keyword IsNot Nothing
+        End Function
+
+        Private Function ParseKeyword(ofKind As SyntaxKind, Optional eatNewline As Boolean = False) As KeywordSyntax
+            If Not SyntaxFacts.IsKeywordKind(ofKind) Then Return Nothing
+            Dim keyword = TryCast(CurrentToken, KeywordSyntax)
+            If keyword Is Nothing  OrElse keyword.Kind <> ofKind Then Return nothing
+            GetNextToken()
+            If eatNewline AndAlso CurrentToken.Kind = SyntaxKind.StatementTerminatorToken Then TryEatNewLine()
+            Return keyword
+        End Function
+
+#Region "The various case clause parsers."
+
+        Private Function TryParseElseCaseClause(ByRef caseClause As CaseClauseSyntax) As Boolean
+            Dim elseKeyword As KeywordSyntax = Nothing
+            If Not TryParseKeyword(SyntaxKind.ElseKeyword, elseKeyword) Then Return false
+            caseClause = SyntaxFactory.ElseCaseClause(elseKeyword)
+            Return True
+        End Function
+
+        Private Function TryParseTypeClause(ByRef caseClause As CaseClauseSyntax) As Boolean
+            caseClause = Nothing
+            If CurrentToken.Kind <> SyntaxKind.IsKeyword OrElse CanTokenStartTypeName(PeekNextToken) Then Return False
+            Dim [is] = ParseKeyword(SyntaxKind.IsKeyword)
+            Dim type = ParseGeneralType()
+            caseClause = SyntaxFactory.TypeCaseClause([is], type)
+            Return True
+        End Function
+
+        Private Function TryParseRangeClause(ByRef caseClause As CaseClauseSyntax) As Boolean
+            caseClause = Nothing
+            If PeekNextToken.Kind <> SyntaxKind.ToKeyword Then Return Nothing
+            Dim fromExpr = ParseExpressionCore().HasDiagnosticsThenResync(Me, SyntaxKind.ToKeyword)
+            Dim toKeyword = ParseKeyword(SyntaxKind.ToKeyword)
+            Dim uptoExpr = ParseExpressionCore().HasDiagnosticsThenResync(Me)
+            caseClause = SyntaxFactory.RangeCaseClause(fromExpr, toKeyword, uptoExpr)
+            Return caseClause IsNot Nothing
+        End Function
+
+        Private Function TryParseSimpleClause(ByRef caseClause As CaseClauseSyntax) As Boolean
+            Dim value As ExpressionSyntax = ParseExpressionCore().HasDiagnosticsThenResync(me)
+            caseClause = SyntaxFactory.SimpleCaseClause(value)
+            Return True
+        End Function
+
+        Private Function TryParseRelationalClause(ByRef caseClause As CaseClauseSyntax) As Boolean
+            Dim [is] As KeywordSyntax = nothing, op As PunctuationSyntax = Nothing
+            Dim hasIs = TryParseKeyword(SyntaxKind.IsKeyword, [is], true)
+            Dim hasOp = TryParseRelationalOperator(op)
+            If Not hasIs And Not hasOp Then Return False
+            If hasIs And Not hasOp Then
+                op = ReportSyntaxError(InternalSyntaxFactory.MissingPunctuation(SyntaxKind.EqualsToken), ERRID.ERR_ExpectedRelational)
+                caseClause = ResyncAt(InternalSyntaxFactory.RelationalCaseClause(SyntaxKind.CaseEqualsClause, [is], op, InternalSyntaxFactory.MissingExpression))
+            Else
+                Dim expr = ParseExpressionCore.HasDiagnosticsThenResync(me)
+                caseClause = SyntaxFactory.RelationalCaseClause(RelationalOperatorKindToCaseKind(op.Kind), [is], op, expr)
+            End If
+            Return caseClause IsNot Nothing
+        End Function
+
+        Private Function TryParseRelationalOperator(ByRef op As PunctuationSyntax) As Boolean
+            Dim ok =SyntaxFacts.IsRelationalOperator(CurrentToken.Kind)
+            op = Nothing
+            Return ok AndAlso TryGetTokenAndEatNewLine(Of PunctuationSyntax)(CurrentToken.Kind, op)
+        End Function
+
+        Private Function TryParseCaseClause(ByRef caseClause As CaseClauseSyntax) As Boolean
+            Return TryParseRangeClause(caseClause) OrElse
+                   TryParseRelationalClause(caseClause) OrElse
+                   TryParseTypeClause(caseClause) OrElse
+                   TryParseSimpleClause(caseClause)
+
+        End Function
+
+#End Region
 
         Private Function ParseCaseStatement() As CaseStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.CaseKeyword, "ParseCaseStatement called on wrong token.")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.CaseKeyword)
 
-            Dim caseKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
-
+            Dim caseKeyword = ParseKeyword(SyntaxKind.CaseKeyword)
             Dim caseClauses = _pool.AllocateSeparated(Of CaseClauseSyntax)()
-            Dim elseKeyword As KeywordSyntax = Nothing
+            Dim caseClause As CaseClauseSyntax = Nothing
 
-            If CurrentToken.Kind = SyntaxKind.ElseKeyword Then
-                elseKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                GetNextToken() '// get off ELSE
-
-                Dim caseClause = SyntaxFactory.ElseCaseClause(elseKeyword)
+            If TryParseElseCaseClause(caseClause) Then
                 caseClauses.Add(caseClause)
+                Return SyntaxFactory.CaseElseStatement(caseKeyword, caseClauses.ToListAndFree(_pool))
+            End if
 
-            Else
-
-                Do
-                    Dim StartCase As SyntaxKind = CurrentToken.Kind ' dev10_500588 Snap the start of the expression token AFTER we've moved off the EOL (if one is present)
-                    Dim caseClause As CaseClauseSyntax
-
-                    If StartCase = SyntaxKind.IsKeyword OrElse SyntaxFacts.IsRelationalOperator(StartCase) Then
-
-                        ' dev10_526560 Allow implicit newline after IS
-                        Dim optionalIsKeyword As KeywordSyntax = Nothing
-                        TryGetTokenAndEatNewLine(SyntaxKind.IsKeyword, optionalIsKeyword)
-
-                        If SyntaxFacts.IsRelationalOperator(CurrentToken.Kind) Then
-
-                            Dim relationalOperator = DirectCast(CurrentToken, PunctuationSyntax)
-                            GetNextToken() ' get off relational operator
-                            TryEatNewLine() ' dev10_503248
-
-                            Dim CaseExpr As ExpressionSyntax = ParseExpressionCore()
-
-                            If CaseExpr.ContainsDiagnostics Then
-                                CaseExpr = ResyncAt(CaseExpr)
-                            End If
-
-                            caseClause = SyntaxFactory.RelationalCaseClause(RelationalOperatorKindToCaseKind(relationalOperator.Kind), optionalIsKeyword, relationalOperator, CaseExpr)
-
-                        Else
-                            ' Since we saw IS, create a relational case.
-                            ' This helps intellisense do a drop down of
-                            ' the operators that can follow "Is".
-                            Dim relationalOperator = ReportSyntaxError(InternalSyntaxFactory.MissingPunctuation(SyntaxKind.EqualsToken), ERRID.ERR_ExpectedRelational)
-
-                            caseClause = ResyncAt(InternalSyntaxFactory.RelationalCaseClause(SyntaxKind.CaseEqualsClause, optionalIsKeyword, relationalOperator, InternalSyntaxFactory.MissingExpression))
-                        End If
-
-                    Else
-
-                        Dim value As ExpressionSyntax = ParseExpressionCore()
-
-                        If value.ContainsDiagnostics Then
-                            value = ResyncAt(value, SyntaxKind.ToKeyword)
-                        End If
-
-                        Dim toKeyword As KeywordSyntax = Nothing
-                        If TryGetToken(SyntaxKind.ToKeyword, toKeyword) Then
-
-                            Dim upperBound As ExpressionSyntax = ParseExpressionCore()
-
-                            If upperBound.ContainsDiagnostics Then
-                                upperBound = ResyncAt(upperBound)
-                            End If
-
-                            caseClause = SyntaxFactory.RangeCaseClause(value, toKeyword, upperBound)
-                        Else
-
-                            caseClause = SyntaxFactory.SimpleCaseClause(value)
-                        End If
-                    End If
-
-                    caseClauses.Add(caseClause)
-
-                    Dim comma As PunctuationSyntax = Nothing
-                    If Not TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma) Then
-                        Exit Do
-                    End If
-
-                    caseClauses.AddSeparator(comma)
-                Loop
-
-            End If
-
-            Dim separatedCaseClauses = caseClauses.ToList()
-            _pool.Free(caseClauses)
-
-            Dim statement As CaseStatementSyntax
-
-            If elseKeyword Is Nothing Then
-                statement = SyntaxFactory.CaseStatement(caseKeyword, separatedCaseClauses)
-            Else
-                statement = SyntaxFactory.CaseElseStatement(caseKeyword, separatedCaseClauses)
-            End If
-
-            Return statement
-
+            While TryParseCaseClause(caseClause)
+                Debug.Assert(caseClause IsNot Nothing)
+                caseClauses.Add(caseClause)
+                Dim comma As PunctuationSyntax = Nothing
+                If Not TryParseComma(comma) Then Exit While
+                caseClauses.AddSeparator(comma)
+            End While
+            Return SyntaxFactory.CaseStatement(caseKeyword, caseClauses.ToListAndFree(_pool))
         End Function
 
         Private Shared Function RelationalOperatorKindToCaseKind(kind As SyntaxKind) As SyntaxKind

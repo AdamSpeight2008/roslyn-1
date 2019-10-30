@@ -1,1 +1,14 @@
-
+Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax.IsKeyword() -> Microsoft.CodeAnalysis.SyntaxToken
+Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax.Type() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax.Update(isKeyword As Microsoft.CodeAnalysis.SyntaxToken, type As Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax.WithIsKeyword(isKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax.WithType(type As Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.TypeCaseClause = 793 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitTypeCaseClause(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitTypeCaseClause(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitTypeCaseClause(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.TypeCaseClause(isKeyword As Microsoft.CodeAnalysis.SyntaxToken, type As Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.TypeCaseClause(type As Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax

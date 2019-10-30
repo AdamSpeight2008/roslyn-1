@@ -112,6 +112,7 @@ case_clause
   | range_case_clause
   | relational_case_clause
   | simple_case_clause
+  | type_case_clause
   ;
 
 else_case_clause
@@ -157,6 +158,10 @@ case_not_equals_clause
 
 simple_case_clause
   : expression
+  ;
+
+type_case_clause
+  : 'Is' type
   ;
 
 catch_statement

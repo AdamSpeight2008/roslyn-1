@@ -688,6 +688,10 @@ Partial Public Class GeneratedTests
             return InternalSyntax.SyntaxFactory.CaseGreaterThanClause(Nothing, new InternalSyntax.PunctuationSyntax(SyntaxKind.GreaterThanToken, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer())
         End Function
 
+        Private Shared Function GenerateGreenTypeCaseClause() As InternalSyntax.TypeCaseClauseSyntax
+            return InternalSyntax.SyntaxFactory.TypeCaseClause(new InternalSyntax.KeywordSyntax(SyntaxKind.IsKeyword, String.Empty, Nothing, Nothing), GenerateGreenTupleType())
+        End Function
+
         Private Shared Function GenerateGreenSyncLockStatement() As InternalSyntax.SyncLockStatementSyntax
             return InternalSyntax.SyntaxFactory.SyncLockStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.SyncLockKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer())
         End Function
@@ -2556,6 +2560,12 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenCaseGreaterThanClause()
             dim objectUnderTest = GenerateGreenCaseGreaterThanClause()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenTypeCaseClause()
+            dim objectUnderTest = GenerateGreenTypeCaseClause()
             AttachAndCheckDiagnostics(objectUnderTest)
         End Sub
 
@@ -5191,6 +5201,14 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenCaseGreaterThanClauseRewriter()
             dim oldNode = GenerateGreenCaseGreaterThanClause()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenTypeCaseClauseRewriter()
+            dim oldNode = GenerateGreenTypeCaseClause()
             Dim rewriter = New GreenIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)
@@ -7955,6 +7973,13 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenCaseGreaterThanClauseVisitor()
             Dim oldNode = GenerateGreenCaseGreaterThanClause()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenTypeCaseClauseVisitor()
+            Dim oldNode = GenerateGreenTypeCaseClause()
             Dim visitor = New GreenNodeVisitor()
             visitor.Visit(oldNode)
         End Sub
@@ -13063,6 +13088,27 @@ Partial Public Class GeneratedTests
             exceptionTest = false
 
             return SyntaxFactory.CaseGreaterThanClause(Nothing, SyntaxFactory.Token(SyntaxKind.GreaterThanToken), GenerateRedKeywordEventContainer())
+        End Function
+
+        Private Shared Function GenerateRedTypeCaseClause() As TypeCaseClauseSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.TypeCaseClause(SyntaxFactory.Token(SyntaxKind.IsKeyword), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.TypeCaseClause(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedTupleType())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.TypeCaseClause(SyntaxFactory.Token(SyntaxKind.IsKeyword), GenerateRedTupleType())
         End Function
 
         Private Shared Function GenerateRedSyncLockStatement() As SyncLockStatementSyntax
@@ -19949,6 +19995,15 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestRedTypeCaseClause()
+            dim objectUnderTest = GenerateRedTypeCaseClause()
+            Assert.NotNull(objectUnderTest.isKeyword)
+            Assert.NotNull(objectUnderTest.type)
+            Dim withObj = objectUnderTest.WithIsKeyword(objectUnderTest.IsKeyword).WithType(objectUnderTest.Type)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
         Public Sub TestRedSyncLockStatement()
             dim objectUnderTest = GenerateRedSyncLockStatement()
             Assert.NotNull(objectUnderTest.syncLockKeyword)
@@ -23251,6 +23306,14 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestRedCaseGreaterThanClauseRewriter()
             dim oldNode = GenerateRedCaseGreaterThanClause()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedTypeCaseClauseRewriter()
+            dim oldNode = GenerateRedTypeCaseClause()
             Dim rewriter = New RedIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)

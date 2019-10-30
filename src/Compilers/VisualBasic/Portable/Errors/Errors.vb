@@ -2030,5 +2030,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_InterpolatedStrings
         FEATURE_UnconstrainedTypeParameterInConditional
         FEATURE_CommentsAfterLineContinuation
+        FEATURE_TypeCaseClause
     End Enum
 End Namespace

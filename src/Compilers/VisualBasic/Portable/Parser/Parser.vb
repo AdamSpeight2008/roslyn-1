@@ -74,6 +74,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
+#If DEBUG THen
+        Private Sub DebugAssert_CalledOnCorrectToken(expectedTokenKind As SyntaxKind,
+             <Runtime.CompilerServices.CallerMemberName> Optional methodName As String = Nothing)
+            Debug.Assert(CurrentToken.Kind = expectedTokenKind, $"{methodName} called on wrong token kind. Expected:= {expectedTokenKind.ToString()}")
+        End Sub
+#End If
+
         Private Function ParseSimpleName(
                                      allowGenericArguments As Boolean,
                                      allowGenericsWithoutOf As Boolean,

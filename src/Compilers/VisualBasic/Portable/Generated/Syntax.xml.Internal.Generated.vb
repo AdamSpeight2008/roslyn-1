@@ -16343,6 +16343,123 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     End Class
 
     ''' <summary>
+    ''' Represents a relation clause in a Case statement, such as "Case Is String"
+    ''' expression.
+    ''' </summary>
+    Friend NotInheritable Class TypeCaseClauseSyntax
+        Inherits CaseClauseSyntax
+
+        Friend ReadOnly _isKeyword as KeywordSyntax
+        Friend ReadOnly _type as TypeSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, isKeyword As InternalSyntax.KeywordSyntax, type As TypeSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(isKeyword)
+            Me._isKeyword = isKeyword
+            AdjustFlagsAndWidth(type)
+            Me._type = type
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, isKeyword As InternalSyntax.KeywordSyntax, type As TypeSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(isKeyword)
+            Me._isKeyword = isKeyword
+            AdjustFlagsAndWidth(type)
+            Me._type = type
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), isKeyword As InternalSyntax.KeywordSyntax, type As TypeSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(isKeyword)
+            Me._isKeyword = isKeyword
+            AdjustFlagsAndWidth(type)
+            Me._type = type
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _isKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
+          If _isKeyword isnot Nothing 
+             AdjustFlagsAndWidth(_isKeyword)
+             Me._isKeyword = _isKeyword
+          End If
+          Dim _type = DirectCast(reader.ReadValue(), TypeSyntax)
+          If _type isnot Nothing 
+             AdjustFlagsAndWidth(_type)
+             Me._type = _type
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New TypeCaseClauseSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._isKeyword)
+          writer.WriteValue(Me._type)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(TypeCaseClauseSyntax), Function(r) New TypeCaseClauseSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeCaseClauseSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' The "Is" keyword, if present.
+        ''' </summary>
+        Friend  ReadOnly Property IsKeyword As InternalSyntax.KeywordSyntax
+            Get
+                Return Me._isKeyword
+            End Get
+        End Property
+
+        Friend  ReadOnly Property Type As InternalSyntax.TypeSyntax
+            Get
+                Return Me._type
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._isKeyword
+                Case 1
+                    Return Me._type
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new TypeCaseClauseSyntax(Me.Kind, newErrors, GetAnnotations, _isKeyword, _type)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new TypeCaseClauseSyntax(Me.Kind, GetDiagnostics, annotations, _isKeyword, _type)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitTypeCaseClause(Me)
+        End Function
+
+    End Class
+
+    ''' <summary>
     ''' Represents the "SyncLock" statement. This statement always occurs as the Begin
     ''' of a SyncLockBlock.
     ''' </summary>
@@ -37109,6 +37226,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(node IsNot Nothing)
             Return VisitCaseClause(node)
         End Function
+        Public Overridable Function VisitTypeCaseClause(ByVal node As TypeCaseClauseSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitCaseClause(node)
+        End Function
         Public Overridable Function VisitSyncLockStatement(ByVal node As SyncLockStatementSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
             Return VisitStatement(node)
@@ -39602,6 +39723,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
         End Function
 
+        Public Overrides Function VisitTypeCaseClause(ByVal node As TypeCaseClauseSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newIsKeyword = DirectCast(Visit(node.IsKeyword), KeywordSyntax)
+            If node._isKeyword IsNot newIsKeyword Then anyChanges = True
+            Dim newType = DirectCast(Visit(node._type), TypeSyntax)
+            If node._type IsNot newType Then anyChanges = True
+
+            If anyChanges Then
+                Return New TypeCaseClauseSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newIsKeyword, newType)
+            Else
+                Return node
+            End If
+        End Function
+
         Public Overrides Function VisitSyncLockStatement(ByVal node As SyncLockStatementSyntax) As VisualBasicSyntaxNode
             Dim anyChanges As Boolean = False
 
@@ -42063,6 +42199,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
               GetType(SimpleCaseClauseSyntax),
               GetType(RangeCaseClauseSyntax),
               GetType(RelationalCaseClauseSyntax),
+              GetType(TypeCaseClauseSyntax),
               GetType(SyncLockStatementSyntax),
               GetType(DoLoopBlockSyntax),
               GetType(DoStatementSyntax),
@@ -47868,6 +48005,32 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim result = New RelationalCaseClauseSyntax(kind, isKeyword, operatorToken, value)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a relation clause in a Case statement, such as "Case Is String"
+        ''' expression.
+        ''' </summary>
+        ''' <param name="isKeyword">
+        ''' The "Is" keyword, if present.
+        ''' </param>
+        Friend Shared Function TypeCaseClause(isKeyword As KeywordSyntax, type As TypeSyntax) As TypeCaseClauseSyntax
+            Debug.Assert(isKeyword IsNot Nothing AndAlso isKeyword.Kind = SyntaxKind.IsKeyword)
+            Debug.Assert(type IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.TypeCaseClause, isKeyword, type, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, TypeCaseClauseSyntax)
+            End If
+
+            Dim result = New TypeCaseClauseSyntax(SyntaxKind.TypeCaseClause, isKeyword, type)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -59944,6 +60107,32 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim result = New RelationalCaseClauseSyntax(kind, isKeyword, operatorToken, value, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a relation clause in a Case statement, such as "Case Is String"
+        ''' expression.
+        ''' </summary>
+        ''' <param name="isKeyword">
+        ''' The "Is" keyword, if present.
+        ''' </param>
+        Friend Function TypeCaseClause(isKeyword As KeywordSyntax, type As TypeSyntax) As TypeCaseClauseSyntax
+            Debug.Assert(isKeyword IsNot Nothing AndAlso isKeyword.Kind = SyntaxKind.IsKeyword)
+            Debug.Assert(type IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.TypeCaseClause, isKeyword, type, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, TypeCaseClauseSyntax)
+            End If
+
+            Dim result = New TypeCaseClauseSyntax(SyntaxKind.TypeCaseClause, isKeyword, type, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If

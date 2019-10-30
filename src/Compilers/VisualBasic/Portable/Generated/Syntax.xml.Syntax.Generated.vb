@@ -17120,6 +17120,108 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
     End Class
 
     ''' <summary>
+    ''' Represents a relation clause in a Case statement, such as "Case Is String"
+    ''' expression.
+    ''' </summary>
+    Public NotInheritable Class TypeCaseClauseSyntax
+        Inherits CaseClauseSyntax
+
+        Friend _type as TypeSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), isKeyword As InternalSyntax.KeywordSyntax, type As TypeSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeCaseClauseSyntax(kind, errors, annotations, isKeyword, DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeSyntax)), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "Is" keyword, if present.
+        ''' </summary>
+        Public  ReadOnly Property IsKeyword As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeCaseClauseSyntax)._isKeyword, Me.Position, 0)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the IsKeyword property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithIsKeyword(isKeyword as SyntaxToken) As TypeCaseClauseSyntax
+            return Update(isKeyword, Me.Type)
+        End Function
+
+        Public  ReadOnly Property Type As TypeSyntax
+            Get
+                Return GetRed(_type, 1)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Type property changed to the specified value.
+        ''' Returns this instance if the specified value is the same as the current value.
+        ''' </summary>
+        Public Shadows Function WithType(type as TypeSyntax) As TypeCaseClauseSyntax
+            return Update(Me.IsKeyword, type)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me._type
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me.Type
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitTypeCaseClause(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitTypeCaseClause(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="isKeyword">
+        ''' The value for the IsKeyword property.
+        ''' </param>
+        ''' <param name="type">
+        ''' The value for the Type property.
+        ''' </param>
+        Public Function Update(isKeyword As SyntaxToken, type As TypeSyntax) As TypeCaseClauseSyntax
+            If isKeyword <> Me.IsKeyword OrElse type IsNot Me.Type Then
+                Dim newNode = SyntaxFactory.TypeCaseClause(isKeyword, type)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    ''' <summary>
     ''' Represents the "SyncLock" statement. This statement always occurs as the Begin
     ''' of a SyncLockBlock.
     ''' </summary>

@@ -335,6 +335,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Function VisitRelationalCaseClause(ByVal node As RelationalCaseClauseSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
+        Public Overridable Function VisitTypeCaseClause(ByVal node As TypeCaseClauseSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
         Public Overridable Function VisitSyncLockStatement(ByVal node As SyncLockStatementSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
@@ -1068,6 +1071,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitRelationalCaseClause(ByVal node As RelationalCaseClauseSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitTypeCaseClause(ByVal node As TypeCaseClauseSyntax)
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitSyncLockStatement(ByVal node As SyncLockStatementSyntax)
@@ -3342,6 +3348,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If anyChanges Then
                 Return New RelationalCaseClauseSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newIsKeyword, newOperatorToken, newValue)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitTypeCaseClause(ByVal node As TypeCaseClauseSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newIsKeyword = DirectCast(VisitToken(node.IsKeyword).Node, InternalSyntax.KeywordSyntax)
+            If node.IsKeyword.Node IsNot newIsKeyword Then anyChanges = True
+            Dim newType = DirectCast(Visit(node.Type), TypeSyntax)
+            If node.Type IsNot newType Then anyChanges = True
+
+            If anyChanges Then
+                Return New TypeCaseClauseSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newIsKeyword, newType)
             Else
                 Return node
             End If
@@ -17593,6 +17614,49 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </param>
         Public Shared Function RelationalCaseClause(ByVal kind As SyntaxKind, operatorToken As SyntaxToken, value As ExpressionSyntax) As RelationalCaseClauseSyntax
             Return SyntaxFactory.RelationalCaseClause(kind, Nothing, operatorToken, value)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a relation clause in a Case statement, such as "Case Is String"
+        ''' expression.
+        ''' </summary>
+        ''' <param name="isKeyword">
+        ''' The "Is" keyword, if present.
+        ''' </param>
+        Public Shared Function TypeCaseClause(isKeyword As SyntaxToken, type As TypeSyntax) As TypeCaseClauseSyntax
+            Select Case isKeyword.Kind()
+                Case SyntaxKind.IsKeyword
+                Case Else
+                    Throw new ArgumentException("isKeyword")
+             End Select
+            if type Is Nothing Then
+                Throw New ArgumentNullException(NameOf(type))
+            End If
+            Select Case type.Kind()
+                Case SyntaxKind.TupleType,
+                     SyntaxKind.ArrayType,
+                     SyntaxKind.NullableType,
+                     SyntaxKind.PredefinedType,
+                     SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference
+                Case Else
+                    Throw new ArgumentException("type")
+             End Select
+            Return New TypeCaseClauseSyntax(SyntaxKind.TypeCaseClause, Nothing, Nothing, DirectCast(isKeyword.Node, InternalSyntax.KeywordSyntax), type)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a relation clause in a Case statement, such as "Case Is String"
+        ''' expression.
+        ''' </summary>
+        Public Shared Function TypeCaseClause(type As TypeSyntax) As TypeCaseClauseSyntax
+            Return SyntaxFactory.TypeCaseClause(SyntaxFactory.Token(SyntaxKind.IsKeyword), type)
         End Function
 
 

@@ -4044,6 +4044,29 @@ Unify Enum declarations with other block type declarations.
 
 
     <!--****************
+      -  TypeCaseClause
+      ******************-->
+    <node-structure name="TypeCaseClauseSyntax" parent="CaseClauseSyntax">
+      <description>Represents a relation clause in a Case statement, such as "Case Is String" expression.</description>
+      <lm-equiv name="TypeCaseNode"></lm-equiv>
+      <native-equiv name="TypeCase"></native-equiv>
+      <spec-section>10.8.2</spec-section>
+      <grammar>TypeClause</grammar>
+
+      <node-kind name="TypeCaseClause">
+      </node-kind>
+
+      <child name="IsKeyword" optional="false" kind="IsKeyword">
+        <description>The "Is" keyword, if present.</description>
+        <lm-equiv name="IsKeyword"></lm-equiv>
+        <native-equiv name="Is"></native-equiv>
+      </child>
+
+      <child name="Type" kind="@TypeSyntax" />
+
+    </node-structure>
+
+    <!--****************
       -  SyncLockStatement
       ******************-->
     <node-structure name="SyncLockStatementSyntax" parent="StatementSyntax">

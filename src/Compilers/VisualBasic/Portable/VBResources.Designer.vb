@@ -12288,6 +12288,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Type Case Clauses.
+        '''</summary>
+        Friend ReadOnly Property FEATURE_TypeCaseClause() As String
+            Get
+                Return ResourceManager.GetString("FEATURE_TypeCaseClause", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to TypeOf IsNot expression.
         '''</summary>
         Friend ReadOnly Property FEATURE_TypeOfIsNot() As String

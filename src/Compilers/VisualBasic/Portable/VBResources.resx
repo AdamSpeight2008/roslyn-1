@@ -5564,4 +5564,7 @@
   <data name="ERR_RuntimeDoesNotSupportProtectedAccessForInterfaceMember" xml:space="preserve">
     <value>Target runtime doesn't support 'Protected', 'Protected Friend', or 'Private Protected' accessibility for a member of an interface.</value>
   </data>
+  <data name="FEATURE_TypeCaseClause" xml:space="preserve">
+    <value>Type Case Clauses</value>
+  </data>
 </root>
