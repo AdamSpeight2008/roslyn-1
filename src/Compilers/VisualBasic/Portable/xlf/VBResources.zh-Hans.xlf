@@ -37,6 +37,11 @@
         <target state="translated">目标运行时不支持对接口的成员使用 "Protected"、"Protected Friend" 或 "Private Protected" 辅助功能。</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_CheckedExpressions">
+        <source>Checked Expressions</source>
+        <target state="new">Checked Expressions</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">
         <source>comments after line continuation</source>
         <target state="translated">行继续符之后的注释</target>

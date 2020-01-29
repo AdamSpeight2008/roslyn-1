@@ -37,6 +37,11 @@
         <target state="translated">Docelowe środowisko uruchomieniowe nie obsługuje poziomu dostępu „Protected”, „Protected Friend” ani „Private Protected” dla składowej interfejsu.</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_CheckedExpressions">
+        <source>Checked Expressions</source>
+        <target state="new">Checked Expressions</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">
         <source>comments after line continuation</source>
         <target state="translated">komentarze po kontynuacji wiersza</target>

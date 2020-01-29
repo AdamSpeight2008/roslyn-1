@@ -37,6 +37,11 @@
         <target state="translated">Cílový modul runtime nepodporuje přístupnost Protected, Protected Friend nebo Private Protected pro člena rozhraní.</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_CheckedExpressions">
+        <source>Checked Expressions</source>
+        <target state="new">Checked Expressions</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">
         <source>comments after line continuation</source>
         <target state="translated">komentáře po pokračování řádku</target>

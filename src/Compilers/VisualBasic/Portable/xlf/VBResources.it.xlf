@@ -37,6 +37,11 @@
         <target state="translated">Il runtime di destinazione non supporta l'accessibilità 'Protected', 'Protected Friend' o 'Private Protected' per un membro di un'interfaccia.</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_CheckedExpressions">
+        <source>Checked Expressions</source>
+        <target state="new">Checked Expressions</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">
         <source>comments after line continuation</source>
         <target state="translated">commenti dopo la continuazione di riga</target>

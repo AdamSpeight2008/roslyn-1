@@ -1503,7 +1503,7 @@ End Module
         End Sub
 
         <Fact>
-        Public Sub UncheckedExpression()
+        Public Sub UncheckedExpression1()
 
             Dim compilationDef =
 <compilation>
@@ -1520,6 +1520,27 @@ End Module
             Dim compilation = CompilationUtils.CreateCompilation(compilationDef, options:=TestOptions.ReleaseExe)
             compilation.VerifyDiagnostics()
             CompileAndVerify(compilation, expectedOutput:="-2147483639")
+        End Sub
+
+                <Fact>
+        Public Sub UncheckedExpression2()
+
+            Dim compilationDef =
+<compilation>
+    <file name="a.vb">
+    Imports System
+Module M
+    Sub Main()
+        Const i1 As UInt64 = UInt64.MaxValue
+        Dim i2 as UInt64 = Unchecked( i1 + CType(1, UInt64))
+        System.Console.WriteLine(i2)
+    End Sub
+End Module
+    </file>
+</compilation>
+            Dim compilation = CompilationUtils.CreateCompilation(compilationDef, options:=TestOptions.ReleaseExe)
+            compilation.VerifyDiagnostics()
+            CompileAndVerify(compilation, expectedOutput:="0")
         End Sub
     End Class
 

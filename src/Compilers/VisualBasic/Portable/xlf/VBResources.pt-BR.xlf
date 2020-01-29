@@ -37,6 +37,11 @@
         <target state="translated">O tempo de execução de destino não dá suporte à acessibilidade 'Protected', 'Protected Friend' ou 'Private Protected' para um membro de uma interface.</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_CheckedExpressions">
+        <source>Checked Expressions</source>
+        <target state="new">Checked Expressions</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">
         <source>comments after line continuation</source>
         <target state="translated">comentários após a continuação da linha</target>

@@ -37,6 +37,11 @@
         <target state="translated">ターゲット ランタイムは、インターフェイスのメンバーの 'Protected'、'Protected Friend'、'Private Protected' のアクセシビリティをサポートしていません。</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_CheckedExpressions">
+        <source>Checked Expressions</source>
+        <target state="new">Checked Expressions</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">
         <source>comments after line continuation</source>
         <target state="translated">行連結後のコメント</target>

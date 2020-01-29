@@ -37,6 +37,11 @@
         <target state="translated">Целевая среда выполнения не поддерживает доступ "Protected", "Protected Friend" или "Private Protected" для элемента интерфейса.</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_CheckedExpressions">
+        <source>Checked Expressions</source>
+        <target state="new">Checked Expressions</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">
         <source>comments after line continuation</source>
         <target state="translated">комментарии после продолжения строки</target>
