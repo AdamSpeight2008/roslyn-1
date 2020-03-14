@@ -230,6 +230,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Function VisitWithBlock(ByVal node As WithBlockSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
+        Public Overridable Function VisitCheckedBlock(ByVal node As CheckedBlockSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
+        Public Overridable Function VisitBeginCheckedBlockStatement(ByVal node As BeginCheckedBlockStatementSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
         Public Overridable Function VisitLocalDeclarationStatement(ByVal node As LocalDeclarationStatementSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
@@ -963,6 +969,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitWithBlock(ByVal node As WithBlockSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitCheckedBlock(ByVal node As CheckedBlockSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitBeginCheckedBlockStatement(ByVal node As BeginCheckedBlockStatementSyntax)
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitLocalDeclarationStatement(ByVal node As LocalDeclarationStatementSyntax)
@@ -2787,6 +2799,38 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If anyChanges Then
                 Return New WithBlockSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newWithStatement, newStatements.Node, newEndWithStatement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitCheckedBlock(ByVal node As CheckedBlockSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newBeginCheckedBlockStatement = DirectCast(Visit(node.BeginCheckedBlockStatement), BeginCheckedBlockStatementSyntax)
+            If node.BeginCheckedBlockStatement IsNot newBeginCheckedBlockStatement Then anyChanges = True
+            Dim newStatements = VisitList(node.Statements)
+            If node._statements IsNot newStatements.Node Then anyChanges = True
+            Dim newEndCheckedBlockStatement = DirectCast(Visit(node.EndCheckedBlockStatement), EndBlockStatementSyntax)
+            If node.EndCheckedBlockStatement IsNot newEndCheckedBlockStatement Then anyChanges = True
+
+            If anyChanges Then
+                Return New CheckedBlockSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newBeginCheckedBlockStatement, newStatements.Node, newEndCheckedBlockStatement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitBeginCheckedBlockStatement(ByVal node As BeginCheckedBlockStatementSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newCheckedKeyword = DirectCast(VisitToken(node.CheckedKeyword).Node, InternalSyntax.KeywordSyntax)
+            If node.CheckedKeyword.Node IsNot newCheckedKeyword Then anyChanges = True
+            Dim newOnOrOffKeyword = DirectCast(VisitToken(node.OnOrOffKeyword).Node, InternalSyntax.KeywordSyntax)
+            If node.OnOrOffKeyword.Node IsNot newOnOrOffKeyword Then anyChanges = True
+
+            If anyChanges Then
+                Return New BeginCheckedBlockStatementSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newCheckedKeyword, newOnOrOffKeyword)
             Else
                 Return node
             End If
@@ -5749,7 +5793,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case SyntaxKind.RaiseEventKeyword:
                 Case SyntaxKind.WhileKeyword:
                 Case SyntaxKind.TryKeyword:
-                Case SyntaxKind.SyncLockKeyword
+                Case SyntaxKind.SyncLockKeyword:
+                Case SyntaxKind.CheckedKeyword
                 Case Else
                     Throw new ArgumentException("blockKeyword")
              End Select
@@ -6538,6 +6583,41 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' Represents an "End XXX" statement, where XXX is a single keyword.
         ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Public Shared Function EndCheckedBlockStatement(endKeyword As SyntaxToken, blockKeyword As SyntaxToken) As EndBlockStatementSyntax
+            Select Case endKeyword.Kind()
+                Case SyntaxKind.EndKeyword
+                Case Else
+                    Throw new ArgumentException("endKeyword")
+             End Select
+            Select Case blockKeyword.Kind()
+                Case SyntaxKind.CheckedKeyword
+                Case Else
+                    Throw new ArgumentException("blockKeyword")
+             End Select
+            Return New EndBlockStatementSyntax(SyntaxKind.EndCheckedBlockStatement, Nothing, Nothing, DirectCast(endKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        Public Shared Function EndCheckedBlockStatement() As EndBlockStatementSyntax
+            Return SyntaxFactory.EndCheckedBlockStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.CheckedKeyword))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' EndBlockStatementSyntax. One of EndIfStatement, EndUsingStatement,
@@ -6546,7 +6626,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' EndNamespaceStatement, EndSubStatement, EndFunctionStatement, EndGetStatement,
         ''' EndSetStatement, EndPropertyStatement, EndOperatorStatement, EndEventStatement,
         ''' EndAddHandlerStatement, EndRemoveHandlerStatement, EndRaiseEventStatement,
-        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement.
+        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement,
+        ''' EndCheckedBlockStatement.
         ''' </param>
         ''' <param name="endKeyword">
         ''' The "End" keyword
@@ -6620,6 +6701,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Return SyntaxKind.TryKeyword
                 Case SyntaxKind.EndSyncLockStatement
                     Return SyntaxKind.SyncLockKeyword
+                Case SyntaxKind.EndCheckedBlockStatement
+                    Return SyntaxKind.CheckedKeyword
                 Case Else
                     Throw New ArgumentException("BlockKeyword")
             End Select
@@ -6636,7 +6719,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' EndNamespaceStatement, EndSubStatement, EndFunctionStatement, EndGetStatement,
         ''' EndSetStatement, EndPropertyStatement, EndOperatorStatement, EndEventStatement,
         ''' EndAddHandlerStatement, EndRemoveHandlerStatement, EndRaiseEventStatement,
-        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement.
+        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement,
+        ''' EndCheckedBlockStatement.
         ''' </param>
         ''' <param name="blockKeyword">
         ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
@@ -13024,6 +13108,108 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </param>
         Public Shared Function WithBlock(withStatement As WithStatementSyntax) As WithBlockSyntax
             Return SyntaxFactory.WithBlock(withStatement, Nothing, SyntaxFactory.EndWithStatement())
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a Checked (On / Off) ...End Checked block, include the Checked
+        ''' statement, the body of the block and the End Check statement.
+        ''' </summary>
+        ''' <param name="beginCheckedBlockStatement">
+        ''' The BeginCheckedBlockStatement that begins the Checked (On / Off) ...End
+        ''' Checked block.
+        ''' </param>
+        ''' <param name="statements">
+        ''' The statements contained in the Checked (On / Off)...End Checked block. This
+        ''' might be an empty list.
+        ''' </param>
+        ''' <param name="endCheckedBlockStatement">
+        ''' The End With statement that ends the block.
+        ''' </param>
+        Public Shared Function CheckedBlock(beginCheckedBlockStatement As BeginCheckedBlockStatementSyntax, statements As SyntaxList(of StatementSyntax), endCheckedBlockStatement As EndBlockStatementSyntax) As CheckedBlockSyntax
+            if beginCheckedBlockStatement Is Nothing Then
+                Throw New ArgumentNullException(NameOf(beginCheckedBlockStatement))
+            End If
+            Select Case beginCheckedBlockStatement.Kind()
+                Case SyntaxKind.BeginCheckedBlockStatement
+                Case Else
+                    Throw new ArgumentException("beginCheckedBlockStatement")
+             End Select
+            if endCheckedBlockStatement Is Nothing Then
+                Throw New ArgumentNullException(NameOf(endCheckedBlockStatement))
+            End If
+            Select Case endCheckedBlockStatement.Kind()
+                Case SyntaxKind.EndCheckedBlockStatement
+                Case Else
+                    Throw new ArgumentException("endCheckedBlockStatement")
+             End Select
+            Return New CheckedBlockSyntax(SyntaxKind.CheckedBlock, Nothing, Nothing, beginCheckedBlockStatement, statements.Node, endCheckedBlockStatement)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a Checked (On / Off) ...End Checked block, include the Checked
+        ''' statement, the body of the block and the End Check statement.
+        ''' </summary>
+        ''' <param name="beginCheckedBlockStatement">
+        ''' The BeginCheckedBlockStatement that begins the Checked (On / Off) ...End
+        ''' Checked block.
+        ''' </param>
+        ''' <param name="statements">
+        ''' The statements contained in the Checked (On / Off)...End Checked block. This
+        ''' might be an empty list.
+        ''' </param>
+        Public Shared Function CheckedBlock(beginCheckedBlockStatement As BeginCheckedBlockStatementSyntax, statements As SyntaxList(of StatementSyntax)) As CheckedBlockSyntax
+            Return SyntaxFactory.CheckedBlock(beginCheckedBlockStatement, statements, SyntaxFactory.EndCheckedBlockStatement())
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a Checked (On / Off) ...End Checked block, include the Checked
+        ''' statement, the body of the block and the End Check statement.
+        ''' </summary>
+        ''' <param name="beginCheckedBlockStatement">
+        ''' The BeginCheckedBlockStatement that begins the Checked (On / Off) ...End
+        ''' Checked block.
+        ''' </param>
+        Public Shared Function CheckedBlock(beginCheckedBlockStatement As BeginCheckedBlockStatementSyntax) As CheckedBlockSyntax
+            Return SyntaxFactory.CheckedBlock(beginCheckedBlockStatement, Nothing, SyntaxFactory.EndCheckedBlockStatement())
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the "Checked (On / Off)" statement that begins a "Checked" block.
+        ''' </summary>
+        ''' <param name="checkedKeyword">
+        ''' The "Checked" keyword.
+        ''' </param>
+        ''' <param name="onOrOffKeyword">
+        ''' The On / Off keyword that follows the Checked keyword that begins the block.
+        ''' </param>
+        Public Shared Function BeginCheckedBlockStatement(checkedKeyword As SyntaxToken, onOrOffKeyword As SyntaxToken) As BeginCheckedBlockStatementSyntax
+            Select Case checkedKeyword.Kind()
+                Case SyntaxKind.CheckedKeyword
+                Case Else
+                    Throw new ArgumentException("checkedKeyword")
+             End Select
+            Select Case onOrOffKeyword.Kind()
+                Case SyntaxKind.OnKeyword:
+                Case SyntaxKind.OffKeyword
+                Case Else
+                    Throw new ArgumentException("onOrOffKeyword")
+             End Select
+            Return New BeginCheckedBlockStatementSyntax(SyntaxKind.BeginCheckedBlockStatement, Nothing, Nothing, DirectCast(checkedKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(onOrOffKeyword.Node, InternalSyntax.KeywordSyntax))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the "Checked (On / Off)" statement that begins a "Checked" block.
+        ''' </summary>
+        ''' <param name="onOrOffKeyword">
+        ''' The On / Off keyword that follows the Checked keyword that begins the block.
+        ''' </param>
+        Public Shared Function BeginCheckedBlockStatement(onOrOffKeyword As SyntaxToken) As BeginCheckedBlockStatementSyntax
+            Return SyntaxFactory.BeginCheckedBlockStatement(SyntaxFactory.Token(SyntaxKind.CheckedKeyword), onOrOffKeyword)
         End Function
 
 
@@ -35801,6 +35987,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.EndWhileStatement,
                      SyntaxKind.EndTryStatement,
                      SyntaxKind.EndSyncLockStatement,
+                     SyntaxKind.EndCheckedBlockStatement,
                      SyntaxKind.OptionStatement,
                      SyntaxKind.ImportsStatement,
                      SyntaxKind.NamespaceBlock,
@@ -35853,6 +36040,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.UsingBlock,
                      SyntaxKind.SyncLockBlock,
                      SyntaxKind.WithBlock,
+                     SyntaxKind.CheckedBlock,
+                     SyntaxKind.BeginCheckedBlockStatement,
                      SyntaxKind.LocalDeclarationStatement,
                      SyntaxKind.LabelStatement,
                      SyntaxKind.GoToStatement,
@@ -36095,6 +36284,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.EndWhileStatement,
                      SyntaxKind.EndTryStatement,
                      SyntaxKind.EndSyncLockStatement,
+                     SyntaxKind.EndCheckedBlockStatement,
                      SyntaxKind.OptionStatement,
                      SyntaxKind.ImportsStatement,
                      SyntaxKind.NamespaceBlock,
@@ -36147,6 +36337,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.UsingBlock,
                      SyntaxKind.SyncLockBlock,
                      SyntaxKind.WithBlock,
+                     SyntaxKind.CheckedBlock,
+                     SyntaxKind.BeginCheckedBlockStatement,
                      SyntaxKind.LocalDeclarationStatement,
                      SyntaxKind.LabelStatement,
                      SyntaxKind.GoToStatement,
@@ -36397,6 +36589,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.EndWhileStatement,
                      SyntaxKind.EndTryStatement,
                      SyntaxKind.EndSyncLockStatement,
+                     SyntaxKind.EndCheckedBlockStatement,
                      SyntaxKind.OptionStatement,
                      SyntaxKind.ImportsStatement,
                      SyntaxKind.NamespaceBlock,
@@ -36449,6 +36642,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.UsingBlock,
                      SyntaxKind.SyncLockBlock,
                      SyntaxKind.WithBlock,
+                     SyntaxKind.CheckedBlock,
+                     SyntaxKind.BeginCheckedBlockStatement,
                      SyntaxKind.LocalDeclarationStatement,
                      SyntaxKind.LabelStatement,
                      SyntaxKind.GoToStatement,
@@ -44025,7 +44220,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 SyntaxKind.EndRaiseEventStatement,
                 SyntaxKind.EndWhileStatement,
                 SyntaxKind.EndTryStatement,
-                SyntaxKind.EndSyncLockStatement
+                SyntaxKind.EndSyncLockStatement,
+                SyntaxKind.EndCheckedBlockStatement
                     Return True
             End Select
             Return False
@@ -44056,7 +44252,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 SyntaxKind.RaiseEventKeyword,
                 SyntaxKind.WhileKeyword,
                 SyntaxKind.TryKeyword,
-                SyntaxKind.SyncLockKeyword
+                SyntaxKind.SyncLockKeyword,
+                SyntaxKind.CheckedKeyword
                     Return True
             End Select
             Return False
@@ -44286,6 +44483,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case _
                 SyntaxKind.AssemblyKeyword,
                 SyntaxKind.ModuleKeyword
+                    Return True
+            End Select
+            Return False
+        End Function
+
+        Public Shared Function IsBeginCheckedBlockStatementOnOrOffKeyword(kind As SyntaxKind) As Boolean
+            Select Case kind
+                Case _
+                SyntaxKind.OnKeyword,
+                SyntaxKind.OffKeyword
                     Return True
             End Select
             Return False
@@ -45140,6 +45347,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 SyntaxKind.GosubKeyword,
                 SyntaxKind.VariantKeyword,
                 SyntaxKind.WendKeyword,
+                SyntaxKind.CheckedKeyword,
                 SyntaxKind.AggregateKeyword,
                 SyntaxKind.AllKeyword,
                 SyntaxKind.AnsiKeyword,
@@ -45654,6 +45862,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return "Variant"
         Case SyntaxKind.WendKeyword
             Return "Wend"
+        Case SyntaxKind.CheckedKeyword
+            Return "Checked"
         Case SyntaxKind.AggregateKeyword
             Return "Aggregate"
         Case SyntaxKind.AllKeyword

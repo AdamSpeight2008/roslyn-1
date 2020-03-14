@@ -12830,6 +12830,253 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
     End Class
 
     ''' <summary>
+    ''' Represents a Checked (On / Off) ...End Checked block, include the Checked
+    ''' statement, the body of the block and the End Check statement.
+    ''' </summary>
+    Public NotInheritable Class CheckedBlockSyntax
+        Inherits ExecutableStatementSyntax
+
+        Friend _beginCheckedBlockStatement as BeginCheckedBlockStatementSyntax
+        Friend _statements as SyntaxNode
+        Friend _endCheckedBlockStatement as EndBlockStatementSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), beginCheckedBlockStatement As BeginCheckedBlockStatementSyntax, statements As SyntaxNode, endCheckedBlockStatement As EndBlockStatementSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CheckedBlockSyntax(kind, errors, annotations, DirectCast(beginCheckedBlockStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.BeginCheckedBlockStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing), DirectCast(endCheckedBlockStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The BeginCheckedBlockStatement that begins the Checked (On / Off) ...End
+        ''' Checked block.
+        ''' </summary>
+        Public  ReadOnly Property BeginCheckedBlockStatement As BeginCheckedBlockStatementSyntax
+            Get
+                Return GetRedAtZero(_beginCheckedBlockStatement)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the BeginCheckedBlockStatement property changed to
+        ''' the specified value. Returns this instance if the specified value is the same
+        ''' as the current value.
+        ''' </summary>
+        Public Shadows Function WithBeginCheckedBlockStatement(beginCheckedBlockStatement as BeginCheckedBlockStatementSyntax) As CheckedBlockSyntax
+            return Update(beginCheckedBlockStatement, Me.Statements, Me.EndCheckedBlockStatement)
+        End Function
+
+        ''' <summary>
+        ''' The statements contained in the Checked (On / Off)...End Checked block. This
+        ''' might be an empty list.
+        ''' </summary>
+        ''' <remarks>
+        ''' If nothing is present, an empty list is returned.
+        ''' </remarks>
+        Public  ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
+            Get
+                Dim listNode = GetRed(_statements, 1)
+                Return new SyntaxList(Of StatementSyntax)(listNode)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Statements property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithStatements(statements as SyntaxList(Of StatementSyntax)) As CheckedBlockSyntax
+            return Update(Me.BeginCheckedBlockStatement, statements, Me.EndCheckedBlockStatement)
+        End Function
+
+        Public Shadows Function AddStatements(ParamArray items As StatementSyntax()) As CheckedBlockSyntax
+            Return Me.WithStatements(Me.Statements.AddRange(items))
+        End Function
+
+        ''' <summary>
+        ''' The End With statement that ends the block.
+        ''' </summary>
+        Public  ReadOnly Property EndCheckedBlockStatement As EndBlockStatementSyntax
+            Get
+                Return GetRed(_endCheckedBlockStatement, 2)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the EndCheckedBlockStatement property changed to
+        ''' the specified value. Returns this instance if the specified value is the same
+        ''' as the current value.
+        ''' </summary>
+        Public Shadows Function WithEndCheckedBlockStatement(endCheckedBlockStatement as EndBlockStatementSyntax) As CheckedBlockSyntax
+            return Update(Me.BeginCheckedBlockStatement, Me.Statements, endCheckedBlockStatement)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me._beginCheckedBlockStatement
+                Case 1
+                    Return Me._statements
+                Case 2
+                    Return Me._endCheckedBlockStatement
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me.BeginCheckedBlockStatement
+                Case 1
+                    Return GetRed(_statements, 1)
+                Case 2
+                    Return Me.EndCheckedBlockStatement
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitCheckedBlock(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitCheckedBlock(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="beginCheckedBlockStatement">
+        ''' The value for the BeginCheckedBlockStatement property.
+        ''' </param>
+        ''' <param name="statements">
+        ''' The value for the Statements property.
+        ''' </param>
+        ''' <param name="endCheckedBlockStatement">
+        ''' The value for the EndCheckedBlockStatement property.
+        ''' </param>
+        Public Function Update(beginCheckedBlockStatement As BeginCheckedBlockStatementSyntax, statements As SyntaxList(of StatementSyntax), endCheckedBlockStatement As EndBlockStatementSyntax) As CheckedBlockSyntax
+            If beginCheckedBlockStatement IsNot Me.BeginCheckedBlockStatement OrElse statements <> Me.Statements OrElse endCheckedBlockStatement IsNot Me.EndCheckedBlockStatement Then
+                Dim newNode = SyntaxFactory.CheckedBlock(beginCheckedBlockStatement, statements, endCheckedBlockStatement)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    ''' <summary>
+    ''' Represents the "Checked (On / Off)" statement that begins a "Checked" block.
+    ''' </summary>
+    Public NotInheritable Class BeginCheckedBlockStatementSyntax
+        Inherits StatementSyntax
+
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), checkedKeyword As InternalSyntax.KeywordSyntax, onOrOffKeyword As InternalSyntax.KeywordSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.BeginCheckedBlockStatementSyntax(kind, errors, annotations, checkedKeyword, onOrOffKeyword), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "Checked" keyword.
+        ''' </summary>
+        Public  ReadOnly Property CheckedKeyword As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.BeginCheckedBlockStatementSyntax)._checkedKeyword, Me.Position, 0)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the CheckedKeyword property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithCheckedKeyword(checkedKeyword as SyntaxToken) As BeginCheckedBlockStatementSyntax
+            return Update(checkedKeyword, Me.OnOrOffKeyword)
+        End Function
+
+        ''' <summary>
+        ''' The On / Off keyword that follows the Checked keyword that begins the block.
+        ''' </summary>
+        Public  ReadOnly Property OnOrOffKeyword As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.BeginCheckedBlockStatementSyntax)._onOrOffKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the OnOrOffKeyword property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithOnOrOffKeyword(onOrOffKeyword as SyntaxToken) As BeginCheckedBlockStatementSyntax
+            return Update(Me.CheckedKeyword, onOrOffKeyword)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitBeginCheckedBlockStatement(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitBeginCheckedBlockStatement(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="checkedKeyword">
+        ''' The value for the CheckedKeyword property.
+        ''' </param>
+        ''' <param name="onOrOffKeyword">
+        ''' The value for the OnOrOffKeyword property.
+        ''' </param>
+        Public Function Update(checkedKeyword As SyntaxToken, onOrOffKeyword As SyntaxToken) As BeginCheckedBlockStatementSyntax
+            If checkedKeyword <> Me.CheckedKeyword OrElse onOrOffKeyword <> Me.OnOrOffKeyword Then
+                Dim newNode = SyntaxFactory.BeginCheckedBlockStatement(checkedKeyword, onOrOffKeyword)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    ''' <summary>
     ''' Represents the declaration of one or more local variables or constants.
     ''' </summary>
     Public NotInheritable Class LocalDeclarationStatementSyntax

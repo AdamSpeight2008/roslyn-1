@@ -11525,6 +11525,280 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     End Class
 
     ''' <summary>
+    ''' Represents a Checked (On / Off) ...End Checked block, include the Checked
+    ''' statement, the body of the block and the End Check statement.
+    ''' </summary>
+    Friend NotInheritable Class CheckedBlockSyntax
+        Inherits ExecutableStatementSyntax
+
+        Friend ReadOnly _beginCheckedBlockStatement as BeginCheckedBlockStatementSyntax
+        Friend ReadOnly _statements as GreenNode
+        Friend ReadOnly _endCheckedBlockStatement as EndBlockStatementSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, beginCheckedBlockStatement As BeginCheckedBlockStatementSyntax, statements As GreenNode, endCheckedBlockStatement As EndBlockStatementSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 3
+
+            AdjustFlagsAndWidth(beginCheckedBlockStatement)
+            Me._beginCheckedBlockStatement = beginCheckedBlockStatement
+            If statements IsNot Nothing Then
+                AdjustFlagsAndWidth(statements)
+                Me._statements = statements
+            End If
+            AdjustFlagsAndWidth(endCheckedBlockStatement)
+            Me._endCheckedBlockStatement = endCheckedBlockStatement
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, beginCheckedBlockStatement As BeginCheckedBlockStatementSyntax, statements As GreenNode, endCheckedBlockStatement As EndBlockStatementSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 3
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(beginCheckedBlockStatement)
+            Me._beginCheckedBlockStatement = beginCheckedBlockStatement
+            If statements IsNot Nothing Then
+                AdjustFlagsAndWidth(statements)
+                Me._statements = statements
+            End If
+            AdjustFlagsAndWidth(endCheckedBlockStatement)
+            Me._endCheckedBlockStatement = endCheckedBlockStatement
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), beginCheckedBlockStatement As BeginCheckedBlockStatementSyntax, statements As GreenNode, endCheckedBlockStatement As EndBlockStatementSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 3
+
+            AdjustFlagsAndWidth(beginCheckedBlockStatement)
+            Me._beginCheckedBlockStatement = beginCheckedBlockStatement
+            If statements IsNot Nothing Then
+                AdjustFlagsAndWidth(statements)
+                Me._statements = statements
+            End If
+            AdjustFlagsAndWidth(endCheckedBlockStatement)
+            Me._endCheckedBlockStatement = endCheckedBlockStatement
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 3
+          Dim _beginCheckedBlockStatement = DirectCast(reader.ReadValue(), BeginCheckedBlockStatementSyntax)
+          If _beginCheckedBlockStatement isnot Nothing 
+             AdjustFlagsAndWidth(_beginCheckedBlockStatement)
+             Me._beginCheckedBlockStatement = _beginCheckedBlockStatement
+          End If
+          Dim _statements = DirectCast(reader.ReadValue(), GreenNode)
+          If _statements isnot Nothing 
+             AdjustFlagsAndWidth(_statements)
+             Me._statements = _statements
+          End If
+          Dim _endCheckedBlockStatement = DirectCast(reader.ReadValue(), EndBlockStatementSyntax)
+          If _endCheckedBlockStatement isnot Nothing 
+             AdjustFlagsAndWidth(_endCheckedBlockStatement)
+             Me._endCheckedBlockStatement = _endCheckedBlockStatement
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New CheckedBlockSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._beginCheckedBlockStatement)
+          writer.WriteValue(Me._statements)
+          writer.WriteValue(Me._endCheckedBlockStatement)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(CheckedBlockSyntax), Function(r) New CheckedBlockSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' The BeginCheckedBlockStatement that begins the Checked (On / Off) ...End
+        ''' Checked block.
+        ''' </summary>
+        Friend  ReadOnly Property BeginCheckedBlockStatement As InternalSyntax.BeginCheckedBlockStatementSyntax
+            Get
+                Return Me._beginCheckedBlockStatement
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' The statements contained in the Checked (On / Off)...End Checked block. This
+        ''' might be an empty list.
+        ''' </summary>
+        ''' <remarks>
+        ''' If nothing is present, an empty list is returned.
+        ''' </remarks>
+        Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
+            Get
+                Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' The End With statement that ends the block.
+        ''' </summary>
+        Friend  ReadOnly Property EndCheckedBlockStatement As InternalSyntax.EndBlockStatementSyntax
+            Get
+                Return Me._endCheckedBlockStatement
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._beginCheckedBlockStatement
+                Case 1
+                    Return Me._statements
+                Case 2
+                    Return Me._endCheckedBlockStatement
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new CheckedBlockSyntax(Me.Kind, newErrors, GetAnnotations, _beginCheckedBlockStatement, _statements, _endCheckedBlockStatement)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new CheckedBlockSyntax(Me.Kind, GetDiagnostics, annotations, _beginCheckedBlockStatement, _statements, _endCheckedBlockStatement)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitCheckedBlock(Me)
+        End Function
+
+    End Class
+
+    ''' <summary>
+    ''' Represents the "Checked (On / Off)" statement that begins a "Checked" block.
+    ''' </summary>
+    Friend NotInheritable Class BeginCheckedBlockStatementSyntax
+        Inherits StatementSyntax
+
+        Friend ReadOnly _checkedKeyword as KeywordSyntax
+        Friend ReadOnly _onOrOffKeyword as KeywordSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, checkedKeyword As InternalSyntax.KeywordSyntax, onOrOffKeyword As InternalSyntax.KeywordSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(checkedKeyword)
+            Me._checkedKeyword = checkedKeyword
+            AdjustFlagsAndWidth(onOrOffKeyword)
+            Me._onOrOffKeyword = onOrOffKeyword
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, checkedKeyword As InternalSyntax.KeywordSyntax, onOrOffKeyword As InternalSyntax.KeywordSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(checkedKeyword)
+            Me._checkedKeyword = checkedKeyword
+            AdjustFlagsAndWidth(onOrOffKeyword)
+            Me._onOrOffKeyword = onOrOffKeyword
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), checkedKeyword As InternalSyntax.KeywordSyntax, onOrOffKeyword As InternalSyntax.KeywordSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(checkedKeyword)
+            Me._checkedKeyword = checkedKeyword
+            AdjustFlagsAndWidth(onOrOffKeyword)
+            Me._onOrOffKeyword = onOrOffKeyword
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _checkedKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
+          If _checkedKeyword isnot Nothing 
+             AdjustFlagsAndWidth(_checkedKeyword)
+             Me._checkedKeyword = _checkedKeyword
+          End If
+          Dim _onOrOffKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
+          If _onOrOffKeyword isnot Nothing 
+             AdjustFlagsAndWidth(_onOrOffKeyword)
+             Me._onOrOffKeyword = _onOrOffKeyword
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New BeginCheckedBlockStatementSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._checkedKeyword)
+          writer.WriteValue(Me._onOrOffKeyword)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(BeginCheckedBlockStatementSyntax), Function(r) New BeginCheckedBlockStatementSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' The "Checked" keyword.
+        ''' </summary>
+        Friend  ReadOnly Property CheckedKeyword As InternalSyntax.KeywordSyntax
+            Get
+                Return Me._checkedKeyword
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' The On / Off keyword that follows the Checked keyword that begins the block.
+        ''' </summary>
+        Friend  ReadOnly Property OnOrOffKeyword As InternalSyntax.KeywordSyntax
+            Get
+                Return Me._onOrOffKeyword
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._checkedKeyword
+                Case 1
+                    Return Me._onOrOffKeyword
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new BeginCheckedBlockStatementSyntax(Me.Kind, newErrors, GetAnnotations, _checkedKeyword, _onOrOffKeyword)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new BeginCheckedBlockStatementSyntax(Me.Kind, GetDiagnostics, annotations, _checkedKeyword, _onOrOffKeyword)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitBeginCheckedBlockStatement(Me)
+        End Function
+
+    End Class
+
+    ''' <summary>
     ''' Represents the declaration of one or more local variables or constants.
     ''' </summary>
     Friend NotInheritable Class LocalDeclarationStatementSyntax
@@ -36965,6 +37239,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(node IsNot Nothing)
             Return VisitExecutableStatement(node)
         End Function
+        Public Overridable Function VisitCheckedBlock(ByVal node As CheckedBlockSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitExecutableStatement(node)
+        End Function
+        Public Overridable Function VisitBeginCheckedBlockStatement(ByVal node As BeginCheckedBlockStatementSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitStatement(node)
+        End Function
         Public Overridable Function VisitLocalDeclarationStatement(ByVal node As LocalDeclarationStatementSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
             Return VisitExecutableStatement(node)
@@ -39042,6 +39324,38 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             If anyChanges Then
                 Return New WithBlockSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newWithStatement, newStatements.Node, newEndWithStatement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitCheckedBlock(ByVal node As CheckedBlockSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newBeginCheckedBlockStatement = DirectCast(Visit(node._beginCheckedBlockStatement), BeginCheckedBlockStatementSyntax)
+            If node._beginCheckedBlockStatement IsNot newBeginCheckedBlockStatement Then anyChanges = True
+            Dim newStatements = VisitList(node.Statements)
+            If node._statements IsNot newStatements.Node Then anyChanges = True
+            Dim newEndCheckedBlockStatement = DirectCast(Visit(node._endCheckedBlockStatement), EndBlockStatementSyntax)
+            If node._endCheckedBlockStatement IsNot newEndCheckedBlockStatement Then anyChanges = True
+
+            If anyChanges Then
+                Return New CheckedBlockSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newBeginCheckedBlockStatement, newStatements.Node, newEndCheckedBlockStatement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitBeginCheckedBlockStatement(ByVal node As BeginCheckedBlockStatementSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newCheckedKeyword = DirectCast(Visit(node.CheckedKeyword), KeywordSyntax)
+            If node._checkedKeyword IsNot newCheckedKeyword Then anyChanges = True
+            Dim newOnOrOffKeyword = DirectCast(Visit(node.OnOrOffKeyword), KeywordSyntax)
+            If node._onOrOffKeyword IsNot newOnOrOffKeyword Then anyChanges = True
+
+            If anyChanges Then
+                Return New BeginCheckedBlockStatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newCheckedKeyword, newOnOrOffKeyword)
             Else
                 Return node
             End If
@@ -42027,6 +42341,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
               GetType(UsingBlockSyntax),
               GetType(SyncLockBlockSyntax),
               GetType(WithBlockSyntax),
+              GetType(CheckedBlockSyntax),
+              GetType(BeginCheckedBlockStatementSyntax),
               GetType(LocalDeclarationStatementSyntax),
               GetType(LabelStatementSyntax),
               GetType(GoToStatementSyntax),
@@ -42979,6 +43295,37 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <summary>
         ''' Represents an "End XXX" statement, where XXX is a single keyword.
         ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Friend Shared Function EndCheckedBlockStatement(endKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As EndBlockStatementSyntax
+            Debug.Assert(endKeyword IsNot Nothing AndAlso endKeyword.Kind = SyntaxKind.EndKeyword)
+            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.CheckedKeyword)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.EndCheckedBlockStatement, endKeyword, blockKeyword, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, EndBlockStatementSyntax)
+            End If
+
+            Dim result = New EndBlockStatementSyntax(SyntaxKind.EndCheckedBlockStatement, endKeyword, blockKeyword)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' EndBlockStatementSyntax. One of EndIfStatement, EndUsingStatement,
@@ -42987,7 +43334,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' EndNamespaceStatement, EndSubStatement, EndFunctionStatement, EndGetStatement,
         ''' EndSetStatement, EndPropertyStatement, EndOperatorStatement, EndEventStatement,
         ''' EndAddHandlerStatement, EndRemoveHandlerStatement, EndRaiseEventStatement,
-        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement.
+        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement,
+        ''' EndCheckedBlockStatement.
         ''' </param>
         ''' <param name="endKeyword">
         ''' The "End" keyword
@@ -45990,6 +46338,68 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim result = New WithBlockSyntax(SyntaxKind.WithBlock, withStatement, statements.Node, endWithStatement)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a Checked (On / Off) ...End Checked block, include the Checked
+        ''' statement, the body of the block and the End Check statement.
+        ''' </summary>
+        ''' <param name="beginCheckedBlockStatement">
+        ''' The BeginCheckedBlockStatement that begins the Checked (On / Off) ...End
+        ''' Checked block.
+        ''' </param>
+        ''' <param name="statements">
+        ''' The statements contained in the Checked (On / Off)...End Checked block. This
+        ''' might be an empty list.
+        ''' </param>
+        ''' <param name="endCheckedBlockStatement">
+        ''' The End With statement that ends the block.
+        ''' </param>
+        Friend Shared Function CheckedBlock(beginCheckedBlockStatement As BeginCheckedBlockStatementSyntax, statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), endCheckedBlockStatement As EndBlockStatementSyntax) As CheckedBlockSyntax
+            Debug.Assert(beginCheckedBlockStatement IsNot Nothing)
+            Debug.Assert(endCheckedBlockStatement IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.CheckedBlock, beginCheckedBlockStatement, statements.Node, endCheckedBlockStatement, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, CheckedBlockSyntax)
+            End If
+
+            Dim result = New CheckedBlockSyntax(SyntaxKind.CheckedBlock, beginCheckedBlockStatement, statements.Node, endCheckedBlockStatement)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the "Checked (On / Off)" statement that begins a "Checked" block.
+        ''' </summary>
+        ''' <param name="checkedKeyword">
+        ''' The "Checked" keyword.
+        ''' </param>
+        ''' <param name="onOrOffKeyword">
+        ''' The On / Off keyword that follows the Checked keyword that begins the block.
+        ''' </param>
+        Friend Shared Function BeginCheckedBlockStatement(checkedKeyword As KeywordSyntax, onOrOffKeyword As KeywordSyntax) As BeginCheckedBlockStatementSyntax
+            Debug.Assert(checkedKeyword IsNot Nothing AndAlso checkedKeyword.Kind = SyntaxKind.CheckedKeyword)
+            Debug.Assert(onOrOffKeyword IsNot Nothing AndAlso SyntaxFacts.IsBeginCheckedBlockStatementOnOrOffKeyword(onOrOffKeyword.Kind))
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.BeginCheckedBlockStatement, checkedKeyword, onOrOffKeyword, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, BeginCheckedBlockStatementSyntax)
+            End If
+
+            Dim result = New BeginCheckedBlockStatementSyntax(SyntaxKind.BeginCheckedBlockStatement, checkedKeyword, onOrOffKeyword)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -55055,6 +55465,37 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <summary>
         ''' Represents an "End XXX" statement, where XXX is a single keyword.
         ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Friend Function EndCheckedBlockStatement(endKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As EndBlockStatementSyntax
+            Debug.Assert(endKeyword IsNot Nothing AndAlso endKeyword.Kind = SyntaxKind.EndKeyword)
+            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.CheckedKeyword)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.EndCheckedBlockStatement, endKeyword, blockKeyword, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, EndBlockStatementSyntax)
+            End If
+
+            Dim result = New EndBlockStatementSyntax(SyntaxKind.EndCheckedBlockStatement, endKeyword, blockKeyword, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' EndBlockStatementSyntax. One of EndIfStatement, EndUsingStatement,
@@ -55063,7 +55504,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' EndNamespaceStatement, EndSubStatement, EndFunctionStatement, EndGetStatement,
         ''' EndSetStatement, EndPropertyStatement, EndOperatorStatement, EndEventStatement,
         ''' EndAddHandlerStatement, EndRemoveHandlerStatement, EndRaiseEventStatement,
-        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement.
+        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement,
+        ''' EndCheckedBlockStatement.
         ''' </param>
         ''' <param name="endKeyword">
         ''' The "End" keyword
@@ -58066,6 +58508,68 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim result = New WithBlockSyntax(SyntaxKind.WithBlock, withStatement, statements.Node, endWithStatement, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a Checked (On / Off) ...End Checked block, include the Checked
+        ''' statement, the body of the block and the End Check statement.
+        ''' </summary>
+        ''' <param name="beginCheckedBlockStatement">
+        ''' The BeginCheckedBlockStatement that begins the Checked (On / Off) ...End
+        ''' Checked block.
+        ''' </param>
+        ''' <param name="statements">
+        ''' The statements contained in the Checked (On / Off)...End Checked block. This
+        ''' might be an empty list.
+        ''' </param>
+        ''' <param name="endCheckedBlockStatement">
+        ''' The End With statement that ends the block.
+        ''' </param>
+        Friend Function CheckedBlock(beginCheckedBlockStatement As BeginCheckedBlockStatementSyntax, statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), endCheckedBlockStatement As EndBlockStatementSyntax) As CheckedBlockSyntax
+            Debug.Assert(beginCheckedBlockStatement IsNot Nothing)
+            Debug.Assert(endCheckedBlockStatement IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.CheckedBlock, beginCheckedBlockStatement, statements.Node, endCheckedBlockStatement, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, CheckedBlockSyntax)
+            End If
+
+            Dim result = New CheckedBlockSyntax(SyntaxKind.CheckedBlock, beginCheckedBlockStatement, statements.Node, endCheckedBlockStatement, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the "Checked (On / Off)" statement that begins a "Checked" block.
+        ''' </summary>
+        ''' <param name="checkedKeyword">
+        ''' The "Checked" keyword.
+        ''' </param>
+        ''' <param name="onOrOffKeyword">
+        ''' The On / Off keyword that follows the Checked keyword that begins the block.
+        ''' </param>
+        Friend Function BeginCheckedBlockStatement(checkedKeyword As KeywordSyntax, onOrOffKeyword As KeywordSyntax) As BeginCheckedBlockStatementSyntax
+            Debug.Assert(checkedKeyword IsNot Nothing AndAlso checkedKeyword.Kind = SyntaxKind.CheckedKeyword)
+            Debug.Assert(onOrOffKeyword IsNot Nothing AndAlso SyntaxFacts.IsBeginCheckedBlockStatementOnOrOffKeyword(onOrOffKeyword.Kind))
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.BeginCheckedBlockStatement, checkedKeyword, onOrOffKeyword, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, BeginCheckedBlockStatementSyntax)
+            End If
+
+            Dim result = New BeginCheckedBlockStatementSyntax(SyntaxKind.BeginCheckedBlockStatement, checkedKeyword, onOrOffKeyword, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If

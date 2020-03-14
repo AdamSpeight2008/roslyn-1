@@ -246,7 +246,11 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="EndBlock" />
         <native-equiv name="Statement.Opcodes.EndSyncLock" />
       </node-kind>
-
+      <node-kind name="EndCheckedBlockStatement">
+        <lm-equiv name="EndBlock" />
+        <native-equiv name="Statement.Opcodes.EndCheckedBlock" />
+      </node-kind>
+      
       <child name="EndKeyword" kind="EndKeyword">
         <description>The "End" keyword</description>
         <lm-equiv name="EndKeyword"></lm-equiv>
@@ -283,6 +287,7 @@ Unify Enum declarations with other block type declarations.
         <kind name="WhileKeyword" node-kind="EndWhileStatement"/>
         <kind name="TryKeyword" node-kind="EndTryStatement"/>
         <kind name="SyncLockKeyword" node-kind="EndSyncLockStatement"/>
+        <kind name="CheckedKeyword" node-kind="EndCheckedBlockStatement" />
       </child>
     </node-structure>
 
@@ -2843,6 +2848,72 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name="TerminatingConstruct"></native-equiv>
       </child>
     </node-structure>
+
+    <!--****************
+      -  CheckedBlock
+      - ******************-->
+    <node-structure name="CheckedBlockSyntax" parent="ExecutableStatementSyntax">
+      <description>
+        Represents a Checked (On / Off) ...End Checked block, include the Checked statement, the body of the block and the
+        End Check statement.
+      </description>
+
+      <lm-equiv name="BlockNode"></lm-equiv>
+      <native-equiv name="BlockStatement"></native-equiv>
+
+      <node-kind name="CheckedBlock">
+        <lm-equiv name="Checked" />
+        <native-equiv name="Statement.Opcodes.Checked" />
+      </node-kind>
+
+      <child name="BeginCheckedBlockStatement" kind="BeginCheckedBlockStatement">
+        <description>The BeginCheckedBlockStatement that begins the Checked (On / Off) ...End Checked block. </description>
+        <lm-equiv name=""></lm-equiv>
+        <native-equiv name=""></native-equiv>
+      </child>
+
+      <child name="Statements" optional="true" list="true" kind="@StatementSyntax">
+        <description>The statements contained in the Checked (On / Off)...End Checked block. This might be an empty list.</description>
+        <lm-equiv name="BlockNode.Contents"></lm-equiv>
+        <native-equiv name="BlockStatement.Children"></native-equiv>
+      </child>
+
+      <child name="EndCheckedBlockStatement" kind="EndCheckedBlockStatement">
+        <description>
+          The End With statement that ends the block.
+        </description>
+        <lm-equiv name="EndBlock"></lm-equiv>
+        <native-equiv name="TerminatingConstruct"></native-equiv>
+      </child>
+    </node-structure>
+
+    <node-structure name="BeginCheckedBlockStatementSyntax" parent="StatementSyntax">
+      <description>
+        Represents the "Checked (On / Off)" statement that begins a "Checked" block.
+      </description>
+      <lm-equiv name="CheckedNode"></lm-equiv>
+      <native-equiv name="ExecutableBlockStatement"></native-equiv>
+      <spec-section>10.10.1</spec-section>
+      <grammar>CheckedBlockStatement</grammar>
+
+      <node-kind name="BeginCheckedBlockStatement">
+        <lm-equiv name="CheckedBlock" />
+        <native-equiv name="Statement.Opcodes.CheckedBlock" />
+      </node-kind>
+
+      <child name="CheckedKeyword" kind="CheckedKeyword">
+        <description>The "Checked" keyword.</description>
+        <lm-equiv name="ChekedKeyword"></lm-equiv>
+        <native-equiv name=""></native-equiv>
+      </child>
+      <child name="OnOrOffKeyword" >
+        <description>The On / Off keyword that follows the Checked keyword that begins the block.</description>
+        <kind name="OnKeyword" node-kind="OnKeyword" />
+        <kind name="OffKeyword" node-kind="OffKeyword" />
+      </child>
+
+    </node-structure>
+
 
     <!--********************
       -  LocalVariable
@@ -8397,6 +8468,10 @@ Unify Enum declarations with other block type declarations.
       </node-kind>
       <node-kind name="WendKeyword" token-text="Wend">
         <lm-equiv name="WendKeyword" />
+        <native-equiv name="" />
+      </node-kind>
+      <node-kind name="CheckedKeyword" token-text="Checked">
+        <lm-equiv name="CheckedKeyword" />
         <native-equiv name="" />
       </node-kind>
 

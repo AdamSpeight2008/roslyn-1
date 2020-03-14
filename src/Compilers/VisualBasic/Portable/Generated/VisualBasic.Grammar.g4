@@ -82,7 +82,8 @@ identifier_name
   ;
 
 statement
-  : case_statement
+  : begin_checked_block_statement
+  | case_statement
   | catch_statement
   | declaration_statement
   | do_statement
@@ -101,6 +102,10 @@ statement
   | using_statement
   | while_statement
   | with_statement
+  ;
+
+begin_checked_block_statement
+  : 'Checked' ('On' | 'Off')
   ;
 
 case_statement
@@ -194,6 +199,7 @@ declaration_statement
 
 end_block_statement
   : end_add_handler_statement
+  | end_checked_block_statement
   | end_class_statement
   | end_enum_statement
   | end_event_statement
@@ -220,6 +226,10 @@ end_block_statement
 
 end_add_handler_statement
   : 'End' 'AddHandler'
+  ;
+
+end_checked_block_statement
+  : 'End' 'Checked'
   ;
 
 end_class_statement
@@ -793,6 +803,7 @@ executable_statement
   : add_remove_handler_statement
   | assignment_statement
   | call_statement
+  | checked_block
   | continue_statement
   | do_loop_block
   | erase_statement
@@ -842,6 +853,10 @@ assignment_statement
 
 call_statement
   : 'Call' expression
+  ;
+
+checked_block
+  : begin_checked_block_statement statement* end_checked_block_statement
   ;
 
 continue_statement

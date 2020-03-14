@@ -112,6 +112,10 @@ Partial Public Class GeneratedTests
             return InternalSyntax.SyntaxFactory.EndSyncLockStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.EndKeyword, String.Empty, Nothing, Nothing), new InternalSyntax.KeywordSyntax(SyntaxKind.SyncLockKeyword, String.Empty, Nothing, Nothing))
         End Function
 
+        Private Shared Function GenerateGreenEndCheckedBlockStatement() As InternalSyntax.EndBlockStatementSyntax
+            return InternalSyntax.SyntaxFactory.EndCheckedBlockStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.EndKeyword, String.Empty, Nothing, Nothing), new InternalSyntax.KeywordSyntax(SyntaxKind.CheckedKeyword, String.Empty, Nothing, Nothing))
+        End Function
+
         Private Shared Function GenerateGreenCompilationUnit() As InternalSyntax.CompilationUnitSyntax
             return InternalSyntax.SyntaxFactory.CompilationUnit(Nothing, Nothing, Nothing, Nothing, new InternalSyntax.PunctuationSyntax(SyntaxKind.EndOfFileToken, String.Empty, Nothing, Nothing))
         End Function
@@ -450,6 +454,14 @@ Partial Public Class GeneratedTests
 
         Private Shared Function GenerateGreenWithBlock() As InternalSyntax.WithBlockSyntax
             return InternalSyntax.SyntaxFactory.WithBlock(GenerateGreenWithStatement(), Nothing, GenerateGreenEndWithStatement())
+        End Function
+
+        Private Shared Function GenerateGreenCheckedBlock() As InternalSyntax.CheckedBlockSyntax
+            return InternalSyntax.SyntaxFactory.CheckedBlock(GenerateGreenBeginCheckedBlockStatement(), Nothing, GenerateGreenEndCheckedBlockStatement())
+        End Function
+
+        Private Shared Function GenerateGreenBeginCheckedBlockStatement() As InternalSyntax.BeginCheckedBlockStatementSyntax
+            return InternalSyntax.SyntaxFactory.BeginCheckedBlockStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.CheckedKeyword, String.Empty, Nothing, Nothing), new InternalSyntax.KeywordSyntax(SyntaxKind.OnKeyword, String.Empty, Nothing, Nothing))
         End Function
 
         Private Shared Function GenerateGreenLocalDeclarationStatement() As InternalSyntax.LocalDeclarationStatementSyntax
@@ -1696,6 +1708,12 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestGreenEndCheckedBlockStatement()
+            dim objectUnderTest = GenerateGreenEndCheckedBlockStatement()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
         Public Sub TestGreenCompilationUnit()
             dim objectUnderTest = GenerateGreenCompilationUnit()
             AttachAndCheckDiagnostics(objectUnderTest)
@@ -2202,6 +2220,18 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenWithBlock()
             dim objectUnderTest = GenerateGreenWithBlock()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenCheckedBlock()
+            dim objectUnderTest = GenerateGreenCheckedBlock()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenBeginCheckedBlockStatement()
+            dim objectUnderTest = GenerateGreenBeginCheckedBlockStatement()
             AttachAndCheckDiagnostics(objectUnderTest)
         End Sub
 
@@ -4045,6 +4075,14 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestGreenEndCheckedBlockStatementRewriter()
+            dim oldNode = GenerateGreenEndCheckedBlockStatement()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
         Public Sub TestGreenCompilationUnitRewriter()
             dim oldNode = GenerateGreenCompilationUnit()
             Dim rewriter = New GreenIdentityRewriter()
@@ -4719,6 +4757,22 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenWithBlockRewriter()
             dim oldNode = GenerateGreenWithBlock()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenCheckedBlockRewriter()
+            dim oldNode = GenerateGreenCheckedBlock()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenBeginCheckedBlockStatementRewriter()
+            dim oldNode = GenerateGreenBeginCheckedBlockStatement()
             Dim rewriter = New GreenIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)
@@ -6952,6 +7006,13 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestGreenEndCheckedBlockStatementVisitor()
+            Dim oldNode = GenerateGreenEndCheckedBlockStatement()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
         Public Sub TestGreenCompilationUnitVisitor()
             Dim oldNode = GenerateGreenCompilationUnit()
             Dim visitor = New GreenNodeVisitor()
@@ -7542,6 +7603,20 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenWithBlockVisitor()
             Dim oldNode = GenerateGreenWithBlock()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenCheckedBlockVisitor()
+            Dim oldNode = GenerateGreenCheckedBlock()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenBeginCheckedBlockStatementVisitor()
+            Dim oldNode = GenerateGreenBeginCheckedBlockStatement()
             Dim visitor = New GreenNodeVisitor()
             visitor.Visit(oldNode)
         End Sub
@@ -10028,6 +10103,35 @@ Partial Public Class GeneratedTests
             return SyntaxFactory.EndSyncLockStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.SyncLockKeyword))
         End Function
 
+        Private Shared Function GenerateRedEndCheckedBlockStatement() As EndBlockStatementSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.EndCheckedBlockStatement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), SyntaxFactory.Token(SyntaxKind.CheckedKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.EndCheckedBlockStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.EndCheckedBlockStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.EndCheckedBlockStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.CheckedKeyword))
+        End Function
+
         Private Shared Function GenerateRedCompilationUnit() As CompilationUnitSyntax
             Dim exceptionTest as boolean = false
             Try
@@ -11819,6 +11923,56 @@ Partial Public Class GeneratedTests
             exceptionTest = false
 
             return SyntaxFactory.WithBlock(GenerateRedWithStatement(), Nothing, GenerateRedEndWithStatement())
+        End Function
+
+        Private Shared Function GenerateRedCheckedBlock() As CheckedBlockSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.CheckedBlock(Nothing, Nothing, GenerateRedEndCheckedBlockStatement())
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.CheckedBlock(GenerateRedBeginCheckedBlockStatement(), Nothing, Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.CheckedBlock(GenerateRedBeginCheckedBlockStatement(), Nothing, GenerateRedEndCheckedBlockStatement())
+        End Function
+
+        Private Shared Function GenerateRedBeginCheckedBlockStatement() As BeginCheckedBlockStatementSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.BeginCheckedBlockStatement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), SyntaxFactory.Token(SyntaxKind.OnKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.BeginCheckedBlockStatement(SyntaxFactory.Token(SyntaxKind.CheckedKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.BeginCheckedBlockStatement(SyntaxFactory.Token(SyntaxKind.CheckedKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.BeginCheckedBlockStatement(SyntaxFactory.Token(SyntaxKind.CheckedKeyword), SyntaxFactory.Token(SyntaxKind.OnKeyword))
         End Function
 
         Private Shared Function GenerateRedLocalDeclarationStatement() As LocalDeclarationStatementSyntax
@@ -18671,6 +18825,15 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestRedEndCheckedBlockStatement()
+            dim objectUnderTest = GenerateRedEndCheckedBlockStatement()
+            Assert.NotNull(objectUnderTest.endKeyword)
+            Assert.NotNull(objectUnderTest.blockKeyword)
+            Dim withObj = objectUnderTest.WithEndKeyword(objectUnderTest.EndKeyword).WithBlockKeyword(objectUnderTest.BlockKeyword)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
         Public Sub TestRedCompilationUnit()
             dim objectUnderTest = GenerateRedCompilationUnit()
             Assert.NotNull(objectUnderTest.endOfFileToken)
@@ -19426,6 +19589,24 @@ Partial Public Class GeneratedTests
             Assert.NotNull(objectUnderTest.withStatement)
             Assert.NotNull(objectUnderTest.endWithStatement)
             Dim withObj = objectUnderTest.WithWithStatement(objectUnderTest.WithStatement).WithStatements(objectUnderTest.Statements).WithEndWithStatement(objectUnderTest.EndWithStatement)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedCheckedBlock()
+            dim objectUnderTest = GenerateRedCheckedBlock()
+            Assert.NotNull(objectUnderTest.beginCheckedBlockStatement)
+            Assert.NotNull(objectUnderTest.endCheckedBlockStatement)
+            Dim withObj = objectUnderTest.WithBeginCheckedBlockStatement(objectUnderTest.BeginCheckedBlockStatement).WithStatements(objectUnderTest.Statements).WithEndCheckedBlockStatement(objectUnderTest.EndCheckedBlockStatement)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedBeginCheckedBlockStatement()
+            dim objectUnderTest = GenerateRedBeginCheckedBlockStatement()
+            Assert.NotNull(objectUnderTest.checkedKeyword)
+            Assert.NotNull(objectUnderTest.onOrOffKeyword)
+            Dim withObj = objectUnderTest.WithCheckedKeyword(objectUnderTest.CheckedKeyword).WithOnOrOffKeyword(objectUnderTest.OnOrOffKeyword)
             Assert.Equal(withobj, objectUnderTest)
         End Sub
 
@@ -22105,6 +22286,14 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestRedEndCheckedBlockStatementRewriter()
+            dim oldNode = GenerateRedEndCheckedBlockStatement()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
         Public Sub TestRedCompilationUnitRewriter()
             dim oldNode = GenerateRedCompilationUnit()
             Dim rewriter = New RedIdentityRewriter()
@@ -22779,6 +22968,22 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestRedWithBlockRewriter()
             dim oldNode = GenerateRedWithBlock()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedCheckedBlockRewriter()
+            dim oldNode = GenerateRedCheckedBlock()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedBeginCheckedBlockStatementRewriter()
+            dim oldNode = GenerateRedBeginCheckedBlockStatement()
             Dim rewriter = New RedIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)

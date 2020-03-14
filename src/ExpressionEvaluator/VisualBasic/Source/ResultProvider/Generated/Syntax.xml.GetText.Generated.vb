@@ -316,6 +316,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return "Variant"
         Case SyntaxKind.WendKeyword
             Return "Wend"
+        Case SyntaxKind.CheckedKeyword
+            Return "Checked"
         Case SyntaxKind.AggregateKeyword
             Return "Aggregate"
         Case SyntaxKind.AllKeyword
