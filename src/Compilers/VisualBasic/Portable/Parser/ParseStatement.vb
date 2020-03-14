@@ -1872,5 +1872,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return result
         End Function
 
+        Private Function ParseCheckedStatement() As BeginCheckedBlockStatementSyntax
+            ' BeginCheckedBlockStatement ::= "Checked" ("On" / "Off") ;;
+            Debug.Assert(CurrentToken.Kind = SyntaxKind.CheckedKeyword)
+            Dim [Checked] As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
+            Dim OnOrOffKeyword As KeywordSyntax = Nothing
+            GetNextToken()
+            Select Case CurrentToken.Kind
+                Case SyntaxKind.OnKeyword,
+                     SyntaxKind.OffKeyword
+                    OnOrOffKeyword = DirectCast(CurrentToken, KeywordSyntax)
+                    GetNextToken()
+                Case Else
+                    OnOrOffKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.OnKeyword)
+                    OnOrOffKeyword = ReportSyntaxError(ResyncAt(OnOrOffKeyword), ERRID.ERR_ExpectedOn)
+            End Select
+            Dim statement As BeginCheckedBlockStatementSyntax = SyntaxFactory.BeginCheckedBlockStatement(Checked, OnOrOffKeyword)
+            statement = CheckFeatureAvailability(Of BeginCheckedBlockStatementSyntax)(Feature.CheckedBlocks, statement)
+            Return statement
+        End Function
+
     End Class
 End Namespace

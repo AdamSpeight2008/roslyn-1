@@ -12897,7 +12897,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         End Function
 
         ''' <summary>
-        ''' The End With statement that ends the block.
+        ''' The EndCheckedBlockStatement that ends the Checked (On / Off) ...End Checked
+        ''' block.
         ''' </summary>
         Public  ReadOnly Property EndCheckedBlockStatement As EndBlockStatementSyntax
             Get

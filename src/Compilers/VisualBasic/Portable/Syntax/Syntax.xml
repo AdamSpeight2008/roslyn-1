@@ -2879,11 +2879,9 @@ Unify Enum declarations with other block type declarations.
       </child>
 
       <child name="EndCheckedBlockStatement" kind="EndCheckedBlockStatement">
-        <description>
-          The End With statement that ends the block.
-        </description>
-        <lm-equiv name="EndBlock"></lm-equiv>
-        <native-equiv name="TerminatingConstruct"></native-equiv>
+        <description>The EndCheckedBlockStatement that ends the Checked (On / Off) ...End Checked block. </description>
+        <lm-equiv name=""></lm-equiv>
+        <native-equiv name=""></native-equiv>
       </child>
     </node-structure>
 

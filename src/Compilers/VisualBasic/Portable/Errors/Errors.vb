@@ -2036,5 +2036,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_UnconstrainedTypeParameterInConditional
         FEATURE_CommentsAfterLineContinuation
         FEATUE_CheckedBlocks
+        ERR_ExpectedEndChecked
     End Enum
 End Namespace

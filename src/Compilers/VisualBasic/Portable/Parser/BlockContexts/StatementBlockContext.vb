@@ -41,6 +41,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Dim beginStmt As UsingStatementSyntax = Nothing
                     GetBeginEndStatements(beginStmt, endStmt)
                     result = SyntaxFactory.UsingBlock(beginStmt, Body(), endStmt)
+
+                Case SyntaxKind.CheckedBlock
+                    Dim beginStmt As BeginCheckedBlockStatementSyntax = Nothing
+                    GetBeginEndStatements(beginStmt, endStmt)
+                    Return SyntaxFactory.CheckedBlock(beginStmt, Body(), endStmt)
+
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(BlockKind)
             End Select

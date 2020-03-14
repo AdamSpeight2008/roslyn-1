@@ -1,1 +1,37 @@
-
+Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax.CheckedKeyword() -> Microsoft.CodeAnalysis.SyntaxToken
+Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax.OnOrOffKeyword() -> Microsoft.CodeAnalysis.SyntaxToken
+Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax.Update(checkedKeyword As Microsoft.CodeAnalysis.SyntaxToken, onOrOffKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax.WithCheckedKeyword(checkedKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax.WithOnOrOffKeyword(onOrOffKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax.AddStatements(ParamArray items As Microsoft.CodeAnalysis.VisualBasic.Syntax.StatementSyntax()) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax.BeginCheckedBlockStatement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax.EndCheckedBlockStatement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax.Statements() -> Microsoft.CodeAnalysis.SyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.StatementSyntax)
+Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax.Update(beginCheckedBlockStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax, statements As Microsoft.CodeAnalysis.SyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.StatementSyntax), endCheckedBlockStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax.WithBeginCheckedBlockStatement(beginCheckedBlockStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax.WithEndCheckedBlockStatement(endCheckedBlockStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax.WithStatements(statements As Microsoft.CodeAnalysis.SyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.StatementSyntax)) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.BeginCheckedBlockStatement = 795 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.CheckedBlock = 794 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.CheckedKeyword = 793 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.EndCheckedBlockStatement = 796 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitBeginCheckedBlockStatement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitCheckedBlock(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitBeginCheckedBlockStatement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax) -> Void
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitCheckedBlock(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitBeginCheckedBlockStatement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitCheckedBlock(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.BeginCheckedBlockStatement(checkedKeyword As Microsoft.CodeAnalysis.SyntaxToken, onOrOffKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.BeginCheckedBlockStatement(onOrOffKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.CheckedBlock(beginCheckedBlockStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.CheckedBlock(beginCheckedBlockStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax, statements As Microsoft.CodeAnalysis.SyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.StatementSyntax)) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.CheckedBlock(beginCheckedBlockStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.BeginCheckedBlockStatementSyntax, statements As Microsoft.CodeAnalysis.SyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.StatementSyntax), endCheckedBlockStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.CheckedBlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.EndCheckedBlockStatement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.EndCheckedBlockStatement(endKeyword As Microsoft.CodeAnalysis.SyntaxToken, blockKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFacts.IsBeginCheckedBlockStatementOnOrOffKeyword(kind As Microsoft.CodeAnalysis.VisualBasic.SyntaxKind) -> Boolean

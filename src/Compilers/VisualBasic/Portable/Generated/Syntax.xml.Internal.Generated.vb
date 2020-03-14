@@ -11642,7 +11642,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Property
 
         ''' <summary>
-        ''' The End With statement that ends the block.
+        ''' The EndCheckedBlockStatement that ends the Checked (On / Off) ...End Checked
+        ''' block.
         ''' </summary>
         Friend  ReadOnly Property EndCheckedBlockStatement As InternalSyntax.EndBlockStatementSyntax
             Get
@@ -46359,7 +46360,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' might be an empty list.
         ''' </param>
         ''' <param name="endCheckedBlockStatement">
-        ''' The End With statement that ends the block.
+        ''' The EndCheckedBlockStatement that ends the Checked (On / Off) ...End Checked
+        ''' block.
         ''' </param>
         Friend Shared Function CheckedBlock(beginCheckedBlockStatement As BeginCheckedBlockStatementSyntax, statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), endCheckedBlockStatement As EndBlockStatementSyntax) As CheckedBlockSyntax
             Debug.Assert(beginCheckedBlockStatement IsNot Nothing)
@@ -58529,7 +58531,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' might be an empty list.
         ''' </param>
         ''' <param name="endCheckedBlockStatement">
-        ''' The End With statement that ends the block.
+        ''' The EndCheckedBlockStatement that ends the Checked (On / Off) ...End Checked
+        ''' block.
         ''' </param>
         Friend Function CheckedBlock(beginCheckedBlockStatement As BeginCheckedBlockStatementSyntax, statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), endCheckedBlockStatement As EndBlockStatementSyntax) As CheckedBlockSyntax
             Debug.Assert(beginCheckedBlockStatement IsNot Nothing)

@@ -86,7 +86,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Friend Overrides Function EndBlock(statement As StatementSyntax) As BlockContext
-            Dim blockSyntax = CreateBlockSyntax(statement)
+            Dim blockSyntax = Me.CreateBlockSyntax(statement)
             Return PrevBlock.ProcessSyntax(blockSyntax)
         End Function
 

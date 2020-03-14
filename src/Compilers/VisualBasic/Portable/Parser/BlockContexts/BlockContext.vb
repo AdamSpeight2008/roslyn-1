@@ -495,6 +495,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case SyntaxKind.UsingStatement
                     Return New StatementBlockContext(SyntaxKind.UsingBlock, DirectCast(node, StatementSyntax), Me)
 
+                Case SyntaxKind.BeginCheckedBlockStatement
+                    Return New StatementBlockContext(SyntaxKind.CheckedBlock, DirectCast(node, StatementSyntax), Me)
+
                 Case SyntaxKind.TryStatement
                     Return New TryBlockContext(DirectCast(node, StatementSyntax), Me)
 
@@ -554,6 +557,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Case SyntaxKind.UsingBlock
                     Return UseSyntax(node, newContext, DirectCast(node, UsingBlockSyntax).EndUsingStatement.IsMissing)
+
+                Case SyntaxKind.CheckedBlock
+                    Return UseSyntax(node, newContext, DirectCast(node, CheckedBlockSyntax).EndCheckedBlockStatement.IsMissing)
 
                 Case SyntaxKind.TryBlock
                     Return UseSyntax(node, newContext, DirectCast(node, TryBlockSyntax).EndTryStatement.IsMissing)
@@ -711,9 +717,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     endStmt = SyntaxFactory.EndTryStatement(missingEndKeyword, InternalSyntaxFactory.MissingKeyword(SyntaxKind.TryKeyword))
                     errorId = ERRID.ERR_ExpectedEndTry
 
-                Case SyntaxKind.UsingBlock
-                    endStmt = SyntaxFactory.EndUsingStatement(missingEndKeyword, InternalSyntaxFactory.MissingKeyword(SyntaxKind.UsingKeyword))
-                    errorId = ERRID.ERR_ExpectedEndUsing
+                Case SyntaxKind.CheckedBlock
+                    endStmt = SyntaxFactory.EndCheckedBlockStatement(missingEndKeyword, InternalSyntaxFactory.MissingKeyword(SyntaxKind.CheckedKeyword))
+                    errorId = ERRID.ERR_ExpectedEndChecked
 
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(kind)

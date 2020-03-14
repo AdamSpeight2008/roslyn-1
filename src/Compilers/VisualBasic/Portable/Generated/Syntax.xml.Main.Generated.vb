@@ -13124,7 +13124,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' might be an empty list.
         ''' </param>
         ''' <param name="endCheckedBlockStatement">
-        ''' The End With statement that ends the block.
+        ''' The EndCheckedBlockStatement that ends the Checked (On / Off) ...End Checked
+        ''' block.
         ''' </param>
         Public Shared Function CheckedBlock(beginCheckedBlockStatement As BeginCheckedBlockStatementSyntax, statements As SyntaxList(of StatementSyntax), endCheckedBlockStatement As EndBlockStatementSyntax) As CheckedBlockSyntax
             if beginCheckedBlockStatement Is Nothing Then

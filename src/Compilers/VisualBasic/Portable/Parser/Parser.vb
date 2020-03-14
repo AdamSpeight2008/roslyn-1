@@ -997,6 +997,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case SyntaxKind.StopKeyword
                     Return ParseStopOrEndStatement()
 
+                Case SyntaxKind.CheckedKeyword
+                    Return ParseCheckedStatement()
+
                 Case SyntaxKind.ContinueKeyword
                     Return ParseContinueStatement()
 
