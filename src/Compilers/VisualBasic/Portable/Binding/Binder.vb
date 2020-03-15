@@ -53,6 +53,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Shared ReadOnly s_noArguments As ImmutableArray(Of BoundExpression) = ImmutableArray(Of BoundExpression).Empty
 
         Protected ReadOnly m_containingBinder As Binder
+        Friend Property Flags As BinderFlags
 
         ' Caching these items in the nearest binder is a performance win.
         Private ReadOnly _syntaxTree As SyntaxTree
@@ -72,11 +73,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 _isEarlyAttributeBinder = containingBinder.IsEarlyAttributeBinder
                 _ignoreBaseClassesInLookup = containingBinder.IgnoreBaseClassesInLookup
                 _basesBeingResolved = containingBinder.BasesBeingResolved
+                Flags = InitializeFlags(containingBinder)
             End If
+        End Sub
+
+        Protected Sub New(containingBinder As Binder, flags As BinderFlags)
+            RoslynDebug.Assert(containingBinder IsNot Nothing)
+            ' Mutually exclusive.
+            RoslynDebug.Assert(Not flags.Includes(BinderFlags.UncheckedRegion Or BinderFlags.CheckedRegion))
+            ' Implied.
+            m_containingBinder = containingBinder
+            Me.Flags = flags
+            _compilation = containingBinder.Compilation
         End Sub
 
         Protected Sub New(containingBinder As Binder, syntaxTree As SyntaxTree)
             Me.New(containingBinder)
+            Flags = InitializeFlags(containingBinder)
             _syntaxTree = syntaxTree
         End Sub
 
@@ -84,6 +97,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.New(containingBinder)
             _sourceModule = sourceModule
             _compilation = compilation
+            Flags = If(sourceModule.Options.CheckOverflow, BinderFlags.CheckedRegion, BinderFlags.UncheckedRegion)
         End Sub
 
         Protected Sub New(containingBinder As Binder, Optional isEarlyAttributeBinder As Boolean? = Nothing, Optional ignoreBaseClassesInLookup As Boolean? = Nothing)
@@ -96,12 +110,39 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If ignoreBaseClassesInLookup.HasValue Then
                 _ignoreBaseClassesInLookup = ignoreBaseClassesInLookup.Value
             End If
+            Flags = InitializeFlags(containingBinder)
         End Sub
 
         Protected Sub New(containingBinder As Binder, basesBeingResolved As BasesBeingResolved)
             Me.New(containingBinder)
             _basesBeingResolved = basesBeingResolved
+            Flags = InitializeFlags(containingBinder)
         End Sub
+
+        Friend Function WithFlags(newFlags As BinderFlags) As Binder
+            If Not Me.Flags = newFlags Then
+                Me._Flags = newFlags
+            End If
+            Return Me
+        End Function
+
+        Friend Function WithAdditionalFlags(additionalFlags As BinderFlags) As Binder
+            If Not Me.Flags.Includes(additionalFlags) Then
+                Me._Flags = Me.Flags Or additionalFlags
+            End If
+            Return Me
+        End Function
+
+        Private Function InitializeFlags(containingBinder As Binder) As BinderFlags
+            If containingBinder.Flags = BinderFlags.None Then
+                If _compilation Is Nothing OrElse _compilation.Options Is Nothing Then
+                    Return BinderFlags.CheckedRegion
+                Else
+                    Return If(_compilation.Options.CheckOverflow, BinderFlags.CheckedRegion, BinderFlags.UncheckedRegion)
+                End If
+            End If
+            Return containingBinder.Flags
+        End Function
 
         Public ReadOnly Property ContainingBinder As Binder
             Get
@@ -746,11 +787,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Property
 
         ''' <summary>
-        ''' True if integer overflow checking is On.
+        ''' True if integer overflow checking is on.
         ''' </summary>
-        Public Overridable ReadOnly Property CheckOverflow As Boolean
+        Public Overridable ReadOnly Property CheckOverflow() As Boolean
             Get
-                Return m_containingBinder.CheckOverflow
+                RoslynDebug.Assert(Not Me.Flags.Includes(BinderFlags.UncheckedRegion Or BinderFlags.CheckedRegion))
+
+                Return Me.Flags.IsCheckedRegion
             End Get
         End Property
 

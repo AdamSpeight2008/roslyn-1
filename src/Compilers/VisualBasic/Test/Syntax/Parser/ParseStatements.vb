@@ -9404,4 +9404,32 @@ End Module
           ~
 ]]></expected>)
     End Sub
+
+
+    <Fact>
+    Public Sub ParseCheckedBlock()
+        Dim compilationDef =
+<compilation>
+    <file name="a.vb"><![CDATA[
+Imports System
+Module Module1
+    Sub Main()
+        Dim x As Byte = CByte(254)
+        Dim y As Byte = CByte(2)
+        Dim z As Byte = Nothing
+        Checked Off
+          z = x + y
+        End Checked
+        Console.WriteLine(z)
+    End Sub
+End Module
+    ]]></file>
+</compilation>
+
+        Dim compilation = CreateCompilationWithMscorlib40AndVBRuntime(compilationDef, TestOptions.ReleaseDll)
+        CompilationUtils.AssertTheseDiagnostics(compilation,
+<expected><![CDATA[
+
+]]></expected>)
+    End Sub
 End Class

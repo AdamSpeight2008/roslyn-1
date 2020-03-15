@@ -174,8 +174,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.NameOfKeyword,
                      SyntaxKind.DollarSignDoubleQuoteToken,
                      SyntaxKind.InterpolatedStringTextToken,
-                     SyntaxKind.EndOfInterpolatedStringToken
-
+                     SyntaxKind.EndOfInterpolatedStringToken,
+                    SyntaxKind.CheckedKeyword,
+                    SyntaxKind.CheckedBlock,
+                    SyntaxKind.BeginCheckedBlockStatement,
+                    SyntaxKind.EndCheckedBlockStatement
                 Case Else
                     Throw New ArgumentOutOfRangeException(NameOf(kind))
             End Select

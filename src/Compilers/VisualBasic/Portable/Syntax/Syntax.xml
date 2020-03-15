@@ -8468,10 +8468,6 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="WendKeyword" />
         <native-equiv name="" />
       </node-kind>
-      <node-kind name="CheckedKeyword" token-text="Checked">
-        <lm-equiv name="CheckedKeyword" />
-        <native-equiv name="" />
-      </node-kind>
 
       <!-- Contextual Keywords -->
       <node-kind name="AggregateKeyword" token-text="Aggregate">
@@ -8662,7 +8658,11 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="YieldKeyword" />
         <native-equiv name="" />
       </node-kind>
-
+      
+      <node-kind name="CheckedKeyword" token-text="Checked">
+        <lm-equiv name="CheckedKeyword" />
+        <native-equiv name="" />
+      </node-kind>
     </node-structure>
 
     <!--********************

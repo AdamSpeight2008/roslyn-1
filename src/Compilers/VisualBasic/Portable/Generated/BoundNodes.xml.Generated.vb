@@ -163,6 +163,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         RaiseEventStatement
         UsingStatement
         SyncLockStatement
+        CheckedBlockStatement
         XmlName
         XmlNamespace
         XmlDocument
@@ -7738,6 +7739,56 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
     End Class
 
+    Friend NotInheritable Partial Class BoundCheckedBlockStatement
+        Inherits BoundStatement
+
+        Public Sub New(syntax As SyntaxNode, throwOnIntegerOverflow As Boolean, statementListSyntax As SyntaxList(Of StatementSyntax), statements As ImmutableArray(Of BoundStatement), Optional hasErrors As Boolean = False)
+            MyBase.New(BoundKind.CheckedBlockStatement, syntax, hasErrors OrElse statements.NonNullAndHasErrors())
+
+            Debug.Assert(Not (statements.IsDefault), "Field 'statements' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+            Me._ThrowOnIntegerOverflow = throwOnIntegerOverflow
+            Me._StatementListSyntax = statementListSyntax
+            Me._Statements = statements
+        End Sub
+
+
+        Private ReadOnly _ThrowOnIntegerOverflow As Boolean
+        Public ReadOnly Property ThrowOnIntegerOverflow As Boolean
+            Get
+                Return _ThrowOnIntegerOverflow
+            End Get
+        End Property
+
+        Private ReadOnly _StatementListSyntax As SyntaxList(Of StatementSyntax)
+        Public ReadOnly Property StatementListSyntax As SyntaxList(Of StatementSyntax)
+            Get
+                Return _StatementListSyntax
+            End Get
+        End Property
+
+        Private ReadOnly _Statements As ImmutableArray(Of BoundStatement)
+        Public ReadOnly Property Statements As ImmutableArray(Of BoundStatement)
+            Get
+                Return _Statements
+            End Get
+        End Property
+
+        <DebuggerStepThrough>
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitCheckedBlockStatement(Me)
+        End Function
+
+        Public Function Update(throwOnIntegerOverflow As Boolean, statementListSyntax As SyntaxList(Of StatementSyntax), statements As ImmutableArray(Of BoundStatement)) As BoundCheckedBlockStatement
+            If throwOnIntegerOverflow <> Me.ThrowOnIntegerOverflow OrElse statementListSyntax <> Me.StatementListSyntax OrElse statements <> Me.Statements Then
+                Dim result = New BoundCheckedBlockStatement(Me.Syntax, throwOnIntegerOverflow, statementListSyntax, statements, Me.HasErrors)
+                result.CopyAttributes(Me)
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
     Friend NotInheritable Partial Class BoundXmlName
         Inherits BoundExpression
 
@@ -9572,6 +9623,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Return VisitUsingStatement(CType(node, BoundUsingStatement), arg)
                 Case BoundKind.SyncLockStatement: 
                     Return VisitSyncLockStatement(CType(node, BoundSyncLockStatement), arg)
+                Case BoundKind.CheckedBlockStatement: 
+                    Return VisitCheckedBlockStatement(CType(node, BoundCheckedBlockStatement), arg)
                 Case BoundKind.XmlName: 
                     Return VisitXmlName(CType(node, BoundXmlName), arg)
                 Case BoundKind.XmlNamespace: 
@@ -10216,6 +10269,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overridable Function VisitSyncLockStatement(node As BoundSyncLockStatement, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
+        Public Overridable Function VisitCheckedBlockStatement(node As BoundCheckedBlockStatement, arg As A) As R
             Return Me.DefaultVisit(node, arg)
         End Function
 
@@ -10919,6 +10976,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overridable Function VisitSyncLockStatement(node As BoundSyncLockStatement) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitCheckedBlockStatement(node As BoundCheckedBlockStatement) As BoundNode
             Return Me.DefaultVisit(node)
         End Function
 
@@ -11812,6 +11873,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overrides Function VisitSyncLockStatement(node As BoundSyncLockStatement) As BoundNode
             Me.Visit(node.LockExpression)
             Me.Visit(node.Body)
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitCheckedBlockStatement(node As BoundCheckedBlockStatement) As BoundNode
+            Me.VisitList(node.Statements)
             Return Nothing
         End Function
 
@@ -12873,6 +12939,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim lockExpression As BoundExpression = DirectCast(Me.Visit(node.LockExpression), BoundExpression)
             Dim body As BoundBlock = DirectCast(Me.Visit(node.Body), BoundBlock)
             Return node.Update(lockExpression, body)
+        End Function
+
+        Public Overrides Function VisitCheckedBlockStatement(node As BoundCheckedBlockStatement) As BoundNode
+            Dim statements As ImmutableArray(Of BoundStatement) = Me.VisitList(node.Statements)
+            Return node.Update(node.ThrowOnIntegerOverflow, node.StatementListSyntax, statements)
         End Function
 
         Public Overrides Function VisitXmlName(node As BoundXmlName) As BoundNode
@@ -14284,6 +14355,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return New TreeDumperNode("syncLockStatement", Nothing, New TreeDumperNode() {
                 New TreeDumperNode("lockExpression", Nothing, new TreeDumperNode() { Visit(node.LockExpression, Nothing) }),
                 New TreeDumperNode("body", Nothing, new TreeDumperNode() { Visit(node.Body, Nothing) })
+            })
+        End Function
+
+        Public Overrides Function VisitCheckedBlockStatement(node As BoundCheckedBlockStatement, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("checkedBlockStatement", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("throwOnIntegerOverflow", node.ThrowOnIntegerOverflow, Nothing),
+                New TreeDumperNode("statementListSyntax", node.StatementListSyntax, Nothing),
+                New TreeDumperNode("statements", Nothing, From x In node.Statements Select Visit(x, Nothing))
             })
         End Function
 

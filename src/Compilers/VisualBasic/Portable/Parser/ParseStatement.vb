@@ -1874,19 +1874,26 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ParseCheckedStatement() As BeginCheckedBlockStatementSyntax
             ' BeginCheckedBlockStatement ::= "Checked" ("On" / "Off") ;;
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.CheckedKeyword)
-            Dim [Checked] As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
+            Dim [Checked] As KeywordSyntax = Nothing
+            If Not TryTokenAsContextualKeyword(CurrentToken, SyntaxKind.CheckedKeyword, [Checked]) Then
+
+            End If
+
             Dim OnOrOffKeyword As KeywordSyntax = Nothing
             GetNextToken()
-            Select Case CurrentToken.Kind
-                Case SyntaxKind.OnKeyword,
+            If TryTokenAsContextualKeyword(CurrentToken, OnOrOffKeyword) Then
+                Select Case OnOrOffKeyword.Kind
+                    Case SyntaxKind.OnKeyword,
                      SyntaxKind.OffKeyword
-                    OnOrOffKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                    GetNextToken()
-                Case Else
-                    OnOrOffKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.OnKeyword)
-                    OnOrOffKeyword = ReportSyntaxError(ResyncAt(OnOrOffKeyword), ERRID.ERR_ExpectedOn)
-            End Select
+                        GetNextToken()
+                    Case Else
+                        OnOrOffKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.OnKeyword)
+                        OnOrOffKeyword = ReportSyntaxError(ResyncAt(OnOrOffKeyword), ERRID.ERR_ExpectedOn)
+                End Select
+            Else
+                OnOrOffKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.OnKeyword)
+                OnOrOffKeyword = ReportSyntaxError(ResyncAt(OnOrOffKeyword), ERRID.ERR_ExpectedOn)
+            End If
             Dim statement As BeginCheckedBlockStatementSyntax = SyntaxFactory.BeginCheckedBlockStatement(Checked, OnOrOffKeyword)
             statement = CheckFeatureAvailability(Of BeginCheckedBlockStatementSyntax)(Feature.CheckedBlocks, statement)
             Return statement

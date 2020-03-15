@@ -526,7 +526,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                      SyntaxKind.ForBlock,
                      SyntaxKind.ForEachBlock,
                      SyntaxKind.SingleLineIfStatement,
-                     SyntaxKind.MultiLineIfBlock
+                     SyntaxKind.MultiLineIfBlock,
+                     SyntaxKind.CheckedBlock
                     ' Handle any block that can be created by this context
                     Add(node)
 
@@ -717,6 +718,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     endStmt = SyntaxFactory.EndTryStatement(missingEndKeyword, InternalSyntaxFactory.MissingKeyword(SyntaxKind.TryKeyword))
                     errorId = ERRID.ERR_ExpectedEndTry
 
+                Case SyntaxKind.UsingBlock
+                    endStmt = SyntaxFactory.EndUsingStatement(missingEndKeyword, InternalSyntaxFactory.MissingKeyword(SyntaxKind.UsingKeyword))
+                    errorId = ERRID.ERR_ExpectedEndUsing
+
                 Case SyntaxKind.CheckedBlock
                     endStmt = SyntaxFactory.EndCheckedBlockStatement(missingEndKeyword, InternalSyntaxFactory.MissingKeyword(SyntaxKind.CheckedKeyword))
                     errorId = ERRID.ERR_ExpectedEndChecked
@@ -816,6 +821,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Case SyntaxKind.UsingBlock
                     Return SyntaxKind.EndUsingStatement
+
+                Case SyntaxKind.CheckedBlock
+                    Return SyntaxKind.EndCheckedBlockStatement
 
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(kind)

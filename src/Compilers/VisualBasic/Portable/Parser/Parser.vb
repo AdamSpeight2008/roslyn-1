@@ -851,7 +851,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         Return statement
                     End If
                     Return ParseStatementInMethodBodyInternal()
-
                 Case Else
                     ' misplaced statement errors are reported by the context
                     Return ParseStatementInMethodBodyInternal()
@@ -998,8 +997,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return ParseStopOrEndStatement()
 
                 Case SyntaxKind.CheckedKeyword
-                    Return ParseCheckedStatement()
-
+                    If IsFirstStatementOnLine(CurrentToken) Then
+                        Return ParseCheckedStatement()
+                    End If
                 Case SyntaxKind.ContinueKeyword
                     Return ParseContinueStatement()
 
@@ -1143,6 +1143,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         ElseIf contextualKind = SyntaxKind.YieldKeyword AndAlso
                                Context.IsWithinIteratorMethodOrLambdaOrProperty Then
                             Return ParseYieldStatement()
+                        ElseIf contextualKind = SyntaxKind.CheckedKeyword And IsFirstStatementOnLine(CurrentToken) Then
+                            Return ParseCheckedStatement()
 
                         End If
                     End If

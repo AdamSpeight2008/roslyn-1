@@ -20,7 +20,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Determine if the kind represents a contextual keyword
         ''' </summary>
         Public Shared Function IsContextualKeyword(kind As SyntaxKind) As Boolean
-            Return kind = SyntaxKind.ReferenceKeyword OrElse
+            Return kind = SyntaxKind.ReferenceKeyword OrElse (kind = SyntaxKind.CheckedKeyword) OrElse
                 (SyntaxKind.AggregateKeyword <= kind AndAlso kind <= SyntaxKind.YieldKeyword)
         End Function
 
@@ -288,8 +288,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             SyntaxKind.AsyncKeyword,
             SyntaxKind.AwaitKeyword,
             SyntaxKind.IteratorKeyword,
-            SyntaxKind.YieldKeyword
+            SyntaxKind.YieldKeyword,
+            SyntaxKind.CheckedKeyword
             }
+
         ''' <summary>
         ''' Get contextual keywords
         ''' </summary>
@@ -341,6 +343,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             SyntaxKind.EndOfFileToken,
             SyntaxKind.EmptyToken
             }
+
         ''' <summary>
         ''' Get punctuations
         ''' </summary>
@@ -601,7 +604,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.EndSetStatement,
                      SyntaxKind.EndAddHandlerStatement,
                      SyntaxKind.EndRemoveHandlerStatement,
-                     SyntaxKind.EndRaiseEventStatement
+                     SyntaxKind.EndRaiseEventStatement,
+                     SyntaxKind.EndCheckedBlockStatement
                     Return True
 
                 Case Else
@@ -815,7 +819,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                    {"async", SyntaxKind.AsyncKeyword},
                    {"await", SyntaxKind.AwaitKeyword},
                    {"iterator", SyntaxKind.IteratorKeyword},
-                   {"yield", SyntaxKind.YieldKeyword}
+                   {"yield", SyntaxKind.YieldKeyword},
+                   {"checked", SyntaxKind.CheckedKeyword}
             }
 
         Public Shared Function GetContextualKeywordKind(text As String) As SyntaxKind

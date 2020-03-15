@@ -427,6 +427,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     endStatement = withBlock.EndWithStatement
                     Return True
 
+                Case SyntaxKind.CheckedBlock
+                    Dim checkedBlock = DirectCast(possibleBlock, CheckedBlockSyntax)
+                    beginStatement = checkedBlock.BeginCheckedBlockStatement
+                    body = checkedBlock.Statements
+                    endStatement = checkedBlock.EndCheckedBlockStatement
+                    Return True
+
                 Case SyntaxKind.SelectBlock
                     Dim selectBlock = DirectCast(possibleBlock, SelectBlockSyntax)
                     beginStatement = selectBlock.SelectStatement
@@ -715,6 +722,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 Case SyntaxKind.WithBlock
                     Return "With"
+                Case SyntaxKind.CheckedBlock
+                    Return "Checked"
 
                 Case SyntaxKind.SyncLockBlock
                     Return "SyncLock"

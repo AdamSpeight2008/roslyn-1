@@ -13,10 +13,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     Friend NotInheritable Class CheckedBlockContext
         Inherits ExecutableStatementContext
 
+        Friend ReadOnly Property IsOnContext As Boolean
+        Friend ReadOnly Property IsOffContext As Boolean
+
+        Friend ReadOnly Property IsValid As Boolean
+            Get
+                Return IsOnContext Xor IsOffContext
+            End Get
+        End Property
+
         Friend Sub New(statement As StatementSyntax, prevContext As BlockContext)
             MyBase.New(SyntaxKind.CheckedBlock, statement, prevContext)
 
             Debug.Assert(statement.Kind = SyntaxKind.BeginCheckedBlockStatement)
+            Dim s = DirectCast(statement, BeginCheckedBlockStatementSyntax)
+            IsOnContext = s.OnOrOffKeyword.Kind = SyntaxKind.OnKeyword
+            IsOffContext = s.OnOrOffKeyword.Kind = SyntaxKind.OffKeyword
         End Sub
 
         Friend Overrides Function ProcessSyntax(node As VisualBasicSyntaxNode) As BlockContext

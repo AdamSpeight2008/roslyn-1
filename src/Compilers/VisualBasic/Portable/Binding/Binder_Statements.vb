@@ -105,6 +105,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case SyntaxKind.SyncLockBlock
                     Return BindSyncLockBlock(DirectCast(node, SyncLockBlockSyntax), diagnostics)
 
+                Case SyntaxKind.CheckedBlock
+                    Return BindCheckedBlock(DirectCast(node, CheckedBlockSyntax), diagnostics)
+
                 Case SyntaxKind.TryBlock
                     Return BindTryBlock(DirectCast(node, TryBlockSyntax), diagnostics)
 
@@ -214,6 +217,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                    node.Parent.Kind = SyntaxKind.TryBlock OrElse
                                    node.Parent.Kind = SyntaxKind.UsingBlock)))
 
+                    Return New BoundBadStatement(node, ImmutableArray(Of BoundNode).Empty, hasErrors:=True)
+
+                Case SyntaxKind.EndCheckedBlockStatement
+                    Debug.Assert(IsSemanticModelBinder OrElse
+                                node.ContainsDiagnostics OrElse
+                                 (node.IsMissing AndAlso
+                                    node.Parent.Kind = SyntaxKind.CheckedBlock))
                     Return New BoundBadStatement(node, ImmutableArray(Of BoundNode).Empty, hasErrors:=True)
 
                 Case SyntaxKind.SimpleLoopStatement,
@@ -601,6 +611,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 Return MyBase.VisitLabelStatement(node)
             End Function
+
+            Public Overrides Function VisitCheckedBlockStatement(node As BoundCheckedBlockStatement) As BoundNode
+                Debug.Assert(Not node.WasCompilerGenerated)
+                MyBase.VisitCheckedBlockStatement(node)
+                Return Nothing
+            End Function
+
         End Class
 
         Private Shared Sub ReportNameConfictsBetweenStaticLocals(methodBlockBinder As Binder, diagnostics As DiagnosticBag)
@@ -2032,10 +2049,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return BindBlock(syntax, stmtList, diagnostics, stmtListBinder)
         End Function
 
-        ''' <summary>
-        ''' Binds a list of statements and puts in a scope.
-        ''' </summary>
-        Friend Function BindBlock(syntax As SyntaxNode, stmtList As SyntaxList(Of StatementSyntax), diagnostics As DiagnosticBag, stmtListBinder As Binder) As BoundBlock
+        Friend Function BindStatements(syntax As SyntaxNode,
+                                       stmtList As SyntaxList(Of StatementSyntax),
+                                       diagnostics As DiagnosticBag,
+                                       stmtListBinder As Binder
+                                       ) As (Locals As ImmutableArray(Of LocalSymbol), Statements As ImmutableArray(Of BoundStatement))
             Dim boundStatements(stmtList.Count - 1) As BoundStatement
             Dim locals As ArrayBuilder(Of LocalSymbol) = Nothing
 
@@ -2059,12 +2077,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         Next
                 End Select
             Next i
-
             If locals Is Nothing Then
-                Return New BoundBlock(syntax, stmtList, ImmutableArray(Of LocalSymbol).Empty, boundStatements.AsImmutableOrNull())
+                Return (ImmutableArray(Of LocalSymbol).Empty, boundStatements.AsImmutableOrNull())
+            Else
+                Return (locals.ToImmutableAndFree, boundStatements.AsImmutableOrNull())
             End If
+        End Function
 
-            Return New BoundBlock(syntax, stmtList, locals.ToImmutableAndFree, boundStatements.AsImmutableOrNull())
+        ''' <summary>
+        ''' Binds a list of statements and puts in a scope.
+        ''' </summary>
+        Friend Function BindBlock(syntax As SyntaxNode, stmtList As SyntaxList(Of StatementSyntax), diagnostics As DiagnosticBag, stmtListBinder As Binder) As BoundBlock
+            Dim r = BindStatements(syntax, stmtList, diagnostics, stmtListBinder)
+            Return New BoundBlock(syntax, stmtList, r.Locals, r.Statements)
         End Function
 
         Private Shared Sub DeclareLocal(ByRef locals As ArrayBuilder(Of LocalSymbol), localDecl As BoundLocalDeclarationBase)
@@ -4663,6 +4688,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Return False
         End Function
+
+        Public Function BindCheckedBlock(node As CheckedBlockSyntax, diagnostics As DiagnosticBag) As BoundCheckedBlockStatement
+            Debug.Assert(node IsNot Nothing)
+            Dim checkIntegerOverflow As Boolean = Not node.BeginCheckedBlockStatement.OnOrOffKeyword.IsKind(SyntaxKind.OffKeyword)
+            Dim b As New CheckedBlockBinder(Me, node)
+            Dim stmtListBinder As New StatementListBinder(b, node.Statements)
+            Dim r = BindStatements(node, node.Statements, diagnostics, stmtListBinder)
+            'Dim boundBody As BoundBlock = b.BindBlock(node, node.Statements, diagnostics).MakeCompilerGenerated()
+            Return New BoundCheckedBlockStatement(node, checkIntegerOverflow, node.Statements, r.Statements)
+        End Function
+
 
         ''' <summary>
         ''' Binds a sync lock block.

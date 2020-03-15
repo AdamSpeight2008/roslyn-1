@@ -1686,6 +1686,12 @@
     <Field Name="Body" Type="BoundBlock" Null="disallow" />
   </Node>
 
+  <Node Name="BoundCheckedBlockStatement" Base="BoundStatement">
+      <Field Name="ThrowOnIntegerOverflow" Type="Boolean" />
+      <Field Name="StatementListSyntax" Type="SyntaxList(Of StatementSyntax)"/>
+      <Field Name="Statements" Type="ImmutableArray(Of BoundStatement)"/>
+  </Node>
+  
   <Node Name="BoundXmlName" Base="BoundExpression">
     <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
     <Field Name="XmlNamespace" Type="BoundExpression" Null="disallow"/>
