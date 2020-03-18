@@ -9408,9 +9408,8 @@ End Module
 
     <Fact>
     Public Sub ParseCheckedBlock()
-        Dim compilationDef =
-<compilation>
-    <file name="a.vb"><![CDATA[
+        Dim tree0 =
+            ParseAndVerify(<![CDATA[
 Imports System
 Module Module1
     Sub Main()
@@ -9423,13 +9422,21 @@ Module Module1
         Console.WriteLine(z)
     End Sub
 End Module
-    ]]></file>
-</compilation>
-
-        Dim compilation = CreateCompilationWithMscorlib40AndVBRuntime(compilationDef, TestOptions.ReleaseDll)
-        CompilationUtils.AssertTheseDiagnostics(compilation,
-<expected><![CDATA[
-
-]]></expected>)
+    ]]>)
+        Dim tree1 =
+    ParseAndVerify(<![CDATA[
+Imports System
+Module Module1
+    Sub Main()
+        Dim x As Byte = CByte(254)
+        Dim y As Byte = CByte(2)
+        Dim z As Byte = Nothing
+        Checked On
+          z = x + y
+        End Checked
+        Console.WriteLine(z)
+    End Sub
+End Module
+    ]]>)
     End Sub
 End Class

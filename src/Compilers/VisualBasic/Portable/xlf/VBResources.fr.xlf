@@ -17,6 +17,11 @@
         <target state="translated">Impossible d'incorporer le type '{0}', car il a un membre non abstrait. Affectez la valeur false à la propriété 'Incorporer les types interop'.</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_ExpectedEndChecked">
+        <source>'Checked' statement must end with a matching 'End Checked'.</source>
+        <target state="new">'Checked' statement must end with a matching 'End Checked'.</target>
+        <note />
+      </trans-unit>
       <trans-unit id="ERR_MultipleAnalyzerConfigsInSameDir">
         <source>Multiple analyzer config files cannot be in the same directory ('{0}').</source>
         <target state="translated">Plusieurs fichiers config d'analyseur ne peuvent pas figurer dans le même répertoire ('{0}').</target>

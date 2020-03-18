@@ -177,7 +177,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case Feature.CommentsAfterLineContinuation
                     Return ERRID.FEATURE_CommentsAfterLineContinuation
                 Case Feature.CheckedBlocks
-                    Return ERRID.FEATUE_CheckedBlocks
+                    Return ERRID.FEATURE_CheckedBlocks
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(feature)
             End Select

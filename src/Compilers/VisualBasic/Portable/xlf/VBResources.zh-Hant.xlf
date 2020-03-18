@@ -17,6 +17,11 @@
         <target state="translated">因為類型 '{0}' 有非抽象成員，所以無法內嵌。請考慮將 [內嵌 Interop 類型] 屬性設為 false。</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_ExpectedEndChecked">
+        <source>'Checked' statement must end with a matching 'End Checked'.</source>
+        <target state="new">'Checked' statement must end with a matching 'End Checked'.</target>
+        <note />
+      </trans-unit>
       <trans-unit id="ERR_MultipleAnalyzerConfigsInSameDir">
         <source>Multiple analyzer config files cannot be in the same directory ('{0}').</source>
         <target state="translated">多個分析器組態檔無法處於相同目錄 ('{0}') 中。</target>

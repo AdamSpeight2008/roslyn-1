@@ -69,6 +69,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             ' For the full part of the property, similar to MethodFull
             PropertyFull
+            CheckedBlockFull
 
             ' Add more usages here if necessary. 
         End Enum

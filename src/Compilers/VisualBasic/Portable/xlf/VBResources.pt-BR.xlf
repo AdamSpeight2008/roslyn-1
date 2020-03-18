@@ -17,6 +17,11 @@
         <target state="translated">O tipo '{0}' não pode ser inserido porque tem um membro que não é abstrato. Considere a definição da propriedade 'Inserir Tipos de Interoperabilidade' como false.</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_ExpectedEndChecked">
+        <source>'Checked' statement must end with a matching 'End Checked'.</source>
+        <target state="new">'Checked' statement must end with a matching 'End Checked'.</target>
+        <note />
+      </trans-unit>
       <trans-unit id="ERR_MultipleAnalyzerConfigsInSameDir">
         <source>Multiple analyzer config files cannot be in the same directory ('{0}').</source>
         <target state="translated">Não é possível que haja vários arquivos de configuração do analisador no mesmo diretório ('{0}').</target>

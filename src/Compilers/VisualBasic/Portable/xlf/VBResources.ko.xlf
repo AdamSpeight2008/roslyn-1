@@ -17,6 +17,11 @@
         <target state="translated">'{0}' 형식에는 비추상 멤버가 있으므로 해당 형식을 포함할 수 없습니다. 'Interop 형식 포함' 속성을 false로 설정해보세요.</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_ExpectedEndChecked">
+        <source>'Checked' statement must end with a matching 'End Checked'.</source>
+        <target state="new">'Checked' statement must end with a matching 'End Checked'.</target>
+        <note />
+      </trans-unit>
       <trans-unit id="ERR_MultipleAnalyzerConfigsInSameDir">
         <source>Multiple analyzer config files cannot be in the same directory ('{0}').</source>
         <target state="translated">분석기 구성 파일 여러 개가 동일한 디렉터리('{0}')에 있을 수 없습니다.</target>

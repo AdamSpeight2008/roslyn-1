@@ -2035,7 +2035,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_InterpolatedStrings
         FEATURE_UnconstrainedTypeParameterInConditional
         FEATURE_CommentsAfterLineContinuation
-        FEATUE_CheckedBlocks
-        ERR_ExpectedEndChecked
+        FEATURE_CheckedBlocks = 56064
+        ERR_ExpectedEndChecked = 56065
     End Enum
 End Namespace

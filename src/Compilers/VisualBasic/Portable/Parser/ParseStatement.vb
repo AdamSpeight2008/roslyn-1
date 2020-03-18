@@ -1874,13 +1874,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ParseCheckedStatement() As BeginCheckedBlockStatementSyntax
             ' BeginCheckedBlockStatement ::= "Checked" ("On" / "Off") ;;
-            Dim [Checked] As KeywordSyntax = Nothing
-            If Not TryTokenAsContextualKeyword(CurrentToken, SyntaxKind.CheckedKeyword, [Checked]) Then
-
-            End If
+            Dim [Checked] As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
+            GetNextToken()
 
             Dim OnOrOffKeyword As KeywordSyntax = Nothing
-            GetNextToken()
             If TryTokenAsContextualKeyword(CurrentToken, OnOrOffKeyword) Then
                 Select Case OnOrOffKeyword.Kind
                     Case SyntaxKind.OnKeyword,

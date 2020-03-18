@@ -13,14 +13,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         Public Shared Function IsReservedKeyword(kind As SyntaxKind) As Boolean
             Return kind - SyntaxKind.AddHandlerKeyword <=
-                    SyntaxKind.WendKeyword - SyntaxKind.AddHandlerKeyword OrElse kind = SyntaxKind.NameOfKeyword
+                    SyntaxKind.WendKeyword - SyntaxKind.AddHandlerKeyword OrElse kind = SyntaxKind.NameOfKeyword OrElse (kind = SyntaxKind.CheckedKeyword)
         End Function
 
         ''' <summary>
         ''' Determine if the kind represents a contextual keyword
         ''' </summary>
         Public Shared Function IsContextualKeyword(kind As SyntaxKind) As Boolean
-            Return kind = SyntaxKind.ReferenceKeyword OrElse (kind = SyntaxKind.CheckedKeyword) OrElse
+            Return kind = SyntaxKind.ReferenceKeyword OrElse
                 (SyntaxKind.AggregateKeyword <= kind AndAlso kind <= SyntaxKind.YieldKeyword)
         End Function
 

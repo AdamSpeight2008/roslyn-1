@@ -25,6 +25,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me._checkedBlockSyntax = syntax
         End Sub
 
+        'Friend Overrides ReadOnly Property Locals As ImmutableArray(Of LocalSymbol)
+        '    Get
+        '        Return ImmutableArray(Of LocalSymbol).Empty
+        '    End Get
+        'End Property
+
         Friend Overrides Function BindVariableDeclaration(tree As VisualBasicSyntaxNode,
                                                           name As ModifiedIdentifierSyntax,
                                                           asClauseOpt As AsClauseSyntax,
@@ -33,6 +39,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                  Optional skipAsNewInitializer As Boolean = False) As BoundLocalDeclaration
             Return Me.m_containingBinder.BindVariableDeclaration(tree, name, asClauseOpt, equalsValueOpt, diagnostics, skipAsNewInitializer)
         End Function
+
     End Class
 
 End Namespace

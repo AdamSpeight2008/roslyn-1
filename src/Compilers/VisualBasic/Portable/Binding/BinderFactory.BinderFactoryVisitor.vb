@@ -159,6 +159,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return GetBinderForNodeAndUsage(enumBlockSyntax.EnumStatement, NodeUsage.EnumBlockFull, enumBlockSyntax.Parent, _position)
             End Function
 
+            Public Overrides Function VisitCheckedBlock(node As CheckedBlockSyntax) As Binder
+                Return GetBinderForNodeAndUsage(node.BeginCheckedBlockStatement, NodeUsage.CheckedBlockFull, node.Parent, _position)
+            End Function
+
             Public Overrides Function VisitDelegateStatement(delegateSyntax As DelegateStatementSyntax) As Binder
                 Return GetBinderForNodeAndUsage(delegateSyntax, NodeUsage.DelegateDeclaration, delegateSyntax.Parent, _position)
             End Function

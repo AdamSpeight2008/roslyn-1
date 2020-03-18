@@ -204,5 +204,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Visit(node.ForEachStatement)
             VisitList(node.Statements)
         End Sub
+
+        Public Overrides Sub VisitCheckedBlock(node As CheckedBlockSyntax)
+            Visit(node.BeginCheckedBlockStatement)
+            VisitList(node.Statements)
+        End Sub
     End Class
 End Namespace

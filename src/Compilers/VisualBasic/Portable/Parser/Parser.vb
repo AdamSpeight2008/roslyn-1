@@ -1880,6 +1880,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case SyntaxKind.WhileKeyword
                     Return SyntaxKind.EndWhileStatement
 
+                Case SyntaxKind.CheckedKeyword
+                    Return SyntaxKind.EndCheckedBlockStatement
+
                 Case Else
                     Return SyntaxKind.None
 
