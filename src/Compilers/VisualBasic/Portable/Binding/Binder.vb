@@ -791,7 +791,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         Public Overridable ReadOnly Property CheckOverflow() As Boolean
             Get
-                RoslynDebug.Assert(Not Me.Flags.Includes(BinderFlags.UncheckedRegion Or BinderFlags.CheckedRegion))
+                'RoslynDebug.Assert(Not Me.Flags.Includes(BinderFlags.UncheckedRegion Or BinderFlags.CheckedRegion))
 
                 Return Me.Flags.IsCheckedRegion
             End Get

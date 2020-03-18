@@ -4857,6 +4857,68 @@ goo
 <8]]>.Value.Replace(vbLf, Environment.NewLine))
         End Sub
 
+        <Fact>
+        Public Sub CheckedOff_0()
+            Dim result = CompileAndVerify(
+<compilation name="HelloWorld1">
+    <file name="a.vb">
+        <![CDATA[
+Imports System
+Module Module1
+    Sub Main()
+        Dim x As Byte = CByte(255)
+        Dim y As Byte = CByte(2)
+        Dim z As Byte = Nothing
+        Checked Off
+          z = x + y
+        End Checked
+        Console.WriteLine(z)
+    End Sub
+End Module
+    ]]></file></compilation>,
+expectedOutput:=<![CDATA[1]]>)
+        End Sub
+        <Fact>
+        Public Sub CheckedOff_1()
+            Dim result = CompileAndVerify(
+<compilation name="HelloWorld1">
+    <file name="a.vb">
+        <![CDATA[
+Imports System
+Module Module1
+    Sub Main()
+        Dim x As Byte = CByte(255)
+        Dim y As Byte = CByte(2)
+        Checked Off
+          Dim z = x + y
+        End Checked
+        Console.WriteLine(z)
+    End Sub
+End Module
+    ]]></file></compilation>,
+expectedOutput:=<![CDATA[1]]>)
+        End Sub
+        <Fact>
+        Public Sub CheckedOn()
+            Dim result = CompileAndVerify(
+<compilation name="HelloWorld1">
+    <file name="a.vb">
+        <![CDATA[
+Imports System
+Module Module1
+    Sub Main()
+        Dim x As Byte = CByte(255)
+        Dim y As Byte = CByte(2)
+        Dim z As Byte = Nothing
+        Checked On
+          z = x + y
+        End Checked
+        Console.WriteLine(z)
+    End Sub
+End Module
+    ]]></file></compilation>,
+expectedOutput:=<![CDATA[1]]>)
+        End Sub
     End Class
 
 End Namespace

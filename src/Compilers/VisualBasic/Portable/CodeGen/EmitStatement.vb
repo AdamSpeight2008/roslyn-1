@@ -33,11 +33,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
                     EmitNoOpStatement(DirectCast(statement, BoundNoOpStatement))
 
                 Case BoundKind.StatementList
-                    Dim list = DirectCast(statement, BoundStatementList)
-                    Dim n As Integer = list.Statements.Length
-                    For i = 0 To n - 1
-                        EmitStatement(list.Statements(i))
-                    Next
+                    EmitStatements(DirectCast(statement, BoundStatementList).Statements)
 
                 Case BoundKind.ReturnStatement
                     EmitReturnStatement(DirectCast(statement, BoundReturnStatement))
@@ -69,6 +65,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
                 Case BoundKind.StateMachineScope
                     EmitStateMachineScope(DirectCast(statement, BoundStateMachineScope))
 
+                Case BoundKind.CheckedBlockStatement
+                    EmitStatements(DirectCast(statement, BoundCheckedBlockStatement).Statements)
+
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(statement.Kind)
             End Select
@@ -78,6 +77,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
                 _builder.AssertStackEmpty()
             End If
 #End If
+        End Sub
+
+        Private Sub EmitStatements(statements As ImmutableArray(Of BoundStatement))
+            Dim n = statements.Length
+            For i = 0 To n - 1
+                EmitStatement(statements(i))
+            Next
         End Sub
 
         Private Function EmitStatementAndCountInstructions(statement As BoundStatement) As Integer

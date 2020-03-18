@@ -519,7 +519,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
 
             Dim result As BoundExpression = New BoundBinaryOperator(node, operatorKind Or If(isOperandOfConditionalBranch, BinaryOperatorKind.IsOperandOfConditionalBranch, Nothing),
-                                                                    left, right, CheckOverflow, value, operatorResultType, hasError)
+                                                                    left, right, Me.CheckOverflow, value, operatorResultType, hasError)
 
             If forceToBooleanType IsNot Nothing Then
                 Debug.Assert(forceToBooleanType.IsBooleanType())

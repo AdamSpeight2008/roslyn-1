@@ -9,6 +9,7 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
+Imports Microsoft.CodeAnalysis.VisualBasic.BinderFlagsExtensions
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -18,18 +19,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private ReadOnly _checkedBlockSyntax As CheckedBlockSyntax
         ''' <summary> Create a new instance of Checked Block statement binder for a statement syntax provided </summary>
         Public Sub New(enclosing As Binder, syntax As CheckedBlockSyntax)
-            MyBase.New(enclosing)
+            MyBase.New(enclosing, UpdateCheckRegionFlags(enclosing.Flags, DecodeOnOff(syntax.BeginCheckedBlockStatement.OnOrOffKeyword)))
 
             Debug.Assert(syntax IsNot Nothing)
             Debug.Assert(syntax.BeginCheckedBlockStatement IsNot Nothing)
             Me._checkedBlockSyntax = syntax
         End Sub
 
-        'Friend Overrides ReadOnly Property Locals As ImmutableArray(Of LocalSymbol)
-        '    Get
-        '        Return ImmutableArray(Of LocalSymbol).Empty
-        '    End Get
-        'End Property
+        Private Shared Function UpdateCheckRegionFlags(f As BinderFlags, checkIntegerOverflow As Boolean) As BinderFlags
+            Dim added As BinderFlags = If(checkIntegerOverflow, BinderFlags.CheckedRegion, BinderFlags.UncheckedRegion)
+            Dim removed As BinderFlags = If(checkIntegerOverflow, BinderFlags.UncheckedRegion, BinderFlags.CheckedRegion)
+
+            If f.Includes(added) Then
+                Return f
+            End If
+            Return ((f And Not removed) Or added)
+        End Function
 
         Friend Overrides Function BindVariableDeclaration(tree As VisualBasicSyntaxNode,
                                                           name As ModifiedIdentifierSyntax,
