@@ -1873,27 +1873,53 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseCheckedStatement() As BeginCheckedBlockStatementSyntax
-            ' BeginCheckedBlockStatement ::= "Checked" ("On" / "Off") ;;
-            Dim [Checked] As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
+            ' BeginCheckedBlockStatement ::= "Checked" OnOrOffKeyword ;;
+            Dim checkedKeyword = ParseKeyword(SyntaxKind.CheckedKeyword)
+            Debug.Assert(checkedKeyword IsNot Nothing, "Expected to be a 'Checked' keyword.")
+            Dim onOrOffKeyword = ParseOnOrOffKeyword()
 
-            Dim OnOrOffKeyword As KeywordSyntax = Nothing
-            If TryTokenAsContextualKeyword(CurrentToken, OnOrOffKeyword) Then
-                Select Case OnOrOffKeyword.Kind
-                    Case SyntaxKind.OnKeyword,
-                     SyntaxKind.OffKeyword
-                        GetNextToken()
-                    Case Else
-                        OnOrOffKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.OnKeyword)
-                        OnOrOffKeyword = ReportSyntaxError(ResyncAt(OnOrOffKeyword), ERRID.ERR_ExpectedOn)
-                End Select
-            Else
-                OnOrOffKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.OnKeyword)
-                OnOrOffKeyword = ReportSyntaxError(ResyncAt(OnOrOffKeyword), ERRID.ERR_ExpectedOn)
-            End If
-            Dim statement As BeginCheckedBlockStatementSyntax = SyntaxFactory.BeginCheckedBlockStatement(Checked, OnOrOffKeyword)
-            statement = CheckFeatureAvailability(Of BeginCheckedBlockStatementSyntax)(Feature.CheckedBlocks, statement)
+            Dim statement = SyntaxFactory.BeginCheckedBlockStatement(checkedKeyword, onOrOffKeyword)
+            statement = CheckFeatureAvailability(Feature.CheckedBlocks, statement)
             Return statement
+        End Function
+
+        Private Function ParseKeyword(kind As SyntaxKind,
+                                      Optional tryAsContextual As Boolean = True,
+                                      Optional advanceToNextToken As Boolean = True
+                                      ) As KeywordSyntax
+            Debug.Assert(SyntaxFacts.IsKeywordKind(kind) OrElse (tryAsContextual And SyntaxFacts.IsContextualKeyword(kind)), $"{kind.ToString()} is not a valid keyword kind.")
+            Dim keyword = TryCast(CurrentToken, KeywordSyntax)
+            If keyword IsNot Nothing Then
+                If keyword.Kind = kind Then
+                    If advanceToNextToken Then GetNextToken()
+                Else
+                    keyword = Nothing
+                End If
+            ElseIf tryAsContextual AndAlso TryTokenAsContextualKeyword(CurrentToken, SyntaxKind.OffKeyword, keyword) Then
+                If advanceToNextToken Then GetNextToken()
+            End If
+            Return keyword
+        End Function
+
+        Private Function TryParseKeyword(kind As SyntaxKind,
+                                         ByRef keyword As KeywordSyntax,
+                                         Optional tryAsContextual As Boolean = True,
+                                         Optional advanceToNextToken As Boolean = True
+                                         ) As Boolean
+            keyword = ParseKeyword(kind, tryAsContextual, advanceToNextToken)
+            Return keyword IsNot Nothing
+        End Function
+
+        Private Function ParseOnOrOffKeyword() As KeywordSyntax
+            ' OnOrOffKeyword ::= "On" | "Off" ;;
+            Dim onOrOffKeyword As KeywordSyntax = Nothing
+            Dim valid = TryParseKeyword(SyntaxKind.OnKeyword, onOrOffKeyword, False, True) OrElse
+                        TryParseKeyword(SyntaxKind.OffKeyword, onOrOffKeyword, True, True)
+            If Not valid Then
+                onOrOffKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.OnKeyword)
+                onOrOffKeyword = ReportSyntaxError(ResyncAt(onOrOffKeyword), ERRID.ERR_ExpectedOn)
+            End If
+            Return onOrOffKeyword
         End Function
 
     End Class
