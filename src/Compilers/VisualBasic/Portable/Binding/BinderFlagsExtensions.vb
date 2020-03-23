@@ -8,6 +8,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' Extension methods for the <see cref="BinderFlags"/> type.
     ''' </summary>
     Friend Module BinderFlagsExtensions
+
+        <Extension>
+        Public Function AddAndRemove(self As BinderFlags, addThese As BinderFlags, removeThese As BinderFlags) As BinderFlags
+            Return self.SetFlags(addThese).ClearFlags(removeThese)
+        End Function
+
+        <Extension>
+        Public Function SetFlags(self As BinderFlags, theseFlags As BinderFlags) As BinderFlags
+            Return self Or theseFlags
+        End Function
+
+        <Extension>
+        Public Function ClearFlags(self As BinderFlags, theseFlags As BinderFlags) As BinderFlags
+            Return self And Not theseFlags
+        End Function
+
         <Extension>
         Public Function Includes(self As BinderFlags, other As BinderFlags) As Boolean
             Return (self And other) = other

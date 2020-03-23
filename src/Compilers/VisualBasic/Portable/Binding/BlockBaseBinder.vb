@@ -21,6 +21,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Sub New(enclosing As Binder)
             MyBase.New(enclosing)
         End Sub
+        Friend Sub New(enclosing As Binder, flags As BinderFlags)
+            MyBase.New(enclosing, flags)
+        End Sub
     End Class
 
     Friend MustInherit Class BlockBaseBinder(Of T As Symbol)
@@ -28,6 +31,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Sub New(enclosing As Binder)
             MyBase.New(enclosing)
+        End Sub
+        Friend Sub New(enclosing As Binder, flags As BinderFlags)
+            MyBase.New(enclosing, flags)
         End Sub
 
         Friend MustOverride ReadOnly Property Locals As ImmutableArray(Of T)

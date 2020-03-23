@@ -4916,8 +4916,7 @@ Module Module1
         Console.WriteLine(z)
     End Sub
 End Module
-    ]]></file></compilation>,
-expectedOutput:=<![CDATA[1]]>)
+    ]]></file></compilation>)
         End Sub
     End Class
 

@@ -4691,12 +4691,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Function BindCheckedBlock(node As CheckedBlockSyntax, diagnostics As DiagnosticBag) As BoundCheckedBlockStatement
             Debug.Assert(node IsNot Nothing)
-            Dim checkIntegerOverflow As Boolean = Not node.BeginCheckedBlockStatement.OnOrOffKeyword.IsKind(SyntaxKind.OffKeyword)
-            Dim b As New CheckedBlockBinder(Me, node)
-            Dim stmtListBinder As New StatementListBinder(b, node.Statements)
-            Dim r = BindStatements(node, node.Statements, diagnostics, stmtListBinder)
-            'Dim boundBody As BoundBlock = b.BindBlock(node, node.Statements, diagnostics).MakeCompilerGenerated()
-            Return New BoundCheckedBlockStatement(node, checkIntegerOverflow, node.Statements, r.Statements)
+            Debug.Assert(node.BeginCheckedBlockStatement IsNot Nothing)
+            Dim checkIntegerOverflow As Boolean = DecodeOnOff(node.BeginCheckedBlockStatement.OnOrOffKeyword)
+            Dim thisOverflowHandlingBinder As New OverflowHandlingBinder(Me, checkIntegerOverflow)
+            Dim stmtListBinder As New StatementListBinder(thisOverflowHandlingBinder, node.Statements)
+            Dim boundCheckedBlockStatements = stmtListBinder.BindStatements(node, node.Statements, diagnostics, stmtListBinder)
+            Return New BoundCheckedBlockStatement(node, checkIntegerOverflow, node.Statements, boundCheckedBlockStatements.Statements)
         End Function
 
 
