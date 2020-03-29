@@ -42,6 +42,11 @@
         <target state="translated">satır devamı sonrası açıklamalar</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_GuardStatement">
+        <source>Gaurded Statements</source>
+        <target state="new">Gaurded Statements</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_UnconstrainedTypeParameterInConditional">
         <source>unconstrained type parameters in binary conditional expressions</source>
         <target state="translated">ikili koşullu ifadelerde kısıtlanmamış tür parametreleri</target>

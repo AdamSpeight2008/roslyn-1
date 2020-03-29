@@ -802,7 +802,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case SyntaxKind.SyncLockBlock
                     Return SyntaxKind.EndSyncLockStatement
 
-                Case SyntaxKind.SelectBlock, SyntaxKind.CaseBlock, SyntaxKind.CaseElseBlock
+                Case SyntaxKind.SelectBlock, SyntaxKind.CaseBlock, SyntaxKind.CaseElseBlock, SyntaxKind.WhenBlock
                     Return SyntaxKind.EndSelectStatement
 
                 Case SyntaxKind.TryBlock, SyntaxKind.CatchBlock, SyntaxKind.FinallyBlock

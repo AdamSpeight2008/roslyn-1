@@ -2459,6 +2459,29 @@ End Module]]>,
         </errors>)
     End Sub
 
+    <Trait("GuardedStatements", "")>
+    <Fact()>
+    Public Sub GuardStatement()
+        Dim r = ParseAndVerify(<![CDATA[
+                Module Module1
+                    Sub Goo()
+                        Dim x As Integer = 10
+                        Dim y as Boolean = False
+                        Select Case x
+                               Case 0
+                                    When y = False
+                                         System.Console.WriteLine("A")   
+                                    'When y = True
+                                    '     System.Console.WriteLine("B")
+                               Case Else
+                                    System.Console.WriteLine("C")
+                        End Select
+                    end sub
+               End Module
+            ]]>)
+        ' ERRID.ERR_CaseNoSelect
+    End Sub
+
     <Fact()>
     Public Sub BC30072ERR_CaseNoSelect()
         ParseAndVerify(<![CDATA[

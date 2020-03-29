@@ -42,6 +42,11 @@
         <target state="translated">комментарии после продолжения строки</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_GuardStatement">
+        <source>Gaurded Statements</source>
+        <target state="new">Gaurded Statements</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_UnconstrainedTypeParameterInConditional">
         <source>unconstrained type parameters in binary conditional expressions</source>
         <target state="translated">параметры неограниченного типа в двоичных условных выражениях</target>

@@ -239,6 +239,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         End Function
 
+        Private Function ParseWhenStatement() As StatementSyntax
+            Dim whenKeyword As KeywordSyntax = Nothing
+            If TryGetToken(SyntaxKind.WhenKeyword, whenKeyword) Then
+                Dim guardExpr = ParseExpressionCore()
+                Dim guardedstatement = CheckFeatureAvailability(Feature.GuardStatement, SyntaxFactory.WhenStatement(whenKeyword, guardExpr))
+                Return guardedstatement
+            Else
+                Debug.Assert(CurrentToken.Kind = SyntaxKind.WhenKeyword, NameOf(ParseWhenStatement) & "called on wrong token")
+                Return Nothing
+            End If
+        End Function
+
         Private Function ParseCaseStatement() As CaseStatementSyntax
             Debug.Assert(CurrentToken.Kind = SyntaxKind.CaseKeyword, "ParseCaseStatement called on wrong token.")
 
@@ -329,15 +341,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim separatedCaseClauses = caseClauses.ToList()
             _pool.Free(caseClauses)
 
-            Dim statement As CaseStatementSyntax
+            Dim casestatement As CaseStatementSyntax
 
             If elseKeyword Is Nothing Then
-                statement = SyntaxFactory.CaseStatement(caseKeyword, separatedCaseClauses)
+                casestatement = SyntaxFactory.CaseStatement(caseKeyword, separatedCaseClauses)
             Else
-                statement = SyntaxFactory.CaseElseStatement(caseKeyword, separatedCaseClauses)
+                casestatement = SyntaxFactory.CaseElseStatement(caseKeyword, separatedCaseClauses)
             End If
 
-            Return statement
+            Return casestatement
 
         End Function
 

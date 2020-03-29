@@ -1,1 +1,29 @@
-
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax.AddStatements(ParamArray items As Microsoft.CodeAnalysis.VisualBasic.Syntax.StatementSyntax()) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax.Statements() -> Microsoft.CodeAnalysis.SyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.StatementSyntax)
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax.Update(whenStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax, statements As Microsoft.CodeAnalysis.SyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.StatementSyntax)) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax.WhenStatement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax.WithStatements(statements As Microsoft.CodeAnalysis.SyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.StatementSyntax)) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax.WithWhenStatement(whenStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax.Expression() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax.Update(whenKeyword As Microsoft.CodeAnalysis.SyntaxToken, expression As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax.WhenKeyword() -> Microsoft.CodeAnalysis.SyntaxToken
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax.WithExpression(expression As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax.WithWhenKeyword(whenKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.WhenBlock = 794 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.WhenStatement = 793 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitWhenBlock(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitWhenStatement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitWhenBlock(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax) -> Void
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitWhenStatement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitWhenBlock(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitWhenStatement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.WhenBlock(whenStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.WhenBlock(whenStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax, statements As Microsoft.CodeAnalysis.SyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.StatementSyntax)) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.WhenStatement(expression As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.WhenStatement(whenKeyword As Microsoft.CodeAnalysis.SyntaxToken, expression As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax

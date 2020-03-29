@@ -3201,5 +3201,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ConflictMarkerTrivia = 792
 
+        WhenStatement = 793
+        WhenBlock = 794
     End Enum
 End Namespace

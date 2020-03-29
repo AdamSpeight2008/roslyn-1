@@ -652,6 +652,14 @@ Partial Public Class GeneratedTests
             return InternalSyntax.SyntaxFactory.CaseElseStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.CaseKeyword, String.Empty, Nothing, Nothing), New Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)())
         End Function
 
+        Private Shared Function GenerateGreenWhenBlock() As InternalSyntax.WhenBlockSyntax
+            return InternalSyntax.SyntaxFactory.WhenBlock(GenerateGreenWhenStatement(), Nothing)
+        End Function
+
+        Private Shared Function GenerateGreenWhenStatement() As InternalSyntax.WhenStatementSyntax
+            return InternalSyntax.SyntaxFactory.WhenStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.WhenKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer())
+        End Function
+
         Private Shared Function GenerateGreenElseCaseClause() As InternalSyntax.ElseCaseClauseSyntax
             return InternalSyntax.SyntaxFactory.ElseCaseClause(new InternalSyntax.KeywordSyntax(SyntaxKind.ElseKeyword, String.Empty, Nothing, Nothing))
         End Function
@@ -2502,6 +2510,18 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenCaseElseStatement()
             dim objectUnderTest = GenerateGreenCaseElseStatement()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenWhenBlock()
+            dim objectUnderTest = GenerateGreenWhenBlock()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenWhenStatement()
+            dim objectUnderTest = GenerateGreenWhenStatement()
             AttachAndCheckDiagnostics(objectUnderTest)
         End Sub
 
@@ -5119,6 +5139,22 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenCaseElseStatementRewriter()
             dim oldNode = GenerateGreenCaseElseStatement()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenWhenBlockRewriter()
+            dim oldNode = GenerateGreenWhenBlock()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenWhenStatementRewriter()
+            dim oldNode = GenerateGreenWhenStatement()
             Dim rewriter = New GreenIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)
@@ -7892,6 +7928,20 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenCaseElseStatementVisitor()
             Dim oldNode = GenerateGreenCaseElseStatement()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenWhenBlockVisitor()
+            Dim oldNode = GenerateGreenWhenBlock()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenWhenStatementVisitor()
+            Dim oldNode = GenerateGreenWhenStatement()
             Dim visitor = New GreenNodeVisitor()
             visitor.Visit(oldNode)
         End Sub
@@ -12834,6 +12884,40 @@ Partial Public Class GeneratedTests
             exceptionTest = false
 
             return SyntaxFactory.CaseElseStatement(SyntaxFactory.Token(SyntaxKind.CaseKeyword), New SeparatedSyntaxList(Of CaseClauseSyntax)())
+        End Function
+
+        Private Shared Function GenerateRedWhenBlock() As WhenBlockSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.WhenBlock(Nothing, Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.WhenBlock(GenerateRedWhenStatement(), Nothing)
+        End Function
+
+        Private Shared Function GenerateRedWhenStatement() As WhenStatementSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.WhenStatement(SyntaxFactory.Token(SyntaxKind.WhenKeyword), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.WhenStatement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedKeywordEventContainer())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.WhenStatement(SyntaxFactory.Token(SyntaxKind.WhenKeyword), GenerateRedKeywordEventContainer())
         End Function
 
         Private Shared Function GenerateRedElseCaseClause() As ElseCaseClauseSyntax
@@ -19869,6 +19953,23 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestRedWhenBlock()
+            dim objectUnderTest = GenerateRedWhenBlock()
+            Assert.NotNull(objectUnderTest.whenStatement)
+            Dim withObj = objectUnderTest.WithWhenStatement(objectUnderTest.WhenStatement).WithStatements(objectUnderTest.Statements)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedWhenStatement()
+            dim objectUnderTest = GenerateRedWhenStatement()
+            Assert.NotNull(objectUnderTest.whenKeyword)
+            Assert.NotNull(objectUnderTest.expression)
+            Dim withObj = objectUnderTest.WithWhenKeyword(objectUnderTest.WhenKeyword).WithExpression(objectUnderTest.Expression)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
         Public Sub TestRedElseCaseClause()
             dim objectUnderTest = GenerateRedElseCaseClause()
             Assert.NotNull(objectUnderTest.elseKeyword)
@@ -23179,6 +23280,22 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestRedCaseElseStatementRewriter()
             dim oldNode = GenerateRedCaseElseStatement()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedWhenBlockRewriter()
+            dim oldNode = GenerateRedWhenBlock()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedWhenStatementRewriter()
+            dim oldNode = GenerateRedWhenStatement()
             Dim rewriter = New RedIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)

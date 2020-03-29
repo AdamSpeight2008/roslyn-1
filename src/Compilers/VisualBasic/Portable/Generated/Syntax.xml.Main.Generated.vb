@@ -323,6 +323,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Function VisitCaseStatement(ByVal node As CaseStatementSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
+        Public Overridable Function VisitWhenBlock(ByVal node As WhenBlockSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
+        Public Overridable Function VisitWhenStatement(ByVal node As WhenStatementSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
         Public Overridable Function VisitElseCaseClause(ByVal node As ElseCaseClauseSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
@@ -1056,6 +1062,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitCaseStatement(ByVal node As CaseStatementSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitWhenBlock(ByVal node As WhenBlockSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitWhenStatement(ByVal node As WhenStatementSyntax)
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitElseCaseClause(ByVal node As ElseCaseClauseSyntax)
@@ -3282,6 +3294,36 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If anyChanges Then
                 Return New CaseStatementSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newCaseKeyword, newCases.Node)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitWhenBlock(ByVal node As WhenBlockSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newWhenStatement = DirectCast(Visit(node.WhenStatement), WhenStatementSyntax)
+            If node.WhenStatement IsNot newWhenStatement Then anyChanges = True
+            Dim newStatements = VisitList(node.Statements)
+            If node._statements IsNot newStatements.Node Then anyChanges = True
+
+            If anyChanges Then
+                Return New WhenBlockSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newWhenStatement, newStatements.Node)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitWhenStatement(ByVal node As WhenStatementSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newWhenKeyword = DirectCast(VisitToken(node.WhenKeyword).Node, InternalSyntax.KeywordSyntax)
+            If node.WhenKeyword.Node IsNot newWhenKeyword Then anyChanges = True
+            Dim newExpression = DirectCast(Visit(node.Expression), ExpressionSyntax)
+            If node.Expression IsNot newExpression Then anyChanges = True
+
+            If anyChanges Then
+                Return New WhenStatementSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newWhenKeyword, newExpression)
             Else
                 Return node
             End If
@@ -16124,6 +16166,166 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </param>
         Public Shared Function CaseStatement(ByVal kind As SyntaxKind, ParamArray cases As CaseClauseSyntax()) As CaseStatementSyntax
             Return SyntaxFactory.CaseStatement(kind, SyntaxFactory.Token(SyntaxKind.CaseKeyword), SyntaxFactory.SeparatedList(Of CaseClauseSyntax)().AddRange(cases))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a When statement and its subsequent block.
+        ''' </summary>
+        ''' <param name="whenStatement">
+        ''' The statement that begins the case block.
+        ''' </param>
+        ''' <param name="statements">
+        ''' The statements contained in the case block. This might be an empty list.
+        ''' </param>
+        Public Shared Function WhenBlock(whenStatement As WhenStatementSyntax, statements As SyntaxList(of StatementSyntax)) As WhenBlockSyntax
+            if whenStatement Is Nothing Then
+                Throw New ArgumentNullException(NameOf(whenStatement))
+            End If
+            Select Case whenStatement.Kind()
+                Case SyntaxKind.WhenStatement
+                Case Else
+                    Throw new ArgumentException("whenStatement")
+             End Select
+            Return New WhenBlockSyntax(SyntaxKind.WhenBlock, Nothing, Nothing, whenStatement, statements.Node)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a When statement and its subsequent block.
+        ''' </summary>
+        ''' <param name="whenStatement">
+        ''' The statement that begins the case block.
+        ''' </param>
+        Public Shared Function WhenBlock(whenStatement As WhenStatementSyntax) As WhenBlockSyntax
+            Return SyntaxFactory.WhenBlock(whenStatement, Nothing)
+        End Function
+
+
+        Public Shared Function WhenStatement(whenKeyword As SyntaxToken, expression As ExpressionSyntax) As WhenStatementSyntax
+            Select Case whenKeyword.Kind()
+                Case SyntaxKind.WhenKeyword
+                Case Else
+                    Throw new ArgumentException("whenKeyword")
+             End Select
+            if expression Is Nothing Then
+                Throw New ArgumentNullException(NameOf(expression))
+            End If
+            Select Case expression.Kind()
+                Case SyntaxKind.KeywordEventContainer,
+                     SyntaxKind.WithEventsEventContainer,
+                     SyntaxKind.WithEventsPropertyEventContainer,
+                     SyntaxKind.IdentifierLabel,
+                     SyntaxKind.NumericLabel,
+                     SyntaxKind.NextLabel,
+                     SyntaxKind.MidExpression,
+                     SyntaxKind.CharacterLiteralExpression,
+                     SyntaxKind.TrueLiteralExpression,
+                     SyntaxKind.FalseLiteralExpression,
+                     SyntaxKind.NumericLiteralExpression,
+                     SyntaxKind.DateLiteralExpression,
+                     SyntaxKind.StringLiteralExpression,
+                     SyntaxKind.NothingLiteralExpression,
+                     SyntaxKind.ParenthesizedExpression,
+                     SyntaxKind.TupleExpression,
+                     SyntaxKind.TupleType,
+                     SyntaxKind.MeExpression,
+                     SyntaxKind.MyBaseExpression,
+                     SyntaxKind.MyClassExpression,
+                     SyntaxKind.GetTypeExpression,
+                     SyntaxKind.TypeOfIsExpression,
+                     SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.GetXmlNamespaceExpression,
+                     SyntaxKind.SimpleMemberAccessExpression,
+                     SyntaxKind.DictionaryAccessExpression,
+                     SyntaxKind.XmlElementAccessExpression,
+                     SyntaxKind.XmlDescendantAccessExpression,
+                     SyntaxKind.XmlAttributeAccessExpression,
+                     SyntaxKind.InvocationExpression,
+                     SyntaxKind.ObjectCreationExpression,
+                     SyntaxKind.AnonymousObjectCreationExpression,
+                     SyntaxKind.ArrayCreationExpression,
+                     SyntaxKind.CollectionInitializer,
+                     SyntaxKind.CTypeExpression,
+                     SyntaxKind.DirectCastExpression,
+                     SyntaxKind.TryCastExpression,
+                     SyntaxKind.PredefinedCastExpression,
+                     SyntaxKind.AddExpression,
+                     SyntaxKind.SubtractExpression,
+                     SyntaxKind.MultiplyExpression,
+                     SyntaxKind.DivideExpression,
+                     SyntaxKind.IntegerDivideExpression,
+                     SyntaxKind.ExponentiateExpression,
+                     SyntaxKind.LeftShiftExpression,
+                     SyntaxKind.RightShiftExpression,
+                     SyntaxKind.ConcatenateExpression,
+                     SyntaxKind.ModuloExpression,
+                     SyntaxKind.EqualsExpression,
+                     SyntaxKind.NotEqualsExpression,
+                     SyntaxKind.LessThanExpression,
+                     SyntaxKind.LessThanOrEqualExpression,
+                     SyntaxKind.GreaterThanOrEqualExpression,
+                     SyntaxKind.GreaterThanExpression,
+                     SyntaxKind.IsExpression,
+                     SyntaxKind.IsNotExpression,
+                     SyntaxKind.LikeExpression,
+                     SyntaxKind.OrExpression,
+                     SyntaxKind.ExclusiveOrExpression,
+                     SyntaxKind.AndExpression,
+                     SyntaxKind.OrElseExpression,
+                     SyntaxKind.AndAlsoExpression,
+                     SyntaxKind.UnaryPlusExpression,
+                     SyntaxKind.UnaryMinusExpression,
+                     SyntaxKind.NotExpression,
+                     SyntaxKind.AddressOfExpression,
+                     SyntaxKind.BinaryConditionalExpression,
+                     SyntaxKind.TernaryConditionalExpression,
+                     SyntaxKind.SingleLineFunctionLambdaExpression,
+                     SyntaxKind.SingleLineSubLambdaExpression,
+                     SyntaxKind.MultiLineFunctionLambdaExpression,
+                     SyntaxKind.MultiLineSubLambdaExpression,
+                     SyntaxKind.QueryExpression,
+                     SyntaxKind.FunctionAggregation,
+                     SyntaxKind.GroupAggregation,
+                     SyntaxKind.XmlDocument,
+                     SyntaxKind.XmlElement,
+                     SyntaxKind.XmlText,
+                     SyntaxKind.XmlElementStartTag,
+                     SyntaxKind.XmlElementEndTag,
+                     SyntaxKind.XmlEmptyElement,
+                     SyntaxKind.XmlAttribute,
+                     SyntaxKind.XmlString,
+                     SyntaxKind.XmlPrefixName,
+                     SyntaxKind.XmlName,
+                     SyntaxKind.XmlBracketedName,
+                     SyntaxKind.XmlComment,
+                     SyntaxKind.XmlProcessingInstruction,
+                     SyntaxKind.XmlCDataSection,
+                     SyntaxKind.XmlEmbeddedExpression,
+                     SyntaxKind.ArrayType,
+                     SyntaxKind.NullableType,
+                     SyntaxKind.PredefinedType,
+                     SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference,
+                     SyntaxKind.AwaitExpression,
+                     SyntaxKind.XmlCrefAttribute,
+                     SyntaxKind.XmlNameAttribute,
+                     SyntaxKind.ConditionalAccessExpression,
+                     SyntaxKind.NameOfExpression,
+                     SyntaxKind.InterpolatedStringExpression
+                Case Else
+                    Throw new ArgumentException("expression")
+             End Select
+            Return New WhenStatementSyntax(SyntaxKind.WhenStatement, Nothing, Nothing, DirectCast(whenKeyword.Node, InternalSyntax.KeywordSyntax), expression)
+        End Function
+
+
+        Public Shared Function WhenStatement(expression As ExpressionSyntax) As WhenStatementSyntax
+            Return SyntaxFactory.WhenStatement(SyntaxFactory.Token(SyntaxKind.WhenKeyword), expression)
         End Function
 
 
@@ -35892,6 +36094,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.SelectStatement,
                      SyntaxKind.CaseStatement,
                      SyntaxKind.CaseElseStatement,
+                     SyntaxKind.WhenBlock,
+                     SyntaxKind.WhenStatement,
                      SyntaxKind.SyncLockStatement,
                      SyntaxKind.SimpleDoLoopBlock,
                      SyntaxKind.DoWhileLoopBlock,
@@ -36186,6 +36390,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.SelectStatement,
                      SyntaxKind.CaseStatement,
                      SyntaxKind.CaseElseStatement,
+                     SyntaxKind.WhenBlock,
+                     SyntaxKind.WhenStatement,
                      SyntaxKind.SyncLockStatement,
                      SyntaxKind.SimpleDoLoopBlock,
                      SyntaxKind.DoWhileLoopBlock,
@@ -36488,6 +36694,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.SelectStatement,
                      SyntaxKind.CaseStatement,
                      SyntaxKind.CaseElseStatement,
+                     SyntaxKind.WhenBlock,
+                     SyntaxKind.WhenStatement,
                      SyntaxKind.SyncLockStatement,
                      SyntaxKind.SimpleDoLoopBlock,
                      SyntaxKind.DoWhileLoopBlock,

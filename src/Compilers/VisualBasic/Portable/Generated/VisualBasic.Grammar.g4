@@ -99,6 +99,8 @@ statement
   | sync_lock_statement
   | try_statement
   | using_statement
+  | when_block
+  | when_statement
   | while_statement
   | with_statement
   ;
@@ -1171,6 +1173,14 @@ yield_statement
 for_or_for_each_statement
   : for_each_statement
   | for_statement
+  ;
+
+when_block
+  : when_statement statement*
+  ;
+
+when_statement
+  : 'When' expression
   ;
 
 expression

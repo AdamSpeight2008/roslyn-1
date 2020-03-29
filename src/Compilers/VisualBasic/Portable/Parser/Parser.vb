@@ -935,6 +935,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case SyntaxKind.CaseKeyword
                     Return ParseCaseStatement()
 
+                Case SyntaxKind.WhenKeyword
+                    Return ParseWhenStatement()
+
                 Case SyntaxKind.SelectKeyword
                     Return ParseSelectStatement()
 

@@ -15832,6 +15832,244 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     End Class
 
     ''' <summary>
+    ''' Represents a When statement and its subsequent block.
+    ''' </summary>
+    Friend NotInheritable Class WhenBlockSyntax
+        Inherits StatementSyntax
+
+        Friend ReadOnly _whenStatement as WhenStatementSyntax
+        Friend ReadOnly _statements as GreenNode
+
+        Friend Sub New(ByVal kind As SyntaxKind, whenStatement As WhenStatementSyntax, statements As GreenNode)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(whenStatement)
+            Me._whenStatement = whenStatement
+            If statements IsNot Nothing Then
+                AdjustFlagsAndWidth(statements)
+                Me._statements = statements
+            End If
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, whenStatement As WhenStatementSyntax, statements As GreenNode, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(whenStatement)
+            Me._whenStatement = whenStatement
+            If statements IsNot Nothing Then
+                AdjustFlagsAndWidth(statements)
+                Me._statements = statements
+            End If
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), whenStatement As WhenStatementSyntax, statements As GreenNode)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(whenStatement)
+            Me._whenStatement = whenStatement
+            If statements IsNot Nothing Then
+                AdjustFlagsAndWidth(statements)
+                Me._statements = statements
+            End If
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _whenStatement = DirectCast(reader.ReadValue(), WhenStatementSyntax)
+          If _whenStatement isnot Nothing 
+             AdjustFlagsAndWidth(_whenStatement)
+             Me._whenStatement = _whenStatement
+          End If
+          Dim _statements = DirectCast(reader.ReadValue(), GreenNode)
+          If _statements isnot Nothing 
+             AdjustFlagsAndWidth(_statements)
+             Me._statements = _statements
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New WhenBlockSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._whenStatement)
+          writer.WriteValue(Me._statements)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(WhenBlockSyntax), Function(r) New WhenBlockSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenBlockSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' The statement that begins the case block.
+        ''' </summary>
+        Friend  ReadOnly Property WhenStatement As InternalSyntax.WhenStatementSyntax
+            Get
+                Return Me._whenStatement
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' The statements contained in the case block. This might be an empty list.
+        ''' </summary>
+        ''' <remarks>
+        ''' If nothing is present, an empty list is returned.
+        ''' </remarks>
+        Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
+            Get
+                Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._whenStatement
+                Case 1
+                    Return Me._statements
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new WhenBlockSyntax(Me.Kind, newErrors, GetAnnotations, _whenStatement, _statements)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new WhenBlockSyntax(Me.Kind, GetDiagnostics, annotations, _whenStatement, _statements)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitWhenBlock(Me)
+        End Function
+
+    End Class
+
+    Friend NotInheritable Class WhenStatementSyntax
+        Inherits StatementSyntax
+
+        Friend ReadOnly _whenKeyword as KeywordSyntax
+        Friend ReadOnly _expression as ExpressionSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, whenKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(whenKeyword)
+            Me._whenKeyword = whenKeyword
+            AdjustFlagsAndWidth(expression)
+            Me._expression = expression
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, whenKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(whenKeyword)
+            Me._whenKeyword = whenKeyword
+            AdjustFlagsAndWidth(expression)
+            Me._expression = expression
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), whenKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(whenKeyword)
+            Me._whenKeyword = whenKeyword
+            AdjustFlagsAndWidth(expression)
+            Me._expression = expression
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _whenKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
+          If _whenKeyword isnot Nothing 
+             AdjustFlagsAndWidth(_whenKeyword)
+             Me._whenKeyword = _whenKeyword
+          End If
+          Dim _expression = DirectCast(reader.ReadValue(), ExpressionSyntax)
+          If _expression isnot Nothing 
+             AdjustFlagsAndWidth(_expression)
+             Me._expression = _expression
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New WhenStatementSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._whenKeyword)
+          writer.WriteValue(Me._expression)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(WhenStatementSyntax), Function(r) New WhenStatementSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.WhenStatementSyntax(Me, parent, startLocation)
+        End Function
+
+        Friend  ReadOnly Property WhenKeyword As InternalSyntax.KeywordSyntax
+            Get
+                Return Me._whenKeyword
+            End Get
+        End Property
+
+        Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
+            Get
+                Return Me._expression
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._whenKeyword
+                Case 1
+                    Return Me._expression
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new WhenStatementSyntax(Me.Kind, newErrors, GetAnnotations, _whenKeyword, _expression)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new WhenStatementSyntax(Me.Kind, GetDiagnostics, annotations, _whenKeyword, _expression)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitWhenStatement(Me)
+        End Function
+
+    End Class
+
+    ''' <summary>
     ''' Represents a single clause in a case statement. An abstract node that is the
     ''' parent of different kinds of Case clauses.
     ''' </summary>
@@ -37089,6 +37327,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(node IsNot Nothing)
             Return VisitStatement(node)
         End Function
+        Public Overridable Function VisitWhenBlock(ByVal node As WhenBlockSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitStatement(node)
+        End Function
+        Public Overridable Function VisitWhenStatement(ByVal node As WhenStatementSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitStatement(node)
+        End Function
         Public Overridable Function VisitCaseClause(ByVal node As CaseClauseSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
             Return VisitVisualBasicSyntaxNode(node)
@@ -39537,6 +39783,36 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             If anyChanges Then
                 Return New CaseStatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newCaseKeyword, newCases.Node)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitWhenBlock(ByVal node As WhenBlockSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newWhenStatement = DirectCast(Visit(node._whenStatement), WhenStatementSyntax)
+            If node._whenStatement IsNot newWhenStatement Then anyChanges = True
+            Dim newStatements = VisitList(node.Statements)
+            If node._statements IsNot newStatements.Node Then anyChanges = True
+
+            If anyChanges Then
+                Return New WhenBlockSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newWhenStatement, newStatements.Node)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitWhenStatement(ByVal node As WhenStatementSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newWhenKeyword = DirectCast(Visit(node.WhenKeyword), KeywordSyntax)
+            If node._whenKeyword IsNot newWhenKeyword Then anyChanges = True
+            Dim newExpression = DirectCast(Visit(node._expression), ExpressionSyntax)
+            If node._expression IsNot newExpression Then anyChanges = True
+
+            If anyChanges Then
+                Return New WhenStatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newWhenKeyword, newExpression)
             Else
                 Return node
             End If
@@ -42058,6 +42334,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
               GetType(SelectStatementSyntax),
               GetType(CaseBlockSyntax),
               GetType(CaseStatementSyntax),
+              GetType(WhenBlockSyntax),
+              GetType(WhenStatementSyntax),
               GetType(CaseClauseSyntax),
               GetType(ElseCaseClauseSyntax),
               GetType(SimpleCaseClauseSyntax),
@@ -47557,6 +47835,52 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim result = New CaseStatementSyntax(SyntaxKind.CaseElseStatement, caseKeyword, cases.Node)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a When statement and its subsequent block.
+        ''' </summary>
+        ''' <param name="whenStatement">
+        ''' The statement that begins the case block.
+        ''' </param>
+        ''' <param name="statements">
+        ''' The statements contained in the case block. This might be an empty list.
+        ''' </param>
+        Friend Shared Function WhenBlock(whenStatement As WhenStatementSyntax, statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)) As WhenBlockSyntax
+            Debug.Assert(whenStatement IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.WhenBlock, whenStatement, statements.Node, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, WhenBlockSyntax)
+            End If
+
+            Dim result = New WhenBlockSyntax(SyntaxKind.WhenBlock, whenStatement, statements.Node)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        Friend Shared Function WhenStatement(whenKeyword As KeywordSyntax, expression As ExpressionSyntax) As WhenStatementSyntax
+            Debug.Assert(whenKeyword IsNot Nothing AndAlso whenKeyword.Kind = SyntaxKind.WhenKeyword)
+            Debug.Assert(expression IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.WhenStatement, whenKeyword, expression, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, WhenStatementSyntax)
+            End If
+
+            Dim result = New WhenStatementSyntax(SyntaxKind.WhenStatement, whenKeyword, expression)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -59633,6 +59957,52 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim result = New CaseStatementSyntax(SyntaxKind.CaseElseStatement, caseKeyword, cases.Node, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a When statement and its subsequent block.
+        ''' </summary>
+        ''' <param name="whenStatement">
+        ''' The statement that begins the case block.
+        ''' </param>
+        ''' <param name="statements">
+        ''' The statements contained in the case block. This might be an empty list.
+        ''' </param>
+        Friend Function WhenBlock(whenStatement As WhenStatementSyntax, statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)) As WhenBlockSyntax
+            Debug.Assert(whenStatement IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.WhenBlock, whenStatement, statements.Node, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, WhenBlockSyntax)
+            End If
+
+            Dim result = New WhenBlockSyntax(SyntaxKind.WhenBlock, whenStatement, statements.Node, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        Friend Function WhenStatement(whenKeyword As KeywordSyntax, expression As ExpressionSyntax) As WhenStatementSyntax
+            Debug.Assert(whenKeyword IsNot Nothing AndAlso whenKeyword.Kind = SyntaxKind.WhenKeyword)
+            Debug.Assert(expression IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.WhenStatement, whenKeyword, expression, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, WhenStatementSyntax)
+            End If
+
+            Dim result = New WhenStatementSyntax(SyntaxKind.WhenStatement, whenKeyword, expression, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If

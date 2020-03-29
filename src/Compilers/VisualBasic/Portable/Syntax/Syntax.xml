@@ -3865,6 +3865,7 @@ Unify Enum declarations with other block type declarations.
       </child>
     </node-structure>
 
+    
     <!--****************
       -  CaseStatement
       ******************-->
@@ -3904,6 +3905,29 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name="Cases"></native-equiv>
       </child>
     </node-structure>
+
+    <node-structure name="WhenBlockSyntax" parent="StatementSyntax">
+      <description>Represents a When statement and its subsequent block.</description>
+      <node-kind name="WhenBlock"/>
+      <child name="WhenStatement" kind="@WhenStatementSyntax">
+        <description>The statement that begins the case block. </description>
+      </child>
+
+      <child name="Statements" optional="true" list="true" kind="@StatementSyntax">
+        <description>The statements contained in the case block. This might be an empty list.</description>
+        <lm-equiv name="BlockNode.Contents"></lm-equiv>
+        <native-equiv name="BlockStatement.Children"></native-equiv>
+      </child>
+    </node-structure>
+
+
+    <node-structure name="WhenStatementSyntax" parent="StatementSyntax">
+      <node-kind name="WhenStatement" />
+      <child name="WhenKeyword" kind="WhenKeyword" />
+      <child name="Expression" kind="@ExpressionSyntax" />
+    </node-structure>
+    
+    
 
     <!--****************
       -  CaseClause
