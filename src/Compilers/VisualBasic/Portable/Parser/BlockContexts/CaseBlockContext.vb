@@ -24,18 +24,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Debug.Assert((contextKind = SyntaxKind.CaseBlock AndAlso statement.Kind = SyntaxKind.CaseStatement) OrElse
                          (contextKind = SyntaxKind.CaseElseBlock AndAlso statement.Kind = SyntaxKind.CaseElseStatement))
-            '_whenBlocks = _parser._pool.Allocate(Of WhenBlockSyntax)()
-
         End Sub
 
         Friend Overrides Function ProcessSyntax(node As VisualBasicSyntaxNode) As BlockContext
             If node IsNot Nothing Then
                 Select Case node.Kind
                     Case SyntaxKind.WhenStatement
-                        Dim context = New WhenBlockContext(SyntaxKind.WhenBlock, DirectCast(node, WhenStatementSyntax), Me)
-                        Return context.ProcessSyntax(node)
+                        Return New WhenBlockContext(SyntaxKind.WhenBlock, DirectCast(node, WhenStatementSyntax), Me)
                     Case SyntaxKind.WhenBlock
-                        _statements.Add(DirectCast(node, WhenBlockSyntax))
+                        Me.Add(node)
                         Return Me
                     Case SyntaxKind.CaseStatement, SyntaxKind.CaseElseStatement
                         'TODO - In Dev11 this error is reported on the case keyword and not the whole statement

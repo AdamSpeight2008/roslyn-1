@@ -17,23 +17,26 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     Friend NotInheritable Class WhenBlockContext
         Inherits ExecutableStatementContext
 
-        Private _whenStatement As WhenStatementSyntax
-        Friend Sub New(contextKind As SyntaxKind, statement As StatementSyntax, prevContext As BlockContext)
+        Private _WhenStatement As WhenStatementSyntax
+
+        Friend Sub New(contextKind As SyntaxKind, statement As WhenStatementSyntax, prevContext As BlockContext)
             MyBase.New(contextKind, statement, prevContext)
-            Debug.Assert((contextKind = SyntaxKind.CaseBlock AndAlso statement.Kind = SyntaxKind.WhenStatement) OrElse
-                (contextKind = SyntaxKind.CaseElseBlock AndAlso statement.Kind = SyntaxKind.WhenStatement))
+            Debug.Assert(contextKind = SyntaxKind.CaseBlock)
+            _WhenStatement = statement
         End Sub
 
-        Friend Overrides Function ProcessSyntax(node As VisualBasicSyntaxNode) As BlockContext
+        Friend Function ProcessUsingPreviousContext(node As VisualBasicSyntaxNode) As BlockContext
+            Dim context = PrevBlock.ProcessSyntax(CreateBlockSyntax(Nothing))
+            Debug.Assert(context Is PrevBlock)
+            Return context.ProcessSyntax(node)
+        End Function
 
+        Friend Overrides Function ProcessSyntax(node As VisualBasicSyntaxNode) As BlockContext
             Select Case node.Kind
                 Case SyntaxKind.WhenStatement
-                    _whenStatement = DirectCast(node, WhenStatementSyntax)
-                    Return Me
+                    Return ProcessUsingPreviousContext(node)
                 Case SyntaxKind.CaseStatement, SyntaxKind.CaseElseStatement
-                    Dim context = PrevBlock.ProcessSyntax(CreateBlockSyntax(Nothing))
-                    Debug.Assert(context Is PrevBlock)
-                    Return context.ProcessSyntax(node)
+                    Return ProcessUsingPreviousContext(node)
             End Select
             Return MyBase.ProcessSyntax(node)
         End Function
@@ -43,10 +46,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Select Case node.Kind
 
                 Case SyntaxKind.WhenStatement
-                    Return UseSyntax(node, newContext)
+                    Return LinkResult.Used
 
-                    'Case SyntaxKind.WhenBlock, SyntaxKind.CaseElseStatement, SyntaxKind.CaseStatement
-                    '    Return LinkResult.Crumble
+                Case SyntaxKind.WhenBlock, SyntaxKind.CaseElseStatement, SyntaxKind.CaseStatement
+                    Return LinkResult.Crumble
+
 
                 Case Else
                     Return MyBase.TryLinkSyntax(node, newContext)

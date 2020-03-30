@@ -2471,8 +2471,8 @@ End Module]]>,
                                Case 0
                                     When y = False
                                          System.Console.WriteLine("A")   
-                                    'When y = True
-                                    '     System.Console.WriteLine("B")
+                                    When y = True
+                                         System.Console.WriteLine("B")
                                Case Else
                                     System.Console.WriteLine("C")
                         End Select
