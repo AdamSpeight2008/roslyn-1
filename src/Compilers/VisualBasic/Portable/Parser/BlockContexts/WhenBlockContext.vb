@@ -33,27 +33,26 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend Overrides Function ProcessSyntax(node As VisualBasicSyntaxNode) As BlockContext
             Select Case node.Kind
-                Case SyntaxKind.WhenStatement
-                    Return ProcessUsingPreviousContext(node)
-                Case SyntaxKind.CaseStatement, SyntaxKind.CaseElseStatement
-                    Return ProcessUsingPreviousContext(node)
+                   Case SyntaxKind.WhenStatement
+                        Return ProcessUsingPreviousContext(node)
+                   Case SyntaxKind.ElseStatement
+                        Return ProcessUsingPreviousContext(node)
+                   Case SyntaxKind.CaseStatement, SyntaxKind.CaseElseStatement
+                        Return ProcessUsingPreviousContext(node)
             End Select
             Return MyBase.ProcessSyntax(node)
         End Function
 
         Friend Overrides Function TryLinkSyntax(node As VisualBasicSyntaxNode, ByRef newContext As BlockContext) As LinkResult
             newContext = Nothing
+            If KindEndsBlock(node.Kind) Then Return UseSyntax(node, newContext)
             Select Case node.Kind
-
-                Case SyntaxKind.WhenStatement
-                    Return LinkResult.Used
-
-                Case SyntaxKind.WhenBlock, SyntaxKind.CaseElseStatement, SyntaxKind.CaseStatement
-                    Return LinkResult.Crumble
-
-
-                Case Else
-                    Return MyBase.TryLinkSyntax(node, newContext)
+                   Case SyntaxKind.WhenStatement
+                        Return LinkResult.Used
+                   Case SyntaxKind.WhenBlock, SyntaxKind.CaseElseStatement, SyntaxKind.CaseStatement
+                        Return LinkResult.Crumble
+                   Case Else
+                        Return MyBase.TryLinkSyntax(node, newContext)
             End Select
         End Function
 
@@ -62,19 +61,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(BeginStatement IsNot Nothing)
 
             Dim result As VisualBasicSyntaxNode
-            If BlockKind = SyntaxKind.WhenStatement Then
-                result = SyntaxFactory.WhenBlock(DirectCast(BeginStatement, WhenStatementSyntax), Me.Body())
-
-            ElseIf BlockKind = SyntaxKind.WhenBlock Then
-                result = SyntaxFactory.WhenBlock(DirectCast(BeginStatement, WhenStatementSyntax), Me.Body())
-            Else
-                Throw ExceptionUtilities.UnexpectedValue(BlockKind)
-            End If
-
+            Select Case BlockKind
+                   Case SyntaxKind.WhenStatement
+                        result = SyntaxFactory.WhenBlock(DirectCast(BeginStatement, WhenStatementSyntax), Me.Body())
+                   Case SyntaxKind.WhenBlock
+                        result = SyntaxFactory.WhenBlock(DirectCast(BeginStatement, WhenStatementSyntax), Me.Body())
+                   Case Else
+                        Throw ExceptionUtilities.UnexpectedValue(BlockKind)
+            End Select
             FreeStatements()
-
             Return result
         End Function
+
         Friend Overrides Function EndBlock(endStmt As StatementSyntax) As BlockContext
             Dim blockSyntax = CreateBlockSyntax(Nothing)
             Dim context = PrevBlock.ProcessSyntax(blockSyntax)

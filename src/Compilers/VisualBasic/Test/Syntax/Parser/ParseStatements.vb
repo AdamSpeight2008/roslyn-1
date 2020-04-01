@@ -2468,13 +2468,23 @@ End Module]]>,
                         Dim x As Integer = 10
                         Dim y as Boolean = False
                         Select Case x
-                               Case 0
-                                    When y = False
-                                         System.Console.WriteLine("A")   
-                                    When y = True
-                                         System.Console.WriteLine("B")
-                               Case Else
-                                    System.Console.WriteLine("C")
+                               When True
+                                    Case 0
+                                         When y = False
+                                              System.Console.WriteLine("A")   
+                                         When y = True
+                                              System.Console.WriteLine("B")
+                                         Else
+                                              System.Console.WriteLine("Case 0, Else")
+                                    Case Else
+                                         When true
+                                              System.Console.WriteLine("C")
+                                         When False
+                                              System.Console.WriteLine("D")
+                                         Else
+                                              System.Console.WriteLine("E")
+                               Else
+                                    Console.WriteLine("X")
                         End Select
                     end sub
                End Module
