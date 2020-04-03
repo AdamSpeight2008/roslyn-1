@@ -32,6 +32,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <remarks></remarks>
         Public ReadOnly Current As BoundExpression
 
+        Public ReadOnly Index As BoundExpression
+
         ''' <summary>
         ''' Element type of the collection.
         ''' </summary>
@@ -116,7 +118,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             currentConversion As BoundExpression,
             enumeratorPlaceholder As BoundLValuePlaceholder,
             currentPlaceholder As BoundRValuePlaceholder,
-            collectionPlaceholder As BoundRValuePlaceholder
+            collectionPlaceholder As BoundRValuePlaceholder,
+            Optional withIndex As BoundExpression = Nothing
         )
             Me.GetEnumerator = getEnumerator
             Me.MoveNext = moveNext
@@ -130,6 +133,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.EnumeratorPlaceholder = enumeratorPlaceholder
             Me.CurrentPlaceholder = currentPlaceholder
             Me.CollectionPlaceholder = collectionPlaceholder
+            Me.Index = withIndex
         End Sub
     End Class
 End Namespace

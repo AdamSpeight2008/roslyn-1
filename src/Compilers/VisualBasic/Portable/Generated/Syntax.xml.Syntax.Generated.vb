@@ -18315,6 +18315,203 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
+    Public NotInheritable Class LoopControlVariableSyntax
+        Inherits VisualBasicSyntaxNode
+
+        Friend _controlVariable as VariableDeclaratorSyntax
+        Friend _withIndex as WithIndexSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), controlVariable As VariableDeclaratorSyntax, withIndex As WithIndexSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.LoopControlVariableSyntax(kind, errors, annotations, DirectCast(controlVariable.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.VariableDeclaratorSyntax), DirectCast(withIndex.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WithIndexSyntax)), Nothing, 0)
+        End Sub
+
+        Public  ReadOnly Property ControlVariable As VariableDeclaratorSyntax
+            Get
+                Return GetRedAtZero(_controlVariable)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the ControlVariable property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithControlVariable(controlVariable as VariableDeclaratorSyntax) As LoopControlVariableSyntax
+            return Update(controlVariable, Me.WithIndex)
+        End Function
+
+        Public  ReadOnly Property WithIndex As WithIndexSyntax
+            Get
+                Return GetRed(_withIndex, 1)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the WithIndex property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithWithIndex(withIndex as WithIndexSyntax) As LoopControlVariableSyntax
+            return Update(Me.ControlVariable, withIndex)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me._controlVariable
+                Case 1
+                    Return Me._withIndex
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me.ControlVariable
+                Case 1
+                    Return Me.WithIndex
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitLoopControlVariable(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitLoopControlVariable(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="controlVariable">
+        ''' The value for the ControlVariable property.
+        ''' </param>
+        ''' <param name="withIndex">
+        ''' The value for the WithIndex property.
+        ''' </param>
+        Public Function Update(controlVariable As VariableDeclaratorSyntax, withIndex As WithIndexSyntax) As LoopControlVariableSyntax
+            If controlVariable IsNot Me.ControlVariable OrElse withIndex IsNot Me.WithIndex Then
+                Dim newNode = SyntaxFactory.LoopControlVariable(controlVariable, withIndex)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    Public NotInheritable Class WithIndexSyntax
+        Inherits VisualBasicSyntaxNode
+
+        Friend _indexVariable as VisualBasicSyntaxNode
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), withKeyword As InternalSyntax.KeywordSyntax, indexVariable As VisualBasicSyntaxNode)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WithIndexSyntax(kind, errors, annotations, withKeyword, DirectCast(indexVariable.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.VisualBasicSyntaxNode)), Nothing, 0)
+        End Sub
+
+        Public  ReadOnly Property WithKeyword As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WithIndexSyntax)._withKeyword, Me.Position, 0)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the WithKeyword property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithWithKeyword(withKeyword as SyntaxToken) As WithIndexSyntax
+            return Update(withKeyword, Me.IndexVariable)
+        End Function
+
+        Public  ReadOnly Property IndexVariable As VisualBasicSyntaxNode
+            Get
+                Return GetRed(_indexVariable, 1)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the IndexVariable property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithIndexVariable(indexVariable as VisualBasicSyntaxNode) As WithIndexSyntax
+            return Update(Me.WithKeyword, indexVariable)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me._indexVariable
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me.IndexVariable
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitWithIndex(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitWithIndex(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="withKeyword">
+        ''' The value for the WithKeyword property.
+        ''' </param>
+        ''' <param name="indexVariable">
+        ''' The value for the IndexVariable property.
+        ''' </param>
+        Public Function Update(withKeyword As SyntaxToken, indexVariable As VisualBasicSyntaxNode) As WithIndexSyntax
+            If withKeyword <> Me.WithKeyword OrElse indexVariable IsNot Me.IndexVariable Then
+                Dim newNode = SyntaxFactory.WithIndex(withKeyword, indexVariable)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
     ''' <summary>
     ''' The For statement that begins a For-Next block. This statement always occurs as
     ''' the Begin of a ForBlock. Most of the time, the End of that ForBlock is the

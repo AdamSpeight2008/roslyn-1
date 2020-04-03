@@ -5573,4 +5573,7 @@
   <data name="WRN_AttributeNotSupportedInVB_Title" xml:space="preserve">
     <value>Attribute is not supported in VB</value>
   </data>
+  <data name="FEATURE_ForEachWithIndex" xml:space="preserve">
+    <value>For Each With Index</value>
+  </data>
 </root>

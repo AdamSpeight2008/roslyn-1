@@ -359,6 +359,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Function VisitForEachBlock(ByVal node As ForEachBlockSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
+        Public Overridable Function VisitLoopControlVariable(ByVal node As LoopControlVariableSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
+        Public Overridable Function VisitWithIndex(ByVal node As WithIndexSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
         Public Overridable Function VisitForStatement(ByVal node As ForStatementSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
@@ -1092,6 +1098,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitForEachBlock(ByVal node As ForEachBlockSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitLoopControlVariable(ByVal node As LoopControlVariableSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitWithIndex(ByVal node As WithIndexSyntax)
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitForStatement(ByVal node As ForStatementSyntax)
@@ -3468,6 +3480,36 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If anyChanges Then
                 Return New ForEachBlockSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newForEachStatement, newStatements.Node, newNextStatement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitLoopControlVariable(ByVal node As LoopControlVariableSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newControlVariable = DirectCast(Visit(node.ControlVariable), VariableDeclaratorSyntax)
+            If node.ControlVariable IsNot newControlVariable Then anyChanges = True
+            Dim newWithIndex = DirectCast(Visit(node.WithIndex), WithIndexSyntax)
+            If node.WithIndex IsNot newWithIndex Then anyChanges = True
+
+            If anyChanges Then
+                Return New LoopControlVariableSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newControlVariable, newWithIndex)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitWithIndex(ByVal node As WithIndexSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newWithKeyword = DirectCast(VisitToken(node.WithKeyword).Node, InternalSyntax.KeywordSyntax)
+            If node.WithKeyword.Node IsNot newWithKeyword Then anyChanges = True
+            Dim newIndexVariable = DirectCast(Visit(node.IndexVariable), VisualBasicSyntaxNode)
+            If node.IndexVariable IsNot newIndexVariable Then anyChanges = True
+
+            If anyChanges Then
+                Return New WithIndexSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newWithKeyword, newIndexVariable)
             Else
                 Return node
             End If
@@ -19117,6 +19159,155 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
+        Public Shared Function LoopControlVariable(controlVariable As VariableDeclaratorSyntax, withIndex As WithIndexSyntax) As LoopControlVariableSyntax
+            if controlVariable Is Nothing Then
+                Throw New ArgumentNullException(NameOf(controlVariable))
+            End If
+            Select Case controlVariable.Kind()
+                Case SyntaxKind.VariableDeclarator
+                Case Else
+                    Throw new ArgumentException("controlVariable")
+             End Select
+            if withIndex Is Nothing Then
+                Throw New ArgumentNullException(NameOf(withIndex))
+            End If
+            Select Case withIndex.Kind()
+                Case SyntaxKind.WithIndex
+                Case Else
+                    Throw new ArgumentException("withIndex")
+             End Select
+            Return New LoopControlVariableSyntax(SyntaxKind.LoopControlVariable, Nothing, Nothing, controlVariable, withIndex)
+        End Function
+
+
+        Public Shared Function WithIndex(withKeyword As SyntaxToken, indexVariable As VisualBasicSyntaxNode) As WithIndexSyntax
+            Select Case withKeyword.Kind()
+                Case SyntaxKind.WithKeyword
+                Case Else
+                    Throw new ArgumentException("withKeyword")
+             End Select
+            if indexVariable Is Nothing Then
+                Throw New ArgumentNullException(NameOf(indexVariable))
+            End If
+            Select Case indexVariable.Kind()
+                Case SyntaxKind.KeywordEventContainer,
+                     SyntaxKind.WithEventsEventContainer,
+                     SyntaxKind.WithEventsPropertyEventContainer,
+                     SyntaxKind.IdentifierLabel,
+                     SyntaxKind.NumericLabel,
+                     SyntaxKind.NextLabel,
+                     SyntaxKind.MidExpression,
+                     SyntaxKind.CharacterLiteralExpression,
+                     SyntaxKind.TrueLiteralExpression,
+                     SyntaxKind.FalseLiteralExpression,
+                     SyntaxKind.NumericLiteralExpression,
+                     SyntaxKind.DateLiteralExpression,
+                     SyntaxKind.StringLiteralExpression,
+                     SyntaxKind.NothingLiteralExpression,
+                     SyntaxKind.ParenthesizedExpression,
+                     SyntaxKind.TupleExpression,
+                     SyntaxKind.TupleType,
+                     SyntaxKind.MeExpression,
+                     SyntaxKind.MyBaseExpression,
+                     SyntaxKind.MyClassExpression,
+                     SyntaxKind.GetTypeExpression,
+                     SyntaxKind.TypeOfIsExpression,
+                     SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.GetXmlNamespaceExpression,
+                     SyntaxKind.SimpleMemberAccessExpression,
+                     SyntaxKind.DictionaryAccessExpression,
+                     SyntaxKind.XmlElementAccessExpression,
+                     SyntaxKind.XmlDescendantAccessExpression,
+                     SyntaxKind.XmlAttributeAccessExpression,
+                     SyntaxKind.InvocationExpression,
+                     SyntaxKind.ObjectCreationExpression,
+                     SyntaxKind.AnonymousObjectCreationExpression,
+                     SyntaxKind.ArrayCreationExpression,
+                     SyntaxKind.CollectionInitializer,
+                     SyntaxKind.CTypeExpression,
+                     SyntaxKind.DirectCastExpression,
+                     SyntaxKind.TryCastExpression,
+                     SyntaxKind.PredefinedCastExpression,
+                     SyntaxKind.AddExpression,
+                     SyntaxKind.SubtractExpression,
+                     SyntaxKind.MultiplyExpression,
+                     SyntaxKind.DivideExpression,
+                     SyntaxKind.IntegerDivideExpression,
+                     SyntaxKind.ExponentiateExpression,
+                     SyntaxKind.LeftShiftExpression,
+                     SyntaxKind.RightShiftExpression,
+                     SyntaxKind.ConcatenateExpression,
+                     SyntaxKind.ModuloExpression,
+                     SyntaxKind.EqualsExpression,
+                     SyntaxKind.NotEqualsExpression,
+                     SyntaxKind.LessThanExpression,
+                     SyntaxKind.LessThanOrEqualExpression,
+                     SyntaxKind.GreaterThanOrEqualExpression,
+                     SyntaxKind.GreaterThanExpression,
+                     SyntaxKind.IsExpression,
+                     SyntaxKind.IsNotExpression,
+                     SyntaxKind.LikeExpression,
+                     SyntaxKind.OrExpression,
+                     SyntaxKind.ExclusiveOrExpression,
+                     SyntaxKind.AndExpression,
+                     SyntaxKind.OrElseExpression,
+                     SyntaxKind.AndAlsoExpression,
+                     SyntaxKind.UnaryPlusExpression,
+                     SyntaxKind.UnaryMinusExpression,
+                     SyntaxKind.NotExpression,
+                     SyntaxKind.AddressOfExpression,
+                     SyntaxKind.BinaryConditionalExpression,
+                     SyntaxKind.TernaryConditionalExpression,
+                     SyntaxKind.SingleLineFunctionLambdaExpression,
+                     SyntaxKind.SingleLineSubLambdaExpression,
+                     SyntaxKind.MultiLineFunctionLambdaExpression,
+                     SyntaxKind.MultiLineSubLambdaExpression,
+                     SyntaxKind.QueryExpression,
+                     SyntaxKind.FunctionAggregation,
+                     SyntaxKind.GroupAggregation,
+                     SyntaxKind.XmlDocument,
+                     SyntaxKind.XmlElement,
+                     SyntaxKind.XmlText,
+                     SyntaxKind.XmlElementStartTag,
+                     SyntaxKind.XmlElementEndTag,
+                     SyntaxKind.XmlEmptyElement,
+                     SyntaxKind.XmlAttribute,
+                     SyntaxKind.XmlString,
+                     SyntaxKind.XmlPrefixName,
+                     SyntaxKind.XmlName,
+                     SyntaxKind.XmlBracketedName,
+                     SyntaxKind.XmlComment,
+                     SyntaxKind.XmlProcessingInstruction,
+                     SyntaxKind.XmlCDataSection,
+                     SyntaxKind.XmlEmbeddedExpression,
+                     SyntaxKind.ArrayType,
+                     SyntaxKind.NullableType,
+                     SyntaxKind.PredefinedType,
+                     SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference,
+                     SyntaxKind.AwaitExpression,
+                     SyntaxKind.XmlCrefAttribute,
+                     SyntaxKind.XmlNameAttribute,
+                     SyntaxKind.ConditionalAccessExpression,
+                     SyntaxKind.NameOfExpression,
+                     SyntaxKind.InterpolatedStringExpression,
+                     SyntaxKind.VariableDeclarator
+                Case Else
+                    Throw new ArgumentException("indexVariable")
+             End Select
+            Return New WithIndexSyntax(SyntaxKind.WithIndex, Nothing, Nothing, DirectCast(withKeyword.Node, InternalSyntax.KeywordSyntax), indexVariable)
+        End Function
+
+
+        Public Shared Function WithIndex(indexVariable As VisualBasicSyntaxNode) As WithIndexSyntax
+            Return SyntaxFactory.WithIndex(SyntaxFactory.Token(SyntaxKind.WithKeyword), indexVariable)
+        End Function
+
+
         ''' <summary>
         ''' The For statement that begins a For-Next block. This statement always occurs as
         ''' the Begin of a ForBlock. Most of the time, the End of that ForBlock is the
@@ -19264,7 +19455,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
                      SyntaxKind.InterpolatedStringExpression,
-                     SyntaxKind.VariableDeclarator
+                     SyntaxKind.VariableDeclarator,
+                     SyntaxKind.LoopControlVariable
                 Case Else
                     Throw new ArgumentException("controlVariable")
              End Select
@@ -19848,7 +20040,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.ConditionalAccessExpression,
                      SyntaxKind.NameOfExpression,
                      SyntaxKind.InterpolatedStringExpression,
-                     SyntaxKind.VariableDeclarator
+                     SyntaxKind.VariableDeclarator,
+                     SyntaxKind.LoopControlVariable
                 Case Else
                     Throw new ArgumentException("controlVariable")
              End Select

@@ -17499,6 +17499,226 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
+    Friend NotInheritable Class LoopControlVariableSyntax
+        Inherits VisualBasicSyntaxNode
+
+        Friend ReadOnly _controlVariable as VariableDeclaratorSyntax
+        Friend ReadOnly _withIndex as WithIndexSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, controlVariable As VariableDeclaratorSyntax, withIndex As WithIndexSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(controlVariable)
+            Me._controlVariable = controlVariable
+            AdjustFlagsAndWidth(withIndex)
+            Me._withIndex = withIndex
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, controlVariable As VariableDeclaratorSyntax, withIndex As WithIndexSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(controlVariable)
+            Me._controlVariable = controlVariable
+            AdjustFlagsAndWidth(withIndex)
+            Me._withIndex = withIndex
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), controlVariable As VariableDeclaratorSyntax, withIndex As WithIndexSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(controlVariable)
+            Me._controlVariable = controlVariable
+            AdjustFlagsAndWidth(withIndex)
+            Me._withIndex = withIndex
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _controlVariable = DirectCast(reader.ReadValue(), VariableDeclaratorSyntax)
+          If _controlVariable isnot Nothing 
+             AdjustFlagsAndWidth(_controlVariable)
+             Me._controlVariable = _controlVariable
+          End If
+          Dim _withIndex = DirectCast(reader.ReadValue(), WithIndexSyntax)
+          If _withIndex isnot Nothing 
+             AdjustFlagsAndWidth(_withIndex)
+             Me._withIndex = _withIndex
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New LoopControlVariableSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._controlVariable)
+          writer.WriteValue(Me._withIndex)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(LoopControlVariableSyntax), Function(r) New LoopControlVariableSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopControlVariableSyntax(Me, parent, startLocation)
+        End Function
+
+        Friend  ReadOnly Property ControlVariable As InternalSyntax.VariableDeclaratorSyntax
+            Get
+                Return Me._controlVariable
+            End Get
+        End Property
+
+        Friend  ReadOnly Property WithIndex As InternalSyntax.WithIndexSyntax
+            Get
+                Return Me._withIndex
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._controlVariable
+                Case 1
+                    Return Me._withIndex
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new LoopControlVariableSyntax(Me.Kind, newErrors, GetAnnotations, _controlVariable, _withIndex)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new LoopControlVariableSyntax(Me.Kind, GetDiagnostics, annotations, _controlVariable, _withIndex)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitLoopControlVariable(Me)
+        End Function
+
+    End Class
+
+    Friend NotInheritable Class WithIndexSyntax
+        Inherits VisualBasicSyntaxNode
+
+        Friend ReadOnly _withKeyword as KeywordSyntax
+        Friend ReadOnly _indexVariable as VisualBasicSyntaxNode
+
+        Friend Sub New(ByVal kind As SyntaxKind, withKeyword As InternalSyntax.KeywordSyntax, indexVariable As VisualBasicSyntaxNode)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(withKeyword)
+            Me._withKeyword = withKeyword
+            AdjustFlagsAndWidth(indexVariable)
+            Me._indexVariable = indexVariable
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, withKeyword As InternalSyntax.KeywordSyntax, indexVariable As VisualBasicSyntaxNode, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(withKeyword)
+            Me._withKeyword = withKeyword
+            AdjustFlagsAndWidth(indexVariable)
+            Me._indexVariable = indexVariable
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), withKeyword As InternalSyntax.KeywordSyntax, indexVariable As VisualBasicSyntaxNode)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(withKeyword)
+            Me._withKeyword = withKeyword
+            AdjustFlagsAndWidth(indexVariable)
+            Me._indexVariable = indexVariable
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _withKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
+          If _withKeyword isnot Nothing 
+             AdjustFlagsAndWidth(_withKeyword)
+             Me._withKeyword = _withKeyword
+          End If
+          Dim _indexVariable = DirectCast(reader.ReadValue(), VisualBasicSyntaxNode)
+          If _indexVariable isnot Nothing 
+             AdjustFlagsAndWidth(_indexVariable)
+             Me._indexVariable = _indexVariable
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New WithIndexSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._withKeyword)
+          writer.WriteValue(Me._indexVariable)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(WithIndexSyntax), Function(r) New WithIndexSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax(Me, parent, startLocation)
+        End Function
+
+        Friend  ReadOnly Property WithKeyword As InternalSyntax.KeywordSyntax
+            Get
+                Return Me._withKeyword
+            End Get
+        End Property
+
+        Friend  ReadOnly Property IndexVariable As InternalSyntax.VisualBasicSyntaxNode
+            Get
+                Return Me._indexVariable
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._withKeyword
+                Case 1
+                    Return Me._indexVariable
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new WithIndexSyntax(Me.Kind, newErrors, GetAnnotations, _withKeyword, _indexVariable)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new WithIndexSyntax(Me.Kind, GetDiagnostics, annotations, _withKeyword, _indexVariable)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitWithIndex(Me)
+        End Function
+
+    End Class
+
     ''' <summary>
     ''' The For statement that begins a For-Next block. This statement always occurs as
     ''' the Begin of a ForBlock. Most of the time, the End of that ForBlock is the
@@ -37149,6 +37369,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(node IsNot Nothing)
             Return VisitStatement(node)
         End Function
+        Public Overridable Function VisitLoopControlVariable(ByVal node As LoopControlVariableSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitVisualBasicSyntaxNode(node)
+        End Function
+        Public Overridable Function VisitWithIndex(ByVal node As WithIndexSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitVisualBasicSyntaxNode(node)
+        End Function
         Public Overridable Function VisitForStatement(ByVal node As ForStatementSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
             Return VisitForOrForEachStatement(node)
@@ -39728,6 +39956,36 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
         End Function
 
+        Public Overrides Function VisitLoopControlVariable(ByVal node As LoopControlVariableSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newControlVariable = DirectCast(Visit(node._controlVariable), VariableDeclaratorSyntax)
+            If node._controlVariable IsNot newControlVariable Then anyChanges = True
+            Dim newWithIndex = DirectCast(Visit(node._withIndex), WithIndexSyntax)
+            If node._withIndex IsNot newWithIndex Then anyChanges = True
+
+            If anyChanges Then
+                Return New LoopControlVariableSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newControlVariable, newWithIndex)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitWithIndex(ByVal node As WithIndexSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newWithKeyword = DirectCast(Visit(node.WithKeyword), KeywordSyntax)
+            If node._withKeyword IsNot newWithKeyword Then anyChanges = True
+            Dim newIndexVariable = DirectCast(Visit(node._indexVariable), VisualBasicSyntaxNode)
+            If node._indexVariable IsNot newIndexVariable Then anyChanges = True
+
+            If anyChanges Then
+                Return New WithIndexSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newWithKeyword, newIndexVariable)
+            Else
+                Return node
+            End If
+        End Function
+
         Public Overrides Function VisitForStatement(ByVal node As ForStatementSyntax) As VisualBasicSyntaxNode
             Dim anyChanges As Boolean = False
 
@@ -42073,6 +42331,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
               GetType(ForBlockSyntax),
               GetType(ForEachBlockSyntax),
               GetType(ForOrForEachStatementSyntax),
+              GetType(LoopControlVariableSyntax),
+              GetType(WithIndexSyntax),
               GetType(ForStatementSyntax),
               GetType(ForStepClauseSyntax),
               GetType(ForEachStatementSyntax),
@@ -48521,6 +48781,44 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim result = New ForEachBlockSyntax(SyntaxKind.ForEachBlock, forEachStatement, statements.Node, nextStatement)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        Friend Shared Function LoopControlVariable(controlVariable As VariableDeclaratorSyntax, withIndex As WithIndexSyntax) As LoopControlVariableSyntax
+            Debug.Assert(controlVariable IsNot Nothing)
+            Debug.Assert(withIndex IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.LoopControlVariable, controlVariable, withIndex, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, LoopControlVariableSyntax)
+            End If
+
+            Dim result = New LoopControlVariableSyntax(SyntaxKind.LoopControlVariable, controlVariable, withIndex)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        Friend Shared Function WithIndex(withKeyword As KeywordSyntax, indexVariable As VisualBasicSyntaxNode) As WithIndexSyntax
+            Debug.Assert(withKeyword IsNot Nothing AndAlso withKeyword.Kind = SyntaxKind.WithKeyword)
+            Debug.Assert(indexVariable IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.WithIndex, withKeyword, indexVariable, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, WithIndexSyntax)
+            End If
+
+            Dim result = New WithIndexSyntax(SyntaxKind.WithIndex, withKeyword, indexVariable)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -60597,6 +60895,44 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim result = New ForEachBlockSyntax(SyntaxKind.ForEachBlock, forEachStatement, statements.Node, nextStatement, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        Friend Function LoopControlVariable(controlVariable As VariableDeclaratorSyntax, withIndex As WithIndexSyntax) As LoopControlVariableSyntax
+            Debug.Assert(controlVariable IsNot Nothing)
+            Debug.Assert(withIndex IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.LoopControlVariable, controlVariable, withIndex, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, LoopControlVariableSyntax)
+            End If
+
+            Dim result = New LoopControlVariableSyntax(SyntaxKind.LoopControlVariable, controlVariable, withIndex, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        Friend Function WithIndex(withKeyword As KeywordSyntax, indexVariable As VisualBasicSyntaxNode) As WithIndexSyntax
+            Debug.Assert(withKeyword IsNot Nothing AndAlso withKeyword.Kind = SyntaxKind.WithKeyword)
+            Debug.Assert(indexVariable IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.WithIndex, withKeyword, indexVariable, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, WithIndexSyntax)
+            End If
+
+            Dim result = New WithIndexSyntax(SyntaxKind.WithIndex, withKeyword, indexVariable, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If

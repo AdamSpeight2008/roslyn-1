@@ -756,6 +756,14 @@ Partial Public Class GeneratedTests
             return InternalSyntax.SyntaxFactory.ForEachBlock(GenerateGreenForEachStatement(), Nothing, Nothing)
         End Function
 
+        Private Shared Function GenerateGreenLoopControlVariable() As InternalSyntax.LoopControlVariableSyntax
+            return InternalSyntax.SyntaxFactory.LoopControlVariable(GenerateGreenVariableDeclarator(), GenerateGreenWithIndex())
+        End Function
+
+        Private Shared Function GenerateGreenWithIndex() As InternalSyntax.WithIndexSyntax
+            return InternalSyntax.SyntaxFactory.WithIndex(new InternalSyntax.KeywordSyntax(SyntaxKind.WithKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer())
+        End Function
+
         Private Shared Function GenerateGreenForStatement() As InternalSyntax.ForStatementSyntax
             return InternalSyntax.SyntaxFactory.ForStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.ForKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer(), new InternalSyntax.PunctuationSyntax(SyntaxKind.EqualsToken, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer(), new InternalSyntax.KeywordSyntax(SyntaxKind.ToKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer(), Nothing)
         End Function
@@ -2658,6 +2666,18 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenForEachBlock()
             dim objectUnderTest = GenerateGreenForEachBlock()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenLoopControlVariable()
+            dim objectUnderTest = GenerateGreenLoopControlVariable()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenWithIndex()
+            dim objectUnderTest = GenerateGreenWithIndex()
             AttachAndCheckDiagnostics(objectUnderTest)
         End Sub
 
@@ -5327,6 +5347,22 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenForEachBlockRewriter()
             dim oldNode = GenerateGreenForEachBlock()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenLoopControlVariableRewriter()
+            dim oldNode = GenerateGreenLoopControlVariable()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenWithIndexRewriter()
+            dim oldNode = GenerateGreenWithIndex()
             Dim rewriter = New GreenIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)
@@ -8074,6 +8110,20 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenForEachBlockVisitor()
             Dim oldNode = GenerateGreenForEachBlock()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenLoopControlVariableVisitor()
+            Dim oldNode = GenerateGreenLoopControlVariable()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenWithIndexVisitor()
+            Dim oldNode = GenerateGreenWithIndex()
             Dim visitor = New GreenNodeVisitor()
             visitor.Visit(oldNode)
         End Sub
@@ -13372,6 +13422,48 @@ Partial Public Class GeneratedTests
             exceptionTest = false
 
             return SyntaxFactory.ForEachBlock(GenerateRedForEachStatement(), Nothing, Nothing)
+        End Function
+
+        Private Shared Function GenerateRedLoopControlVariable() As LoopControlVariableSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.LoopControlVariable(Nothing, GenerateRedWithIndex())
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.LoopControlVariable(GenerateRedVariableDeclarator(), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.LoopControlVariable(GenerateRedVariableDeclarator(), GenerateRedWithIndex())
+        End Function
+
+        Private Shared Function GenerateRedWithIndex() As WithIndexSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.WithIndex(SyntaxFactory.Token(SyntaxKind.WithKeyword), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.WithIndex(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedKeywordEventContainer())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.WithIndex(SyntaxFactory.Token(SyntaxKind.WithKeyword), GenerateRedKeywordEventContainer())
         End Function
 
         Private Shared Function GenerateRedForStatement() As ForStatementSyntax
@@ -20094,6 +20186,24 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestRedLoopControlVariable()
+            dim objectUnderTest = GenerateRedLoopControlVariable()
+            Assert.NotNull(objectUnderTest.controlVariable)
+            Assert.NotNull(objectUnderTest.withIndex)
+            Dim withObj = objectUnderTest.WithControlVariable(objectUnderTest.ControlVariable).WithWithIndex(objectUnderTest.WithIndex)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedWithIndex()
+            dim objectUnderTest = GenerateRedWithIndex()
+            Assert.NotNull(objectUnderTest.withKeyword)
+            Assert.NotNull(objectUnderTest.indexVariable)
+            Dim withObj = objectUnderTest.WithWithKeyword(objectUnderTest.WithKeyword).WithIndexVariable(objectUnderTest.IndexVariable)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
         Public Sub TestRedForStatement()
             dim objectUnderTest = GenerateRedForStatement()
             Assert.NotNull(objectUnderTest.forKeyword)
@@ -23387,6 +23497,22 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestRedForEachBlockRewriter()
             dim oldNode = GenerateRedForEachBlock()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedLoopControlVariableRewriter()
+            dim oldNode = GenerateRedLoopControlVariable()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedWithIndexRewriter()
+            dim oldNode = GenerateRedWithIndex()
             Dim rewriter = New RedIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)

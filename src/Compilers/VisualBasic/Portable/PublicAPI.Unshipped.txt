@@ -1,1 +1,27 @@
-
+Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopControlVariableSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopControlVariableSyntax.ControlVariable() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.VariableDeclaratorSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopControlVariableSyntax.Update(controlVariable As Microsoft.CodeAnalysis.VisualBasic.Syntax.VariableDeclaratorSyntax, withIndex As Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopControlVariableSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopControlVariableSyntax.WithControlVariable(controlVariable As Microsoft.CodeAnalysis.VisualBasic.Syntax.VariableDeclaratorSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopControlVariableSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopControlVariableSyntax.WithIndex() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopControlVariableSyntax.WithWithIndex(withIndex As Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopControlVariableSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax.IndexVariable() -> Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxNode
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax.Update(withKeyword As Microsoft.CodeAnalysis.SyntaxToken, indexVariable As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxNode) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax.WithIndexVariable(indexVariable As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxNode) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax.WithKeyword() -> Microsoft.CodeAnalysis.SyntaxToken
+Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax.WithWithKeyword(withKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.LoopControlVariable = 794 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.WithIndex = 793 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitLoopControlVariable(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopControlVariableSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitWithIndex(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitLoopControlVariable(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopControlVariableSyntax) -> Void
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitWithIndex(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopControlVariableSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopControlVariableSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitLoopControlVariable(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopControlVariableSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitWithIndex(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.LoopControlVariable(controlVariable As Microsoft.CodeAnalysis.VisualBasic.Syntax.VariableDeclaratorSyntax, withIndex As Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopControlVariableSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.WithIndex(indexVariable As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxNode) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.WithIndex(withKeyword As Microsoft.CodeAnalysis.SyntaxToken, indexVariable As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxNode) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.WithIndexSyntax

@@ -821,7 +821,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 5761 - 5761
         ' Expression* .Parser::ParseForLoopVariableDeclaration( [ ParseTree::BlockStatement* ForBlock ] [ _In_ Token* ForStart ] [ _Out_ ParseTree::VariableDeclarationStatement** Decl ] [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseForLoopVariableDeclaration() As VariableDeclaratorSyntax
+        Private Function ParseForLoopVariableDeclaration() As VisualBasicSyntaxNode
 
             ' Parse the control variable declaration
             Dim Declarator = ParseModifiedIdentifier(True, False)
@@ -837,10 +837,42 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 End If
             End If
 
+            Dim optionalAsClause As AsClauseSyntax = ParseAsType()
+            Dim optionalWithIndex As WithIndexSyntax = ParseWithIndex()
+
+            Dim names = _pool.AllocateSeparated(Of ModifiedIdentifierSyntax)()
+            names.Add(Declarator)
+
+            Dim result  As VisualBasicSyntaxNode = Nothing
+            If optionalWithIndex Is Nothing THen
+               result = SyntaxFactory.VariableDeclarator(names.ToList, optionalAsClause, Nothing)
+            Else
+                result = SyntaxFactory.LoopControlVariable(SyntaxFactory.VariableDeclarator(names.ToList, optionalAsClause, Nothing), optionalWithIndex)
+            End If
+
+            _pool.Free(names)
+
+            Return result
+        End Function
+
+        Private Function ParseWithIndex() As WithIndexSyntax
+            Dim [with] As KeywordSyntax = Nothing
+            Dim index As IdentifierTokenSyntax = Nothing
+            Dim optionalWithIndex As WithIndexSyntax = Nothing
+            If CurrentToken.Kind = SyntaxKind.WithKeyword Then
+                [with] = DirectCast(CurrentToken, KeywordSyntax)
+                GetNextToken()
+                index = ParseIdentifierAllowingKeyword()
+                optionalWithIndex = SyntaxFactory.WithIndex([with], index)
+                optionalWithIndex = CheckFeatureAvailability(Feature.ForEachWithIndex, optionalWithIndex)
+            End If
+            Return optionalWithIndex
+        End Function
+
+        Private Function ParseAsType() As AsClauseSyntax
             Dim [As] As KeywordSyntax = Nothing
             Dim Type As TypeSyntax = Nothing
             Dim optionalAsClause As AsClauseSyntax = Nothing
-
             If CurrentToken.Kind = SyntaxKind.AsKeyword Then
                 [As] = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -849,15 +881,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Type = ParseGeneralType()
                 optionalAsClause = SyntaxFactory.SimpleAsClause([As], Nothing, Type)
             End If ' Else if "As" is not present, the error falls out as a "Syntax error" IN the caller
-
-            Dim names = _pool.AllocateSeparated(Of ModifiedIdentifierSyntax)()
-            names.Add(Declarator)
-
-            Dim result = SyntaxFactory.VariableDeclarator(names.ToList, optionalAsClause, Nothing)
-
-            _pool.Free(names)
-
-            Return result
+            Return optionalAsClause
         End Function
 
         ' Parse a reference to a label, which can be an identifier or a line number.

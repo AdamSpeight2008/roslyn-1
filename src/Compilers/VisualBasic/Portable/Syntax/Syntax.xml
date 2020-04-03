@@ -4327,7 +4327,7 @@ Unify Enum declarations with other block type declarations.
       -  ForOrForEachStatement
       ******************-->
     <node-structure name="ForOrForEachStatementSyntax" abstract="true" parent="StatementSyntax">
-      <description>Represents a For or For Each statement.</description>
+       <description>Represents a For or For Each statement.</description>
 
       <child name="ForKeyword" kind="ForKeyword" order="10">
         <description>The "For" keyword.</description>
@@ -4335,7 +4335,7 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name="ForStatement.ControlVariable"></native-equiv>
       </child>
 
-      <child name="ControlVariable" kind="@ExpressionSyntax|VariableDeclarator" order="30">
+      <child name="ControlVariable" kind="@ExpressionSyntax|VariableDeclarator|LoopControlVariable" order="30">
         <description>
           If the For or For Each statement is of a form that does not declare a new loop control variable, this is the
           expression that denotes the loop control variable. If this loop is of a form that does declare a new control variable,
@@ -4346,6 +4346,21 @@ Unify Enum declarations with other block type declarations.
       </child>
     </node-structure>
 
+    <node-structure name="LoopControlVariableSyntax" parent="VisualBasicSyntaxNode">
+      <node-kind name="LoopControlVariable" />
+      <child name="ControlVariable" kind="VariableDeclarator"/>
+      <child name="WithIndex" kind="@WithIndexSyntax" />
+    </node-structure>
+    
+    <!--****************
+      -  ForOrForEachStatement
+      ******************-->
+    <node-structure name="WithIndexSyntax" abstract="false" parent="VisualBasicSyntaxNode">
+      <node-kind name="WithIndex"/>
+      <child name="WithKeyword" kind="WithKeyword"/>
+      <child name="IndexVariable" kind="@ExpressionSyntax|VariableDeclarator" order="30"/>
+    </node-structure>
+    
     <!--****************
       -  ForStatement
       ******************-->

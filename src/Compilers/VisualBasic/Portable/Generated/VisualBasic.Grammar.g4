@@ -940,7 +940,15 @@ for_block
   ;
 
 for_statement
-  : 'For' (expression | variable_declarator) '=' expression 'To' expression for_step_clause?
+  : 'For' (expression | variable_declarator | loop_control_variable) '=' expression 'To' expression for_step_clause?
+  ;
+
+loop_control_variable
+  : variable_declarator with_index
+  ;
+
+with_index
+  : 'With' (expression | variable_declarator)
   ;
 
 for_step_clause
@@ -956,7 +964,7 @@ for_each_block
   ;
 
 for_each_statement
-  : 'For' 'Each' (expression | variable_declarator) 'In' expression
+  : 'For' 'Each' (expression | variable_declarator | loop_control_variable) 'In' expression
   ;
 
 go_to_statement

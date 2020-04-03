@@ -3201,5 +3201,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ConflictMarkerTrivia = 792
 
+        WithIndex = 793 ' Prototype
+        LoopControlVariable = 794
     End Enum
 End Namespace
