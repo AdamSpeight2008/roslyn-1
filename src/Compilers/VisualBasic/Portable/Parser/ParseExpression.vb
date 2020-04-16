@@ -920,7 +920,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </summary>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function ParseTypeOf() As TypeOfExpressionSyntax
+        Private Function ParseTypeOf() As AbstractTypeOfExpressionSyntax
             Debug.Assert(CurrentToken.Kind = SyntaxKind.TypeOfKeyword, "must be at TypeOf.")
             Dim [typeOf] As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -932,34 +932,80 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             If exp.ContainsDiagnostics Then
                 exp = ResyncAt(exp, SyntaxKind.IsKeyword, SyntaxKind.IsNotKeyword)
             End If
-
             Dim operatorToken As KeywordSyntax = Nothing
 
             Dim current As SyntaxToken = CurrentToken
 
-            If current.Kind = SyntaxKind.IsKeyword OrElse
-               current.Kind = SyntaxKind.IsNotKeyword Then
-
-                operatorToken = DirectCast(current, KeywordSyntax)
-
-                If operatorToken.Kind = SyntaxKind.IsNotKeyword Then
-                    operatorToken = CheckFeatureAvailability(Feature.TypeOfIsNot, operatorToken)
-                End If
-
-                GetNextToken()
-
-                TryEatNewLine(ScannerState.VB)
+            If TryParseKeyword(SyntaxKind.IsKeyword, operatorToken) Then
+                TryEatNewLine()
+            ElseIf TryParseKeyword(SyntaxKind.IsNotKeyword, operatorToken) THen
+                operatorToken = CheckFeatureAvailability(Feature.TypeOfIsNot, operatorToken)
+                TryEatNewLine()
             Else
                 operatorToken = DirectCast(HandleUnexpectedToken(SyntaxKind.IsKeyword), KeywordSyntax)
             End If
 
-            Dim typeName = ParseGeneralType()
+            If IsStartOfTypeArgumentList Then
+                Return ParseRestAsTypeOfMany([typeOf], exp, operatorToken)
+            Else
+                Return ParseRestAsTypeOfOne([typeOf], exp, operatorToken)
+            End If
 
+        End Function
+
+        Private Function IsStartOfTypeArgumentList() As Boolean
+            ' Check to see if the next token is an Of,
+            '   as this is used for indicating a type list eg (Of t1, t2, t3)
+            Return CurrentToken.Kind = SyntaxKind.OpenParenToken And PeekNextToken.Kind = SyntaxKind.OfKeyword
+        End Function
+
+        Private Function ParseRestAsTypeOfMany([typeof] As KeywordSyntax, expr As ExpressionSyntax, operatorToken As KeywordSyntax) As AbstractTypeOfExpressionSyntax
+            dim allowEmptyGenericArguments = False, allowNonEmptyGenericArguments = True
+            dim types = ParseGenericArguments(allowEmptyGenericArguments, allowNonEmptyGenericArguments)
             Dim kind As SyntaxKind = If(operatorToken.Kind = SyntaxKind.IsNotKeyword,
-                                        SyntaxKind.TypeOfIsNotExpression,
-                                        SyntaxKind.TypeOfIsExpression)
+                                        SyntaxKind.TypeOfIsNotManyExpression,
+                                        SyntaxKind.TypeOfIsManyExpression)
 
-            Return SyntaxFactory.TypeOfExpression(kind, [typeOf], exp, operatorToken, typeName)
+            Return SyntaxFactory.TypeOfManyExpression(kind, [typeOf], expr, operatorToken, types)
+        End Function
+
+        Private Function ParseRestAsTypeOfOne([typeof] As KeywordSyntax, expr As ExpressionSyntax, operatorToken As KeywordSyntax) As AbstractTypeOfExpressionSyntax
+            Dim kind As SyntaxKind = If(operatorToken.Kind = SyntaxKind.IsNotKeyword,
+                                        SyntaxKind.TypeOfIsNotExpression, SyntaxKind.TypeOfIsExpression)
+
+            Dim typeName = ParseGeneralType()
+            Return SyntaxFactory.TypeOfExpression(kind, [typeOf], expr, operatorToken, typeName)
+
+        End Function
+
+        Private Function TryParseCurrentTokenAsContextualKeyword(
+                                                                  kind As SyntaxKind,
+                                                      <Out> ByRef keyword As KeywordSyntax,
+                                                         Optional consume As Boolean = True
+                                                                ) As Boolean
+            If TryIdentifierAsContextualKeyword(CurrentToken, keyword) Then
+                If keyword.Kind = kind Then
+                    If Consume Then GetNextToken()
+                    Return True
+                Else
+                    keyword = HandleUnexpectedKeyword(kind)
+                    Return Nothing
+                End If
+            Else
+                keyword = nothing
+            End If
+            Return False
+        End Function
+
+        Private Function TryParseKeyword(kind As SyntaxKind, <Out> ByRef keyword As KeywordSyntax, Optional consume As Boolean = True) As Boolean
+            If Not SyntaxFacts.IsKeywordKind(kind) Then Return False
+            keyword = DirectCast(CurrentToken, KeywordSyntax)
+            If keyword.Kind = kind Then
+                If Consume Then GetNextToken()
+                Return True
+            End If
+            keyword = HandleUnexpectedKeyword(kind)
+            Return False
         End Function
 
         ' /*********************************************************************

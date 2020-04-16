@@ -263,6 +263,17 @@ Public Class ParseExpressionTest
     End Sub
 
     <Fact>
+    Public Sub ParseTypeOfMany()
+        ParseExpression("TypeOf e Is (Of String, Int32, Int32?)")
+        ParseExpression("TypeOf e IsNot (Of String, Int32, Int32?)")
+    End Sub
+
+    Public Sub ParseIntoVariableExpression()
+        ParseExpression("expression InTo variable")
+        ParseExpression("TypeOf expression Is type InTo variable")
+    End Sub
+
+    <Fact>
     Public Sub ParseGetType()
         ParseExpression("gettype(a)")
         ParseExpression("gettype(a(of ))")
