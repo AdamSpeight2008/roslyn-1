@@ -40,6 +40,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         PrivateProtected
         UnconstrainedTypeParameterInConditional
         CommentsAfterLineContinuation
+        TypeOfManyExpression
+        InToVariableExpression
     End Enum
 
     Friend Module FeatureExtensions
@@ -100,6 +102,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Case Feature.UnconstrainedTypeParameterInConditional,
                     Feature.CommentsAfterLineContinuation
+                    Return LanguageVersion.VisualBasic16
+
+                Case Feature.TypeOfManyExpression, Feature.InToVariableExpression ' PROTOTYPE
                     Return LanguageVersion.VisualBasic16
 
                 Case Else
@@ -173,6 +178,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return ERRID.FEATURE_UnconstrainedTypeParameterInConditional
                 Case Feature.CommentsAfterLineContinuation
                     Return ERRID.FEATURE_CommentsAfterLineContinuation
+                Case Feature.TypeOfManyExpression
+                    Return ERRID.FEATURE_TypeOfManyExpression
+                Case Feature.InToVariableExpression
+                    Return ERRID.FEATURE_InToVariableExpression
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(feature)
             End Select

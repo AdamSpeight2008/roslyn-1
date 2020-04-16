@@ -42,6 +42,16 @@
         <target state="translated">commentaires après la continuation de la ligne</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_InToVariableExpression">
+        <source>InTo Variable Expression</source>
+        <target state="new">InTo Variable Expression</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_TypeOfManyExpression">
+        <source>TypeOf many expression</source>
+        <target state="new">TypeOf many expression</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_UnconstrainedTypeParameterInConditional">
         <source>unconstrained type parameters in binary conditional expressions</source>
         <target state="translated">paramètres de type sans contrainte dans les expressions conditionnelles binaires</target>

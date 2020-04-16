@@ -5240,24 +5240,18 @@ Unify Enum declarations with other block type declarations.
       </child>
     </node-structure>
 
+
     <!--****************
       -  TypeOf ... Is/IsNot
       ******************-->
-    <node-structure name="TypeOfExpressionSyntax" parent="ExpressionSyntax">
+    <node-structure name="AbstractTypeOfExpressionSyntax" abstract="true" parent="ExpressionSyntax" >
       <description>Represents a TypeOf...Is or IsNot expression.</description>
       <lm-equiv name="IsTypeNode"></lm-equiv>
       <native-equiv name="TypeValueExpression"></native-equiv>
       <spec-section>11.5.2</spec-section>
       <grammar>TypeOfIsExpression</grammar>
 
-      <node-kind name="TypeOfIsExpression">
-        <lm-equiv name="IsType" />
-        <native-equiv name="Expression.Opcodes.IsType" />
-      </node-kind>
-
-      <node-kind name="TypeOfIsNotExpression" />
-
-      <child name="TypeOfKeyword" kind="TypeOfKeyword">
+      <child name="TypeOfKeyword" kind="TypeOfKeyword" >
         <description>The "TypeOf" keyword.</description>
         <lm-equiv name="TypeOfKeyword"></lm-equiv>
         <native-equiv name=""></native-equiv>
@@ -5277,12 +5271,41 @@ Unify Enum declarations with other block type declarations.
         <kind name="IsKeyword" node-kind="TypeOfIsExpression" />
         <kind name="IsNotKeyword" node-kind="TypeOfIsNotExpression" />
       </child>
+    </node-structure>
 
+    <!-- [TypeOf] expression ([Is]/[IsNot]) type -->
+    <node-structure name="TypeOfExpressionSyntax" parent="AbstractTypeOfExpressionSyntax">
+      <node-kind name="TypeOfIsExpression">
+        <lm-equiv name="IsType" />
+        <native-equiv name="Expression.Opcodes.IsType" />
+      </node-kind>
+
+      <node-kind name="TypeOfIsNotExpression" />
       <child name="Type" kind="@TypeSyntax">
         <description>The name of the type being tested against.</description>
         <lm-equiv name="TargetType"></lm-equiv>
         <native-equiv name="TargetType"></native-equiv>
       </child>
+    </node-structure>
+    
+    <!-- [TypeOf] expression ([Is]/[IsNot]) typeArgumentList -->
+    <node-structure name="TypeOfManyExpressionSyntax" parent="AbstractTypeOfExpressionSyntax">
+      <node-kind name="TypeOfIsManyExpression" />
+      <node-kind name="TypeOfIsNotManyExpression" />
+
+      <child name="Types" kind="TypeArgumentList">
+        <description>Set of types being tested against.</description>
+        <lm-equiv name="TargetTypes"></lm-equiv>
+        <native-equiv name="TargetTypes"></native-equiv>
+      </child>
+    </node-structure>
+
+    <!-- expression [InTo] variable -->
+    <node-structure name="IntoVariableExpressionSyntax" parent="ExpressionSyntax">
+      <node-kind name="IntoVariableExpression" />
+      <child name="Expression" kind="@ExpressionSyntax" />
+      <child name="IntoKeyword" kind="IntoKeyword"  />
+      <child name="Variable"    kind="IdentifierName" />
     </node-structure>
 
     <!--****************

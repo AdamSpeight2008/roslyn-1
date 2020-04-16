@@ -21515,10 +21515,91 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
     ''' <summary>
     ''' Represents a TypeOf...Is or IsNot expression.
     ''' </summary>
-    Public NotInheritable Class TypeOfExpressionSyntax
+    Public MustInherit Class AbstractTypeOfExpressionSyntax
         Inherits ExpressionSyntax
 
         Friend _expression as ExpressionSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "TypeOf" keyword.
+        ''' </summary>
+        Public ReadOnly Property TypeOfKeyword As SyntaxToken
+            Get
+                Return Me.GetTypeOfKeywordCore()
+            End Get
+        End Property
+
+        Friend Overridable Function GetTypeOfKeywordCore() As SyntaxToken
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AbstractTypeOfExpressionSyntax)._typeOfKeyword, Me.Position, 0)
+        End Function
+
+        ''' <summary>
+        ''' Returns a copy of this with the TypeOfKeyword property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Function WithTypeOfKeyword(typeOfKeyword As SyntaxToken) As AbstractTypeOfExpressionSyntax
+            Return WithTypeOfKeywordCore(typeOfKeyword)
+        End Function
+        Friend MustOverride Function WithTypeOfKeywordCore(typeOfKeyword As SyntaxToken) As AbstractTypeOfExpressionSyntax
+
+        ''' <summary>
+        ''' The expression being tested.
+        ''' </summary>
+        Public ReadOnly Property Expression As ExpressionSyntax
+            Get
+                Return Me.GetExpressionCore()
+            End Get
+        End Property
+
+        Friend Overridable Function GetExpressionCore() As ExpressionSyntax
+                Return GetRed(_expression, 1)
+        End Function
+
+        ''' <summary>
+        ''' Returns a copy of this with the Expression property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Function WithExpression(expression As ExpressionSyntax) As AbstractTypeOfExpressionSyntax
+            Return WithExpressionCore(expression)
+        End Function
+        Friend MustOverride Function WithExpressionCore(expression As ExpressionSyntax) As AbstractTypeOfExpressionSyntax
+
+        ''' <summary>
+        ''' The "Is" or "IsNot" keyword.
+        ''' </summary>
+        Public ReadOnly Property OperatorToken As SyntaxToken
+            Get
+                Return Me.GetOperatorTokenCore()
+            End Get
+        End Property
+
+        Friend Overridable Function GetOperatorTokenCore() As SyntaxToken
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AbstractTypeOfExpressionSyntax)._operatorToken, Me.GetChildPosition(2), Me.GetChildIndex(2))
+        End Function
+
+        ''' <summary>
+        ''' Returns a copy of this with the OperatorToken property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Function WithOperatorToken(operatorToken As SyntaxToken) As AbstractTypeOfExpressionSyntax
+            Return WithOperatorTokenCore(operatorToken)
+        End Function
+        Friend MustOverride Function WithOperatorTokenCore(operatorToken As SyntaxToken) As AbstractTypeOfExpressionSyntax
+
+    End Class
+
+    Public NotInheritable Class TypeOfExpressionSyntax
+        Inherits AbstractTypeOfExpressionSyntax
+
         Friend _type as TypeSyntax
 
         Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
@@ -21534,11 +21615,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <summary>
         ''' The "TypeOf" keyword.
         ''' </summary>
-        Public  ReadOnly Property TypeOfKeyword As SyntaxToken
+        Public Shadows ReadOnly Property TypeOfKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfExpressionSyntax)._typeOfKeyword, Me.Position, 0)
             End Get
         End Property
+
+        Friend Overrides Function GetTypeOfKeywordCore() As SyntaxToken
+            Return Me.TypeOfKeyword
+        End Function
+
+        Friend Overrides Function WithTypeOfKeywordCore(typeOfKeyword As SyntaxToken) As AbstractTypeOfExpressionSyntax
+            Return WithTypeOfKeyword(typeOfKeyword)
+        End Function
 
         ''' <summary>
         ''' Returns a copy of this with the TypeOfKeyword property changed to the specified
@@ -21552,11 +21641,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <summary>
         ''' The expression being tested.
         ''' </summary>
-        Public  ReadOnly Property Expression As ExpressionSyntax
+        Public Shadows ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 1)
             End Get
         End Property
+
+        Friend Overrides Function GetExpressionCore() As ExpressionSyntax
+            Return Me.Expression
+        End Function
+
+        Friend Overrides Function WithExpressionCore(expression As ExpressionSyntax) As AbstractTypeOfExpressionSyntax
+            Return WithExpression(expression)
+        End Function
 
         ''' <summary>
         ''' Returns a copy of this with the Expression property changed to the specified
@@ -21570,11 +21667,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <summary>
         ''' The "Is" or "IsNot" keyword.
         ''' </summary>
-        Public  ReadOnly Property OperatorToken As SyntaxToken
+        Public Shadows ReadOnly Property OperatorToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfExpressionSyntax)._operatorToken, Me.GetChildPosition(2), Me.GetChildIndex(2))
             End Get
         End Property
+
+        Friend Overrides Function GetOperatorTokenCore() As SyntaxToken
+            Return Me.OperatorToken
+        End Function
+
+        Friend Overrides Function WithOperatorTokenCore(operatorToken As SyntaxToken) As AbstractTypeOfExpressionSyntax
+            Return WithOperatorToken(operatorToken)
+        End Function
 
         ''' <summary>
         ''' Returns a copy of this with the OperatorToken property changed to the specified
@@ -21655,6 +21760,304 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         Public Function Update(kind As SyntaxKind, typeOfKeyword As SyntaxToken, expression As ExpressionSyntax, operatorToken As SyntaxToken, type As TypeSyntax) As TypeOfExpressionSyntax
             If kind <> Me.Kind OrElse typeOfKeyword <> Me.TypeOfKeyword OrElse expression IsNot Me.Expression OrElse operatorToken <> Me.OperatorToken OrElse type IsNot Me.Type Then
                 Dim newNode = SyntaxFactory.TypeOfExpression(kind, typeOfKeyword, expression, operatorToken, type)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    Public NotInheritable Class TypeOfManyExpressionSyntax
+        Inherits AbstractTypeOfExpressionSyntax
+
+        Friend _types as TypeArgumentListSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, types As TypeArgumentListSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfManyExpressionSyntax(kind, errors, annotations, typeOfKeyword, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), operatorToken, DirectCast(types.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeArgumentListSyntax)), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "TypeOf" keyword.
+        ''' </summary>
+        Public Shadows ReadOnly Property TypeOfKeyword As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfManyExpressionSyntax)._typeOfKeyword, Me.Position, 0)
+            End Get
+        End Property
+
+        Friend Overrides Function GetTypeOfKeywordCore() As SyntaxToken
+            Return Me.TypeOfKeyword
+        End Function
+
+        Friend Overrides Function WithTypeOfKeywordCore(typeOfKeyword As SyntaxToken) As AbstractTypeOfExpressionSyntax
+            Return WithTypeOfKeyword(typeOfKeyword)
+        End Function
+
+        ''' <summary>
+        ''' Returns a copy of this with the TypeOfKeyword property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithTypeOfKeyword(typeOfKeyword as SyntaxToken) As TypeOfManyExpressionSyntax
+            return Update(Me.Kind, typeOfKeyword, Me.Expression, Me.OperatorToken, Me.Types)
+        End Function
+
+        ''' <summary>
+        ''' The expression being tested.
+        ''' </summary>
+        Public Shadows ReadOnly Property Expression As ExpressionSyntax
+            Get
+                Return GetRed(_expression, 1)
+            End Get
+        End Property
+
+        Friend Overrides Function GetExpressionCore() As ExpressionSyntax
+            Return Me.Expression
+        End Function
+
+        Friend Overrides Function WithExpressionCore(expression As ExpressionSyntax) As AbstractTypeOfExpressionSyntax
+            Return WithExpression(expression)
+        End Function
+
+        ''' <summary>
+        ''' Returns a copy of this with the Expression property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithExpression(expression as ExpressionSyntax) As TypeOfManyExpressionSyntax
+            return Update(Me.Kind, Me.TypeOfKeyword, expression, Me.OperatorToken, Me.Types)
+        End Function
+
+        ''' <summary>
+        ''' The "Is" or "IsNot" keyword.
+        ''' </summary>
+        Public Shadows ReadOnly Property OperatorToken As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfManyExpressionSyntax)._operatorToken, Me.GetChildPosition(2), Me.GetChildIndex(2))
+            End Get
+        End Property
+
+        Friend Overrides Function GetOperatorTokenCore() As SyntaxToken
+            Return Me.OperatorToken
+        End Function
+
+        Friend Overrides Function WithOperatorTokenCore(operatorToken As SyntaxToken) As AbstractTypeOfExpressionSyntax
+            Return WithOperatorToken(operatorToken)
+        End Function
+
+        ''' <summary>
+        ''' Returns a copy of this with the OperatorToken property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithOperatorToken(operatorToken as SyntaxToken) As TypeOfManyExpressionSyntax
+            return Update(Me.Kind, Me.TypeOfKeyword, Me.Expression, operatorToken, Me.Types)
+        End Function
+
+        ''' <summary>
+        ''' Set of types being tested against.
+        ''' </summary>
+        Public  ReadOnly Property Types As TypeArgumentListSyntax
+            Get
+                Return GetRed(_types, 3)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Types property changed to the specified value.
+        ''' Returns this instance if the specified value is the same as the current value.
+        ''' </summary>
+        Public Shadows Function WithTypes(types as TypeArgumentListSyntax) As TypeOfManyExpressionSyntax
+            return Update(Me.Kind, Me.TypeOfKeyword, Me.Expression, Me.OperatorToken, types)
+        End Function
+
+        Public Shadows Function AddTypesArguments(ParamArray items As TypeSyntax()) As TypeOfManyExpressionSyntax
+            Dim _child = If (Me.Types IsNot Nothing, Me.Types, SyntaxFactory.TypeArgumentList())
+            Return Me.WithTypes(_child.AddArguments(items))
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me._expression
+                Case 3
+                    Return Me._types
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me.Expression
+                Case 3
+                    Return Me.Types
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitTypeOfManyExpression(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitTypeOfManyExpression(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="kind">
+        ''' The new kind.
+        ''' </param>
+        ''' <param name="typeOfKeyword">
+        ''' The value for the TypeOfKeyword property.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The value for the Expression property.
+        ''' </param>
+        ''' <param name="operatorToken">
+        ''' The value for the OperatorToken property.
+        ''' </param>
+        ''' <param name="types">
+        ''' The value for the Types property.
+        ''' </param>
+        Public Function Update(kind As SyntaxKind, typeOfKeyword As SyntaxToken, expression As ExpressionSyntax, operatorToken As SyntaxToken, types As TypeArgumentListSyntax) As TypeOfManyExpressionSyntax
+            If kind <> Me.Kind OrElse typeOfKeyword <> Me.TypeOfKeyword OrElse expression IsNot Me.Expression OrElse operatorToken <> Me.OperatorToken OrElse types IsNot Me.Types Then
+                Dim newNode = SyntaxFactory.TypeOfManyExpression(kind, typeOfKeyword, expression, operatorToken, types)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    Public NotInheritable Class IntoVariableExpressionSyntax
+        Inherits ExpressionSyntax
+
+        Friend _expression as ExpressionSyntax
+        Friend _variable as IdentifierNameSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), expression As ExpressionSyntax, intoKeyword As InternalSyntax.KeywordSyntax, variable As IdentifierNameSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IntoVariableExpressionSyntax(kind, errors, annotations, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), intoKeyword, DirectCast(variable.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IdentifierNameSyntax)), Nothing, 0)
+        End Sub
+
+        Public  ReadOnly Property Expression As ExpressionSyntax
+            Get
+                Return GetRedAtZero(_expression)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Expression property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithExpression(expression as ExpressionSyntax) As IntoVariableExpressionSyntax
+            return Update(expression, Me.IntoKeyword, Me.Variable)
+        End Function
+
+        Public  ReadOnly Property IntoKeyword As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IntoVariableExpressionSyntax)._intoKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the IntoKeyword property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithIntoKeyword(intoKeyword as SyntaxToken) As IntoVariableExpressionSyntax
+            return Update(Me.Expression, intoKeyword, Me.Variable)
+        End Function
+
+        Public  ReadOnly Property Variable As IdentifierNameSyntax
+            Get
+                Return GetRed(_variable, 2)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Variable property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithVariable(variable as IdentifierNameSyntax) As IntoVariableExpressionSyntax
+            return Update(Me.Expression, Me.IntoKeyword, variable)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me._expression
+                Case 2
+                    Return Me._variable
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me.Expression
+                Case 2
+                    Return Me.Variable
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitIntoVariableExpression(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitIntoVariableExpression(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="expression">
+        ''' The value for the Expression property.
+        ''' </param>
+        ''' <param name="intoKeyword">
+        ''' The value for the IntoKeyword property.
+        ''' </param>
+        ''' <param name="variable">
+        ''' The value for the Variable property.
+        ''' </param>
+        Public Function Update(expression As ExpressionSyntax, intoKeyword As SyntaxToken, variable As IdentifierNameSyntax) As IntoVariableExpressionSyntax
+            If expression IsNot Me.Expression OrElse intoKeyword <> Me.IntoKeyword OrElse variable IsNot Me.Variable Then
+                Dim newNode = SyntaxFactory.IntoVariableExpression(expression, intoKeyword, variable)
                 Dim annotations = Me.GetAnnotations()
                 If annotations IsNot Nothing AndAlso annotations.Length > 0
                     return newNode.WithAnnotations(annotations)

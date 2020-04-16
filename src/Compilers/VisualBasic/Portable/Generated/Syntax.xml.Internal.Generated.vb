@@ -20869,17 +20869,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     ''' <summary>
     ''' Represents a TypeOf...Is or IsNot expression.
     ''' </summary>
-    Friend NotInheritable Class TypeOfExpressionSyntax
+    Friend MustInherit Class AbstractTypeOfExpressionSyntax
         Inherits ExpressionSyntax
 
         Friend ReadOnly _typeOfKeyword as KeywordSyntax
         Friend ReadOnly _expression as ExpressionSyntax
         Friend ReadOnly _operatorToken as KeywordSyntax
-        Friend ReadOnly _type as TypeSyntax
 
-        Friend Sub New(ByVal kind As SyntaxKind, typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, type As TypeSyntax)
+        Friend Sub New(ByVal kind As SyntaxKind, typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax)
             MyBase.New(kind)
-            MyBase._slotCount = 4
 
             AdjustFlagsAndWidth(typeOfKeyword)
             Me._typeOfKeyword = typeOfKeyword
@@ -20887,14 +20885,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Me._expression = expression
             AdjustFlagsAndWidth(operatorToken)
             Me._operatorToken = operatorToken
-            AdjustFlagsAndWidth(type)
-            Me._type = type
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, type As TypeSyntax, context As ISyntaxFactoryContext)
+        Friend Sub New(ByVal kind As SyntaxKind, typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, context As ISyntaxFactoryContext)
             MyBase.New(kind)
-            MyBase._slotCount = 4
             Me.SetFactoryContext(context)
 
             AdjustFlagsAndWidth(typeOfKeyword)
@@ -20903,14 +20898,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Me._expression = expression
             AdjustFlagsAndWidth(operatorToken)
             Me._operatorToken = operatorToken
-            AdjustFlagsAndWidth(type)
-            Me._type = type
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, type As TypeSyntax)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax)
             MyBase.New(kind, errors, annotations)
-            MyBase._slotCount = 4
 
             AdjustFlagsAndWidth(typeOfKeyword)
             Me._typeOfKeyword = typeOfKeyword
@@ -20918,14 +20910,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Me._expression = expression
             AdjustFlagsAndWidth(operatorToken)
             Me._operatorToken = operatorToken
-            AdjustFlagsAndWidth(type)
-            Me._type = type
 
         End Sub
 
         Friend Sub New(reader as ObjectReader)
           MyBase.New(reader)
-            MyBase._slotCount = 4
           Dim _typeOfKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
           If _typeOfKeyword isnot Nothing 
              AdjustFlagsAndWidth(_typeOfKeyword)
@@ -20941,30 +20930,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
              AdjustFlagsAndWidth(_operatorToken)
              Me._operatorToken = _operatorToken
           End If
-          Dim _type = DirectCast(reader.ReadValue(), TypeSyntax)
-          If _type isnot Nothing 
-             AdjustFlagsAndWidth(_type)
-             Me._type = _type
-          End If
         End Sub
-        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New TypeOfExpressionSyntax(o)
-
 
         Friend Overrides Sub WriteTo(writer as ObjectWriter)
           MyBase.WriteTo(writer)
           writer.WriteValue(Me._typeOfKeyword)
           writer.WriteValue(Me._expression)
           writer.WriteValue(Me._operatorToken)
-          writer.WriteValue(Me._type)
         End Sub
-
-        Shared Sub New()
-          ObjectBinder.RegisterTypeReader(GetType(TypeOfExpressionSyntax), Function(r) New TypeOfExpressionSyntax(r))
-        End Sub
-
-        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
-            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeOfExpressionSyntax(Me, parent, startLocation)
-        End Function
 
         ''' <summary>
         ''' The "TypeOf" keyword.
@@ -20992,6 +20965,66 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Return Me._operatorToken
             End Get
         End Property
+
+    End Class
+
+    Friend NotInheritable Class TypeOfExpressionSyntax
+        Inherits AbstractTypeOfExpressionSyntax
+
+        Friend ReadOnly _type as TypeSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, type As TypeSyntax)
+            MyBase.New(kind, typeOfKeyword, expression, operatorToken)
+            MyBase._slotCount = 4
+
+            AdjustFlagsAndWidth(type)
+            Me._type = type
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, type As TypeSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind, typeOfKeyword, expression, operatorToken)
+            MyBase._slotCount = 4
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(type)
+            Me._type = type
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, type As TypeSyntax)
+            MyBase.New(kind, errors, annotations, typeOfKeyword, expression, operatorToken)
+            MyBase._slotCount = 4
+
+            AdjustFlagsAndWidth(type)
+            Me._type = type
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 4
+          Dim _type = DirectCast(reader.ReadValue(), TypeSyntax)
+          If _type isnot Nothing 
+             AdjustFlagsAndWidth(_type)
+             Me._type = _type
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New TypeOfExpressionSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._type)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(TypeOfExpressionSyntax), Function(r) New TypeOfExpressionSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeOfExpressionSyntax(Me, parent, startLocation)
+        End Function
 
         ''' <summary>
         ''' The name of the type being tested against.
@@ -21029,6 +21062,235 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
             Return visitor.VisitTypeOfExpression(Me)
+        End Function
+
+    End Class
+
+    Friend NotInheritable Class TypeOfManyExpressionSyntax
+        Inherits AbstractTypeOfExpressionSyntax
+
+        Friend ReadOnly _types as TypeArgumentListSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, types As TypeArgumentListSyntax)
+            MyBase.New(kind, typeOfKeyword, expression, operatorToken)
+            MyBase._slotCount = 4
+
+            AdjustFlagsAndWidth(types)
+            Me._types = types
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, types As TypeArgumentListSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind, typeOfKeyword, expression, operatorToken)
+            MyBase._slotCount = 4
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(types)
+            Me._types = types
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, types As TypeArgumentListSyntax)
+            MyBase.New(kind, errors, annotations, typeOfKeyword, expression, operatorToken)
+            MyBase._slotCount = 4
+
+            AdjustFlagsAndWidth(types)
+            Me._types = types
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 4
+          Dim _types = DirectCast(reader.ReadValue(), TypeArgumentListSyntax)
+          If _types isnot Nothing 
+             AdjustFlagsAndWidth(_types)
+             Me._types = _types
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New TypeOfManyExpressionSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._types)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(TypeOfManyExpressionSyntax), Function(r) New TypeOfManyExpressionSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeOfManyExpressionSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' Set of types being tested against.
+        ''' </summary>
+        Friend  ReadOnly Property Types As InternalSyntax.TypeArgumentListSyntax
+            Get
+                Return Me._types
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._typeOfKeyword
+                Case 1
+                    Return Me._expression
+                Case 2
+                    Return Me._operatorToken
+                Case 3
+                    Return Me._types
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new TypeOfManyExpressionSyntax(Me.Kind, newErrors, GetAnnotations, _typeOfKeyword, _expression, _operatorToken, _types)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new TypeOfManyExpressionSyntax(Me.Kind, GetDiagnostics, annotations, _typeOfKeyword, _expression, _operatorToken, _types)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitTypeOfManyExpression(Me)
+        End Function
+
+    End Class
+
+    Friend NotInheritable Class IntoVariableExpressionSyntax
+        Inherits ExpressionSyntax
+
+        Friend ReadOnly _expression as ExpressionSyntax
+        Friend ReadOnly _intoKeyword as KeywordSyntax
+        Friend ReadOnly _variable as IdentifierNameSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, expression As ExpressionSyntax, intoKeyword As InternalSyntax.KeywordSyntax, variable As IdentifierNameSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 3
+
+            AdjustFlagsAndWidth(expression)
+            Me._expression = expression
+            AdjustFlagsAndWidth(intoKeyword)
+            Me._intoKeyword = intoKeyword
+            AdjustFlagsAndWidth(variable)
+            Me._variable = variable
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, expression As ExpressionSyntax, intoKeyword As InternalSyntax.KeywordSyntax, variable As IdentifierNameSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 3
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(expression)
+            Me._expression = expression
+            AdjustFlagsAndWidth(intoKeyword)
+            Me._intoKeyword = intoKeyword
+            AdjustFlagsAndWidth(variable)
+            Me._variable = variable
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), expression As ExpressionSyntax, intoKeyword As InternalSyntax.KeywordSyntax, variable As IdentifierNameSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 3
+
+            AdjustFlagsAndWidth(expression)
+            Me._expression = expression
+            AdjustFlagsAndWidth(intoKeyword)
+            Me._intoKeyword = intoKeyword
+            AdjustFlagsAndWidth(variable)
+            Me._variable = variable
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 3
+          Dim _expression = DirectCast(reader.ReadValue(), ExpressionSyntax)
+          If _expression isnot Nothing 
+             AdjustFlagsAndWidth(_expression)
+             Me._expression = _expression
+          End If
+          Dim _intoKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
+          If _intoKeyword isnot Nothing 
+             AdjustFlagsAndWidth(_intoKeyword)
+             Me._intoKeyword = _intoKeyword
+          End If
+          Dim _variable = DirectCast(reader.ReadValue(), IdentifierNameSyntax)
+          If _variable isnot Nothing 
+             AdjustFlagsAndWidth(_variable)
+             Me._variable = _variable
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New IntoVariableExpressionSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._expression)
+          writer.WriteValue(Me._intoKeyword)
+          writer.WriteValue(Me._variable)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(IntoVariableExpressionSyntax), Function(r) New IntoVariableExpressionSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.IntoVariableExpressionSyntax(Me, parent, startLocation)
+        End Function
+
+        Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
+            Get
+                Return Me._expression
+            End Get
+        End Property
+
+        Friend  ReadOnly Property IntoKeyword As InternalSyntax.KeywordSyntax
+            Get
+                Return Me._intoKeyword
+            End Get
+        End Property
+
+        Friend  ReadOnly Property Variable As InternalSyntax.IdentifierNameSyntax
+            Get
+                Return Me._variable
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._expression
+                Case 1
+                    Return Me._intoKeyword
+                Case 2
+                    Return Me._variable
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new IntoVariableExpressionSyntax(Me.Kind, newErrors, GetAnnotations, _expression, _intoKeyword, _variable)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new IntoVariableExpressionSyntax(Me.Kind, GetDiagnostics, annotations, _expression, _intoKeyword, _variable)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitIntoVariableExpression(Me)
         End Function
 
     End Class
@@ -37261,7 +37523,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(node IsNot Nothing)
             Return VisitExpression(node)
         End Function
+        Public Overridable Function VisitAbstractTypeOfExpression(ByVal node As AbstractTypeOfExpressionSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitExpression(node)
+        End Function
         Public Overridable Function VisitTypeOfExpression(ByVal node As TypeOfExpressionSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitAbstractTypeOfExpression(node)
+        End Function
+        Public Overridable Function VisitTypeOfManyExpression(ByVal node As TypeOfManyExpressionSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitAbstractTypeOfExpression(node)
+        End Function
+        Public Overridable Function VisitIntoVariableExpression(ByVal node As IntoVariableExpressionSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
             Return VisitExpression(node)
         End Function
@@ -40150,6 +40424,42 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
         End Function
 
+        Public Overrides Function VisitTypeOfManyExpression(ByVal node As TypeOfManyExpressionSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newTypeOfKeyword = DirectCast(Visit(node.TypeOfKeyword), KeywordSyntax)
+            If node._typeOfKeyword IsNot newTypeOfKeyword Then anyChanges = True
+            Dim newExpression = DirectCast(Visit(node._expression), ExpressionSyntax)
+            If node._expression IsNot newExpression Then anyChanges = True
+            Dim newOperatorToken = DirectCast(Visit(node.OperatorToken), KeywordSyntax)
+            If node._operatorToken IsNot newOperatorToken Then anyChanges = True
+            Dim newTypes = DirectCast(Visit(node._types), TypeArgumentListSyntax)
+            If node._types IsNot newTypes Then anyChanges = True
+
+            If anyChanges Then
+                Return New TypeOfManyExpressionSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newTypeOfKeyword, newExpression, newOperatorToken, newTypes)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitIntoVariableExpression(ByVal node As IntoVariableExpressionSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newExpression = DirectCast(Visit(node._expression), ExpressionSyntax)
+            If node._expression IsNot newExpression Then anyChanges = True
+            Dim newIntoKeyword = DirectCast(Visit(node.IntoKeyword), KeywordSyntax)
+            If node._intoKeyword IsNot newIntoKeyword Then anyChanges = True
+            Dim newVariable = DirectCast(Visit(node._variable), IdentifierNameSyntax)
+            If node._variable IsNot newVariable Then anyChanges = True
+
+            If anyChanges Then
+                Return New IntoVariableExpressionSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newExpression, newIntoKeyword, newVariable)
+            Else
+                Return node
+            End If
+        End Function
+
         Public Overrides Function VisitGetXmlNamespaceExpression(ByVal node As GetXmlNamespaceExpressionSyntax) As VisualBasicSyntaxNode
             Dim anyChanges As Boolean = False
 
@@ -42101,7 +42411,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
               GetType(MyBaseExpressionSyntax),
               GetType(MyClassExpressionSyntax),
               GetType(GetTypeExpressionSyntax),
+              GetType(AbstractTypeOfExpressionSyntax),
               GetType(TypeOfExpressionSyntax),
+              GetType(TypeOfManyExpressionSyntax),
+              GetType(IntoVariableExpressionSyntax),
               GetType(GetXmlNamespaceExpressionSyntax),
               GetType(MemberAccessExpressionSyntax),
               GetType(XmlMemberAccessExpressionSyntax),
@@ -49999,9 +50312,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
         ''' <param name="typeOfKeyword">
         ''' The "TypeOf" keyword.
         ''' </param>
@@ -50023,9 +50333,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
         ''' <param name="typeOfKeyword">
         ''' The "TypeOf" keyword.
         ''' </param>
@@ -50047,9 +50354,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' TypeOfExpressionSyntax. One of TypeOfIsExpression, TypeOfIsNotExpression.
@@ -50073,6 +50377,95 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(operatorToken IsNot Nothing AndAlso SyntaxFacts.IsTypeOfExpressionOperatorToken(operatorToken.Kind))
             Debug.Assert(type IsNot Nothing)
             Return New TypeOfExpressionSyntax(kind, typeOfKeyword, expression, operatorToken, type)
+        End Function
+
+
+        ''' <param name="typeOfKeyword">
+        ''' The "TypeOf" keyword.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The expression being tested.
+        ''' </param>
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="types">
+        ''' Set of types being tested against.
+        ''' </param>
+        Friend Shared Function TypeOfIsManyExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, types As TypeArgumentListSyntax) As TypeOfManyExpressionSyntax
+            Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
+            Debug.Assert(expression IsNot Nothing)
+            Debug.Assert(operatorToken IsNot Nothing AndAlso SyntaxFacts.IsTypeOfManyExpressionOperatorToken(operatorToken.Kind))
+            Debug.Assert(types IsNot Nothing)
+            Return New TypeOfManyExpressionSyntax(SyntaxKind.TypeOfIsManyExpression, typeOfKeyword, expression, operatorToken, types)
+        End Function
+
+
+        ''' <param name="typeOfKeyword">
+        ''' The "TypeOf" keyword.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The expression being tested.
+        ''' </param>
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="types">
+        ''' Set of types being tested against.
+        ''' </param>
+        Friend Shared Function TypeOfIsNotManyExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, types As TypeArgumentListSyntax) As TypeOfManyExpressionSyntax
+            Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
+            Debug.Assert(expression IsNot Nothing)
+            Debug.Assert(operatorToken IsNot Nothing AndAlso SyntaxFacts.IsTypeOfManyExpressionOperatorToken(operatorToken.Kind))
+            Debug.Assert(types IsNot Nothing)
+            Return New TypeOfManyExpressionSyntax(SyntaxKind.TypeOfIsNotManyExpression, typeOfKeyword, expression, operatorToken, types)
+        End Function
+
+
+        ''' <param name="kind">
+        ''' A <cref c="SyntaxKind"/> representing the specific kind of
+        ''' TypeOfManyExpressionSyntax. One of TypeOfIsManyExpression,
+        ''' TypeOfIsNotManyExpression.
+        ''' </param>
+        ''' <param name="typeOfKeyword">
+        ''' The "TypeOf" keyword.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The expression being tested.
+        ''' </param>
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="types">
+        ''' Set of types being tested against.
+        ''' </param>
+        Friend Shared Function TypeOfManyExpression(kind As SyntaxKind, typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, types As TypeArgumentListSyntax) As TypeOfManyExpressionSyntax
+            Debug.Assert(SyntaxFacts.IsTypeOfManyExpression(kind))
+            Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
+            Debug.Assert(expression IsNot Nothing)
+            Debug.Assert(operatorToken IsNot Nothing AndAlso SyntaxFacts.IsTypeOfManyExpressionOperatorToken(operatorToken.Kind))
+            Debug.Assert(types IsNot Nothing)
+            Return New TypeOfManyExpressionSyntax(kind, typeOfKeyword, expression, operatorToken, types)
+        End Function
+
+
+        Friend Shared Function IntoVariableExpression(expression As ExpressionSyntax, intoKeyword As KeywordSyntax, variable As IdentifierNameSyntax) As IntoVariableExpressionSyntax
+            Debug.Assert(expression IsNot Nothing)
+            Debug.Assert(intoKeyword IsNot Nothing AndAlso intoKeyword.Kind = SyntaxKind.IntoKeyword)
+            Debug.Assert(variable IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.IntoVariableExpression, expression, intoKeyword, variable, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, IntoVariableExpressionSyntax)
+            End If
+
+            Dim result = New IntoVariableExpressionSyntax(SyntaxKind.IntoVariableExpression, expression, intoKeyword, variable)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
         End Function
 
 
@@ -62075,9 +62468,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
         ''' <param name="typeOfKeyword">
         ''' The "TypeOf" keyword.
         ''' </param>
@@ -62099,9 +62489,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
         ''' <param name="typeOfKeyword">
         ''' The "TypeOf" keyword.
         ''' </param>
@@ -62123,9 +62510,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' TypeOfExpressionSyntax. One of TypeOfIsExpression, TypeOfIsNotExpression.
@@ -62149,6 +62533,95 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(operatorToken IsNot Nothing AndAlso SyntaxFacts.IsTypeOfExpressionOperatorToken(operatorToken.Kind))
             Debug.Assert(type IsNot Nothing)
             Return New TypeOfExpressionSyntax(kind, typeOfKeyword, expression, operatorToken, type, _factoryContext)
+        End Function
+
+
+        ''' <param name="typeOfKeyword">
+        ''' The "TypeOf" keyword.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The expression being tested.
+        ''' </param>
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="types">
+        ''' Set of types being tested against.
+        ''' </param>
+        Friend Function TypeOfIsManyExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, types As TypeArgumentListSyntax) As TypeOfManyExpressionSyntax
+            Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
+            Debug.Assert(expression IsNot Nothing)
+            Debug.Assert(operatorToken IsNot Nothing AndAlso SyntaxFacts.IsTypeOfManyExpressionOperatorToken(operatorToken.Kind))
+            Debug.Assert(types IsNot Nothing)
+            Return New TypeOfManyExpressionSyntax(SyntaxKind.TypeOfIsManyExpression, typeOfKeyword, expression, operatorToken, types, _factoryContext)
+        End Function
+
+
+        ''' <param name="typeOfKeyword">
+        ''' The "TypeOf" keyword.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The expression being tested.
+        ''' </param>
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="types">
+        ''' Set of types being tested against.
+        ''' </param>
+        Friend Function TypeOfIsNotManyExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, types As TypeArgumentListSyntax) As TypeOfManyExpressionSyntax
+            Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
+            Debug.Assert(expression IsNot Nothing)
+            Debug.Assert(operatorToken IsNot Nothing AndAlso SyntaxFacts.IsTypeOfManyExpressionOperatorToken(operatorToken.Kind))
+            Debug.Assert(types IsNot Nothing)
+            Return New TypeOfManyExpressionSyntax(SyntaxKind.TypeOfIsNotManyExpression, typeOfKeyword, expression, operatorToken, types, _factoryContext)
+        End Function
+
+
+        ''' <param name="kind">
+        ''' A <cref c="SyntaxKind"/> representing the specific kind of
+        ''' TypeOfManyExpressionSyntax. One of TypeOfIsManyExpression,
+        ''' TypeOfIsNotManyExpression.
+        ''' </param>
+        ''' <param name="typeOfKeyword">
+        ''' The "TypeOf" keyword.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The expression being tested.
+        ''' </param>
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="types">
+        ''' Set of types being tested against.
+        ''' </param>
+        Friend Function TypeOfManyExpression(kind As SyntaxKind, typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, types As TypeArgumentListSyntax) As TypeOfManyExpressionSyntax
+            Debug.Assert(SyntaxFacts.IsTypeOfManyExpression(kind))
+            Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
+            Debug.Assert(expression IsNot Nothing)
+            Debug.Assert(operatorToken IsNot Nothing AndAlso SyntaxFacts.IsTypeOfManyExpressionOperatorToken(operatorToken.Kind))
+            Debug.Assert(types IsNot Nothing)
+            Return New TypeOfManyExpressionSyntax(kind, typeOfKeyword, expression, operatorToken, types, _factoryContext)
+        End Function
+
+
+        Friend Function IntoVariableExpression(expression As ExpressionSyntax, intoKeyword As KeywordSyntax, variable As IdentifierNameSyntax) As IntoVariableExpressionSyntax
+            Debug.Assert(expression IsNot Nothing)
+            Debug.Assert(intoKeyword IsNot Nothing AndAlso intoKeyword.Kind = SyntaxKind.IntoKeyword)
+            Debug.Assert(variable IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.IntoVariableExpression, expression, intoKeyword, variable, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, IntoVariableExpressionSyntax)
+            End If
+
+            Dim result = New IntoVariableExpressionSyntax(SyntaxKind.IntoVariableExpression, expression, intoKeyword, variable, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
         End Function
 
 

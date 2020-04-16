@@ -42,6 +42,16 @@
         <target state="translated">行接續符號後註解</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_InToVariableExpression">
+        <source>InTo Variable Expression</source>
+        <target state="new">InTo Variable Expression</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_TypeOfManyExpression">
+        <source>TypeOf many expression</source>
+        <target state="new">TypeOf many expression</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_UnconstrainedTypeParameterInConditional">
         <source>unconstrained type parameters in binary conditional expressions</source>
         <target state="translated">二進位條件運算式中的非限制式型別參數</target>

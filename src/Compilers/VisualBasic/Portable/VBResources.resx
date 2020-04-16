@@ -5576,4 +5576,10 @@
   <data name="WRN_AttributeNotSupportedInVB_Title" xml:space="preserve">
     <value>Attribute is not supported in VB</value>
   </data>
+  <data name="FEATURE_TypeOfManyExpression" xml:space="preserve">
+    <value>TypeOf many expression</value>
+  </data>
+  <data name="FEATURE_InToVariableExpression" xml:space="preserve">
+    <value>InTo Variable Expression</value>
+  </data>
 </root>
