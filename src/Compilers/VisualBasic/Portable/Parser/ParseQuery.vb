@@ -1170,14 +1170,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                         Case SyntaxKind.ZipKeyword
                             GetNextToken() ' get of ZIP
-                            Return ParseZipOperator(kw)
+                            Return ParseZipClause(kw)
                     End Select
             End Select
 
             Return Nothing
         End Function
 
-        Private Function ParseZipOperator(zipKw As KeywordSyntax) As QueryClauseSyntax
+        Private Function ParseZipClause(zipKw As KeywordSyntax) As QueryClauseSyntax
             Debug.Assert(zipKw IsNot Nothing, "Expected ZIP keyword.")
             Dim rangeVar = ParseCollectionRangeVariable()
             Dim zipOp = InternalSyntaxFactory.ZipClause(zipKw, rangeVar)
