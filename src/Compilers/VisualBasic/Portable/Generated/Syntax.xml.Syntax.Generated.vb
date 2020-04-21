@@ -26965,6 +26965,102 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
+    Public NotInheritable Class ZipClauseSyntax
+        Inherits QueryClauseSyntax
+
+        Friend _zipWith as CollectionRangeVariableSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), zipKeyword As InternalSyntax.KeywordSyntax, zipWith As CollectionRangeVariableSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ZipClauseSyntax(kind, errors, annotations, zipKeyword, DirectCast(zipWith.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CollectionRangeVariableSyntax)), Nothing, 0)
+        End Sub
+
+        Public  ReadOnly Property ZipKeyword As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ZipClauseSyntax)._zipKeyword, Me.Position, 0)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the ZipKeyword property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithZipKeyword(zipKeyword as SyntaxToken) As ZipClauseSyntax
+            return Update(zipKeyword, Me.ZipWith)
+        End Function
+
+        Public  ReadOnly Property ZipWith As CollectionRangeVariableSyntax
+            Get
+                Return GetRed(_zipWith, 1)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the ZipWith property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithZipWith(zipWith as CollectionRangeVariableSyntax) As ZipClauseSyntax
+            return Update(Me.ZipKeyword, zipWith)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me._zipWith
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me.ZipWith
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitZipClause(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitZipClause(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="zipKeyword">
+        ''' The value for the ZipKeyword property.
+        ''' </param>
+        ''' <param name="zipWith">
+        ''' The value for the ZipWith property.
+        ''' </param>
+        Public Function Update(zipKeyword As SyntaxToken, zipWith As CollectionRangeVariableSyntax) As ZipClauseSyntax
+            If zipKeyword <> Me.ZipKeyword OrElse zipWith IsNot Me.ZipWith Then
+                Dim newNode = SyntaxFactory.ZipClause(zipKeyword, zipWith)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
     ''' <summary>
     ''' Represents a "Let" query operator.
     ''' </summary>

@@ -1,1 +1,15 @@
-
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ZipClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ZipClauseSyntax.Update(zipKeyword As Microsoft.CodeAnalysis.SyntaxToken, zipWith As Microsoft.CodeAnalysis.VisualBasic.Syntax.CollectionRangeVariableSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ZipClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ZipClauseSyntax.WithZipKeyword(zipKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ZipClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ZipClauseSyntax.WithZipWith(zipWith As Microsoft.CodeAnalysis.VisualBasic.Syntax.CollectionRangeVariableSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ZipClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ZipClauseSyntax.ZipKeyword() -> Microsoft.CodeAnalysis.SyntaxToken
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ZipClauseSyntax.ZipWith() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.CollectionRangeVariableSyntax
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.ZipClause = 793 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.ZipKeyword = 794 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitZipClause(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.ZipClauseSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitZipClause(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.ZipClauseSyntax) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.ZipClauseSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.ZipClauseSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitZipClause(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.ZipClauseSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.ZipClause(zipKeyword As Microsoft.CodeAnalysis.SyntaxToken, zipWith As Microsoft.CodeAnalysis.VisualBasic.Syntax.CollectionRangeVariableSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ZipClauseSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.ZipClause(zipWith As Microsoft.CodeAnalysis.VisualBasic.Syntax.CollectionRangeVariableSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ZipClauseSyntax

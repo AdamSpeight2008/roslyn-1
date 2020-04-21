@@ -47,6 +47,11 @@
         <target state="translated">이진 조건식의 비제한 형식 매개 변수</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_ZipQueryExpression">
+        <source>Zip Query Expression</source>
+        <target state="new">Zip Query Expression</target>
+        <note />
+      </trans-unit>
       <trans-unit id="IDS_VBCHelp">
         <source>                  Visual Basic Compiler Options
 

@@ -47,6 +47,11 @@
         <target state="translated">parametri di tipo non senza vincoli in espressioni condizionali binarie</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_ZipQueryExpression">
+        <source>Zip Query Expression</source>
+        <target state="new">Zip Query Expression</target>
+        <note />
+      </trans-unit>
       <trans-unit id="IDS_VBCHelp">
         <source>                  Visual Basic Compiler Options
 

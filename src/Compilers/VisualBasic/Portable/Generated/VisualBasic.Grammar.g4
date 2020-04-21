@@ -1513,6 +1513,7 @@ query_clause
   | partition_while_clause
   | select_clause
   | where_clause
+  | zip_clause
   ;
 
 aggregate_clause
@@ -1617,6 +1618,10 @@ select_clause
 
 where_clause
   : 'Where' expression
+  ;
+
+zip_clause
+  : 'Zip' collection_range_variable
   ;
 
 ternary_conditional_expression

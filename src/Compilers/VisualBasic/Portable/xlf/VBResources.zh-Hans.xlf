@@ -47,6 +47,11 @@
         <target state="translated">二进制条件表达式中的无约束类型参数</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_ZipQueryExpression">
+        <source>Zip Query Expression</source>
+        <target state="new">Zip Query Expression</target>
+        <note />
+      </trans-unit>
       <trans-unit id="IDS_VBCHelp">
         <source>                  Visual Basic Compiler Options
 

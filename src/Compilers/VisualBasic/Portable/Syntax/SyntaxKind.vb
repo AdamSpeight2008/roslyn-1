@@ -3201,5 +3201,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ConflictMarkerTrivia = 792
 
+        ZipClause = 793
+
+        ZipKeyword = 794
     End Enum
 End Namespace

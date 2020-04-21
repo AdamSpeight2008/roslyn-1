@@ -533,6 +533,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Function VisitFromClause(ByVal node As FromClauseSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
+        Public Overridable Function VisitZipClause(ByVal node As ZipClauseSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
         Public Overridable Function VisitLetClause(ByVal node As LetClauseSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
@@ -1266,6 +1269,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitFromClause(ByVal node As FromClauseSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitZipClause(ByVal node As ZipClauseSyntax)
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitLetClause(ByVal node As LetClauseSyntax)
@@ -4466,6 +4472,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If anyChanges Then
                 Return New FromClauseSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newFromKeyword, newVariables.Node)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitZipClause(ByVal node As ZipClauseSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newZipKeyword = DirectCast(VisitToken(node.ZipKeyword).Node, InternalSyntax.KeywordSyntax)
+            If node.ZipKeyword.Node IsNot newZipKeyword Then anyChanges = True
+            Dim newZipWith = DirectCast(Visit(node.ZipWith), CollectionRangeVariableSyntax)
+            If node.ZipWith IsNot newZipWith Then anyChanges = True
+
+            If anyChanges Then
+                Return New ZipClauseSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newZipKeyword, newZipWith)
             Else
                 Return node
             End If
@@ -38013,6 +38034,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
+        Public Shared Function ZipClause(zipKeyword As SyntaxToken, zipWith As CollectionRangeVariableSyntax) As ZipClauseSyntax
+            Select Case zipKeyword.Kind()
+                Case SyntaxKind.ZipKeyword
+                Case Else
+                    Throw new ArgumentException("zipKeyword")
+             End Select
+            if zipWith Is Nothing Then
+                Throw New ArgumentNullException(NameOf(zipWith))
+            End If
+            Select Case zipWith.Kind()
+                Case SyntaxKind.CollectionRangeVariable
+                Case Else
+                    Throw new ArgumentException("zipWith")
+             End Select
+            Return New ZipClauseSyntax(SyntaxKind.ZipClause, Nothing, Nothing, DirectCast(zipKeyword.Node, InternalSyntax.KeywordSyntax), zipWith)
+        End Function
+
+
+        Public Shared Function ZipClause(zipWith As CollectionRangeVariableSyntax) As ZipClauseSyntax
+            Return SyntaxFactory.ZipClause(SyntaxFactory.Token(SyntaxKind.ZipKeyword), zipWith)
+        End Function
+
+
         ''' <summary>
         ''' Represents a "Let" query operator.
         ''' </summary>
@@ -45180,6 +45224,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 SyntaxKind.UntilKeyword,
                 SyntaxKind.WarningKeyword,
                 SyntaxKind.WhereKeyword,
+                SyntaxKind.ZipKeyword,
                 SyntaxKind.TypeKeyword,
                 SyntaxKind.XmlKeyword,
                 SyntaxKind.AsyncKeyword,
@@ -45734,6 +45779,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return "Warning"
         Case SyntaxKind.WhereKeyword
             Return "Where"
+        Case SyntaxKind.ZipKeyword
+            Return "Zip"
         Case SyntaxKind.TypeKeyword
             Return "Type"
         Case SyntaxKind.XmlKeyword

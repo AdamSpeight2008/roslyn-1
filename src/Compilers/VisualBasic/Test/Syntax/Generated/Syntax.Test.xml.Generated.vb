@@ -1192,6 +1192,10 @@ Partial Public Class GeneratedTests
             return InternalSyntax.SyntaxFactory.FromClause(new InternalSyntax.KeywordSyntax(SyntaxKind.FromKeyword, String.Empty, Nothing, Nothing), New Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)())
         End Function
 
+        Private Shared Function GenerateGreenZipClause() As InternalSyntax.ZipClauseSyntax
+            return InternalSyntax.SyntaxFactory.ZipClause(new InternalSyntax.KeywordSyntax(SyntaxKind.ZipKeyword, String.Empty, Nothing, Nothing), GenerateGreenCollectionRangeVariable())
+        End Function
+
         Private Shared Function GenerateGreenLetClause() As InternalSyntax.LetClauseSyntax
             return InternalSyntax.SyntaxFactory.LetClause(new InternalSyntax.KeywordSyntax(SyntaxKind.LetKeyword, String.Empty, Nothing, Nothing), New Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)())
         End Function
@@ -3312,6 +3316,12 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenFromClause()
             dim objectUnderTest = GenerateGreenFromClause()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenZipClause()
+            dim objectUnderTest = GenerateGreenZipClause()
             AttachAndCheckDiagnostics(objectUnderTest)
         End Sub
 
@@ -6205,6 +6215,14 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestGreenZipClauseRewriter()
+            dim oldNode = GenerateGreenZipClause()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
         Public Sub TestGreenLetClauseRewriter()
             dim oldNode = GenerateGreenLetClause()
             Dim rewriter = New GreenIdentityRewriter()
@@ -8837,6 +8855,13 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenFromClauseVisitor()
             Dim oldNode = GenerateGreenFromClause()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenZipClauseVisitor()
+            Dim oldNode = GenerateGreenZipClause()
             Dim visitor = New GreenNodeVisitor()
             visitor.Visit(oldNode)
         End Sub
@@ -16495,6 +16520,27 @@ Partial Public Class GeneratedTests
             return SyntaxFactory.FromClause(SyntaxFactory.Token(SyntaxKind.FromKeyword), New SeparatedSyntaxList(Of CollectionRangeVariableSyntax)())
         End Function
 
+        Private Shared Function GenerateRedZipClause() As ZipClauseSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.ZipClause(SyntaxFactory.Token(SyntaxKind.ZipKeyword), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.ZipClause(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedCollectionRangeVariable())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.ZipClause(SyntaxFactory.Token(SyntaxKind.ZipKeyword), GenerateRedCollectionRangeVariable())
+        End Function
+
         Private Shared Function GenerateRedLetClause() As LetClauseSyntax
             Dim exceptionTest as boolean = false
             Try
@@ -21132,6 +21178,15 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestRedZipClause()
+            dim objectUnderTest = GenerateRedZipClause()
+            Assert.NotNull(objectUnderTest.zipKeyword)
+            Assert.NotNull(objectUnderTest.zipWith)
+            Dim withObj = objectUnderTest.WithZipKeyword(objectUnderTest.ZipKeyword).WithZipWith(objectUnderTest.ZipWith)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
         Public Sub TestRedLetClause()
             dim objectUnderTest = GenerateRedLetClause()
             Assert.NotNull(objectUnderTest.letKeyword)
@@ -24259,6 +24314,14 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestRedFromClauseRewriter()
             dim oldNode = GenerateRedFromClause()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedZipClauseRewriter()
+            dim oldNode = GenerateRedZipClause()
             Dim rewriter = New RedIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)

@@ -20,7 +20,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Determine if the kind represents a contextual keyword
         ''' </summary>
         Public Shared Function IsContextualKeyword(kind As SyntaxKind) As Boolean
-            Return kind = SyntaxKind.ReferenceKeyword OrElse
+            Return kind = SyntaxKind.ReferenceKeyword OrElse (kind = SyntaxKind.ZipClause) OrElse
                 (SyntaxKind.AggregateKeyword <= kind AndAlso kind <= SyntaxKind.YieldKeyword)
         End Function
 

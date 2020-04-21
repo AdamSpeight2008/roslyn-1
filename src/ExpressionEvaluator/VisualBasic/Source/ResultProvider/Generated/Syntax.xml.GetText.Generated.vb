@@ -396,6 +396,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return "Warning"
         Case SyntaxKind.WhereKeyword
             Return "Where"
+        Case SyntaxKind.ZipKeyword
+            Return "Zip"
         Case SyntaxKind.TypeKeyword
             Return "Type"
         Case SyntaxKind.XmlKeyword
