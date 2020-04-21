@@ -6602,7 +6602,11 @@ Unify Enum declarations with other block type declarations.
     <node-structure name="ZipClauseSyntax" parent="QueryClauseSyntax">
       <node-kind name ="ZipClause" />
       <child name="ZipKeyword" kind="ZipKeyword" />
-      <child name="ZipWith" kind="CollectionRangeVariable" />
+      <child name="Variables" list="true" separator-kind="CommaToken" separator-name="CommaTokens" kind="CollectionRangeVariable" min-count="1">
+        <description>The list of collection variables declared by this From operator.</description>
+        <lm-equiv name="Items"></lm-equiv>
+        <native-equiv name="FromItems"></native-equiv>
+      </child>
     </node-structure>
     
     <!--********************

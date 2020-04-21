@@ -26968,7 +26968,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
     Public NotInheritable Class ZipClauseSyntax
         Inherits QueryClauseSyntax
 
-        Friend _zipWith as CollectionRangeVariableSyntax
+        Friend _variables as SyntaxNode
 
         Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
             MyBase.New(green, parent, startLocation)
@@ -26976,8 +26976,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), zipKeyword As InternalSyntax.KeywordSyntax, zipWith As CollectionRangeVariableSyntax)
-            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ZipClauseSyntax(kind, errors, annotations, zipKeyword, DirectCast(zipWith.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CollectionRangeVariableSyntax)), Nothing, 0)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), zipKeyword As InternalSyntax.KeywordSyntax, variables As SyntaxNode)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ZipClauseSyntax(kind, errors, annotations, zipKeyword, if(variables IsNot Nothing, variables.Green, Nothing)), Nothing, 0)
         End Sub
 
         Public  ReadOnly Property ZipKeyword As SyntaxToken
@@ -26992,28 +26992,39 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value.
         ''' </summary>
         Public Shadows Function WithZipKeyword(zipKeyword as SyntaxToken) As ZipClauseSyntax
-            return Update(zipKeyword, Me.ZipWith)
+            return Update(zipKeyword, Me.Variables)
         End Function
 
-        Public  ReadOnly Property ZipWith As CollectionRangeVariableSyntax
+        ''' <summary>
+        ''' The list of collection variables declared by this From operator.
+        ''' </summary>
+        Public  ReadOnly Property Variables As SeparatedSyntaxList(Of CollectionRangeVariableSyntax)
             Get
-                Return GetRed(_zipWith, 1)
+                Dim listNode = GetRed(_variables, 1)
+                If listNode IsNot Nothing
+                    Return new SeparatedSyntaxList(Of CollectionRangeVariableSyntax)(listNode, Me.GetChildIndex(1))
+                End If
+                Return Nothing
             End Get
         End Property
 
         ''' <summary>
-        ''' Returns a copy of this with the ZipWith property changed to the specified
+        ''' Returns a copy of this with the Variables property changed to the specified
         ''' value. Returns this instance if the specified value is the same as the current
         ''' value.
         ''' </summary>
-        Public Shadows Function WithZipWith(zipWith as CollectionRangeVariableSyntax) As ZipClauseSyntax
-            return Update(Me.ZipKeyword, zipWith)
+        Public Shadows Function WithVariables(variables as SeparatedSyntaxList(Of CollectionRangeVariableSyntax)) As ZipClauseSyntax
+            return Update(Me.ZipKeyword, variables)
+        End Function
+
+        Public Shadows Function AddVariables(ParamArray items As CollectionRangeVariableSyntax()) As ZipClauseSyntax
+            Return Me.WithVariables(Me.Variables.AddRange(items))
         End Function
 
         Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
             Select case i
                 Case 1
-                    Return Me._zipWith
+                    Return Me._variables
                 Case Else
                      Return Nothing
             End Select
@@ -27022,7 +27033,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
             Select case i
                 Case 1
-                    Return Me.ZipWith
+                    Return GetRed(_variables, 1)
                 Case Else
                      Return Nothing
             End Select
@@ -27044,12 +27055,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <param name="zipKeyword">
         ''' The value for the ZipKeyword property.
         ''' </param>
-        ''' <param name="zipWith">
-        ''' The value for the ZipWith property.
+        ''' <param name="variables">
+        ''' The value for the Variables property.
         ''' </param>
-        Public Function Update(zipKeyword As SyntaxToken, zipWith As CollectionRangeVariableSyntax) As ZipClauseSyntax
-            If zipKeyword <> Me.ZipKeyword OrElse zipWith IsNot Me.ZipWith Then
-                Dim newNode = SyntaxFactory.ZipClause(zipKeyword, zipWith)
+        Public Function Update(zipKeyword As SyntaxToken, variables As SeparatedSyntaxList(Of CollectionRangeVariableSyntax)) As ZipClauseSyntax
+            If zipKeyword <> Me.ZipKeyword OrElse variables <> Me.Variables Then
+                Dim newNode = SyntaxFactory.ZipClause(zipKeyword, variables)
                 Dim annotations = Me.GetAnnotations()
                 If annotations IsNot Nothing AndAlso annotations.Length > 0
                     return newNode.WithAnnotations(annotations)

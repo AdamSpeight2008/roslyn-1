@@ -24,7 +24,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.SkipWhileClause,
                      SyntaxKind.AscendingOrdering,
                      SyntaxKind.DescendingOrdering,
-                     SyntaxKind.FunctionAggregation
+                     SyntaxKind.FunctionAggregation,
+                     SyntaxKind.ZipClause
                     Return True
 
                 Case SyntaxKind.ExpressionRangeVariable
@@ -211,6 +212,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     End If
 
                     Return True
+
+                Case SyntaxKind.ZipClause
+                    Dim zipClause = DirectCast(parent,ZipClauseSyntax)
+                    lambdaBody = GetZipLambdaBody(zipClause)
+                    Return True
+
             End Select
 
             lambdaBody = Nothing
@@ -263,6 +270,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Friend Shared Function GetJoinRightLambdaBody(joinClause As JoinClauseSyntax) As VisualBasicSyntaxNode
             Return joinClause.JoinConditions.First.Right
+        End Function
+
+        Friend Shared Function GetZipLambdaBody(zipClause As ZipClauseSyntax) As VisualBasicSyntaxNode
+            return zipClause.Variables.First.Expression
         End Function
 
         Private Shared Function GetExpressionRangeVariableLambdaBody(rangeVariable As ExpressionRangeVariableSyntax) As SyntaxNode
@@ -369,7 +380,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.SkipWhileClause,
                      SyntaxKind.AscendingOrdering,
                      SyntaxKind.DescendingOrdering,
-                     SyntaxKind.FunctionAggregation
+                     SyntaxKind.FunctionAggregation,
+                     SyntaxKind.ZipClause
 
                     Debug.Assert(TypeOf lambdaBody Is ExpressionSyntax)
                     Return SpecializedCollections.SingletonEnumerable(lambdaBody)

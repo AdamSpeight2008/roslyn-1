@@ -4482,11 +4482,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim newZipKeyword = DirectCast(VisitToken(node.ZipKeyword).Node, InternalSyntax.KeywordSyntax)
             If node.ZipKeyword.Node IsNot newZipKeyword Then anyChanges = True
-            Dim newZipWith = DirectCast(Visit(node.ZipWith), CollectionRangeVariableSyntax)
-            If node.ZipWith IsNot newZipWith Then anyChanges = True
+            Dim newVariables = VisitList(node.Variables)
+            If node._variables IsNot newVariables.Node Then anyChanges = True
 
             If anyChanges Then
-                Return New ZipClauseSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newZipKeyword, newZipWith)
+                Return New ZipClauseSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newZipKeyword, newVariables.Node)
             Else
                 Return node
             End If
@@ -38034,26 +38034,32 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        Public Shared Function ZipClause(zipKeyword As SyntaxToken, zipWith As CollectionRangeVariableSyntax) As ZipClauseSyntax
+        ''' <param name="variables">
+        ''' The list of collection variables declared by this From operator.
+        ''' </param>
+        Public Shared Function ZipClause(zipKeyword As SyntaxToken, variables As SeparatedSyntaxList(Of CollectionRangeVariableSyntax)) As ZipClauseSyntax
             Select Case zipKeyword.Kind()
                 Case SyntaxKind.ZipKeyword
                 Case Else
                     Throw new ArgumentException("zipKeyword")
              End Select
-            if zipWith Is Nothing Then
-                Throw New ArgumentNullException(NameOf(zipWith))
-            End If
-            Select Case zipWith.Kind()
-                Case SyntaxKind.CollectionRangeVariable
-                Case Else
-                    Throw new ArgumentException("zipWith")
-             End Select
-            Return New ZipClauseSyntax(SyntaxKind.ZipClause, Nothing, Nothing, DirectCast(zipKeyword.Node, InternalSyntax.KeywordSyntax), zipWith)
+            Return New ZipClauseSyntax(SyntaxKind.ZipClause, Nothing, Nothing, DirectCast(zipKeyword.Node, InternalSyntax.KeywordSyntax), variables.Node)
         End Function
 
 
-        Public Shared Function ZipClause(zipWith As CollectionRangeVariableSyntax) As ZipClauseSyntax
-            Return SyntaxFactory.ZipClause(SyntaxFactory.Token(SyntaxKind.ZipKeyword), zipWith)
+        ''' <param name="variables">
+        ''' The list of collection variables declared by this From operator.
+        ''' </param>
+        Public Shared Function ZipClause(variables As SeparatedSyntaxList(Of CollectionRangeVariableSyntax)) As ZipClauseSyntax
+            Return SyntaxFactory.ZipClause(SyntaxFactory.Token(SyntaxKind.ZipKeyword), variables)
+        End Function
+
+
+        ''' <param name="variables">
+        ''' The list of collection variables declared by this From operator.
+        ''' </param>
+        Public Shared Function ZipClause(ParamArray variables As CollectionRangeVariableSyntax()) As ZipClauseSyntax
+            Return SyntaxFactory.ZipClause(SyntaxFactory.Token(SyntaxKind.ZipKeyword), SyntaxFactory.SeparatedList(Of CollectionRangeVariableSyntax)().AddRange(variables))
         End Function
 
 

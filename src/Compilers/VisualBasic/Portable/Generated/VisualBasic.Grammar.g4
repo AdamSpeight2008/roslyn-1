@@ -1621,7 +1621,7 @@ where_clause
   ;
 
 zip_clause
-  : 'Zip' collection_range_variable
+  : 'Zip' collection_range_variable (',' collection_range_variable)*
   ;
 
 ternary_conditional_expression

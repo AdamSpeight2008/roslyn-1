@@ -1193,7 +1193,7 @@ Partial Public Class GeneratedTests
         End Function
 
         Private Shared Function GenerateGreenZipClause() As InternalSyntax.ZipClauseSyntax
-            return InternalSyntax.SyntaxFactory.ZipClause(new InternalSyntax.KeywordSyntax(SyntaxKind.ZipKeyword, String.Empty, Nothing, Nothing), GenerateGreenCollectionRangeVariable())
+            return InternalSyntax.SyntaxFactory.ZipClause(new InternalSyntax.KeywordSyntax(SyntaxKind.ZipKeyword, String.Empty, Nothing, Nothing), New Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)())
         End Function
 
         Private Shared Function GenerateGreenLetClause() As InternalSyntax.LetClauseSyntax
@@ -16523,22 +16523,14 @@ Partial Public Class GeneratedTests
         Private Shared Function GenerateRedZipClause() As ZipClauseSyntax
             Dim exceptionTest as boolean = false
             Try
-            SyntaxFactory.ZipClause(SyntaxFactory.Token(SyntaxKind.ZipKeyword), Nothing)
-            catch e as ArgumentNullException
-            exceptionTest = true
-            End Try
-            Debug.Assert(exceptionTest)
-            exceptionTest = false
-
-            Try
-            SyntaxFactory.ZipClause(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedCollectionRangeVariable())
+            SyntaxFactory.ZipClause(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), New SeparatedSyntaxList(Of CollectionRangeVariableSyntax)())
             catch e as ArgumentException
             exceptionTest = true
             End Try
             Debug.Assert(exceptionTest)
             exceptionTest = false
 
-            return SyntaxFactory.ZipClause(SyntaxFactory.Token(SyntaxKind.ZipKeyword), GenerateRedCollectionRangeVariable())
+            return SyntaxFactory.ZipClause(SyntaxFactory.Token(SyntaxKind.ZipKeyword), New SeparatedSyntaxList(Of CollectionRangeVariableSyntax)())
         End Function
 
         Private Shared Function GenerateRedLetClause() As LetClauseSyntax
@@ -21181,8 +21173,8 @@ Partial Public Class GeneratedTests
         Public Sub TestRedZipClause()
             dim objectUnderTest = GenerateRedZipClause()
             Assert.NotNull(objectUnderTest.zipKeyword)
-            Assert.NotNull(objectUnderTest.zipWith)
-            Dim withObj = objectUnderTest.WithZipKeyword(objectUnderTest.ZipKeyword).WithZipWith(objectUnderTest.ZipWith)
+            Assert.NotNull(objectUnderTest.variables)
+            Dim withObj = objectUnderTest.WithZipKeyword(objectUnderTest.ZipKeyword).WithVariables(objectUnderTest.Variables)
             Assert.Equal(withobj, objectUnderTest)
         End Sub
 

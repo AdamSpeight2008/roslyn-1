@@ -48,6 +48,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend Const ThenByMethod As String = "ThenBy"
         Friend Const UnnamedNamespaceErrName As String = "<Default>"
         Friend Const WhereMethod As String = "Where"
+        Friend Const ZipMethod As String = "Zip"
 
         ' EE recognized names (prefixes):
         Friend Const HoistedMeName As String = "$VB$Me"

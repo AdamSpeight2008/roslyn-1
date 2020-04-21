@@ -1178,8 +1178,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseZipClause(zipKw As KeywordSyntax) As QueryClauseSyntax
-            Debug.Assert(zipKw IsNot Nothing, "Expected ZIP keyword.")
-            Dim rangeVar = ParseCollectionRangeVariable()
+           Debug.Assert(zipKw IsNot Nothing, "Expected ZIP keyword.")
+             TryEatNewLine()
+            Dim rangeVar =ParseFromControlVars()
             Dim zipOp = InternalSyntaxFactory.ZipClause(zipKw, rangeVar)
             zipOp = CheckFeatureAvailability(Feature.ZipQueryExpression, zipOp)
             Return zipOp

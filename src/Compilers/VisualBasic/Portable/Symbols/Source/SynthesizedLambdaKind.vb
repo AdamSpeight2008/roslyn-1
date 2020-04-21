@@ -22,6 +22,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         GroupByKeysQueryLambda
         JoinLeftQueryLambda
         JoinRightQueryLambda
+        ZipQueryLambda
 
         ' non-user code lambdas:
         JoinNonUserCodeQueryLambda

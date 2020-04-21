@@ -25970,39 +25970,45 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Inherits QueryClauseSyntax
 
         Friend ReadOnly _zipKeyword as KeywordSyntax
-        Friend ReadOnly _zipWith as CollectionRangeVariableSyntax
+        Friend ReadOnly _variables as GreenNode
 
-        Friend Sub New(ByVal kind As SyntaxKind, zipKeyword As InternalSyntax.KeywordSyntax, zipWith As CollectionRangeVariableSyntax)
+        Friend Sub New(ByVal kind As SyntaxKind, zipKeyword As InternalSyntax.KeywordSyntax, variables As GreenNode)
             MyBase.New(kind)
             MyBase._slotCount = 2
 
             AdjustFlagsAndWidth(zipKeyword)
             Me._zipKeyword = zipKeyword
-            AdjustFlagsAndWidth(zipWith)
-            Me._zipWith = zipWith
+            If variables IsNot Nothing Then
+                AdjustFlagsAndWidth(variables)
+                Me._variables = variables
+            End If
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, zipKeyword As InternalSyntax.KeywordSyntax, zipWith As CollectionRangeVariableSyntax, context As ISyntaxFactoryContext)
+        Friend Sub New(ByVal kind As SyntaxKind, zipKeyword As InternalSyntax.KeywordSyntax, variables As GreenNode, context As ISyntaxFactoryContext)
             MyBase.New(kind)
             MyBase._slotCount = 2
             Me.SetFactoryContext(context)
 
             AdjustFlagsAndWidth(zipKeyword)
             Me._zipKeyword = zipKeyword
-            AdjustFlagsAndWidth(zipWith)
-            Me._zipWith = zipWith
+            If variables IsNot Nothing Then
+                AdjustFlagsAndWidth(variables)
+                Me._variables = variables
+            End If
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), zipKeyword As InternalSyntax.KeywordSyntax, zipWith As CollectionRangeVariableSyntax)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), zipKeyword As InternalSyntax.KeywordSyntax, variables As GreenNode)
             MyBase.New(kind, errors, annotations)
             MyBase._slotCount = 2
 
             AdjustFlagsAndWidth(zipKeyword)
             Me._zipKeyword = zipKeyword
-            AdjustFlagsAndWidth(zipWith)
-            Me._zipWith = zipWith
+            If variables IsNot Nothing Then
+                AdjustFlagsAndWidth(variables)
+                Me._variables = variables
+            End If
 
         End Sub
 
@@ -26014,10 +26020,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
              AdjustFlagsAndWidth(_zipKeyword)
              Me._zipKeyword = _zipKeyword
           End If
-          Dim _zipWith = DirectCast(reader.ReadValue(), CollectionRangeVariableSyntax)
-          If _zipWith isnot Nothing 
-             AdjustFlagsAndWidth(_zipWith)
-             Me._zipWith = _zipWith
+          Dim _variables = DirectCast(reader.ReadValue(), GreenNode)
+          If _variables isnot Nothing 
+             AdjustFlagsAndWidth(_variables)
+             Me._variables = _variables
           End If
         End Sub
         Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New ZipClauseSyntax(o)
@@ -26026,7 +26032,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Friend Overrides Sub WriteTo(writer as ObjectWriter)
           MyBase.WriteTo(writer)
           writer.WriteValue(Me._zipKeyword)
-          writer.WriteValue(Me._zipWith)
+          writer.WriteValue(Me._variables)
         End Sub
 
         Shared Sub New()
@@ -26043,9 +26049,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        Friend  ReadOnly Property ZipWith As InternalSyntax.CollectionRangeVariableSyntax
+        ''' <summary>
+        ''' The list of collection variables declared by this From operator.
+        ''' </summary>
+        Friend  ReadOnly Property Variables As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of CollectionRangeVariableSyntax)
             Get
-                Return Me._zipWith
+                Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of CollectionRangeVariableSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of CollectionRangeVariableSyntax)(Me._variables))
             End Get
         End Property
 
@@ -26054,7 +26063,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case 0
                     Return Me._zipKeyword
                 Case 1
-                    Return Me._zipWith
+                    Return Me._variables
                 Case Else
                      Debug.Assert(false, "child index out of range")
                      Return Nothing
@@ -26063,11 +26072,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 
         Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
-            Return new ZipClauseSyntax(Me.Kind, newErrors, GetAnnotations, _zipKeyword, _zipWith)
+            Return new ZipClauseSyntax(Me.Kind, newErrors, GetAnnotations, _zipKeyword, _variables)
         End Function
 
         Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
-            Return new ZipClauseSyntax(Me.Kind, GetDiagnostics, annotations, _zipKeyword, _zipWith)
+            Return new ZipClauseSyntax(Me.Kind, GetDiagnostics, annotations, _zipKeyword, _variables)
         End Function
 
         Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
@@ -40845,11 +40854,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Dim newZipKeyword = DirectCast(Visit(node.ZipKeyword), KeywordSyntax)
             If node._zipKeyword IsNot newZipKeyword Then anyChanges = True
-            Dim newZipWith = DirectCast(Visit(node._zipWith), CollectionRangeVariableSyntax)
-            If node._zipWith IsNot newZipWith Then anyChanges = True
+            Dim newVariables = VisitList(node.Variables)
+            If node._variables IsNot newVariables.Node Then anyChanges = True
 
             If anyChanges Then
-                Return New ZipClauseSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newZipKeyword, newZipWith)
+                Return New ZipClauseSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newZipKeyword, newVariables.Node)
             Else
                 Return node
             End If
@@ -52382,17 +52391,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        Friend Shared Function ZipClause(zipKeyword As KeywordSyntax, zipWith As CollectionRangeVariableSyntax) As ZipClauseSyntax
+        ''' <param name="variables">
+        ''' The list of collection variables declared by this From operator.
+        ''' </param>
+        Friend Shared Function ZipClause(zipKeyword As KeywordSyntax, variables As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)) As ZipClauseSyntax
             Debug.Assert(zipKeyword IsNot Nothing AndAlso zipKeyword.Kind = SyntaxKind.ZipKeyword)
-            Debug.Assert(zipWith IsNot Nothing)
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ZipClause, zipKeyword, zipWith, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ZipClause, zipKeyword, variables.Node, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ZipClauseSyntax)
             End If
 
-            Dim result = New ZipClauseSyntax(SyntaxKind.ZipClause, zipKeyword, zipWith)
+            Dim result = New ZipClauseSyntax(SyntaxKind.ZipClause, zipKeyword, variables.Node)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -64477,17 +64488,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        Friend Function ZipClause(zipKeyword As KeywordSyntax, zipWith As CollectionRangeVariableSyntax) As ZipClauseSyntax
+        ''' <param name="variables">
+        ''' The list of collection variables declared by this From operator.
+        ''' </param>
+        Friend Function ZipClause(zipKeyword As KeywordSyntax, variables As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)) As ZipClauseSyntax
             Debug.Assert(zipKeyword IsNot Nothing AndAlso zipKeyword.Kind = SyntaxKind.ZipKeyword)
-            Debug.Assert(zipWith IsNot Nothing)
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ZipClause, zipKeyword, zipWith, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ZipClause, zipKeyword, variables.Node, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ZipClauseSyntax)
             End If
 
-            Dim result = New ZipClauseSyntax(SyntaxKind.ZipClause, zipKeyword, zipWith, _factoryContext)
+            Dim result = New ZipClauseSyntax(SyntaxKind.ZipClause, zipKeyword, variables.Node, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
