@@ -532,6 +532,27 @@ ToString]]>.Value)
         Assert.Equal(SyntaxKind.InvocationExpression, expr.Kind)
     End Sub
 
+    <Trait("LINQ","ZIP")>
+    <Fact>
+    Public Sub ZipQuery()
+     Dim expr As ExpressionSyntax
+        '  Dim expr = ParseExpression("Zip y In ys")
+        'Assert.Equal(SyntaxKind.ZipClause, GetOperator(expr,1).Kind)
+       expr = ParseExpression("From x In xs Zip y In ys")
+        Assert.Equal(SyntaxKind.ZipClause, GetOperator(expr, 1).Kind)
+        expr = ParseExpression("From x As tx In xs Zip y As ty In ys")
+        Assert.Equal(SyntaxKind.ZipClause, GetOperator(expr, 1).Kind)
+        expr = ParseExpression("From x In xs Zip y As ty In ys")
+        Assert.Equal(SyntaxKind.ZipClause, GetOperator(expr, 1).Kind)
+        expr = ParseExpression("From x As tx In xs Zip y In ys")
+        Assert.Equal(SyntaxKind.ZipClause, GetOperator(expr, 1).Kind)
+        Dim code As String = String.Empty
+        code = "
+FROM x As tx IN xs
+ZIP y As ty In ys"
+        expr = ParseExpression(code)
+        Assert.Equal(SyntaxKind.ZipClause, GetOperator(expr, 1).Kind)
+    End Sub
 
     <Fact>
     Public Sub FromQueryClause()

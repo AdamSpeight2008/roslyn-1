@@ -20,7 +20,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Determine if the kind represents a contextual keyword
         ''' </summary>
         Public Shared Function IsContextualKeyword(kind As SyntaxKind) As Boolean
-            Return kind = SyntaxKind.ReferenceKeyword OrElse (kind = SyntaxKind.ZipClause) OrElse
+            Return kind = SyntaxKind.ReferenceKeyword OrElse (kind = SyntaxKind.ZipKeyword) OrElse
                 (SyntaxKind.AggregateKeyword <= kind AndAlso kind <= SyntaxKind.YieldKeyword)
         End Function
 
@@ -288,7 +288,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             SyntaxKind.AsyncKeyword,
             SyntaxKind.AwaitKeyword,
             SyntaxKind.IteratorKeyword,
-            SyntaxKind.YieldKeyword
+            SyntaxKind.YieldKeyword,
+            SyntaxKind.ZipKeyword
             }
         ''' <summary>
         ''' Get contextual keywords
@@ -815,7 +816,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                    {"async", SyntaxKind.AsyncKeyword},
                    {"await", SyntaxKind.AwaitKeyword},
                    {"iterator", SyntaxKind.IteratorKeyword},
-                   {"yield", SyntaxKind.YieldKeyword}
+                   {"yield", SyntaxKind.YieldKeyword},
+                   {"zip", SyntaxKind.ZipKeyword}
             }
 
         Public Shared Function GetContextualKeywordKind(text As String) As SyntaxKind

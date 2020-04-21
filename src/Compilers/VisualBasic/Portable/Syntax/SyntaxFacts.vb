@@ -600,7 +600,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Shared Function IsPunctuationOrKeyword(kind As SyntaxKind) As Boolean
             Select Case kind
-                Case SyntaxKind.AddHandlerKeyword To SyntaxKind.EndOfXmlToken,
+                Case SyntaxKind.AddHandlerKeyword To SyntaxKind.EndOfXmlToken, SyntaxKind.ZipKeyword,
                      SyntaxKind.NameOfKeyword,
                      SyntaxKind.DollarSignDoubleQuoteToken,
                      SyntaxKind.EndOfInterpolatedStringToken
