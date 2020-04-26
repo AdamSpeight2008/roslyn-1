@@ -67,6 +67,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End Get
             End Property
 
+            public Function BindZipClauseSelector(sourceOpt As BoundQueryClauseBase,
+                                           zip As ZipClauseSyntax,
+                                     ByRef operatorsEnumerator As SyntaxList(Of QueryClauseSyntax).Enumerator,
+                                           diagnostics As DiagnosticBag
+                                          ) As BoundQueryClauseBase
+                Debug.Assert(zip Is operatorsEnumerator.Current)
+                Return BindCollectionRangeVariables(zip, sourceOpt, zip.Variables, operatorsEnumerator, diagnostics)
+            End Function
+
             ''' <summary>
             ''' Bind body of a lambda representing Select operator selector in context of this binder.
             ''' </summary>

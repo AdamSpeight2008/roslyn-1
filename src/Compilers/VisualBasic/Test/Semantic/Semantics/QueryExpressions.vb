@@ -15373,6 +15373,54 @@ BC36600: Range variable 'x' is already declared.
 
             VerifyOperationTreeAndDiagnosticsForTest(Of QueryExpressionSyntax)(source, expectedOperationTree, expectedDiagnostics)
         End Sub
+
+        <Trait("LINQ","ZIP")>
+        <Fact>
+        Public Sub Zip()
+            Dim compilationDef =
+<compilation name="QueryExpressions">
+    <file name="a.vb">
+Option Strict Off
+Option Infer On
+
+Imports System
+Imports System.Collections
+Imports System.Linq
+Imports System.Linq.Enumerable
+
+Module Module1
+    Sub Main()
+        Dim xs = {0, 1, 2, 4, 8 }
+        Dim ys = {"A"c, "B"c, "C"c, "D"c} 
+        Dim zs0 = From x In xs Zip y In ys Select new With { .x= x, .y = y}
+        Dim zs1 = Enumerable.Zip(xs, ys, Function(x,y) New With { .x =x, .y = y })
+        For each z in zs1
+            Console.WriteLine(z.ToString())
+        Next
+        Console.WriteLine()
+        For each z in zs0
+            Console.WriteLine(z.ToString())
+        Next
+    End Sub
+End Module
+    </file>
+</compilation>
+
+            CompileAndVerify(compilationDef, references:={LinqAssemblyRef},
+                             expectedOutput:=
+            <![CDATA[
+{ x = 0, y = "A"}
+{ x = 1, y = "B"}
+{ x = 2, y = "C"}
+{ x = 4, y = "D"}
+
+{ x = 0, y = "A"}
+{ x = 1, y = "B"}
+{ x = 2, y = "C"}
+{ x = 4, y = "D"}
+]]>)
+      End Sub
+
     End Class
 
 End Namespace

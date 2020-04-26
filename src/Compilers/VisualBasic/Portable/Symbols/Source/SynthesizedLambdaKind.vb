@@ -29,6 +29,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         AggregateNonUserCodeQueryLambda
         FromNonUserCodeQueryLambda
         GroupNonUserCodeQueryLambda ' group join, group by
+        ZipNonUserCodeQueryLambda
         ConversionNonUserCodeQueryLambda
     End Enum
 

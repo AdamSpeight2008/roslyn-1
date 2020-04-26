@@ -175,12 +175,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                                                        zipWithNode, source.RangeVariables)
             Dim lambdaSymbol = Me.CreateQueryLambdaSymbol(zipWithNode,
                                                           SynthesizedLambdaKind.ZipQueryLambda,
-                                                          ImmutableArray.Create(zipWithParam))
-
-            Dim zipRange = BindCollectionRangeVariable(DirectCast(zipWithNode, CollectionRangeVariableSyntax),False,Nothing, diagnostics)
+                                                        ImmutableArray.Create(zipWithParam))
+            Dim zipRange = BindCollectionRangeVariable(zipClause.Variables(0),False,nothing, Diagnostics)
             ' Create binder for the selector.
             Dim zipBinder As New QueryLambdaBinder(lambdaSymbol,  source.RangeVariables)
-            Dim zip As BoundExpression = zipBinder.BindZipClause(source, zipClause, operators, diagnostics)
+            Dim zip As BoundExpression = zipBinder.BindZipClauseSelector(source, zipClause, operators, diagnostics)
 
 
             Dim zipLambda = CreateBoundQueryLambda(lambdaSymbol,
@@ -208,7 +207,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 boundCallOrBadExpression = BindQueryOperatorCall(zipClause, source,
                                                                  StringConstants.ZipMethod,
-                                                                 ImmutableArray.Create(Of BoundExpression)(zipLambda, ziprange),
+                                                                 ImmutableArray.Create(Of BoundExpression)(zipLambda, zipRange),
                                                                  zipClause.ZipKeyword.Span,
                                                                  diagnostics)
 
@@ -1077,7 +1076,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             diagnostics As DiagnosticBag
         ) As BoundQueryClauseBase
 
-            Debug.Assert(clauseSyntax.IsKind(SyntaxKind.AggregateClause) OrElse clauseSyntax.IsKind(SyntaxKind.FromClause))
+            Debug.Assert(clauseSyntax.IsKind(SyntaxKind.AggregateClause) OrElse clauseSyntax.IsKind(SyntaxKind.FromClause) OrElse
+                         clauseSyntax.IsKind(SyntaxKind.ZipClause))
             Debug.Assert(variables.Count > 0, "Malformed syntax tree.")
 
             ' Handle malformed tree gracefully.
@@ -1318,6 +1318,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                     Case SyntaxKind.AggregateClause
                         lambdaKind = SynthesizedLambdaKind.FromNonUserCodeQueryLambda
+                    Case SyntaxKind.ZipClause
+                        lambdaKind = SynthesizedLambdaKind.ZipNonUserCodeQueryLambda
 
                     Case Else
                         Throw ExceptionUtilities.UnexpectedValue(clauseSyntax.Kind)
@@ -2874,7 +2876,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     VerifyRangeVariableName(variable, syntax.Identifier.Identifier, diagnostics)
 
                     If Not beginsTheQuery AndAlso declaredNames Is Nothing Then
-                        Debug.Assert(syntax.Parent.Kind = SyntaxKind.FromClause OrElse syntax.Parent.Kind = SyntaxKind.AggregateClause)
+                        Debug.Assert(syntax.Parent.Kind = SyntaxKind.FromClause OrElse
+                                     syntax.Parent.Kind = SyntaxKind.AggregateClause OrElse
+                                     syntax.Parent.Kind = SyntaxKind.ZipClause)
                         ' We are about to add this range variable to the current child scope.
                         If ShadowsRangeVariableInTheChildScope(Me, variable) Then
                             ' Shadowing error was reported earlier.
