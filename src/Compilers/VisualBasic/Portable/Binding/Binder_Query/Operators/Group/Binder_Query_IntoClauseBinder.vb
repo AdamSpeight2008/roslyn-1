@@ -5,16 +5,12 @@
 Imports System.Collections.Immutable
 Imports System.Runtime.InteropServices
 Imports Microsoft.CodeAnalysis
-Imports Microsoft.CodeAnalysis.Collections
-Imports Microsoft.CodeAnalysis.PooledObjects
-Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
     Partial Friend Class Binder
-
 
         ''' <summary>
         ''' Knows how to bind FunctionAggregationSyntax and GroupAggregationSyntax
@@ -32,12 +28,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Private ReadOnly _aggregationArgumentRangeVariables As ImmutableArray(Of RangeVariableSymbol)
 
             Public Sub New(
-                parent As Binder,
-                groupReference As BoundExpression,
-                groupRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                groupCompoundVariableType As TypeSymbol,
-                aggregationArgumentRangeVariables As ImmutableArray(Of RangeVariableSymbol)
-            )
+                            parent As Binder,
+                            groupReference As BoundExpression,
+                            groupRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                            groupCompoundVariableType As TypeSymbol,
+                            aggregationArgumentRangeVariables As ImmutableArray(Of RangeVariableSymbol)
+                          )
                 MyBase.New(parent)
                 m_GroupReference = groupReference
                 _groupRangeVariables = groupRangeVariables
@@ -46,9 +42,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Sub
 
             Friend Overrides Function BindGroupAggregationExpression(
-                group As GroupAggregationSyntax,
-                diagnostics As DiagnosticBag
-            ) As BoundExpression
+                                                                      group As GroupAggregationSyntax,
+                                                                      diagnostics As DiagnosticBag
+                                                                    ) As BoundExpression
                 Return New BoundGroupAggregation(group, m_GroupReference, m_GroupReference.Type)
             End Function
 
@@ -56,18 +52,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ''' Given aggregationVariables, bind Into selector in context of this binder.
             ''' </summary>
             Public Function BindIntoSelector(
-                syntaxNode As QueryClauseSyntax,
-                keysRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                compoundKeyReferencePart1 As BoundExpression,
-                keysRangeVariablesPart1 As ImmutableArray(Of RangeVariableSymbol),
-                compoundKeyReferencePart2 As BoundExpression,
-                keysRangeVariablesPart2 As ImmutableArray(Of RangeVariableSymbol),
-                declaredNames As HashSet(Of String),
-                aggregationVariables As SeparatedSyntaxList(Of AggregationRangeVariableSyntax),
-                mustProduceFlatCompoundVariable As Boolean,
-                <Out()> ByRef declaredRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                diagnostics As DiagnosticBag
-            ) As BoundExpression
+                                              syntaxNode As QueryClauseSyntax,
+                                              keysRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                              compoundKeyReferencePart1 As BoundExpression, keysRangeVariablesPart1 As ImmutableArray(Of RangeVariableSymbol),
+                                              compoundKeyReferencePart2 As BoundExpression, keysRangeVariablesPart2 As ImmutableArray(Of RangeVariableSymbol),
+                                              declaredNames As HashSet(Of String),
+                                              aggregationVariables As SeparatedSyntaxList(Of AggregationRangeVariableSyntax),
+                                              mustProduceFlatCompoundVariable As Boolean,
+                                  <Out> ByRef declaredRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                              diagnostics As DiagnosticBag
+                                            ) As BoundExpression
+
                 Debug.Assert(declaredRangeVariables.IsDefault)
                 Debug.Assert(compoundKeyReferencePart2 Is Nothing OrElse compoundKeyReferencePart1 IsNot Nothing)
                 Debug.Assert((compoundKeyReferencePart1 Is Nothing) = (keysRangeVariablesPart1.Length = 0))
@@ -198,9 +193,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Function
 
             Friend Overrides Function BindFunctionAggregationExpression(
-                functionAggregationSyntax As FunctionAggregationSyntax,
-                diagnostics As DiagnosticBag
-            ) As BoundExpression
+                                                                         functionAggregationSyntax As FunctionAggregationSyntax,
+                                                                         diagnostics As DiagnosticBag
+                                                                       ) As BoundExpression
+
                 If functionAggregationSyntax.FunctionName.GetTypeCharacter() <> TypeCharacter.None Then
                     ReportDiagnostic(diagnostics, functionAggregationSyntax.FunctionName, ERRID.ERR_TypeCharOnAggregation)
                 End If
@@ -215,8 +211,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ' its special binding and Lookup/LookupNames behavior.
 
                 Dim aggregationLambdaSymbol = Me.ContainingBinder.CreateQueryLambdaSymbol(
-                    If(LambdaUtilities.GetAggregationLambdaBody(functionAggregationSyntax), functionAggregationSyntax),
-                    SynthesizedLambdaKind.AggregationQueryLambda,
+                    (SynthesizedLambdaKind.AggregationQueryLambda, If(LambdaUtilities.GetAggregationLambdaBody(functionAggregationSyntax), functionAggregationSyntax)),
                     ImmutableArray.Create(aggregationParam))
 
                 ' Create binder for the aggregation.
@@ -277,22 +272,26 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                             boundCallOrBadExpression.Type)
             End Function
 
-
-            Public Overrides Sub AddLookupSymbolsInfo(nameSet As LookupSymbolsInfo, options As LookupOptions)
-                If (options And (LookupOptionExtensions.ConsiderationMask Or LookupOptions.MustNotBeInstance)) <> 0 Then
-                    Return
-                End If
+            Public Overrides Sub AddLookupSymbolsInfo(
+                                                       nameSet As LookupSymbolsInfo,
+                                                       options As LookupOptions
+                                                     )
+                If (options And (LookupOptionExtensions.ConsiderationMask Or LookupOptions.MustNotBeInstance)) <> 0 Then Return
 
                 ' Should look for group's methods only. 
                 AddMemberLookupSymbolsInfo(nameSet,
-                                  m_GroupReference.Type,
-                                  options Or CType(LookupOptions.MethodsOnly Or LookupOptions.MustBeInstance, LookupOptions))
+                                           m_GroupReference.Type,
+                                           options Or CType(LookupOptions.MethodsOnly Or LookupOptions.MustBeInstance, LookupOptions))
             End Sub
 
-            Public Overrides Sub Lookup(lookupResult As LookupResult, name As String, arity As Integer, options As LookupOptions, <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo))
-                If (options And (LookupOptionExtensions.ConsiderationMask Or LookupOptions.MustNotBeInstance)) <> 0 Then
-                    Return
-                End If
+            Public Overrides Sub Lookup(
+                                         lookupResult As LookupResult,
+                                         name As String,
+                                         arity As Integer,
+                                         options As LookupOptions,
+                       <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo)
+                                       )
+                If (options And (LookupOptionExtensions.ConsiderationMask Or LookupOptions.MustNotBeInstance)) <> 0 Then Return
 
                 ' Should look for group's methods only. 
                 LookupMember(lookupResult,
@@ -307,11 +306,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ''' Bind AggregationRangeVariableSyntax in context of this binder.
             ''' </summary>
             Public Function BindAggregationRangeVariable(
-                item As AggregationRangeVariableSyntax,
-                declaredNames As HashSet(Of String),
-                <Out()> ByRef selector As BoundExpression,
-                diagnostics As DiagnosticBag
-            ) As RangeVariableSymbol
+                                                          item As AggregationRangeVariableSyntax,
+                                                          declaredNames As HashSet(Of String),
+                                              <Out> ByRef selector As BoundExpression,
+                                                          diagnostics As DiagnosticBag
+                                                        ) As RangeVariableSymbol
+
                 Debug.Assert(selector Is Nothing)
 
                 Dim variableName As VariableNameEqualsSyntax = item.NameEquals
@@ -345,10 +345,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ' Bind the value.
                 selector = BindRValue(item.Aggregation, diagnostics)
 
-                If rangeVarName IsNot Nothing AndAlso rangeVarName.Length = 0 Then
-                    ' Empty string must have been a syntax error. 
-                    rangeVarName = Nothing
-                End If
+                If rangeVarName IsNot Nothing AndAlso rangeVarName.Length = 0 Then rangeVarName = Nothing ' Empty string must have been a syntax error. 
 
                 Dim rangeVar As RangeVariableSymbol = Nothing
 
@@ -377,9 +374,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         Me.VerifyRangeVariableName(rangeVar, rangeVarNameSyntax, diagnostics)
                     End If
 
-                    If doErrorRecovery Then
-                        rangeVar = RangeVariableSymbol.CreateForErrorRecovery(Me, rangeVar.Syntax, selector.Type)
-                    End If
+                    If doErrorRecovery Then rangeVar = RangeVariableSymbol.CreateForErrorRecovery(Me, rangeVar.Syntax, selector.Type)
 
                 Else
                     Debug.Assert(rangeVar Is Nothing)
@@ -400,19 +395,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Inherits IntoClauseBinder
 
             Public Sub New(
-                parent As Binder,
-                groupReference As BoundExpression,
-                groupRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                groupCompoundVariableType As TypeSymbol,
-                aggregationArgumentRangeVariables As ImmutableArray(Of RangeVariableSymbol)
-            )
+                            parent As Binder,
+                            groupReference As BoundExpression,
+                            groupRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                            groupCompoundVariableType As TypeSymbol,
+                            aggregationArgumentRangeVariables As ImmutableArray(Of RangeVariableSymbol)
+                          )
                 MyBase.New(parent, groupReference, groupRangeVariables, groupCompoundVariableType, aggregationArgumentRangeVariables)
             End Sub
 
-            Friend Overrides Function BindGroupAggregationExpression(group As GroupAggregationSyntax, diagnostics As DiagnosticBag) As BoundExpression
+            Friend Overrides Function BindGroupAggregationExpression(
+                                                                      group As GroupAggregationSyntax,
+                                                                      diagnostics As DiagnosticBag
+                                                                    ) As BoundExpression
                 ' Parser should have reported an error.
                 Return BadExpression(group, m_GroupReference, ErrorTypeSymbol.UnknownResultType)
             End Function
+
         End Class
 
     End Class

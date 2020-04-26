@@ -22,30 +22,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private NotInheritable Class QueryLambdaBinder
             Inherits BlockBaseBinder(Of RangeVariableSymbol) ' BlockBaseBinder implements various lookup methods as we need.
 
-            Private ReadOnly _lambdaSymbol As LambdaSymbol
-            Private ReadOnly _rangeVariables As ImmutableArray(Of RangeVariableSymbol)
-
             Public Sub New(lambdaSymbol As LambdaSymbol, rangeVariables As ImmutableArray(Of RangeVariableSymbol))
                 MyBase.New(lambdaSymbol.ContainingBinder)
-                _lambdaSymbol = lambdaSymbol
-                _rangeVariables = rangeVariables
+                Me.LambdaSymbol = lambdaSymbol
+                Me.RangeVariables = rangeVariables
             End Sub
 
             Friend Overrides ReadOnly Property Locals As ImmutableArray(Of RangeVariableSymbol)
                 Get
-                    Return _rangeVariables
+                    Return RangeVariables
                 End Get
             End Property
 
             Public ReadOnly Property RangeVariables As ImmutableArray(Of RangeVariableSymbol)
-                Get
-                    Return _rangeVariables
-                End Get
-            End Property
 
             Public Overrides ReadOnly Property ContainingMember As Symbol
                 Get
-                    Return _lambdaSymbol
+                    Return LambdaSymbol
                 End Get
             End Property
 
@@ -56,10 +49,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Property
 
             Public ReadOnly Property LambdaSymbol As LambdaSymbol
-                Get
-                    Return _lambdaSymbol
-                End Get
-            End Property
 
             Public Overrides ReadOnly Property IsInQuery As Boolean
                 Get
@@ -67,11 +56,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End Get
             End Property
 
-            public Function BindZipClauseSelector(sourceOpt As BoundQueryClauseBase,
-                                           zip As ZipClauseSyntax,
-                                     ByRef operatorsEnumerator As SyntaxList(Of QueryClauseSyntax).Enumerator,
-                                           diagnostics As DiagnosticBag
-                                          ) As BoundQueryClauseBase
+            Public Function BindZipClauseSelector(
+                                                   sourceOpt As BoundQueryClauseBase,
+                                                   zip As ZipClauseSyntax,
+                                             ByRef operatorsEnumerator As SyntaxList(Of QueryClauseSyntax).Enumerator,
+                                                   diagnostics As DiagnosticBag
+                                                 ) As BoundQueryClauseBase
                 Debug.Assert(zip Is operatorsEnumerator.Current)
                 Return BindCollectionRangeVariables(zip, sourceOpt, zip.Variables, operatorsEnumerator, diagnostics)
             End Function
@@ -80,11 +70,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ''' Bind body of a lambda representing Select operator selector in context of this binder.
             ''' </summary>
             Public Function BindSelectClauseSelector(
-                [select] As SelectClauseSyntax,
-                operatorsEnumerator As SyntaxList(Of QueryClauseSyntax).Enumerator,
-                <Out()> ByRef declaredRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                diagnostics As DiagnosticBag
-            ) As BoundExpression
+                                                      [select] As SelectClauseSyntax,
+                                                      operatorsEnumerator As SyntaxList(Of QueryClauseSyntax).Enumerator,
+                                          <Out> ByRef declaredRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                                      diagnostics As DiagnosticBag
+                                                    ) As BoundExpression
                 Debug.Assert(declaredRangeVariables.IsDefault)
 
                 Dim selectVariables As SeparatedSyntaxList(Of ExpressionRangeVariableSyntax) = [select].Variables
@@ -126,12 +116,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ''' Bind Select like selector based on the set of expression range variables in context of this binder.
             ''' </summary>
             Public Function BindExpressionRangeVariables(
-                selectVariables As SeparatedSyntaxList(Of ExpressionRangeVariableSyntax),
-                requireRangeVariable As Boolean,
-                selectorSyntax As QueryClauseSyntax,
-                <Out()> ByRef declaredRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                diagnostics As DiagnosticBag
-            ) As BoundExpression
+                                                          selectVariables As SeparatedSyntaxList(Of ExpressionRangeVariableSyntax),
+                                                          requireRangeVariable As Boolean,
+                                                          selectorSyntax As QueryClauseSyntax,
+                                              <Out> ByRef declaredRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                                          diagnostics As DiagnosticBag
+                                                        ) As BoundExpression
                 Debug.Assert(selectorSyntax IsNot Nothing AndAlso declaredRangeVariables.IsDefault)
 
                 Dim selector As BoundExpression
@@ -203,13 +193,14 @@ selectors.AsImmutableOrNull(),
             ''' Bind ExpressionRangeVariableSyntax in context of this binder.
             ''' </summary>
             Private Function BindExpressionRangeVariable(
-                item As ExpressionRangeVariableSyntax,
-                requireRangeVariable As Boolean,
-                shadowingCheckBinder As Binder,
-                declaredNames As HashSet(Of String),
-                <Out()> ByRef selector As BoundExpression,
-                diagnostics As DiagnosticBag
-            ) As RangeVariableSymbol
+                                                          item As ExpressionRangeVariableSyntax,
+                                                          requireRangeVariable As Boolean,
+                                                          shadowingCheckBinder As Binder,
+                                                          declaredNames As HashSet(Of String),
+                                              <Out> ByRef selector As BoundExpression,
+                                                          diagnostics As DiagnosticBag
+                                                        ) As RangeVariableSymbol
+
                 Debug.Assert(selector Is Nothing)
 
                 Dim variableName As VariableNameEqualsSyntax = item.NameEquals
@@ -325,11 +316,11 @@ selectors.AsImmutableOrNull(),
             ''' Takes care of "carrying over" of previously declared range variables as well as introduction of the new one.
             ''' </summary>
             Public Function BindLetClauseVariableSelector(
-                variable As ExpressionRangeVariableSyntax,
-                operatorsEnumerator As SyntaxList(Of QueryClauseSyntax).Enumerator,
-                <Out()> ByRef declaredRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                diagnostics As DiagnosticBag
-            ) As BoundExpression
+                                                           variable As ExpressionRangeVariableSyntax,
+                                                           operatorsEnumerator As SyntaxList(Of QueryClauseSyntax).Enumerator,
+                                               <Out> ByRef declaredRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                                           diagnostics As DiagnosticBag
+                                                         ) As BoundExpression
                 Debug.Assert(declaredRangeVariables.IsDefault)
 
                 Dim selector As BoundExpression = Nothing
@@ -341,7 +332,7 @@ selectors.AsImmutableOrNull(),
 
                 declaredRangeVariables = ImmutableArray.Create(rangeVar)
 
-                If _rangeVariables.Length > 0 Then
+                If RangeVariables.Length > 0 Then
                     ' Need to build an Anonymous Type.
 
                     ' If it is not the last variable in the list, we simply combine source's
@@ -361,33 +352,32 @@ selectors.AsImmutableOrNull(),
 
                 Else
                     ' Easy case, no need to build an Anonymous Type.
-                    Debug.Assert(_rangeVariables.Length = 0)
+                    Debug.Assert(RangeVariables.Length = 0)
                 End If
 
                 Debug.Assert(Not declaredRangeVariables.IsDefault)
                 Return selector
             End Function
 
-
             ''' <summary>
             ''' Bind body of a lambda representing first Select operator selector for an aggregate clause in context of this binder.
             ''' </summary>
             Public Function BindAggregateClauseFirstSelector(
-                aggregate As AggregateClauseSyntax,
-                operatorsEnumerator As SyntaxList(Of QueryClauseSyntax).Enumerator,
-                rangeVariablesPart1 As ImmutableArray(Of RangeVariableSymbol),
-                rangeVariablesPart2 As ImmutableArray(Of RangeVariableSymbol),
-                <Out()> ByRef declaredRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                <Out()> ByRef group As BoundQueryClauseBase,
-                <Out()> ByRef intoBinder As IntoClauseDisallowGroupReferenceBinder,
-                diagnostics As DiagnosticBag
-            ) As BoundExpression
+                                                              aggregate As AggregateClauseSyntax,
+                                                              operatorsEnumerator As SyntaxList(Of QueryClauseSyntax).Enumerator,
+                                                              rangeVariablesPart1 As ImmutableArray(Of RangeVariableSymbol),
+                                                              rangeVariablesPart2 As ImmutableArray(Of RangeVariableSymbol),
+                                                  <Out> ByRef declaredRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                                  <Out> ByRef group As BoundQueryClauseBase,
+                                                  <Out> ByRef intoBinder As IntoClauseDisallowGroupReferenceBinder,
+                                                              diagnostics As DiagnosticBag
+                                                            ) As BoundExpression
                 Debug.Assert(operatorsEnumerator.Current Is aggregate)
                 Debug.Assert(declaredRangeVariables.IsDefault)
-                Debug.Assert((rangeVariablesPart1.Length = 0) = (rangeVariablesPart2 = _rangeVariables))
-                Debug.Assert((rangeVariablesPart2.Length = 0) = (rangeVariablesPart1 = _rangeVariables))
-                Debug.Assert(_lambdaSymbol.ParameterCount = If(rangeVariablesPart2.Length = 0, 1, 2))
-                Debug.Assert(_rangeVariables.Length = rangeVariablesPart1.Length + rangeVariablesPart2.Length)
+                Debug.Assert((rangeVariablesPart1.Length = 0) = (rangeVariablesPart2 = RangeVariables))
+                Debug.Assert((rangeVariablesPart2.Length = 0) = (rangeVariablesPart1 = RangeVariables))
+                Debug.Assert(LambdaSymbol.ParameterCount = If(rangeVariablesPart2.Length = 0, 1, 2))
+                Debug.Assert(RangeVariables.Length = rangeVariablesPart1.Length + rangeVariablesPart2.Length)
 
                 ' Let's interpret our group.
                 Dim groupAdditionalOperators As SyntaxList(Of QueryClauseSyntax).Enumerator = aggregate.AdditionalQueryOperators.GetEnumerator()
@@ -412,10 +402,10 @@ selectors.AsImmutableOrNull(),
 
                         letSelector = BadExpression(aggregate, group, ErrorTypeSymbol.UnknownResultType).MakeCompilerGenerated()
 
-                        intoBinder = New IntoClauseDisallowGroupReferenceBinder(New QueryLambdaBinder(_lambdaSymbol,
+                        intoBinder = New IntoClauseDisallowGroupReferenceBinder(New QueryLambdaBinder(LambdaSymbol,
                                                                                                       ImmutableArray(Of RangeVariableSymbol).Empty),
                                                                                 group, group.RangeVariables, group.CompoundVariableType,
-_rangeVariables.Concat(group.RangeVariables))
+RangeVariables.Concat(group.RangeVariables))
 
                     Case 1
                         ' Simple case - one aggregate function.
@@ -424,10 +414,10 @@ _rangeVariables.Concat(group.RangeVariables))
                         ' AGGREGATE b in a.BB  =>   LET count = (FROM b IN a.BB).Count()
                         ' INTO Count()
                         '
-                        intoBinder = New IntoClauseDisallowGroupReferenceBinder(New QueryLambdaBinder(_lambdaSymbol,
+                        intoBinder = New IntoClauseDisallowGroupReferenceBinder(New QueryLambdaBinder(LambdaSymbol,
                                                                                                       ImmutableArray(Of RangeVariableSymbol).Empty),
                                                                                 group, group.RangeVariables, group.CompoundVariableType,
-_rangeVariables.Concat(group.RangeVariables))
+RangeVariables.Concat(group.RangeVariables))
 
                         Dim compoundKeyReferencePart1 As BoundExpression
                         Dim keysRangeVariablesPart1 As ImmutableArray(Of RangeVariableSymbol)
@@ -436,12 +426,12 @@ _rangeVariables.Concat(group.RangeVariables))
                         Dim letSelectorParam As BoundLambdaParameterSymbol
 
                         If rangeVariablesPart1.Length > 0 Then
-                            letSelectorParam = DirectCast(_lambdaSymbol.Parameters(0), BoundLambdaParameterSymbol)
+                            letSelectorParam = DirectCast(LambdaSymbol.Parameters(0), BoundLambdaParameterSymbol)
                             compoundKeyReferencePart1 = New BoundParameter(letSelectorParam.Syntax, letSelectorParam, False, letSelectorParam.Type).MakeCompilerGenerated()
                             keysRangeVariablesPart1 = rangeVariablesPart1
 
                             If rangeVariablesPart2.Length > 0 Then
-                                letSelectorParam = DirectCast(_lambdaSymbol.Parameters(1), BoundLambdaParameterSymbol)
+                                letSelectorParam = DirectCast(LambdaSymbol.Parameters(1), BoundLambdaParameterSymbol)
                                 compoundKeyReferencePart2 = New BoundParameter(letSelectorParam.Syntax, letSelectorParam, False, letSelectorParam.Type).MakeCompilerGenerated()
                                 keysRangeVariablesPart2 = rangeVariablesPart2
                             Else
@@ -449,7 +439,7 @@ _rangeVariables.Concat(group.RangeVariables))
                                 keysRangeVariablesPart2 = ImmutableArray(Of RangeVariableSymbol).Empty
                             End If
                         ElseIf rangeVariablesPart2.Length > 0 Then
-                            letSelectorParam = DirectCast(_lambdaSymbol.Parameters(1), BoundLambdaParameterSymbol)
+                            letSelectorParam = DirectCast(LambdaSymbol.Parameters(1), BoundLambdaParameterSymbol)
                             compoundKeyReferencePart1 = New BoundParameter(letSelectorParam.Syntax, letSelectorParam, False, letSelectorParam.Type).MakeCompilerGenerated()
                             keysRangeVariablesPart1 = rangeVariablesPart2
                             compoundKeyReferencePart2 = Nothing
@@ -462,7 +452,7 @@ _rangeVariables.Concat(group.RangeVariables))
                         End If
 
                         letSelector = intoBinder.BindIntoSelector(aggregate,
-                                                                  _rangeVariables,
+                                                                  RangeVariables,
                                                                   compoundKeyReferencePart1,
                                                                   keysRangeVariablesPart1,
                                                                   compoundKeyReferencePart2,
@@ -486,7 +476,7 @@ _rangeVariables.Concat(group.RangeVariables))
                         ' Handle selector for the Let.
                         groupRangeVar = RangeVariableSymbol.CreateCompilerGenerated(Me, aggregate, StringConstants.Group, group.Type)
 
-                        If _rangeVariables.Length = 0 Then
+                        If RangeVariables.Length = 0 Then
                             letSelector = group
                         Else
                             letSelector = BuildJoinSelector(aggregate,
@@ -505,15 +495,15 @@ _rangeVariables.Concat(group.RangeVariables))
             ''' Bind Join/From selector that absorbs following Select/Let in context of this binder.
             ''' </summary>
             Public Function BindAbsorbingJoinSelector(
-                absorbNextOperator As QueryClauseSyntax,
-                operatorsEnumerator As SyntaxList(Of QueryClauseSyntax).Enumerator,
-                leftRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                rightRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                <Out> ByRef joinSelectorDeclaredRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                <Out> ByRef group As BoundQueryClauseBase,
-                <Out> ByRef intoBinder As IntoClauseDisallowGroupReferenceBinder,
-                diagnostics As DiagnosticBag
-            ) As BoundExpression
+                                                       absorbNextOperator As QueryClauseSyntax,
+                                                       operatorsEnumerator As SyntaxList(Of QueryClauseSyntax).Enumerator,
+                                                       leftRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                                       rightRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                           <Out> ByRef joinSelectorDeclaredRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                           <Out> ByRef group As BoundQueryClauseBase,
+                                           <Out> ByRef intoBinder As IntoClauseDisallowGroupReferenceBinder,
+                                                       diagnostics As DiagnosticBag
+                                                   ) As BoundExpression
                 Debug.Assert(joinSelectorDeclaredRangeVariables.IsDefault)
                 Debug.Assert(absorbNextOperator Is operatorsEnumerator.Current)
 
@@ -558,7 +548,7 @@ _rangeVariables.Concat(group.RangeVariables))
 
                 Return joinSelector
             End Function
- 
+
             ''' <summary>
             ''' Bind Join/Let like and mixed selector in context of this binder.
             ''' 
@@ -569,15 +559,15 @@ _rangeVariables.Concat(group.RangeVariables))
             ''' Mixed selector: Function(a, b) New With {a, b, letExpressionRangeVariable}
             ''' </summary>
             Public Function BuildJoinSelector(
-                syntax As VisualBasicSyntaxNode,
-                mustProduceFlatCompoundVariable As Boolean,
-                diagnostics As DiagnosticBag,
-                Optional rangeVarOpt As RangeVariableSymbol = Nothing,
-                Optional rangeVarValueOpt As BoundExpression = Nothing
-            ) As BoundExpression
-                Debug.Assert(_rangeVariables.Length > 0)
+                                               syntax As VisualBasicSyntaxNode,
+                                               mustProduceFlatCompoundVariable As Boolean,
+                                               diagnostics As DiagnosticBag,
+                                      Optional rangeVarOpt As RangeVariableSymbol = Nothing,
+                                      Optional rangeVarValueOpt As BoundExpression = Nothing
+                                             ) As BoundExpression
+                Debug.Assert(RangeVariables.Length > 0)
                 Debug.Assert((rangeVarOpt Is Nothing) = (rangeVarValueOpt Is Nothing))
-                Debug.Assert(rangeVarOpt IsNot Nothing OrElse _lambdaSymbol.ParameterCount > 1)
+                Debug.Assert(rangeVarOpt IsNot Nothing OrElse LambdaSymbol.ParameterCount > 1)
 
                 Dim selectors As BoundExpression()
                 Dim fields As AnonymousTypeField()
@@ -590,7 +580,7 @@ _rangeVariables.Concat(group.RangeVariables))
                 Dim lastIndex As Integer
                 Dim sizeIncrease As Integer = If(rangeVarOpt Is Nothing, 0, 1)
 
-                Debug.Assert(sizeIncrease + _rangeVariables.Length > 1)
+                Debug.Assert(sizeIncrease + RangeVariables.Length > 1)
 
                 ' Note, the special case for [sourceRangeVariables.Count = 1] helps in the
                 ' following scenario:
@@ -600,22 +590,22 @@ _rangeVariables.Concat(group.RangeVariables))
                 ' The lambda has two parameters, but we have only one range variable that should be carried over.
                 ' If we were simply copying lambda's parameters to the Anonymous Type instance, we would 
                 ' copy data that aren't needed (value of the first parameter should be dropped).
-                If _rangeVariables.Length = 1 OrElse mustProduceFlatCompoundVariable Then
+                If RangeVariables.Length = 1 OrElse mustProduceFlatCompoundVariable Then
                     ' Need to flatten
-                    lastIndex = _rangeVariables.Length + sizeIncrease - 1
+                    lastIndex = RangeVariables.Length + sizeIncrease - 1
                     selectors = New BoundExpression(lastIndex) {}
                     fields = New AnonymousTypeField(lastIndex) {}
 
-                    For j As Integer = 0 To _rangeVariables.Length - 1
-                        Dim leftVar As RangeVariableSymbol = _rangeVariables(j)
+                    For j As Integer = 0 To RangeVariables.Length - 1
+                        Dim leftVar As RangeVariableSymbol = RangeVariables(j)
                         selectors(j) = New BoundRangeVariable(leftVar.Syntax, leftVar, leftVar.Type).MakeCompilerGenerated()
                         fields(j) = New AnonymousTypeField(leftVar.Name, leftVar.Type, leftVar.Syntax.GetLocation(), isKeyOrByRef:=True)
                     Next
                 Else
                     ' Nesting ...
-                    Debug.Assert(_rangeVariables.Length > 1)
+                    Debug.Assert(RangeVariables.Length > 1)
 
-                    Dim parameters As ImmutableArray(Of BoundLambdaParameterSymbol) = _lambdaSymbol.Parameters.As(Of BoundLambdaParameterSymbol)
+                    Dim parameters As ImmutableArray(Of BoundLambdaParameterSymbol) = LambdaSymbol.Parameters.As(Of BoundLambdaParameterSymbol)
 
                     lastIndex = parameters.Length + sizeIncrease - 1
                     selectors = New BoundExpression(lastIndex) {}
@@ -646,17 +636,17 @@ selectors.AsImmutableOrNull(),
             ''' Bind key selectors for a Join/Group Join operator.
             ''' </summary>
             Public Shared Sub BindJoinKeys(
-                parentBinder As Binder,
-                join As JoinClauseSyntax,
-                outer As BoundQueryClauseBase,
-                inner As BoundQueryClauseBase,
-                joinSelectorRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                <Out()> ByRef outerKeyLambda As BoundQueryLambda,
-                <Out()> ByRef outerKeyBinder As QueryLambdaBinder,
-                <Out()> ByRef innerKeyLambda As BoundQueryLambda,
-                <Out()> ByRef innerKeyBinder As QueryLambdaBinder,
-                diagnostics As DiagnosticBag
-            )
+                                            parentBinder As Binder,
+                                            join As JoinClauseSyntax,
+                                            outer As BoundQueryClauseBase,
+                                            inner As BoundQueryClauseBase,
+                                            joinSelectorRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                <Out> ByRef outerKeyLambda As BoundQueryLambda,
+                                <Out> ByRef outerKeyBinder As QueryLambdaBinder,
+                                <Out> ByRef innerKeyLambda As BoundQueryLambda,
+                                <Out> ByRef innerKeyBinder As QueryLambdaBinder,
+                                            diagnostics As DiagnosticBag
+                                          )
                 Debug.Assert(outerKeyLambda Is Nothing)
                 Debug.Assert(outerKeyBinder Is Nothing)
                 Debug.Assert(innerKeyLambda Is Nothing)
@@ -668,8 +658,7 @@ selectors.AsImmutableOrNull(),
                                                                                                    outer.CompoundVariableType,
                                                                                                    join, outer.RangeVariables)
 
-                Dim outerKeyLambdaSymbol = parentBinder.CreateQueryLambdaSymbol(LambdaUtilities.GetJoinLeftLambdaBody(join),
-                                                                                SynthesizedLambdaKind.JoinLeftQueryLambda,
+                Dim outerKeyLambdaSymbol = parentBinder.CreateQueryLambdaSymbol((SynthesizedLambdaKind.JoinLeftQueryLambda,LambdaUtilities.GetJoinLeftLambdaBody(join)),
                                                                                 ImmutableArray.Create(outerKeyParam))
                 outerKeyBinder = New QueryLambdaBinder(outerKeyLambdaSymbol, joinSelectorRangeVariables)
 
@@ -678,8 +667,7 @@ selectors.AsImmutableOrNull(),
                                                                                                    inner.CompoundVariableType,
                                                                                                    join, inner.RangeVariables)
 
-                Dim innerKeyLambdaSymbol = parentBinder.CreateQueryLambdaSymbol(LambdaUtilities.GetJoinRightLambdaBody(join),
-                                                                                SynthesizedLambdaKind.JoinRightQueryLambda,
+                Dim innerKeyLambdaSymbol = parentBinder.CreateQueryLambdaSymbol((SynthesizedLambdaKind.JoinRightQueryLambda,LambdaUtilities.GetJoinRightLambdaBody(join)),
                                                                                 ImmutableArray.Create(innerKeyParam))
 
                 innerKeyBinder = New QueryLambdaBinder(innerKeyLambdaSymbol, joinSelectorRangeVariables)
@@ -792,17 +780,18 @@ selectors.AsImmutableOrNull(),
             End Sub
 
             Private Shared Function BindJoinCondition(
-                joinCondition As JoinConditionSyntax,
-                outerKeyBinder As QueryLambdaBinder,
-                outerRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                <Out()> ByRef outerKey As BoundExpression,
-                innerKeyBinder As QueryLambdaBinder,
-                innerRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                <Out()> ByRef innerKey As BoundExpression,
-                sideDeterminator As JoinConditionSideDeterminationVisitor,
-                diagnostics As DiagnosticBag,
-                ByRef suppressDiagnostics As DiagnosticBag
-            ) As Boolean
+                                                       joinCondition As JoinConditionSyntax,
+                                                       outerKeyBinder As QueryLambdaBinder,
+                                                       outerRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                           <Out> ByRef outerKey As BoundExpression,
+                                                       innerKeyBinder As QueryLambdaBinder,
+                                                       innerRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                           <Out> ByRef innerKey As BoundExpression,
+                                                       sideDeterminator As JoinConditionSideDeterminationVisitor,
+                                                       diagnostics As DiagnosticBag,
+                                                 ByRef suppressDiagnostics As DiagnosticBag
+                                                     ) As Boolean
+
                 Debug.Assert(outerKey Is Nothing AndAlso innerKey Is Nothing)
 
                 ' For a JoinConditionSyntax (<left expr> Equals <right expr>), we are going to bind
@@ -932,16 +921,16 @@ selectors.AsImmutableOrNull(),
                 Return keysAreGood
             End Function
 
-
             Private Function VerifyJoinKeys(
-                outerKey As BoundExpression,
-                outerRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                outerSide As JoinConditionSideDeterminationVisitor.Result,
-                innerKey As BoundExpression,
-                innerRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                innerSide As JoinConditionSideDeterminationVisitor.Result,
-                diagnostics As DiagnosticBag
-            ) As Boolean
+                                             outerKey As BoundExpression,
+                                             outerRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                             outerSide As JoinConditionSideDeterminationVisitor.Result,
+                                             innerKey As BoundExpression,
+                                             innerRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                             innerSide As JoinConditionSideDeterminationVisitor.Result,
+                                             diagnostics As DiagnosticBag
+                                           ) As Boolean
+
                 If outerSide = JoinConditionSideDeterminationVisitor.Result.Outer AndAlso
                    innerSide = JoinConditionSideDeterminationVisitor.Result.Inner Then
                     Return True
@@ -999,38 +988,38 @@ selectors.AsImmutableOrNull(),
             End Function
 
             Private Shared Function BuildEqualsOperandIsBadErrorArgument(
-                builder As System.Text.StringBuilder,
-                rangeVariables As ImmutableArray(Of RangeVariableSymbol)
-            ) As String
-                builder.Clear()
+                                                                          builder As System.Text.StringBuilder,
+                                                                          rangeVariables As ImmutableArray(Of RangeVariableSymbol)
+                                                                        ) As String
+                With builder
+                    builder.Clear()
 
-                Dim i As Integer
+                    Dim i As Integer
 
-                For i = 0 To rangeVariables.Length - 1
-                    If Not rangeVariables(i).Name.StartsWith("$"c, StringComparison.Ordinal) Then
-                        builder.Append("'"c)
-                        builder.Append(rangeVariables(i).Name)
-                        builder.Append("'"c)
-                        i += 1
-                        Exit For
-                    End If
-                Next
+                    For i = 0 To rangeVariables.Length - 1
+                        If Not rangeVariables(i).Name.StartsWith("$"c, StringComparison.Ordinal) Then
+                            .Append("'"c)
+                            .Append(rangeVariables(i).Name)
+                            .Append("'"c)
+                            i += 1
+                            Exit For
+                        End If
+                    Next
 
-                For i = i To rangeVariables.Length - 1
-                    If Not rangeVariables(i).Name.StartsWith("$"c, StringComparison.Ordinal) Then
-                        builder.Append(","c)
-                        builder.Append(" "c)
-                        builder.Append("'"c)
-                        builder.Append(rangeVariables(i).Name)
-                        builder.Append("'"c)
-                    End If
-                Next
+                    For i = i To rangeVariables.Length - 1
+                        If Not rangeVariables(i).Name.StartsWith("$"c, StringComparison.Ordinal) Then
+                            .Append(","c)
+                            .Append(" "c)
+                            .Append("'"c)
+                            .Append(rangeVariables(i).Name)
+                            .Append("'"c)
+                        End If
+                    Next
 
-                If builder.Length = 0 Then
-                    Return Nothing
-                End If
+                    If .Length = 0 Then Return Nothing
 
-                Return builder.ToString()
+                    Return .ToString()
+                End With
             End Function
 
             ''' <summary>
@@ -1039,7 +1028,7 @@ selectors.AsImmutableOrNull(),
             Private Class JoinConditionSideDeterminationVisitor
                 Inherits BoundTreeWalkerWithStackGuardWithoutRecursionOnTheLeftOfBinaryOperator
 
-                <Flags()>
+                <Flags>
                 Public Enum Result
                     None = 0
                     Outer = 1
@@ -1052,9 +1041,9 @@ selectors.AsImmutableOrNull(),
                 Private _side As Result
 
                 Public Sub New(
-                    outerRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                    innerRangeVariables As ImmutableArray(Of RangeVariableSymbol)
-                )
+                                outerRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                innerRangeVariables As ImmutableArray(Of RangeVariableSymbol)
+                              )
                     _outerRangeVariables = StaticCast(Of Object).From(outerRangeVariables)
                     _innerRangeVariables = StaticCast(Of Object).From(innerRangeVariables)
                 End Sub
@@ -1083,7 +1072,6 @@ selectors.AsImmutableOrNull(),
                 End Function
             End Class
 
-
             ''' <summary>
             ''' Helper visitor to report query specific errors for an operand of an Equals expression.
             ''' </summary>
@@ -1096,11 +1084,11 @@ selectors.AsImmutableOrNull(),
                 Private ReadOnly _badRangeVariables As ImmutableArray(Of Object) 'ImmutableArray(Of RangeVariableSymbol)
 
                 Private Sub New(
-                    binder As Binder,
-                    errorInfo As DiagnosticInfo,
-                    badRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                    diagnostics As DiagnosticBag
-                )
+                                 binder As Binder,
+                                 errorInfo As DiagnosticInfo,
+                                 badRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                 diagnostics As DiagnosticBag
+                               )
                     _badRangeVariables = StaticCast(Of Object).From(badRangeVariables)
                     _binder = binder
                     _diagnostics = diagnostics
@@ -1108,12 +1096,12 @@ selectors.AsImmutableOrNull(),
                 End Sub
 
                 Public Shared Sub Report(
-                    binder As Binder,
-                    errorInfo As DiagnosticInfo,
-                    badRangeVariables As ImmutableArray(Of RangeVariableSymbol),
-                    node As BoundExpression,
-                    diagnostics As DiagnosticBag
-                )
+                                          binder As Binder,
+                                          errorInfo As DiagnosticInfo,
+                                          badRangeVariables As ImmutableArray(Of RangeVariableSymbol),
+                                          node As BoundExpression,
+                                          diagnostics As DiagnosticBag
+                                        )
                     Dim v As New EqualsOperandIsBadErrorVisitor(binder, errorInfo, badRangeVariables, diagnostics)
                     Try
                         v.Visit(node)
@@ -1122,7 +1110,9 @@ selectors.AsImmutableOrNull(),
                     End Try
                 End Sub
 
-                Public Overrides Function VisitRangeVariable(node As BoundRangeVariable) As BoundNode
+                Public Overrides Function VisitRangeVariable(
+                                                              node As BoundRangeVariable
+                                                            ) As BoundNode
                     Dim rangeVariable As RangeVariableSymbol = node.RangeVariable
 
                     If _badRangeVariables.IndexOf(rangeVariable, ReferenceEqualityComparer.Instance) >= 0 Then
@@ -1133,6 +1123,7 @@ selectors.AsImmutableOrNull(),
                 End Function
 
             End Class
+
         End Class
 
     End Class
