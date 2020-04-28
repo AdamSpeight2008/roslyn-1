@@ -34,6 +34,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                 rangeVariables As ImmutableArray(Of RangeVariableSymbol)
                                               )
 #If DEBUG Then
+            Debug.Assert(declaredNames IsNot Nothing)
             For Each rangeVar As RangeVariableSymbol In rangeVariables
                 If Not rangeVar.Name.StartsWith("$"c, StringComparison.Ordinal) Then
                     Debug.Assert(declaredNames.Contains(rangeVar.Name))

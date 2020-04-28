@@ -76,7 +76,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             intoLambdaSymbol.SetQueryLambdaReturnType(intoSelector.Type)
             intoLambda.SetWasCompilerGenerated()
-            declaredNames.Free()
+            'declaredNames?.Free()
 
             Return intoLambda
         End Function

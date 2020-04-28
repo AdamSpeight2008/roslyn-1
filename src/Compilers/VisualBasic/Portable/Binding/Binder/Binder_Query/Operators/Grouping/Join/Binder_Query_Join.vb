@@ -154,7 +154,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     callDiagnostics.Free()
                 End If
             End If
-            declaredNames.Free()
+            namesInScopeInOnClause?.Free()
+            'declaredNames?.Free()
             Return New BoundQueryClause(groupJoin,
                                         boundCallOrBadExpression,
                                         outer.RangeVariables.Concat(intoRangeVariables),
@@ -520,7 +521,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                                       boundJoinQueryLambda.Expression.Type,
                                                                       lambdaBinders,
                                                                       boundCallOrBadExpression.Type)
-            declaredNames.Free
+           ' declaredNames?.Free
             If absorbNextOperator Is Nothing Then Return result
 
             Debug.Assert(Not isNested)

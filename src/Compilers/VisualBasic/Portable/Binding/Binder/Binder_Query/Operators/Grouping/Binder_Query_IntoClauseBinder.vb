@@ -188,7 +188,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
 
                 AssertDeclaredNames(declaredNames, rangeVariables.AsImmutableOrNull())
-                declaredNames.Free()
+                'declaredNames?.Free()
                 declaredRangeVariables = rangeVariables.AsImmutableOrNull()
                 Return intoSelector
             End Function
@@ -383,7 +383,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End If
 
                 Debug.Assert(selector IsNot Nothing)
-                declaredNames.Free()
+                'declaredNames?.Free()
 
                 Return rangeVar
             End Function

@@ -98,6 +98,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                               result.Type,
                                               ImmutableArray.Create(Of Binder)(intoBinder),
                                               result.Type)
+            declaredNames?.Free()
             Return source
         End Function
 

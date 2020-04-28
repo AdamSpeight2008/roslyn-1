@@ -129,11 +129,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         source = BindOrderByClause(source, DirectCast(current, OrderByClauseSyntax), diagnostics)
 
                     Case SyntaxKind.SimpleJoinClause
-                        ' Note, this call can advance [operators] enumerator if it absorbs the following Let or Select.
+                          Dim declaredNames As PooledObjects.PooledHashSet(Of String) = NOthing
+                      ' Note, this call can advance [operators] enumerator if it absorbs the following Let or Select.
                         source = BindInnerJoinClause(source, DirectCast(current, SimpleJoinClauseSyntax), Nothing, operators, diagnostics)
+                        declaredNames?.Free
 
                     Case SyntaxKind.GroupJoinClause
+                        Dim declaredNames As PooledObjects.PooledHashSet(Of String) = NOthing
                         source = BindGroupJoinClause(source, DirectCast(current, GroupJoinClauseSyntax), Nothing, operators, diagnostics)
+                        declaredNames?.Free
 
                     Case SyntaxKind.GroupByClause
                         source = BindGroupByClause(source, DirectCast(current, GroupByClauseSyntax), diagnostics)

@@ -183,7 +183,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                                      diagnostics).MakeCompilerGenerated()
 
                     declaredRangeVariables = rangeVariables.AsImmutableOrNull()
-                    declaredNames.Free()
+                    declaredNames?.Free()
                 End If
 
                 Debug.Assert(Not declaredRangeVariables.IsDefault AndAlso selectorSyntax IsNot Nothing)

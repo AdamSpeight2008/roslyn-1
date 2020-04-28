@@ -37,7 +37,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                  ByRef operatorsEnumerator As SyntaxList(Of QueryClauseSyntax).Enumerator,
                                                        diagnostics As DiagnosticBag
                                                      ) As BoundQueryClauseBase
-
             Debug.Assert(clauseSyntax.Kind.IsKindEither(SyntaxKind.AggregateClause,
                                                     SyntaxKind.FromClause,
                                                     SyntaxKind.ZipClause))
@@ -404,7 +403,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 variable = RangeVariableSymbol.CreateForErrorRecovery(Me, syntax, variableType)
             End If
 
-            declaredNames.Free()
+            'declaredNames?.Free()
             Dim result As New BoundQueryableSource(syntax, source, rangeVariableOpt,
                                                    ImmutableArray.Create(variable), variableType,
                                                    ImmutableArray(Of Binder).Empty,
