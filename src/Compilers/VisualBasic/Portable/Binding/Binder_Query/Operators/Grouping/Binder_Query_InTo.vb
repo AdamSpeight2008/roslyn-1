@@ -6,6 +6,7 @@ Imports System.Collections.Immutable
 Imports System.Runtime.InteropServices
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.PooledObjects
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -20,7 +21,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                  keysRangeVariables As ImmutableArray(Of RangeVariableSymbol),
                                                  keysCompoundVariableType As TypeSymbol,
                                                  addKeysInScope As Boolean,
-                                                 declaredNames As HashSet(Of String),
+                                                 declaredNames As PooledHashSet(Of String),
                                                  groupType As TypeSymbol,
                                                  groupRangeVariables As ImmutableArray(Of RangeVariableSymbol),
                                                  groupCompoundVariableType As TypeSymbol,
@@ -75,6 +76,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             intoLambdaSymbol.SetQueryLambdaReturnType(intoSelector.Type)
             intoLambda.SetWasCompilerGenerated()
+            declaredNames.Free()
 
             Return intoLambda
         End Function

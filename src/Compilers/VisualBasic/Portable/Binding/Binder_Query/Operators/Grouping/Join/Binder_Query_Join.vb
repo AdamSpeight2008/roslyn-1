@@ -6,6 +6,7 @@ Imports System.Collections.Immutable
 Imports System.Runtime.InteropServices
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.PooledObjects
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -32,7 +33,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Function BindGroupJoinClause(
                                               outer As BoundQueryClauseBase,
                                               groupJoin As GroupJoinClauseSyntax,
-                                              declaredNames As HashSet(Of String),
+                                              declaredNames As PooledHashSet(Of String),
                                               operatorsEnumerator As SyntaxList(Of QueryClauseSyntax).Enumerator,
                                               diagnostics As DiagnosticBag
                                             ) As BoundQueryClause
@@ -56,7 +57,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             '     parameter, when passed, includes the names of all such range variables and this function will add
             '     to this set.
 
-            Dim namesInScopeInOnClause As HashSet(Of String) = CreateSetOfDeclaredNames(outer.RangeVariables)
+            Dim namesInScopeInOnClause = CreateSetOfDeclaredNames(outer.RangeVariables)
 
             If declaredNames Is Nothing Then
                 Debug.Assert(groupJoin Is operatorsEnumerator.Current)
@@ -153,7 +154,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     callDiagnostics.Free()
                 End If
             End If
-
+            declaredNames.Free()
             Return New BoundQueryClause(groupJoin,
                                         boundCallOrBadExpression,
                                         outer.RangeVariables.Concat(intoRangeVariables),
@@ -346,7 +347,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Function BindInnerJoinClause(
                                               outer As BoundQueryClauseBase,
                                               join As SimpleJoinClauseSyntax,
-                                              declaredNames As HashSet(Of String),
+                                              declaredNames As PooledHashSet(Of String),
                                         ByRef operatorsEnumerator As SyntaxList(Of QueryClauseSyntax).Enumerator,
                                               diagnostics As DiagnosticBag
                                             ) As BoundQueryClauseBase
@@ -519,7 +520,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                                       boundJoinQueryLambda.Expression.Type,
                                                                       lambdaBinders,
                                                                       boundCallOrBadExpression.Type)
-
+            declaredNames.Free
             If absorbNextOperator Is Nothing Then Return result
 
             Debug.Assert(Not isNested)

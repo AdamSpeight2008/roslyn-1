@@ -19,6 +19,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                               operatorName As String,
                                               diagnostics As DiagnosticBag
                                             ) As BoundQueryClause
+            Debug.Assert(source IsNot Nothing, NameOf(source))
+            Debug.Assert(partition IsNot Nothing, NameOf(partition))
 
             ' Bind the Count expression as a value, conversion should take care of the rest (making it an RValue, etc.). 
             Dim boundCount As BoundExpression = Me.BindValue(partition.Count, diagnostics)
@@ -32,7 +34,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Else
                 Dim suppressDiagnostics As DiagnosticBag = Nothing
 
-                If boundCount.HasErrors OrElse (boundCount.Type IsNot Nothing AndAlso boundCount.Type.IsErrorType()) Then
+                If boundCount.HasErrors OrElse boundCount.Type?.IsErrorType() Then
                     ' Operator BindQueryClauseCall will fail, let's suppress any additional errors it will report.
                     suppressDiagnostics = DiagnosticBag.GetInstance()
                     diagnostics = suppressDiagnostics

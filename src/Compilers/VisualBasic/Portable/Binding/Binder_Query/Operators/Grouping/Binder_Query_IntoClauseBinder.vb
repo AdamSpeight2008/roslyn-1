@@ -5,6 +5,7 @@
 Imports System.Collections.Immutable
 Imports System.Runtime.InteropServices
 Imports Microsoft.CodeAnalysis
+Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
@@ -56,7 +57,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                               keysRangeVariables As ImmutableArray(Of RangeVariableSymbol),
                                               compoundKeyReferencePart1 As BoundExpression, keysRangeVariablesPart1 As ImmutableArray(Of RangeVariableSymbol),
                                               compoundKeyReferencePart2 As BoundExpression, keysRangeVariablesPart2 As ImmutableArray(Of RangeVariableSymbol),
-                                              declaredNames As HashSet(Of String),
+                                              declaredNames As PooledHashSet(Of String),
                                               aggregationVariables As SeparatedSyntaxList(Of AggregationRangeVariableSyntax),
                                               mustProduceFlatCompoundVariable As Boolean,
                                   <Out> ByRef declaredRangeVariables As ImmutableArray(Of RangeVariableSymbol),
@@ -187,7 +188,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
 
                 AssertDeclaredNames(declaredNames, rangeVariables.AsImmutableOrNull())
-
+                declaredNames.Free()
                 declaredRangeVariables = rangeVariables.AsImmutableOrNull()
                 Return intoSelector
             End Function
@@ -307,7 +308,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ''' </summary>
             Public Function BindAggregationRangeVariable(
                                                           item As AggregationRangeVariableSyntax,
-                                                          declaredNames As HashSet(Of String),
+                                                          declaredNames As PooledHashSet(Of String),
                                               <Out> ByRef selector As BoundExpression,
                                                           diagnostics As DiagnosticBag
                                                         ) As RangeVariableSymbol
@@ -382,6 +383,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End If
 
                 Debug.Assert(selector IsNot Nothing)
+                declaredNames.Free()
 
                 Return rangeVar
             End Function

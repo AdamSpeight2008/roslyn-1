@@ -4,19 +4,22 @@
 
 Imports System.Collections.Immutable
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
+Imports Microsoft.CodeAnalysis.PooledObjects
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
     Partial Friend Class Binder
+        Private Shared ReadOnly s_DeclaredNamesPool As PooledObjects.ObjectPool(Of PooledObjects.PooledHashSet(Of String)) _
+            = PooledObjects.PooledHashSet(Of String).CreatePool(CaseInsensitiveComparison.Comparer)
 
-        Private Shared Function CreateSetOfDeclaredNames() As HashSet(Of String)
-            Return New HashSet(Of String)(CaseInsensitiveComparison.Comparer)
+        Private Shared Function CreateSetOfDeclaredNames() As PooledHashSet(Of String)
+            Return s_DeclaredNamesPool.Allocate() ' New HashSet(Of String)(CaseInsensitiveComparison.Comparer)
         End Function
 
         Private Shared Function CreateSetOfDeclaredNames(
                                                           rangeVariables As ImmutableArray(Of RangeVariableSymbol)
-                                                        ) As HashSet(Of String)
-            Dim declaredNames As New HashSet(Of String)(CaseInsensitiveComparison.Comparer)
+                                                        ) As PooledObjects.PooledHashSet(Of String)
+            Dim declaredNames = s_DeclaredNamesPool.Allocate()
 
             For Each rangeVar As RangeVariableSymbol In rangeVariables
                 declaredNames.Add(rangeVar.Name)
@@ -27,7 +30,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         <Conditional("DEBUG")>
         Private Shared Sub AssertDeclaredNames(
-                                                declaredNames As HashSet(Of String),
+                                                declaredNames As PooledHashSet(Of String),
                                                 rangeVariables As ImmutableArray(Of RangeVariableSymbol)
                                               )
 #If DEBUG Then

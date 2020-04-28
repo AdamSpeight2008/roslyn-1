@@ -102,6 +102,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Function InferControlVariableType(
                                                    method As MethodSymbol
                                                  ) As TypeSymbol
+            Debug.Assert(method IsNot Nothing, NameOf(method))
             ' Ignore Subs
             If method.IsSub Then Return Nothing
 

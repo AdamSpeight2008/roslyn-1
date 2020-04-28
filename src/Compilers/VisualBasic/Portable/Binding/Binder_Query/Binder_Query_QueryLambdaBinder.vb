@@ -152,7 +152,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Else
                     ' Need to build an Anonymous Type
                     Dim selectors = New BoundExpression(selectVariables.Count - 1) {}
-                    Dim declaredNames As HashSet(Of String) = CreateSetOfDeclaredNames()
+                    Dim declaredNames As PooledObjects.PooledHashSet(Of String) = CreateSetOfDeclaredNames()
                     Dim rangeVariables(selectVariables.Count - 1) As RangeVariableSymbol
 
                     For i As Integer = 0 To selectVariables.Count - 1
@@ -179,10 +179,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                                      New AnonymousTypeDescriptor(fields.AsImmutableOrNull(),
                                                                                                  selectorSyntax.QueryClauseKeywordOrRangeVariableIdentifier.GetLocation(),
                                                                                                  True),
-selectors.AsImmutableOrNull(),
+                                                                     selectors.AsImmutableOrNull(),
                                                                      diagnostics).MakeCompilerGenerated()
 
                     declaredRangeVariables = rangeVariables.AsImmutableOrNull()
+                    declaredNames.Free()
                 End If
 
                 Debug.Assert(Not declaredRangeVariables.IsDefault AndAlso selectorSyntax IsNot Nothing)

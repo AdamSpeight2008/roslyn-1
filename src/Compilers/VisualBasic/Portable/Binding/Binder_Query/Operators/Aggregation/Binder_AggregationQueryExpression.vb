@@ -6,6 +6,7 @@ Imports System.Collections.Immutable
 Imports Microsoft.CodeAnalysis
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.PooledObjects
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -66,7 +67,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                aggregationVariablesCount As Integer
                                              ) As BoundQueryClauseBase
             ' Complex case, need to build an instance of an Anonymous Type. 
-            Dim declaredNames As HashSet(Of String) = CreateSetOfDeclaredNames()
+            Dim declaredNames As PooledHashSet(Of String) = CreateSetOfDeclaredNames()
 
             Dim selectors = New BoundExpression(aggregationVariablesCount - 1) {}
             Dim fields = New AnonymousTypeField(selectors.Length - 1) {}

@@ -6,6 +6,7 @@ Imports System.Collections.Immutable
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.PooledObjects
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -292,7 +293,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Function BindCollectionRangeVariable(
                                                       syntax As CollectionRangeVariableSyntax,
                                                       beginsTheQuery As Boolean,
-                                                      declaredNames As HashSet(Of String),
+                                                      declaredNames As PooledHashSet(Of String),
                                                       diagnostics As DiagnosticBag
                                                     ) As BoundQueryableSource
 
@@ -340,8 +341,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     variableType = targetVariableType
                 End If
 
-            ElseIf targetVariableType IsNot Nothing AndAlso
-                   Not targetVariableType.IsSameTypeIgnoringAll(variableType) Then
+            ElseIf Not targetVariableType?.IsSameTypeIgnoringAll(variableType) Then
                 Debug.Assert(Not sourceIsNotQueryable AndAlso syntax.AsClause IsNot Nothing)
                 ' Need to apply implicit Select that converts variableType to targetVariableType.
                 source = ApplyImplicitCollectionConversion(syntax, source, variableType, targetVariableType, diagnostics)
@@ -352,7 +352,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim rangeVarName As String = syntax.Identifier.Identifier.ValueText
             Dim rangeVariableOpt As RangeVariableSymbol = Nothing
 
-            If rangeVarName IsNot Nothing AndAlso rangeVarName.Length = 0 Then
+            If rangeVarName?.Length = 0 Then
                 ' Empty string must have been a syntax error. 
                 rangeVarName = Nothing
             End If
@@ -404,6 +404,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 variable = RangeVariableSymbol.CreateForErrorRecovery(Me, syntax, variableType)
             End If
 
+            declaredNames.Free()
             Dim result As New BoundQueryableSource(syntax, source, rangeVariableOpt,
                                                    ImmutableArray.Create(variable), variableType,
                                                    ImmutableArray(Of Binder).Empty,
