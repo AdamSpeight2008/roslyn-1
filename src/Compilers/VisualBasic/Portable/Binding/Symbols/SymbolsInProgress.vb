@@ -14,7 +14,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private ReadOnly _symbols As ImmutableSetWithInsertionOrder(Of T)
 
-        Friend Shared ReadOnly Empty As SymbolsInProgress(Of T) = New SymbolsInProgress(Of T)(ImmutableSetWithInsertionOrder(Of T).Empty)
+        Friend Shared ReadOnly Property Empty As New SymbolsInProgress(Of T)(ImmutableSetWithInsertionOrder(Of T).Empty)
 
         Private Sub New(fields As ImmutableSetWithInsertionOrder(Of T))
             Me._symbols = fields

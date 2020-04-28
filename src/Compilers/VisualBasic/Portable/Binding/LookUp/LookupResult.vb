@@ -355,9 +355,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Sub Free()
             Clear()
-            If _pool IsNot Nothing Then
-                _pool.Free(Me)
-            End If
+            _pool?.Free(Me)
         End Sub
 
         Public Sub Clear()
@@ -515,13 +513,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             For Each sym In Symbols
                 Select Case sym.Kind
                     Case SymbolKind.Method
-                        If Not DirectCast(sym, MethodSymbol).IsOverloads Then
-                            Return False
-                        End If
+                        If Not DirectCast(sym, MethodSymbol).IsOverloads Then Return False
                     Case SymbolKind.Property
-                        If Not DirectCast(sym, PropertySymbol).IsOverloads Then
-                            Return False
-                        End If
+                        If Not DirectCast(sym, PropertySymbol).IsOverloads Then Return False
                 End Select
             Next
 

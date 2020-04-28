@@ -8,10 +8,11 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
+
     ''' <summary>
     ''' Options that can be used to modify the symbol lookup mechanism. Multiple options can be combined together.
     ''' </summary>
-    <Flags()>
+    <Flags>
     Friend Enum LookupOptions
         ''' <summary>
         ''' Consider all symbols, using normal accessibility rules.
@@ -175,14 +176,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
         End Sub
 
+        Private Const InvalidOptionsForExtensionMethods As LookupOptions = LookupOptions.IgnoreExtensionMethods Or
+                                                                           LookupOptions.MustNotBeInstance Or
+                                                                           LookupOptions.NamespacesOrTypesOnly Or
+                                                                           LookupOptions.AttributeTypeOnly
+
         <Extension>
         Friend Function ShouldLookupExtensionMethods(options As LookupOptions) As Boolean
-            Const invalidOptions As LookupOptions = LookupOptions.IgnoreExtensionMethods Or
-                                                    LookupOptions.MustNotBeInstance Or
-                                                    LookupOptions.NamespacesOrTypesOnly Or
-                                                    LookupOptions.AttributeTypeOnly
-
-            Return (options And invalidOptions) = 0
+            Return (options And InvalidOptionsForExtensionMethods) = 0
         End Function
     End Module
 End Namespace
