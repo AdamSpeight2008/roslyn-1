@@ -33,6 +33,7 @@
     <Compile Remove="Symbols\EmbeddedSymbols\VbMyTemplateText.vb" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Binding\Binder_Query\Operators\LINQ_Operators.md" />
     <None Include="BoundTree\BoundNodes.xml" />
     <PublicAPI Include="PublicAPI.Shipped.txt" />
     <PublicAPI Include="PublicAPI.Unshipped.txt" />
@@ -71,6 +72,13 @@
     <InternalsVisibleTo Include="Microsoft.CodeAnalysis.EditorFeatures2.UnitTests" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Binding\Binder_Query\Operators\Join\" />
+    <Folder Include="Binding\Binder_Query\Operators\Concatenation\" />
+    <Folder Include="Binding\Binder_Query\Operators\Conversion\" />
+    <Folder Include="Binding\Binder_Query\Operators\Generation\" />
+    <Folder Include="Binding\Binder_Query\Operators\Element\" />
+    <Folder Include="Binding\Binder_Query\Operators\Equality\" />
+    <Folder Include="Binding\Binder_Query\Operators\Quantifiers\" />
     <Folder Include="My Project\" />
   </ItemGroup>
   <ItemGroup>
