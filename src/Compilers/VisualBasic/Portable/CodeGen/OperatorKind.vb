@@ -56,6 +56,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         [AndAlso] = 22
         [Is] = 23
         [IsNot] = 24
+        Into = 25
 
         OpMask = &H1F
 

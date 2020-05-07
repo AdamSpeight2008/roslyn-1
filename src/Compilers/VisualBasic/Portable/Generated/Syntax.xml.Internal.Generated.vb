@@ -51327,6 +51327,37 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' similar kind of operators (arithmetic, relational, logical or string); the
         ''' exact operation being performed is determined by the Operator property.
         ''' </summary>
+        ''' <param name="left">
+        ''' The left operand.
+        ''' </param>
+        ''' <param name="right">
+        ''' The right operand.
+        ''' </param>
+        Friend Shared Function InToExpression(left As ExpressionSyntax, operatorToken As SyntaxToken, right As ExpressionSyntax) As BinaryExpressionSyntax
+            Debug.Assert(left IsNot Nothing)
+            Debug.Assert(operatorToken IsNot Nothing AndAlso operatorToken.Kind = SyntaxKind.IntoKeyword)
+            Debug.Assert(right IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.InToExpression, left, operatorToken, right, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, BinaryExpressionSyntax)
+            End If
+
+            Dim result = New BinaryExpressionSyntax(SyntaxKind.InToExpression, left, operatorToken, right)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' BinaryExpressionSyntax. One of AddExpression, SubtractExpression,
@@ -51336,7 +51367,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' LessThanExpression, LessThanOrEqualExpression, GreaterThanOrEqualExpression,
         ''' GreaterThanExpression, IsExpression, IsNotExpression, LikeExpression,
         ''' OrExpression, ExclusiveOrExpression, AndExpression, OrElseExpression,
-        ''' AndAlsoExpression.
+        ''' AndAlsoExpression, InToExpression.
         ''' </param>
         ''' <param name="left">
         ''' The left operand.
@@ -63403,6 +63434,37 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' similar kind of operators (arithmetic, relational, logical or string); the
         ''' exact operation being performed is determined by the Operator property.
         ''' </summary>
+        ''' <param name="left">
+        ''' The left operand.
+        ''' </param>
+        ''' <param name="right">
+        ''' The right operand.
+        ''' </param>
+        Friend Function InToExpression(left As ExpressionSyntax, operatorToken As SyntaxToken, right As ExpressionSyntax) As BinaryExpressionSyntax
+            Debug.Assert(left IsNot Nothing)
+            Debug.Assert(operatorToken IsNot Nothing AndAlso operatorToken.Kind = SyntaxKind.IntoKeyword)
+            Debug.Assert(right IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.InToExpression, left, operatorToken, right, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, BinaryExpressionSyntax)
+            End If
+
+            Dim result = New BinaryExpressionSyntax(SyntaxKind.InToExpression, left, operatorToken, right, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' BinaryExpressionSyntax. One of AddExpression, SubtractExpression,
@@ -63412,7 +63474,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' LessThanExpression, LessThanOrEqualExpression, GreaterThanOrEqualExpression,
         ''' GreaterThanExpression, IsExpression, IsNotExpression, LikeExpression,
         ''' OrExpression, ExclusiveOrExpression, AndExpression, OrElseExpression,
-        ''' AndAlsoExpression.
+        ''' AndAlsoExpression, InToExpression.
         ''' </param>
         ''' <param name="left">
         ''' The left operand.

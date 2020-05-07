@@ -264,7 +264,8 @@ Public Class ParseExpressionTest
 
     <Fact>
     Public Sub ParseTypeOf_InTo()
-        ParseExpression("TypeOf source Is type InTo target")
+       Dim result = ParseExpression("source InTo target")
+        result = ParseExpression("TypeOf source Is type Into target")
     End Sub
 
     <Fact>

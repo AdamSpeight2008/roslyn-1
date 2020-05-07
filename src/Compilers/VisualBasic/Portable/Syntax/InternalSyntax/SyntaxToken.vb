@@ -345,6 +345,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return Me.ValueText
         End Function
 
+        Friend Function IsContextualBinaryOperator() As Boolean
+            Select Case ContextualKind
+                Case SyntaxKind.IntoKeyword
+                    Return True
+                End select
+            Return False
+        End Function
+
         ''' <summary>
         ''' Helpers to check whether the token is a binary operator
         ''' </summary>
@@ -352,34 +360,34 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Public Function IsBinaryOperator() As Boolean
             Select Case Kind
                 Case SyntaxKind.MinusToken,
-                    SyntaxKind.PlusToken,
-                    SyntaxKind.AsteriskToken,
-                    SyntaxKind.SlashToken,
-                    SyntaxKind.BackslashToken,
-                    SyntaxKind.CaretToken,
-                    SyntaxKind.AmpersandToken,
-                    SyntaxKind.LessThanLessThanToken,
-                    SyntaxKind.GreaterThanGreaterThanToken,
-                    SyntaxKind.ModKeyword,
-                    SyntaxKind.OrKeyword,
-                    SyntaxKind.OrElseKeyword,
-                    SyntaxKind.XorKeyword,
-                    SyntaxKind.AndKeyword,
-                    SyntaxKind.AndAlsoKeyword,
-                    SyntaxKind.LikeKeyword,
-                    SyntaxKind.EqualsToken,
-                    SyntaxKind.LessThanGreaterThanToken,
-                    SyntaxKind.LessThanToken,
-                    SyntaxKind.LessThanEqualsToken,
-                    SyntaxKind.GreaterThanToken,
-                    SyntaxKind.GreaterThanEqualsToken,
-                    SyntaxKind.IsKeyword,
-                    SyntaxKind.IsNotKeyword
+                     SyntaxKind.PlusToken,
+                     SyntaxKind.AsteriskToken,
+                     SyntaxKind.SlashToken,
+                     SyntaxKind.BackslashToken,
+                     SyntaxKind.CaretToken,
+                     SyntaxKind.AmpersandToken,
+                     SyntaxKind.LessThanLessThanToken,
+                     SyntaxKind.GreaterThanGreaterThanToken,
+                     SyntaxKind.ModKeyword,
+                     SyntaxKind.OrKeyword,
+                     SyntaxKind.OrElseKeyword,
+                     SyntaxKind.XorKeyword,
+                     SyntaxKind.AndKeyword,
+                     SyntaxKind.AndAlsoKeyword,
+                     SyntaxKind.LikeKeyword,
+                     SyntaxKind.EqualsToken,
+                     SyntaxKind.LessThanGreaterThanToken,
+                     SyntaxKind.LessThanToken,
+                     SyntaxKind.LessThanEqualsToken,
+                     SyntaxKind.GreaterThanToken,
+                     SyntaxKind.GreaterThanEqualsToken,
+                     SyntaxKind.IsKeyword,
+                     SyntaxKind.IsNotKeyword
                     Return True
             End Select
-
             Return False
         End Function
+
 
         ''' <summary>
         ''' Check whether the token is a statement terminator

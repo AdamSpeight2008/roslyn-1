@@ -1238,6 +1238,7 @@ binary_expression
   | exponentiate_expression
   | greater_than_expression
   | greater_than_or_equal_expression
+  | in_to_expression
   | integer_divide_expression
   | is_expression
   | is_not_expression
@@ -1292,6 +1293,10 @@ greater_than_expression
 
 greater_than_or_equal_expression
   : expression '>=' expression
+  ;
+
+in_to_expression
+  : expression 'Into' expression
   ;
 
 integer_divide_expression

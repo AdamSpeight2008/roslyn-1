@@ -19,6 +19,7 @@ Microsoft.CodeAnalysis.Operations.IRelationalPatternOperation.OperatorKind.get -
 Microsoft.CodeAnalysis.Operations.IRelationalPatternOperation.Value.get -> Microsoft.CodeAnalysis.IOperation
 Microsoft.CodeAnalysis.Operations.ITypePatternOperation
 Microsoft.CodeAnalysis.Operations.ITypePatternOperation.MatchedType.get -> Microsoft.CodeAnalysis.ITypeSymbol
+const Microsoft.CodeAnalysis.WellKnownMemberNames.IntoExpressionName = "Name" -> string
 virtual Microsoft.CodeAnalysis.Operations.OperationVisitor.VisitBinaryPattern(Microsoft.CodeAnalysis.Operations.IBinaryPatternOperation operation) -> void
 virtual Microsoft.CodeAnalysis.Operations.OperationVisitor.VisitNegatedPattern(Microsoft.CodeAnalysis.Operations.INegatedPatternOperation operation) -> void
 virtual Microsoft.CodeAnalysis.Operations.OperationVisitor.VisitRelationalPattern(Microsoft.CodeAnalysis.Operations.IRelationalPatternOperation operation) -> void

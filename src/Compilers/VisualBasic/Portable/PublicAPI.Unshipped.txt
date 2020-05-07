@@ -1,1 +1,3 @@
 Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.InToExpression = 793 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.InToExpression(left As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax, operatorToken As Microsoft.CodeAnalysis.SyntaxToken, right As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.BinaryExpressionSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.InToExpression(left As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax, right As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.BinaryExpressionSyntax

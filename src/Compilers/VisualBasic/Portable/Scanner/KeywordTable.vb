@@ -192,7 +192,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
                 SyntaxKind.FromKeyword, QueryClause Or CanFollowExpr,
                 SyntaxKind.GroupKeyword, QueryClause Or CanFollowExpr,
                 SyntaxKind.InferKeyword, None,
-                SyntaxKind.IntoKeyword, CanFollowExpr,
+                SyntaxKind.IntoKeyword, PrecedenceInto Or CanFollowExpr,
                 SyntaxKind.IsFalseKeyword, None,
                 SyntaxKind.IsTrueKeyword, None,
                 SyntaxKind.JoinKeyword, QueryClause Or CanFollowExpr,
@@ -252,7 +252,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
                 SyntaxKind.LessThanLessThanEqualsToken, PrecedenceShift,
                 SyntaxKind.GreaterThanGreaterThanEqualsToken, PrecedenceShift,
                 SyntaxKind.PercentGreaterThanToken, CanFollowExpr
-                }
+            }
 
             For i As Integer = 0 To keywordInitData.Length - 1 Step 2
                 Dim bits = keywordInitData(i + 1)
@@ -401,6 +401,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         PrecedenceNegate
         PrecedenceExponentiate
         PrecedenceAwait
+        PrecedenceInto
     End Enum
 
 End Namespace

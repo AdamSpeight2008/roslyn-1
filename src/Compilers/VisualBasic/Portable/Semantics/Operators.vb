@@ -115,6 +115,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             operators.Add(WellKnownMemberNames.RightShiftOperatorName, New OperatorInfo(BinaryOperatorKind.RightShift))
             operators.Add(WellKnownMemberNames.ImplicitConversionName, New OperatorInfo(UnaryOperatorKind.Implicit))
             operators.Add(WellKnownMemberNames.ExplicitConversionName, New OperatorInfo(UnaryOperatorKind.Explicit))
+            operators.Add(WellKnownMemberNames.IntoExpressionName, New OperatorInfo(BinaryOperatorKind.InTo))
 
             ' These cannot be declared in source, but can be imported.
             operators.Add(WellKnownMemberNames.LogicalNotOperatorName, New OperatorInfo(UnaryOperatorKind.Not))
@@ -208,6 +209,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Return SyntaxKind.IsKeyword
                 Case BinaryOperatorKind.IsNot
                     Return SyntaxKind.IsNotKeyword
+                Case BinaryOperatorKind.InTo
+                    Return SyntaxKind.IntoKeyword
 
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(op)
@@ -819,6 +822,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case SyntaxKind.OrElseExpression : result = BinaryOperatorKind.OrElse
                 Case SyntaxKind.AndExpression : result = BinaryOperatorKind.And
                 Case SyntaxKind.AndAlsoExpression : result = BinaryOperatorKind.AndAlso
+                Case SyntaxKind.InToExpression : result = BinaryOperatorKind.InTo
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(opCode)
             End Select
@@ -1696,6 +1700,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Bitwise
                 Relational
                 ConcatenationLike
+                Into
             End Enum
 
             ' PERF: Using SByte instead of SpecialType because we want the compiler to use array literal initialization.

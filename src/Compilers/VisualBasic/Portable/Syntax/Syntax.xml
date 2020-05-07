@@ -5849,6 +5849,7 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="BinaryOperator" />
         <native-equiv name="Expression.Opcodes.AndAlso" />
       </node-kind>
+      <node-kind name="InToExpression" />
 
       <child name="Left" kind="@ExpressionSyntax">
         <description>The left operand.</description>
@@ -5884,6 +5885,7 @@ Unify Enum declarations with other block type declarations.
         <kind name="AndKeyword" node-kind="AndExpression"/>
         <kind name="OrElseKeyword" node-kind="OrElseExpression"/>
         <kind name="AndAlsoKeyword" node-kind="AndAlsoExpression"/>
+        <kind name="IntoKeyword" node-kind="InToExpression" />
       </child>
 
       <child name="Right" kind="@ExpressionSyntax">

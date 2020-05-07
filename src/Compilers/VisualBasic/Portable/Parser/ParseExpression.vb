@@ -130,8 +130,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Do
 
                         Dim precedence As OperatorPrecedence
+                        Dim tkind = If(CurrentToken.IsBinaryOperator, CurrentToken.Kind, If(CurrentToken.IsContextualBinaryOperator(), CurrentToken.ContextualKind, SyntaxKind.None))
 
-                        If Not CurrentToken.IsBinaryOperator Then
+                        If tkind = SyntaxKind.None Then
                             Exit Do
                         End If
 
@@ -143,7 +144,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                             Exit Do
                         End If
 
-                        precedence = KeywordTable.TokenOpPrec(CurrentToken.Kind)
+                        precedence = KeywordTable.TokenOpPrec(tkind)
 
                         Debug.Assert(precedence <> OperatorPrecedence.PrecedenceNone, "should have a non-zero precedence for operators.")
 
@@ -162,6 +163,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         Dim rightOperand As ExpressionSyntax = ParseExpressionCore(precedence)
 
                         expression = SyntaxFactory.BinaryExpression(GetBinaryOperatorHelper([operator]), expression, [operator], rightOperand)
+                        If [operator].Kind = SyntaxKind.IntoKeyword Then
+                            expression = CheckFeatureAvailability(Feature.InToExpressions, expression)
+                        End If
 
                     Loop
                 End If
@@ -195,37 +199,42 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                     ' See if this is a beginning of a query
                     If TryIdentifierAsContextualKeyword(start, keyword) Then
-                        If keyword.Kind = SyntaxKind.FromKeyword OrElse keyword.Kind = SyntaxKind.AggregateKeyword Then
+                        Select Case keyword.Kind
+                            Case SyntaxKind.IntoKeyword
+                                'term = Parse_IntoExpression(RedimOrNewParent, term)
+                                GoTo AfterSelect
 
-                            term = ParsePotentialQuery(keyword)
-                            If term IsNot Nothing Then
-                                Exit Select
-                            End If
-
-                        ElseIf keyword.Kind = SyntaxKind.AsyncKeyword OrElse keyword.Kind = SyntaxKind.IteratorKeyword Then
-
-                            Dim nextToken = PeekToken(1)
-
-                            If nextToken.Kind = SyntaxKind.IdentifierToken Then
-                                Dim possibleKeyword As KeywordSyntax = Nothing
-                                If TryTokenAsContextualKeyword(nextToken, possibleKeyword) AndAlso
-                                   possibleKeyword.Kind <> keyword.Kind AndAlso
-                                   (possibleKeyword.Kind = SyntaxKind.AsyncKeyword OrElse possibleKeyword.Kind = SyntaxKind.IteratorKeyword) Then
-                                    nextToken = PeekToken(2)
+                            Case SyntaxKind.FromKeyword, SyntaxKind.AggregateKeyword
+                                term = ParsePotentialQuery(keyword)
+                                If term IsNot Nothing Then
+                                    GoTo AfterSelect
                                 End If
-                            End If
 
-                            If nextToken.Kind = SyntaxKind.SubKeyword OrElse nextToken.Kind = SyntaxKind.FunctionKeyword Then
-                                term = ParseLambda(parseModifiers:=True)
+                           Case SyntaxKind.AsyncKeyword, SyntaxKind.IteratorKeyword
+                                Dim nextToken = PeekToken(1)
 
-                                Exit Select
-                            End If
+                                If nextToken.Kind = SyntaxKind.IdentifierToken Then
+                                    Dim possibleKeyword As KeywordSyntax = Nothing
+                                    If TryTokenAsContextualKeyword(nextToken, possibleKeyword) AndAlso
+                                       possibleKeyword.Kind <> keyword.Kind AndAlso
+                                       (possibleKeyword.Kind = SyntaxKind.AsyncKeyword OrElse possibleKeyword.Kind = SyntaxKind.IteratorKeyword) Then
+                                        nextToken = PeekToken(2)
+                                    End If
+                                End If
 
-                        ElseIf Context.IsWithinAsyncMethodOrLambda AndAlso keyword.Kind = SyntaxKind.AwaitKeyword Then
-                            term = ParseAwaitExpression(keyword)
+                                If nextToken.Kind = SyntaxKind.SubKeyword OrElse nextToken.Kind = SyntaxKind.FunctionKeyword Then
+                                    term = ParseLambda(parseModifiers:=True)
+                                    GoTo AfterSelect
+                                End If
 
-                            Exit Select
-                        End If
+                            Case SyntaxKind.AwaitKeyword
+                                If Context.IsWithinAsyncMethodOrLambda Then
+                                    term = ParseAwaitExpression(keyword)
+                                End If
+
+                        End Select
+
+                        GoTo AfterSelect
                     End If
 
                     term = ParseSimpleNameExpressionAllowingKeywordAndTypeArguments()
@@ -430,6 +439,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     End If
             End Select
 
+            AfterSelect:
             Debug.Assert(term IsNot Nothing)
 
             ' Complex expressions such as "." or "!" qualified, etc are not allowed cond comp expressions.
@@ -447,6 +457,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Return term
+        End Function
+
+        Private Function Parse_IntoExpression(RedimOrNewParent As Boolean, term As ExpressionSyntax) As ExpressionSyntax
+            ' source InTo target
+            ' 
+            Dim intoExpr As ExpressionSyntax = Nothing
+            Dim leftSide = term
+            Dim intoKeyword As KeywordSyntax
+            If _scanner.TryTokenAsContextualKeyword(CurrentToken, intoKeyword) AndAlso intoKeyword.Kind = SyntaxKind.IntoKeyword Then
+                GetNextToken
+                Dim righSide As ExpressionSyntax = ParseExpressionCore(OperatorPrecedence.PrecedenceInto, false)
+                intoExpr = SyntaxFactory.InToExpression(leftSide, intoKeyword, righSide)
+                intoExpr = CheckFeatureAvailability(Feature.InToExpressions, intoExpr)
+            Else
+                intoExpr = Nothing
+            End If
+            Return intoExpr
         End Function
 
         Private Function ParsePostFixExpression(RedimOrNewParent As Boolean, term As ExpressionSyntax) As ExpressionSyntax
@@ -786,7 +813,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' File: Parser.cpp
         ' Lines: 15971 - 15971
         ' Expression* .Parser::ParseNewExpression( [ _Inout_ bool& ErrorInConstruct ] )
-
         Private Function ParseNewExpression() As ExpressionSyntax
             Debug.Assert(CurrentToken.Kind = SyntaxKind.NewKeyword, "must be at a New expression.")
 

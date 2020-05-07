@@ -689,6 +689,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Shared Function GetBinaryExpression(keyword As SyntaxKind) As SyntaxKind
             Select Case (keyword)
+                Case SyntaxKind.IntoKeyword
+                    Return SyntaxKind.InToExpression
 
                 Case SyntaxKind.IsKeyword
                     Return SyntaxKind.IsExpression

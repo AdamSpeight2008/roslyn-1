@@ -1092,6 +1092,10 @@ Partial Public Class GeneratedTests
             return InternalSyntax.SyntaxFactory.AndAlsoExpression(GenerateGreenKeywordEventContainer(), new InternalSyntax.KeywordSyntax(SyntaxKind.AndAlsoKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer())
         End Function
 
+        Private Shared Function GenerateGreenInToExpression() As InternalSyntax.BinaryExpressionSyntax
+            return InternalSyntax.SyntaxFactory.InToExpression(GenerateGreenKeywordEventContainer(), new InternalSyntax.KeywordSyntax(SyntaxKind.IntoKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer())
+        End Function
+
         Private Shared Function GenerateGreenUnaryPlusExpression() As InternalSyntax.UnaryExpressionSyntax
             return InternalSyntax.SyntaxFactory.UnaryPlusExpression(new InternalSyntax.PunctuationSyntax(SyntaxKind.PlusToken, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer())
         End Function
@@ -3162,6 +3166,12 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenAndAlsoExpression()
             dim objectUnderTest = GenerateGreenAndAlsoExpression()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenInToExpression()
+            dim objectUnderTest = GenerateGreenInToExpression()
             AttachAndCheckDiagnostics(objectUnderTest)
         End Sub
 
@@ -6005,6 +6015,14 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestGreenInToExpressionRewriter()
+            dim oldNode = GenerateGreenInToExpression()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
         Public Sub TestGreenUnaryPlusExpressionRewriter()
             dim oldNode = GenerateGreenUnaryPlusExpression()
             Dim rewriter = New GreenIdentityRewriter()
@@ -8662,6 +8680,13 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenAndAlsoExpressionVisitor()
             Dim oldNode = GenerateGreenAndAlsoExpression()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenInToExpressionVisitor()
+            Dim oldNode = GenerateGreenInToExpression()
             Dim visitor = New GreenNodeVisitor()
             visitor.Visit(oldNode)
         End Sub
@@ -15914,6 +15939,43 @@ Partial Public Class GeneratedTests
             return SyntaxFactory.AndAlsoExpression(GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.AndAlsoKeyword), GenerateRedKeywordEventContainer())
         End Function
 
+        Private Shared Function GenerateRedInToExpression() As BinaryExpressionSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.InToExpression(Nothing, SyntaxFactory.Token(SyntaxKind.IntoKeyword), GenerateRedKeywordEventContainer())
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.InToExpression(GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IntoKeyword), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.InToExpression(GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedKeywordEventContainer())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.InToExpression(GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedKeywordEventContainer())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.InToExpression(GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IntoKeyword), GenerateRedKeywordEventContainer())
+        End Function
+
         Private Shared Function GenerateRedUnaryPlusExpression() As UnaryExpressionSyntax
             Dim exceptionTest as boolean = false
             Try
@@ -20904,6 +20966,16 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestRedInToExpression()
+            dim objectUnderTest = GenerateRedInToExpression()
+            Assert.NotNull(objectUnderTest.left)
+            Assert.NotNull(objectUnderTest.operatorToken)
+            Assert.NotNull(objectUnderTest.right)
+            Dim withObj = objectUnderTest.WithLeft(objectUnderTest.Left).WithOperatorToken(objectUnderTest.OperatorToken).WithRight(objectUnderTest.Right)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
         Public Sub TestRedUnaryPlusExpression()
             dim objectUnderTest = GenerateRedUnaryPlusExpression()
             Assert.NotNull(objectUnderTest.operatorToken)
@@ -24059,6 +24131,14 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestRedAndAlsoExpressionRewriter()
             dim oldNode = GenerateRedAndAlsoExpression()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedInToExpressionRewriter()
+            dim oldNode = GenerateRedInToExpression()
             Dim rewriter = New RedIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)
