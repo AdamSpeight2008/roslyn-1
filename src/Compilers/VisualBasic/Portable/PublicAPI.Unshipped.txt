@@ -1,1 +1,1 @@
-
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.InToExpression = 793 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind

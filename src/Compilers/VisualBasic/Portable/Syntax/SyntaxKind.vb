@@ -3201,5 +3201,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ConflictMarkerTrivia = 792
 
+        InToExpression = 793
+
     End Enum
 End Namespace

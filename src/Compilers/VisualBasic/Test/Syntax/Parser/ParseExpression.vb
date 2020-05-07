@@ -263,6 +263,11 @@ Public Class ParseExpressionTest
     End Sub
 
     <Fact>
+    Public Sub ParseTypeOf_InTo()
+        ParseExpression("TypeOf source Is type InTo target")
+    End Sub
+
+    <Fact>
     Public Sub ParseGetType()
         ParseExpression("gettype(a)")
         ParseExpression("gettype(a(of ))")
