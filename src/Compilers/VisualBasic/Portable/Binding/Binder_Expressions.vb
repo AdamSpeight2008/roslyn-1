@@ -824,7 +824,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If TypeOf BLExpr Is BoundTypeOf Then
                 Dim BTExpr = DirectCast(BLExpr, BoundTypeOf)
                 Dim BRExpr = BindAssignmentTarget(node.Variable,diagnostics)
-                Return New BoundExpressionIntoVariable(node, BtExpr, BRExpr, BTExpr.TargetType)
+                Return New BoundExpressionIntoVariable(node, BtExpr, BRExpr, GetSpecialType(SpecialType.System_Boolean, node, diagnostics) )' BTExpr.TargetType)
             Else
                 Return New BoundBadExpression(node,
                                               LookupResultKind.NotCreatable,

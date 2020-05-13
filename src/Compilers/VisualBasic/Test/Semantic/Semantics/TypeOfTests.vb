@@ -1369,5 +1369,130 @@ BC31430: Expression of type 'T' can never be of type 'String'.
 </expected>)
         End Sub
 
+
+        <fact>
+        <trait("TypeOf expr Is type Into target","")>
+        Public Sub Test_TypeOf_String_Into()
+            Dim source =<compilation>
+    <file name="a.vb">
+Imports System
+Public Module M
+Public Sub Main()
+  Dim source As Object = "Hello World!"
+  Dim target As String = ""
+  Dim result As Boolean = TypeOf source Is String InTo target
+  Console.WriteLine($"[{source}]")
+  Console.WriteLine($"[{target}]")
+  Console.WriteLine(result) 
+End Sub
+End Module
+</file>
+</compilation>
+            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, , TestOptions.ReleaseExe)
+
+            CompilationUtils.AssertNoErrors(compilation)
+
+            CompileAndVerify(compilation, <![CDATA[
+[Hello World!]
+[Hello World!]
+True
+]]>)
+
+        End Sub
+
+                <fact>
+        <trait("TypeOf expr Is type Into target","")>
+        Public Sub Test_TypeOf_Int_Into()
+            Dim source =<compilation>
+    <file name="a.vb">
+Imports System
+Public Module M
+Public Sub Main()
+  Dim source As Object = 123
+  Dim target As Integer = 0
+  Dim result As Boolean = TypeOf source Is Integer InTo target
+  Console.WriteLine($"[{source}]")
+  Console.WriteLine($"[{target}]")
+  Console.WriteLine(result) 
+End Sub
+End Module
+</file>
+</compilation>
+            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, , TestOptions.ReleaseExe)
+
+            CompilationUtils.AssertNoErrors(compilation)
+
+            CompileAndVerify(compilation, <![CDATA[
+[123]
+[123]
+True
+]]>)
+
+        End Sub
+
+
+                        <fact>
+        <trait("TypeOf expr Is type Into target","")>
+        Public Sub Test_TypeOf_IEnumerable_Into()
+            Dim source =<compilation>
+    <file name="a.vb">
+Imports System
+Imports System.Collections.Generic
+Public Module M
+Public Sub Main()
+  Dim source As String = "0123456789"
+  Dim target As IEnumerable(Of Char) = Nothing
+  Dim result As Boolean = TypeOf source Is IEnumerable(Of Char) InTo target
+  Dim  resultString As String = New String(target)
+
+  Console.WriteLine($"[{source}]")
+  Console.WriteLine($"[{resultString}]")
+  Console.WriteLine(result) 
+End Sub
+End Module
+</file>
+</compilation>
+            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, , TestOptions.ReleaseExe)
+          Dim issues=  compilation.GetDiagnostics.ToArray()
+            CompilationUtils.AssertNoErrors(compilation)
+
+            CompileAndVerify(compilation, <![CDATA[
+[0123456789]
+[0123456789]
+True
+]]>)
+
+        End Sub
+
+                <fact>
+        <trait("TypeOf expr Is type Into target","")>
+        Public Sub Test_TypeOf_Nullable_Int_Into()
+            Dim source =<compilation>
+    <file name="a.vb">
+Imports System
+Public Module M
+Public Sub Main()
+  Dim source As Nullable(of Integer) = 123
+  Dim target As Nullable(of Integer) = Nothing
+  Dim result As Boolean = TypeOf source Is Integer? InTo target
+  Console.WriteLine($"[{source}]")
+  Console.WriteLine($"[{target.ToString()}]")
+  Console.WriteLine(result) 
+End Sub
+End Module
+</file>
+</compilation>
+            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, , TestOptions.ReleaseExe)
+            Dim issue = compilation.GetDiagnostics.ToArray()
+            CompilationUtils.AssertNoErrors(compilation)
+
+            CompileAndVerify(compilation, <![CDATA[
+[123]
+[123]
+True
+]]>)
+
+        End Sub
     End Class
+
 End Namespace
