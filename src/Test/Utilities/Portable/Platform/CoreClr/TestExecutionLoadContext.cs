@@ -63,8 +63,11 @@ namespace Roslyn.Test.Utilities.CoreClr
             var entryPoint = mainAssembly.EntryPoint;
 
             AssertEx.NotNull(entryPoint, "Attempting to execute an assembly that has no entrypoint; is your test trying to execute a DLL?");
+            string output = default;
+                 int exitCode = 0;
+       try
+            {
 
-            int exitCode = 0;
             SharedConsole.CaptureOutput(() =>
             {
                 var count = entryPoint.GetParameters().Length;
@@ -84,8 +87,14 @@ namespace Roslyn.Test.Utilities.CoreClr
 
                 exitCode = entryPoint.Invoke(null, args) is int exit ? exit : 0;
             }, expectedOutputLength ?? 0, out var stdOut, out var stdErr);
+            
+            output = stdOut + stdErr;
+           } catch(Exception e)
+            {
+               output = e.ToString();
+               exitCode = -1;
+            }
 
-            var output = stdOut + stdErr;
             return (exitCode, output);
         }
 

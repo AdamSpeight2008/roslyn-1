@@ -131,37 +131,37 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         <Extension()>
         Friend Function IsInterfaceType(type As TypeSymbol) As Boolean
             Debug.Assert(type IsNot Nothing)
-            Return type.Kind = SymbolKind.NamedType AndAlso DirectCast(type, NamedTypeSymbol).IsInterface
+            Return (type IsNot Nothing) AndAlso type.Kind = SymbolKind.NamedType AndAlso DirectCast(type, NamedTypeSymbol).IsInterface
         End Function
 
         <Extension()>
         Friend Function IsClassType(type As TypeSymbol) As Boolean
             Debug.Assert(type IsNot Nothing)
-            Return type.TypeKind = TypeKind.Class
+            Return (type IsNot Nothing) AndAlso type.TypeKind = TypeKind.Class
         End Function
 
         <Extension()>
         Friend Function IsStructureType(type As TypeSymbol) As Boolean
             Debug.Assert(type IsNot Nothing)
-            Return type.TypeKind = TypeKind.Structure
+            Return (type IsNot Nothing) AndAlso type.TypeKind = TypeKind.Structure
         End Function
 
         <Extension()>
         Friend Function IsModuleType(type As TypeSymbol) As Boolean
             Debug.Assert(type IsNot Nothing)
-            Return type.TypeKind = TypeKind.Module
+            Return (type IsNot Nothing) AndAlso  type.TypeKind = TypeKind.Module
         End Function
 
         <Extension()>
         Friend Function IsErrorType(type As TypeSymbol) As Boolean
             Debug.Assert(type IsNot Nothing)
-            Return type.Kind = SymbolKind.ErrorType
+            Return (type IsNot Nothing) AndAlso type.Kind = SymbolKind.ErrorType
         End Function
 
         <Extension()>
         Friend Function IsArrayType(type As TypeSymbol) As Boolean
             Debug.Assert(type IsNot Nothing)
-            Return type.Kind = SymbolKind.ArrayType
+            Return (type IsNot Nothing) AndAlso type.Kind = SymbolKind.ArrayType
         End Function
 
         <Extension()>
@@ -224,13 +224,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         <Extension()>
         Friend Function IsTypeParameter(type As TypeSymbol) As Boolean
             Debug.Assert(type IsNot Nothing)
-            Return type.Kind = SymbolKind.TypeParameter
+            Return (type IsNot Nothing) AndAlso  type.Kind = SymbolKind.TypeParameter
         End Function
 
         <Extension()>
         Friend Function IsDelegateType(type As TypeSymbol) As Boolean
             Debug.Assert(type IsNot Nothing)
-            Return type.TypeKind = TypeKind.Delegate
+            Return (type IsNot Nothing) AndAlso  type.TypeKind = TypeKind.Delegate
         End Function
 
         <Extension()>

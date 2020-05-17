@@ -1464,35 +1464,39 @@ True
 
         End Sub
 
-                <fact>
-        <trait("TypeOf expr Is type Into target","")>
-        Public Sub Test_TypeOf_Nullable_Int_Into()
-            Dim source =<compilation>
-    <file name="a.vb">
-Imports System
-Public Module M
-Public Sub Main()
-  Dim source As Nullable(of Integer) = 123
-  Dim target As Nullable(of Integer) = Nothing
-  Dim result As Boolean = TypeOf source Is Integer? InTo target
-  Console.WriteLine($"[{source}]")
-  Console.WriteLine($"[{target.ToString()}]")
-  Console.WriteLine(result) 
-End Sub
-End Module
-</file>
-</compilation>
-            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, , TestOptions.ReleaseExe)
-            Dim issue = compilation.GetDiagnostics.ToArray()
-            CompilationUtils.AssertNoErrors(compilation)
+'                <fact>
+'        <trait("TypeOf expr Is Nullable(Of type) Into target","")>
+'        Public Sub Test_TypeOf_Nullable_Int_Into()
+'            Dim source =<compilation>
+'    <file name="a.vb">
+'Imports System
+'Public Module M
+'  Public Sub Main()
+'    Dim input As Nullable(Of Integer) = 123
+'    Dim output As Nullable(of Integer) = Nothing
+'    Dim result As Boolean = TypeOf CObj(input) Is Integer? Into output
+'    Console.WriteLine($"[{input}]")
+'    Console.WriteLine($"[{output.ToString()}]")
+'    Console.WriteLine(result) 
+'  End Sub
+'End Module
+'</file>
+'</compilation>
+'            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, , TestOptions.DebugExe)
+'            Dim issue = compilation.GetDiagnostics.ToArray()
+'            CompilationUtils.AssertNoErrors(compilation)
+'            Dim c As New CompilationVerifier(compilation)
 
-            CompileAndVerify(compilation, <![CDATA[
-[123]
-[123]
-True
-]]>)
+'           Dim d= c.Dump()
+'            Dim e=c.VisualizeIL("M.Main()")
+'      '  Dim e = c.VisualizeIL("M.TypeOfIntoNullableT(Of T0, T1)(T0?, ByRef T1?)")
+'            Dim c2 = CompileAndVerify(compilation, <![CDATA[
+'[123]
+'[123]
+'True
+']]>)
+'        End Sub
 
-        End Sub
     End Class
 
 End Namespace

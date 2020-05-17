@@ -1282,8 +1282,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
                     Return
                 End If
 
-                Dim locInfo = _locals(local)
-                If locInfo.CannotSchedule Then
+                Dim locInfo As LocalDefUseInfo = Nothing
+                Dim valid As Boolean = _locals.TryGetValue(local,locinfo)
+                If not valid Orelse locInfo.CannotSchedule Then
                     Return
                 End If
 

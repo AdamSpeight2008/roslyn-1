@@ -48,7 +48,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim idx = 0
             While idx < numberOfTypes
                 ' Construct the typeof expression corrisponding to the current iteration's type.
-                Dim thisTypeOfExpr = New BoundTypeOf(expr.Types.Arguments(idx), node.TypeArguments.Arguments(idx), node.Operand, isNotOperand, f.[Boolean]).MakeRValue.MakeCompilerGenerated
+                Dim thisTypeOfExpr = New BoundTypeOf(expr.Types.Arguments(idx),
+                                                     node.TypeArguments.Arguments(idx),
+                                                     node.Operand,
+                                                     isNotOperand,
+                                                     f.[Boolean]).MakeRValue.MakeCompilerGenerated
                 ' Combine the typeof expression with the previous one.
                 If idx = 0 Then
                     ' First typeof expression in list, so isn't combined with anything.
@@ -80,9 +84,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Private Function Can_ConvertTo(f As SyntheticBoundNodeFactory, node as BoundExpression, type As TypeSymbol, byref convkind As ConversionKind) As Boolean
-           Dim conversion =ClassifyConversion(f.Compilation, node.Type, type)
+            Dim conversion =ClassifyConversion(f.Compilation, node.Type, type)
             convkind = Conversion.Kind
-           Return conversion.Exists
+            Return conversion.Exists
         End Function
 
         Private Function Rewrite_TypeOfExpression_Into_Variable(node As BoundExpressionIntoVariable, typeofexpr As BoundTypeOf) As BoundNode
@@ -98,7 +102,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
             ' Depending on the type kind of the target type, different lowering are created.
             If targetType.IsNullableType Then
-                Return Rewrite_TypeOf_Into_Variable_With_Nullable(factory, targetType, node, typeofexpr)
+                Return factory.BadExpression()
+                'Return Rewrite_TypeOf_Into_Variable_With_Nullable(factory, targetType, node, typeofexpr)
             Else If targetType.IsStructureType Then
                 Return Rewrite_TypeOf_Into_Variable_With_Structure(factory, targetType, node, typeofexpr)
             Else
@@ -106,32 +111,27 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
         End Function
 
-        Private Function Rewrite_TypeOf_Into_Variable_With_Nullable(f As SyntheticBoundNodeFactory,
+        Private Function Rewrite_TypeOf_Into_Variable_With_Nullable(factory As SyntheticBoundNodeFactory,
                                                                     targetType As TypeSymbol,
-                                                                    node As BoundExpressionIntoVariable,
-                                                                    typeofexpr As BoundTypeOf
-                                                                   ) As BoundNode
-            ' Function [As](Of T1 As Structure, T2 As Structure)(source As Nullable(Of T1), byref target As Nullable(Of T2)) As Boolean
-            '   Dim tmp1 As Object = DirectCast(source, object)
-            '   Dim tmp2 As Nullable(Of T2) = DirectCast(tmp1, T2)
-            '   target = tmp2.GetValueOrDefault()
-            '   Return tmp2.HasValue
-            ' End Function
-            Dim nullableOf_T2= node.Variable.Type
-            Dim _obj_ = Make_DirectCastToObject(f, node.Syntax, typeofexpr.Operand).MakeCompilerGenerated
-            Dim tmp2_variable = f.SynthesizedLocal(nullableOf_T2)
-
-            Dim conv =  Conversions.ClassifyDirectCastConversion(_obj_.Type, nullableOf_T2, Nothing)
-            ' Construct the assignment to the temporary variable with DirectCast( expression_as_object, Nullable(Of T))
-            Dim _Ctype_T2 = f.Convert(nullableOf_T2,_obj_, conv).MakeCompilerGenerated
-            Dim _Tmp2_ = f.AssignmentExpression(f.Local(tmp2_variable,true),_Ctype_T2).MakeCompilerGenerated
-            ' Construct the assignment that passes back the value or the default value from the temporary variable.
-            Dim _passback_ = f.AssignmentExpression(node.Variable, f.Call(_Tmp2_, GetNullableMethod(node.Syntax, nullableOf_T2, SpecialMember.System_Nullable_T_GetValueOrDefault))).MakeCompilerGenerated
-            ' Construct the result which check that the temporary variable has value.
-            Dim _Has_Value_ = f.Call(_Tmp2_, GetNullableMethod(node.Syntax, nullableOf_T2, SpecialMember.System_Nullable_T_get_HasValue)).MakeCompilerGenerated
-            ' Finally construct the sequence of code.
-            Dim code_sequence = f.Sequence(_obj_, _passback_,  _Has_Value_)
-            Return code_sequence.MakeCompilerGenerated
+                                                                    intoExpr As BoundExpressionIntoVariable,
+                                                                    typeofexpr As BoundTypeOf) As BoundNode
+            'Function TypeofIntoNullable(Of T0 As Structure, T1 As Structure)(input As T0?, ByRef output As T1?) As Boolean
+            '  output = If(input.HasValue, Microsoft.VisualBasic.CompilerServices.Conversions.ToGenericParameter_T_Object Ctype(Ctype(input.value, Object), T1) ,Nothing)
+            '  Return output.HasValue
+            'End Function
+            Dim input = VisitExpression(typeofexpr.Operand)
+            Dim output = VisitExpression(intoExpr.Variable)
+            With factory
+                Dim _inlineIf_ = .TernaryConditionalExpression(
+                                                    .Call(input, DirectCast(.SpecialMember(SpecialMember.System_Nullable_T_get_HasValue), MethodSymbol)),
+                                                    .Call(Nothing,
+                                                          .WellKnownMember(of MethodSymbol)(WellKnownMember.Microsoft_VisualBasic_CompilerServices_Conversions__ToGenericParameter_T_Object),
+                                                          .Call(input, DirectCast(.SpecialMember(SpecialMember.System_Nullable_T_get_Value), MethodSymbol))),
+                                                     .Null).MakeRValue
+                Dim _passback_ = .ReferenceAssignment(DirectCast(output.ExpressionSymbol,LocalSymbol), _inlineIf_)
+                Dim _hasValue_ = .Call( _passback_.MakeRValue, DirectCast(.SpecialMember(SpecialMember.System_Nullable_T_get_HasValue), MethodSymbol))
+                Return _hasvalue_.MakeCompilerGenerated
+            End With
         End Function
 
         Private Function Rewrite_TypeOf_Into_Variable_With_Class(f As SyntheticBoundNodeFactory,
@@ -152,10 +152,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim resultOfTryCast = f.TryCast(Make_DirectCastToObject(f, node.Syntax, typeofexpr.Operand), targettype)
 
-            Dim target =node.Variable
+            Dim target = node.Variable
             ' Construct the assignment that passes back the result of the try cast.
             Dim passback = f.AssignmentExpression(target, resultOfTryCast)
- 
+
             ' Construct the result of passback isnot nothing.
             Dim result = f.ReferenceIsNotNothing(resultOfTryCast)
 
@@ -164,7 +164,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return code_sequence.MakeCompilerGenerated 
         End Function
 
-        Private Function Make_DirectCastToObject(f As SyntheticBoundNodeFactory, node As SyntaxNode, expression As BoundExpression) As BoundExpression
+        Private Function Make_DirectCastToObject(f As SyntheticBoundNodeFactory, node As SyntaxNode, <out> expression As BoundExpression) As BoundExpression
             ' Construct: DirectCast( expression, Object)
             Return New BoundDirectCast(node, expression, Conversions.ClassifyDirectCastConversion(expression.Type, f.[Object], Nothing), f.[Object])
         End Function
