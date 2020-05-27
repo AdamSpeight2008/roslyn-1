@@ -1,1 +1,36 @@
-
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement.AsType() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.SimpleAsClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement.ConstKeyword() -> Microsoft.CodeAnalysis.SyntaxToken
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement.Update(constKeyword As Microsoft.CodeAnalysis.SyntaxToken, asType As Microsoft.CodeAnalysis.VisualBasic.Syntax.SimpleAsClauseSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement.WithAsType(asType As Microsoft.CodeAnalysis.VisualBasic.Syntax.SimpleAsClauseSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement.WithConstKeyword(constKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax.AddContents(ParamArray items As Microsoft.CodeAnalysis.VisualBasic.Syntax.EmptyStatementSyntax()) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax.ConstStatement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax.Contents() -> Microsoft.CodeAnalysis.SyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.EmptyStatementSyntax)
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax.EndConstStatement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax.Update(constStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement, contents As Microsoft.CodeAnalysis.SyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.EmptyStatementSyntax), endConstStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax.WithConstStatement(constStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax.WithContents(contents As Microsoft.CodeAnalysis.SyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.EmptyStatementSyntax)) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax.WithEndConstStatement(endConstStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.ConstBlock = 793 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.ConstBlockMemberStatement = 795 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.ConstBlockStatement = 794 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.EndConstBlockStatement = 797 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.EndConstStatement = 796 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitConstBlock(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitConstBlockStatement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitConstBlock(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax) -> Void
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitConstBlockStatement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitConstBlock(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitConstBlockStatement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement) -> Microsoft.CodeAnalysis.SyntaxNode
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.ConstBlock(constStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.ConstBlock(constStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement, contents As Microsoft.CodeAnalysis.SyntaxList(Of Microsoft.CodeAnalysis.VisualBasic.Syntax.EmptyStatementSyntax), endConstStatement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.ConstBlockStatement(asType As Microsoft.CodeAnalysis.VisualBasic.Syntax.SimpleAsClauseSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.ConstBlockStatement(constKeyword As Microsoft.CodeAnalysis.SyntaxToken, asType As Microsoft.CodeAnalysis.VisualBasic.Syntax.SimpleAsClauseSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstBlockStatement
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.EndConstBlockStatement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.EndConstBlockStatement(endKeyword As Microsoft.CodeAnalysis.SyntaxToken, blockKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax

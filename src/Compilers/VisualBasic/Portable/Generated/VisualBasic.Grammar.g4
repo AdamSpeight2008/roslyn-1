@@ -84,6 +84,7 @@ identifier_name
 statement
   : case_statement
   | catch_statement
+  | const_block_statement
   | declaration_statement
   | do_statement
   | else_if_statement
@@ -171,8 +172,13 @@ catch_filter_clause
   : 'When' expression
   ;
 
+const_block_statement
+  : 'Const' simple_as_clause
+  ;
+
 declaration_statement
   : attributes_statement
+  | const_block
   | end_block_statement
   | enum_block
   | enum_member_declaration
@@ -192,9 +198,22 @@ declaration_statement
   | type_statement
   ;
 
+const_block
+  : const_block_statement empty_statement* end_const_block_statement
+  ;
+
+empty_statement
+  : empty_token
+  ;
+
+end_const_block_statement
+  : 'End' 'Const'
+  ;
+
 end_block_statement
   : end_add_handler_statement
   | end_class_statement
+  | end_const_block_statement
   | end_enum_statement
   | end_event_statement
   | end_function_statement
@@ -783,10 +802,6 @@ else_if_statement
 
 else_statement
   : 'Else'
-  ;
-
-empty_statement
-  : empty_token
   ;
 
 executable_statement

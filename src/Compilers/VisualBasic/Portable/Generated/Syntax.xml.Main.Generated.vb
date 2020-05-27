@@ -53,6 +53,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Function VisitClassBlock(ByVal node As ClassBlockSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
+        Public Overridable Function VisitConstBlock(ByVal node As ConstBlockSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
+        Public Overridable Function VisitConstBlockStatement(ByVal node As ConstBlockStatement) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
         Public Overridable Function VisitEnumBlock(ByVal node As EnumBlockSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
@@ -786,6 +792,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitClassBlock(ByVal node As ClassBlockSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitConstBlock(ByVal node As ConstBlockSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitConstBlockStatement(ByVal node As ConstBlockStatement)
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitEnumBlock(ByVal node As EnumBlockSyntax)
@@ -1722,6 +1734,38 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If anyChanges Then
                 Return New ClassBlockSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newClassStatement, newInherits.Node, newImplements.Node, newMembers.Node, newEndClassStatement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitConstBlock(ByVal node As ConstBlockSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newConstStatement = DirectCast(Visit(node.ConstStatement), ConstBlockStatement)
+            If node.ConstStatement IsNot newConstStatement Then anyChanges = True
+            Dim newContents = VisitList(node.Contents)
+            If node._contents IsNot newContents.Node Then anyChanges = True
+            Dim newEndConstStatement = DirectCast(Visit(node.EndConstStatement), EndBlockStatementSyntax)
+            If node.EndConstStatement IsNot newEndConstStatement Then anyChanges = True
+
+            If anyChanges Then
+                Return New ConstBlockSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newConstStatement, newContents.Node, newEndConstStatement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitConstBlockStatement(ByVal node As ConstBlockStatement) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newConstKeyword = DirectCast(VisitToken(node.ConstKeyword).Node, InternalSyntax.KeywordSyntax)
+            If node.ConstKeyword.Node IsNot newConstKeyword Then anyChanges = True
+            Dim newAsType = DirectCast(Visit(node.AsType), SimpleAsClauseSyntax)
+            If node.AsType IsNot newAsType Then anyChanges = True
+
+            If anyChanges Then
+                Return New ConstBlockStatement(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newConstKeyword, newAsType)
             Else
                 Return node
             End If
@@ -5749,7 +5793,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case SyntaxKind.RaiseEventKeyword:
                 Case SyntaxKind.WhileKeyword:
                 Case SyntaxKind.TryKeyword:
-                Case SyntaxKind.SyncLockKeyword
+                Case SyntaxKind.SyncLockKeyword:
+                Case SyntaxKind.ConstKeyword
                 Case Else
                     Throw new ArgumentException("blockKeyword")
              End Select
@@ -6538,6 +6583,41 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' Represents an "End XXX" statement, where XXX is a single keyword.
         ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Public Shared Function EndConstBlockStatement(endKeyword As SyntaxToken, blockKeyword As SyntaxToken) As EndBlockStatementSyntax
+            Select Case endKeyword.Kind()
+                Case SyntaxKind.EndKeyword
+                Case Else
+                    Throw new ArgumentException("endKeyword")
+             End Select
+            Select Case blockKeyword.Kind()
+                Case SyntaxKind.ConstKeyword
+                Case Else
+                    Throw new ArgumentException("blockKeyword")
+             End Select
+            Return New EndBlockStatementSyntax(SyntaxKind.EndConstBlockStatement, Nothing, Nothing, DirectCast(endKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        Public Shared Function EndConstBlockStatement() As EndBlockStatementSyntax
+            Return SyntaxFactory.EndConstBlockStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ConstKeyword))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' EndBlockStatementSyntax. One of EndIfStatement, EndUsingStatement,
@@ -6546,7 +6626,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' EndNamespaceStatement, EndSubStatement, EndFunctionStatement, EndGetStatement,
         ''' EndSetStatement, EndPropertyStatement, EndOperatorStatement, EndEventStatement,
         ''' EndAddHandlerStatement, EndRemoveHandlerStatement, EndRaiseEventStatement,
-        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement.
+        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement,
+        ''' EndConstBlockStatement.
         ''' </param>
         ''' <param name="endKeyword">
         ''' The "End" keyword
@@ -6620,6 +6701,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Return SyntaxKind.TryKeyword
                 Case SyntaxKind.EndSyncLockStatement
                     Return SyntaxKind.SyncLockKeyword
+                Case SyntaxKind.EndConstBlockStatement
+                    Return SyntaxKind.ConstKeyword
                 Case Else
                     Throw New ArgumentException("BlockKeyword")
             End Select
@@ -6636,7 +6719,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' EndNamespaceStatement, EndSubStatement, EndFunctionStatement, EndGetStatement,
         ''' EndSetStatement, EndPropertyStatement, EndOperatorStatement, EndEventStatement,
         ''' EndAddHandlerStatement, EndRemoveHandlerStatement, EndRaiseEventStatement,
-        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement.
+        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement,
+        ''' EndConstBlockStatement.
         ''' </param>
         ''' <param name="blockKeyword">
         ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
@@ -7330,6 +7414,55 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </param>
         Public Shared Function ClassBlock(classStatement As ClassStatementSyntax) As ClassBlockSyntax
             Return SyntaxFactory.ClassBlock(classStatement, Nothing, Nothing, Nothing, SyntaxFactory.EndClassStatement())
+        End Function
+
+
+        Public Shared Function ConstBlock(constStatement As ConstBlockStatement, contents As SyntaxList(of EmptyStatementSyntax), endConstStatement As EndBlockStatementSyntax) As ConstBlockSyntax
+            if constStatement Is Nothing Then
+                Throw New ArgumentNullException(NameOf(constStatement))
+            End If
+            Select Case constStatement.Kind()
+                Case SyntaxKind.ConstBlockStatement
+                Case Else
+                    Throw new ArgumentException("constStatement")
+             End Select
+            if endConstStatement Is Nothing Then
+                Throw New ArgumentNullException(NameOf(endConstStatement))
+            End If
+            Select Case endConstStatement.Kind()
+                Case SyntaxKind.EndConstBlockStatement
+                Case Else
+                    Throw new ArgumentException("endConstStatement")
+             End Select
+            Return New ConstBlockSyntax(SyntaxKind.ConstBlock, Nothing, Nothing, constStatement, contents.Node, endConstStatement)
+        End Function
+
+
+        Public Shared Function ConstBlock(constStatement As ConstBlockStatement) As ConstBlockSyntax
+            Return SyntaxFactory.ConstBlock(constStatement, Nothing, SyntaxFactory.EndConstBlockStatement())
+        End Function
+
+
+        Public Shared Function ConstBlockStatement(constKeyword As SyntaxToken, asType As SimpleAsClauseSyntax) As ConstBlockStatement
+            Select Case constKeyword.Kind()
+                Case SyntaxKind.ConstKeyword
+                Case Else
+                    Throw new ArgumentException("constKeyword")
+             End Select
+            if asType Is Nothing Then
+                Throw New ArgumentNullException(NameOf(asType))
+            End If
+            Select Case asType.Kind()
+                Case SyntaxKind.SimpleAsClause
+                Case Else
+                    Throw new ArgumentException("asType")
+             End Select
+            Return New ConstBlockStatement(SyntaxKind.ConstBlockStatement, Nothing, Nothing, DirectCast(constKeyword.Node, InternalSyntax.KeywordSyntax), asType)
+        End Function
+
+
+        Public Shared Function ConstBlockStatement(asType As SimpleAsClauseSyntax) As ConstBlockStatement
+            Return SyntaxFactory.ConstBlockStatement(SyntaxFactory.Token(SyntaxKind.ConstKeyword), asType)
         End Function
 
 
@@ -35801,6 +35934,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.EndWhileStatement,
                      SyntaxKind.EndTryStatement,
                      SyntaxKind.EndSyncLockStatement,
+                     SyntaxKind.EndConstBlockStatement,
                      SyntaxKind.OptionStatement,
                      SyntaxKind.ImportsStatement,
                      SyntaxKind.NamespaceBlock,
@@ -35809,6 +35943,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.StructureBlock,
                      SyntaxKind.InterfaceBlock,
                      SyntaxKind.ClassBlock,
+                     SyntaxKind.ConstBlock,
+                     SyntaxKind.ConstBlockStatement,
                      SyntaxKind.EnumBlock,
                      SyntaxKind.InheritsStatement,
                      SyntaxKind.ImplementsStatement,
@@ -36095,6 +36231,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.EndWhileStatement,
                      SyntaxKind.EndTryStatement,
                      SyntaxKind.EndSyncLockStatement,
+                     SyntaxKind.EndConstBlockStatement,
                      SyntaxKind.OptionStatement,
                      SyntaxKind.ImportsStatement,
                      SyntaxKind.NamespaceBlock,
@@ -36103,6 +36240,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.StructureBlock,
                      SyntaxKind.InterfaceBlock,
                      SyntaxKind.ClassBlock,
+                     SyntaxKind.ConstBlock,
+                     SyntaxKind.ConstBlockStatement,
                      SyntaxKind.EnumBlock,
                      SyntaxKind.InheritsStatement,
                      SyntaxKind.ImplementsStatement,
@@ -36397,6 +36536,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.EndWhileStatement,
                      SyntaxKind.EndTryStatement,
                      SyntaxKind.EndSyncLockStatement,
+                     SyntaxKind.EndConstBlockStatement,
                      SyntaxKind.OptionStatement,
                      SyntaxKind.ImportsStatement,
                      SyntaxKind.NamespaceBlock,
@@ -36405,6 +36545,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.StructureBlock,
                      SyntaxKind.InterfaceBlock,
                      SyntaxKind.ClassBlock,
+                     SyntaxKind.ConstBlock,
+                     SyntaxKind.ConstBlockStatement,
                      SyntaxKind.EnumBlock,
                      SyntaxKind.InheritsStatement,
                      SyntaxKind.ImplementsStatement,
@@ -44025,7 +44167,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 SyntaxKind.EndRaiseEventStatement,
                 SyntaxKind.EndWhileStatement,
                 SyntaxKind.EndTryStatement,
-                SyntaxKind.EndSyncLockStatement
+                SyntaxKind.EndSyncLockStatement,
+                SyntaxKind.EndConstBlockStatement
                     Return True
             End Select
             Return False
@@ -44056,7 +44199,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 SyntaxKind.RaiseEventKeyword,
                 SyntaxKind.WhileKeyword,
                 SyntaxKind.TryKeyword,
-                SyntaxKind.SyncLockKeyword
+                SyntaxKind.SyncLockKeyword,
+                SyntaxKind.ConstKeyword
                     Return True
             End Select
             Return False

@@ -246,6 +246,7 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="EndBlock" />
         <native-equiv name="Statement.Opcodes.EndSyncLock" />
       </node-kind>
+      <node-kind name="EndConstBlockStatement" />
 
       <child name="EndKeyword" kind="EndKeyword">
         <description>The "End" keyword</description>
@@ -283,6 +284,7 @@ Unify Enum declarations with other block type declarations.
         <kind name="WhileKeyword" node-kind="EndWhileStatement"/>
         <kind name="TryKeyword" node-kind="EndTryStatement"/>
         <kind name="SyncLockKeyword" node-kind="EndSyncLockStatement"/>
+        <kind name="ConstKeyword" node-kind="EndConstBlockStatement" />
       </child>
     </node-structure>
 
@@ -715,6 +717,22 @@ Unify Enum declarations with other block type declarations.
       </child>
     </node-structure>
 
+    <node-structure name="ConstBlockSyntax" parent="DeclarationStatementSyntax">
+      <desciption>
+        Represents a declaration of a Const Block, its contents and the End Const statement that ends it.
+      </desciption>
+      <node-kind name="ConstBlock" />
+      <child name="ConstStatement" kind="@ConstBlockStatement" />
+      <child name="Contents" list="true" optional="true" kind="ConstBlockMemberStatement|EmptyStatement" />
+      <child name="EndConstStatement" kind="EndConstBlockStatement"/>
+    </node-structure>
+
+    <node-structure name="ConstBlockStatement" parent="StatementSyntax">
+      <node-kind name="ConstBlockStatement" />
+      <child name="ConstKeyword" kind="ConstKeyword" />
+      <child name="AsType" kind="SimpleAsClause" />
+    </node-structure>
+    
     <!--********************
       -  EnumBlock
       **********************-->

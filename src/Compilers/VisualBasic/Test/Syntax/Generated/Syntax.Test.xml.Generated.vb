@@ -112,6 +112,10 @@ Partial Public Class GeneratedTests
             return InternalSyntax.SyntaxFactory.EndSyncLockStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.EndKeyword, String.Empty, Nothing, Nothing), new InternalSyntax.KeywordSyntax(SyntaxKind.SyncLockKeyword, String.Empty, Nothing, Nothing))
         End Function
 
+        Private Shared Function GenerateGreenEndConstBlockStatement() As InternalSyntax.EndBlockStatementSyntax
+            return InternalSyntax.SyntaxFactory.EndConstBlockStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.EndKeyword, String.Empty, Nothing, Nothing), new InternalSyntax.KeywordSyntax(SyntaxKind.ConstKeyword, String.Empty, Nothing, Nothing))
+        End Function
+
         Private Shared Function GenerateGreenCompilationUnit() As InternalSyntax.CompilationUnitSyntax
             return InternalSyntax.SyntaxFactory.CompilationUnit(Nothing, Nothing, Nothing, Nothing, new InternalSyntax.PunctuationSyntax(SyntaxKind.EndOfFileToken, String.Empty, Nothing, Nothing))
         End Function
@@ -158,6 +162,14 @@ Partial Public Class GeneratedTests
 
         Private Shared Function GenerateGreenClassBlock() As InternalSyntax.ClassBlockSyntax
             return InternalSyntax.SyntaxFactory.ClassBlock(GenerateGreenClassStatement(), Nothing, Nothing, Nothing, GenerateGreenEndClassStatement())
+        End Function
+
+        Private Shared Function GenerateGreenConstBlock() As InternalSyntax.ConstBlockSyntax
+            return InternalSyntax.SyntaxFactory.ConstBlock(GenerateGreenConstBlockStatement(), Nothing, GenerateGreenEndConstBlockStatement())
+        End Function
+
+        Private Shared Function GenerateGreenConstBlockStatement() As InternalSyntax.ConstBlockStatement
+            return InternalSyntax.SyntaxFactory.ConstBlockStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.ConstKeyword, String.Empty, Nothing, Nothing), GenerateGreenSimpleAsClause())
         End Function
 
         Private Shared Function GenerateGreenEnumBlock() As InternalSyntax.EnumBlockSyntax
@@ -1696,6 +1708,12 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestGreenEndConstBlockStatement()
+            dim objectUnderTest = GenerateGreenEndConstBlockStatement()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
         Public Sub TestGreenCompilationUnit()
             dim objectUnderTest = GenerateGreenCompilationUnit()
             AttachAndCheckDiagnostics(objectUnderTest)
@@ -1764,6 +1782,18 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenClassBlock()
             dim objectUnderTest = GenerateGreenClassBlock()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenConstBlock()
+            dim objectUnderTest = GenerateGreenConstBlock()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenConstBlockStatement()
+            dim objectUnderTest = GenerateGreenConstBlockStatement()
             AttachAndCheckDiagnostics(objectUnderTest)
         End Sub
 
@@ -4045,6 +4075,14 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestGreenEndConstBlockStatementRewriter()
+            dim oldNode = GenerateGreenEndConstBlockStatement()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
         Public Sub TestGreenCompilationUnitRewriter()
             dim oldNode = GenerateGreenCompilationUnit()
             Dim rewriter = New GreenIdentityRewriter()
@@ -4135,6 +4173,22 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenClassBlockRewriter()
             dim oldNode = GenerateGreenClassBlock()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenConstBlockRewriter()
+            dim oldNode = GenerateGreenConstBlock()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenConstBlockStatementRewriter()
+            dim oldNode = GenerateGreenConstBlockStatement()
             Dim rewriter = New GreenIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)
@@ -6952,6 +7006,13 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestGreenEndConstBlockStatementVisitor()
+            Dim oldNode = GenerateGreenEndConstBlockStatement()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
         Public Sub TestGreenCompilationUnitVisitor()
             Dim oldNode = GenerateGreenCompilationUnit()
             Dim visitor = New GreenNodeVisitor()
@@ -7031,6 +7092,20 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenClassBlockVisitor()
             Dim oldNode = GenerateGreenClassBlock()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenConstBlockVisitor()
+            Dim oldNode = GenerateGreenConstBlock()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenConstBlockStatementVisitor()
+            Dim oldNode = GenerateGreenConstBlockStatement()
             Dim visitor = New GreenNodeVisitor()
             visitor.Visit(oldNode)
         End Sub
@@ -10028,6 +10103,35 @@ Partial Public Class GeneratedTests
             return SyntaxFactory.EndSyncLockStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.SyncLockKeyword))
         End Function
 
+        Private Shared Function GenerateRedEndConstBlockStatement() As EndBlockStatementSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.EndConstBlockStatement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), SyntaxFactory.Token(SyntaxKind.ConstKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.EndConstBlockStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.EndConstBlockStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.EndConstBlockStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ConstKeyword))
+        End Function
+
         Private Shared Function GenerateRedCompilationUnit() As CompilationUnitSyntax
             Dim exceptionTest as boolean = false
             Try
@@ -10270,6 +10374,48 @@ Partial Public Class GeneratedTests
             exceptionTest = false
 
             return SyntaxFactory.ClassBlock(GenerateRedClassStatement(), Nothing, Nothing, Nothing, GenerateRedEndClassStatement())
+        End Function
+
+        Private Shared Function GenerateRedConstBlock() As ConstBlockSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.ConstBlock(Nothing, Nothing, GenerateRedEndConstBlockStatement())
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.ConstBlock(GenerateRedConstBlockStatement(), Nothing, Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.ConstBlock(GenerateRedConstBlockStatement(), Nothing, GenerateRedEndConstBlockStatement())
+        End Function
+
+        Private Shared Function GenerateRedConstBlockStatement() As ConstBlockStatement
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.ConstBlockStatement(SyntaxFactory.Token(SyntaxKind.ConstKeyword), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.ConstBlockStatement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedSimpleAsClause())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.ConstBlockStatement(SyntaxFactory.Token(SyntaxKind.ConstKeyword), GenerateRedSimpleAsClause())
         End Function
 
         Private Shared Function GenerateRedEnumBlock() As EnumBlockSyntax
@@ -18671,6 +18817,15 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestRedEndConstBlockStatement()
+            dim objectUnderTest = GenerateRedEndConstBlockStatement()
+            Assert.NotNull(objectUnderTest.endKeyword)
+            Assert.NotNull(objectUnderTest.blockKeyword)
+            Dim withObj = objectUnderTest.WithEndKeyword(objectUnderTest.EndKeyword).WithBlockKeyword(objectUnderTest.BlockKeyword)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
         Public Sub TestRedCompilationUnit()
             dim objectUnderTest = GenerateRedCompilationUnit()
             Assert.NotNull(objectUnderTest.endOfFileToken)
@@ -18773,6 +18928,24 @@ Partial Public Class GeneratedTests
             Assert.NotNull(objectUnderTest.classStatement)
             Assert.NotNull(objectUnderTest.endClassStatement)
             Dim withObj = objectUnderTest.WithClassStatement(objectUnderTest.ClassStatement).WithInherits(objectUnderTest.Inherits).WithImplements(objectUnderTest.Implements).WithMembers(objectUnderTest.Members).WithEndClassStatement(objectUnderTest.EndClassStatement)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedConstBlock()
+            dim objectUnderTest = GenerateRedConstBlock()
+            Assert.NotNull(objectUnderTest.constStatement)
+            Assert.NotNull(objectUnderTest.endConstStatement)
+            Dim withObj = objectUnderTest.WithConstStatement(objectUnderTest.ConstStatement).WithContents(objectUnderTest.Contents).WithEndConstStatement(objectUnderTest.EndConstStatement)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedConstBlockStatement()
+            dim objectUnderTest = GenerateRedConstBlockStatement()
+            Assert.NotNull(objectUnderTest.constKeyword)
+            Assert.NotNull(objectUnderTest.asType)
+            Dim withObj = objectUnderTest.WithConstKeyword(objectUnderTest.ConstKeyword).WithAsType(objectUnderTest.AsType)
             Assert.Equal(withobj, objectUnderTest)
         End Sub
 
@@ -22105,6 +22278,14 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestRedEndConstBlockStatementRewriter()
+            dim oldNode = GenerateRedEndConstBlockStatement()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
         Public Sub TestRedCompilationUnitRewriter()
             dim oldNode = GenerateRedCompilationUnit()
             Dim rewriter = New RedIdentityRewriter()
@@ -22195,6 +22376,22 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestRedClassBlockRewriter()
             dim oldNode = GenerateRedClassBlock()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedConstBlockRewriter()
+            dim oldNode = GenerateRedConstBlock()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedConstBlockStatementRewriter()
+            dim oldNode = GenerateRedConstBlockStatement()
             Dim rewriter = New RedIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)
