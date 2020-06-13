@@ -14,9 +14,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     Friend Partial Class Parser
 
         Friend Function ParseExpression(
-            Optional pendingPrecedence As OperatorPrecedence = OperatorPrecedence.PrecedenceNone,
-            Optional bailIfFirstTokenRejected As Boolean = False
-        ) As ExpressionSyntax
+                                Optional pendingPrecedence As OperatorPrecedence = OperatorPrecedence.PrecedenceNone,
+                                Optional bailIfFirstTokenRejected As Boolean = False
+                                       ) As ExpressionSyntax
 
             Return ParseWithStackGuard(Of ExpressionSyntax)(
                 Function() ParseExpressionCore(pendingPrecedence, bailIfFirstTokenRejected),
@@ -47,9 +47,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         '    bool EatLeadingNewLine,         - we no longer support it in ParseExpressionCore, please eat the new line yourself before calling
         '    bool BailIfFirstTokenRejected                 // bail (return NULL) if the first token isn't a valid expression-starter, rather than reporting an error or setting ErrorInConstruct
         Private Function ParseExpressionCore(
-            Optional pendingPrecedence As OperatorPrecedence = OperatorPrecedence.PrecedenceNone,
-            Optional bailIfFirstTokenRejected As Boolean = False
-        ) As ExpressionSyntax
+                                     Optional pendingPrecedence As OperatorPrecedence = OperatorPrecedence.PrecedenceNone,
+                                     Optional bailIfFirstTokenRejected As Boolean = False
+                                            ) As ExpressionSyntax
 
             Try
                 _recursionDepth += 1
@@ -173,9 +173,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseTerm(
-            Optional BailIfFirstTokenRejected As Boolean = False,
-            Optional RedimOrNewParent As Boolean = False
-        ) As ExpressionSyntax
+                           Optional BailIfFirstTokenRejected As Boolean = False,
+                           Optional RedimOrNewParent As Boolean = False
+                                  ) As ExpressionSyntax
 
             '// Note: this function will only ever return NULL if the flag "BailIfFirstTokenIsRejected" is set,
             '// and if the first token isn't a valid way to start an expression. In all other error scenarios
@@ -449,7 +449,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return term
         End Function
 
-        Private Function ParsePostFixExpression(RedimOrNewParent As Boolean, term As ExpressionSyntax) As ExpressionSyntax
+        Private Function ParsePostFixExpression(redimOrNewParent As Boolean, term As ExpressionSyntax) As ExpressionSyntax
             Do
                 Dim [Next] As SyntaxToken = CurrentToken
 
@@ -458,25 +458,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Dim isAfterSingleLineSub As Boolean = term IsNot Nothing AndAlso term.Kind = SyntaxKind.SingleLineSubLambdaExpression
 
                 If [Next].Kind = SyntaxKind.DotToken Then
-                    If isAfterSingleLineSub Then
-                        term = ReportSyntaxError(term, ERRID.ERR_SubRequiresParenthesesDot)
-                    End If
-
+                    If isAfterSingleLineSub Then term = ReportSyntaxError(term, ERRID.ERR_SubRequiresParenthesesDot)
                     term = ParseQualifiedExpr(term)
 
                 ElseIf [Next].Kind = SyntaxKind.ExclamationToken Then
-                    If isAfterSingleLineSub Then
-                        term = ReportSyntaxError(term, ERRID.ERR_SubRequiresParenthesesBang)
-                    End If
-
+                    If isAfterSingleLineSub Then term = ReportSyntaxError(term, ERRID.ERR_SubRequiresParenthesesBang)
                     term = ParseQualifiedExpr(term)
 
                 ElseIf [Next].Kind = SyntaxKind.OpenParenToken Then
-                    If isAfterSingleLineSub Then
-                        term = ReportSyntaxError(term, ERRID.ERR_SubRequiresParenthesesLParen)
-                    End If
-
-                    term = ParseParenthesizedQualifier(term, RedimOrNewParent)
+                    If isAfterSingleLineSub Then term = ReportSyntaxError(term, ERRID.ERR_SubRequiresParenthesesLParen)
+                    term = ParseParenthesizedQualifier(term, redimOrNewParent)
 
                 ElseIf [Next].Kind = SyntaxKind.QuestionToken AndAlso CanStartConsequenceExpression(Me.PeekToken(1).Kind, qualified:=True) Then
                     ' This looks like ?. ?! or ?(
@@ -499,7 +490,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         End Select
                     End If
 
-                    term = SyntaxFactory.ConditionalAccessExpression(term, qToken, ParsePostFixExpression(RedimOrNewParent, term:=Nothing))
+                    term = SyntaxFactory.ConditionalAccessExpression(term, qToken, ParsePostFixExpression(redimOrNewParent, term:=Nothing))
                 Else
                     ' We're done with the term.
                     Exit Do
@@ -516,9 +507,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Shared Function TokenContainsFullWidthChars(tk As SyntaxToken) As Boolean
             Dim spelling = tk.Text
             For Each ch In spelling
-                If SyntaxFacts.IsFullWidth(ch) Then
-                    Return True
-                End If
+                If SyntaxFacts.IsFullWidth(ch) Then Return True
             Next
 
             Return False
@@ -636,7 +625,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <returns></returns>
         ''' <remarks></remarks>
         Private Function ParseGetType() As GetTypeExpressionSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.GetTypeKeyword, "should be at GetType.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.GetTypeKeyword)
 
             Dim [getType] As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
@@ -667,7 +656,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <returns></returns>
         ''' <remarks></remarks>
         Private Function ParseNameOf() As NameOfExpressionSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.NameOfKeyword, "should be at NameOf.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.NameOfKeyword)
 
             Dim [nameOf] As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             [nameOf] = CheckFeatureAvailability(Feature.NameOfExpressions, [nameOf])
@@ -728,7 +717,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Expression* .Parser::ParseGetXmlNamespace( [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseGetXmlNamespace() As ExpressionSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.GetXmlNamespaceKeyword, "should be at GetXmlNamespace.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.GetXmlNamespaceKeyword)
 
             Dim getXmlNamespaceKeyword = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken(ScannerState.VB)
@@ -767,7 +756,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Expression* .Parser::ParseCastExpression( [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseCastExpression() As ExpressionSyntax
-            Debug.Assert(SyntaxFacts.IsPredefinedCastExpressionKeyword(CurrentToken.Kind), "ParseCastExpression called with the wrong token.")
+            CalledOnWrongToken(SyntaxFacts.IsPredefinedCastExpressionKeyword(CurrentToken.Kind))
 
             Dim Start = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
@@ -788,7 +777,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Expression* .Parser::ParseNewExpression( [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseNewExpression() As ExpressionSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.NewKeyword, "must be at a New expression.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.NewKeyword)
 
             Dim NewKeyword = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken() ' get off 'new'
@@ -921,7 +910,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <returns></returns>
         ''' <remarks></remarks>
         Private Function ParseTypeOf() As TypeOfExpressionSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.TypeOfKeyword, "must be at TypeOf.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.TypeOfKeyword)
             Dim [typeOf] As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
             ' Consume 'TypeOf'.
@@ -992,12 +981,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' File: Parser.cpp
         ' Lines: 16211 - 16211
         ' Expression* .Parser::ParseQualifiedExpr( [ _In_ Token* Start ] [ _In_opt_ ParseTree::Expression* Term ] [ _Inout_ bool& ErrorInConstruct ] )
-        Private Function ParseQualifiedExpr(
-            Term As ExpressionSyntax
-        ) As ExpressionSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.DotToken OrElse
-                  CurrentToken.Kind = SyntaxKind.ExclamationToken,
-                  "Must be on either a '.' or '!' when entering parseQualifiedExpr()")
+        Private Function ParseQualifiedExpr( Term As ExpressionSyntax) As ExpressionSyntax
+            CalledOnWrongToken(CurrentToken.Kind, {SyntaxKind.DotToken, SyntaxKind.ExclamationToken})
 
             Dim DotOrBangToken As PunctuationSyntax = DirectCast(CurrentToken, PunctuationSyntax)
 
@@ -1220,7 +1205,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseParenthesizedExpressionOrTupleLiteral() As ExpressionSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.OpenParenToken)
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.OpenParenToken)
 
             ' "(" expr ")"              'parenthesized
             ' "(" Name:= ....           'parse a tuple
@@ -1308,7 +1293,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 16304 - 16304
         ' ParenthesizedArgumentList .Parser::ParseParenthesizedArguments( [ _Inout_ bool& ErrorInConstruct ] )
         Friend Function ParseParenthesizedArguments(Optional RedimOrNewParent As Boolean = False, Optional attributeListParent As Boolean = False) As ArgumentListSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.OpenParenToken, "should be at tkLParen.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.OpenParenToken)
 
             Dim arguments As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ArgumentSyntax) = Nothing
             Dim openParen As PunctuationSyntax = Nothing
@@ -1585,10 +1570,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim keyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             Dim keywordKind As SyntaxKind = keyword.Kind
 
-            Debug.Assert(keywordKind = SyntaxKind.CTypeKeyword OrElse
-                    keywordKind = SyntaxKind.DirectCastKeyword OrElse
-                    keywordKind = SyntaxKind.TryCastKeyword,
-                    "Expected CTYPE or DIRECTCAST or TRYCAST token.")
+            CalledOnWrongToken(keywordKind, {SyntaxKind.CTypeKeyword, SyntaxKind.DirectCastKeyword, SyntaxKind.TryCastKeyword})
 
             GetNextToken()
 

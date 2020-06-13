@@ -39,9 +39,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return Me.EndBlock(Nothing)
 
                 Case SyntaxKind.ElseStatement
-                    If _haveElseClause Then
-                        Throw ExceptionUtilities.Unreachable
-                    End If
+                    If _haveElseClause Then Throw ExceptionUtilities.Unreachable
 
                     _haveElseClause = True
                     Return New SingleLineElseContext(SyntaxKind.SingleLineElseClause, DirectCast(node, StatementSyntax), Me)
@@ -116,9 +114,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case Else
                     ' Terminated if we've already seen at least one statement.
                     If _statements.Count > 0 Then
-                        If TreatOtherAsStatementTerminator Then
-                            Return ProcessOtherAsStatementTerminator()
-                        End If
+                        If TreatOtherAsStatementTerminator Then Return ProcessOtherAsStatementTerminator()
 
                         Return MyBase.ResyncAndProcessStatementTerminator(statement, lambdaContext)
                     End If

@@ -200,10 +200,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseFltLiteral() As LiteralExpressionSyntax
-
-            Debug.Assert(
-            CurrentToken.Kind = SyntaxKind.FloatingLiteralToken,
-            "must be at a float literal.")
+            CalledOnWrongToken(CurrentToken.Kind, {SyntaxKind.FloatingLiteralToken})
 
             Dim Literal As LiteralExpressionSyntax = SyntaxFactory.NumericLiteralExpression(CurrentToken)
             GetNextToken()

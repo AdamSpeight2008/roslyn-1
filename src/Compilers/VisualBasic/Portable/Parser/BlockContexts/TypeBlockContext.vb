@@ -19,10 +19,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             MyBase.New(contextKind, statement, prevContext)
 
             Debug.Assert(contextKind = SyntaxKind.ModuleBlock OrElse contextKind = SyntaxKind.ClassBlock OrElse
-                              contextKind = SyntaxKind.StructureBlock OrElse contextKind = SyntaxKind.InterfaceBlock)
+                         contextKind = SyntaxKind.StructureBlock OrElse contextKind = SyntaxKind.InterfaceBlock)
 
             Debug.Assert(BlockKind = SyntaxKind.ModuleBlock OrElse BlockKind = SyntaxKind.ClassBlock OrElse
-                               BlockKind = SyntaxKind.StructureBlock OrElse BlockKind = SyntaxKind.InterfaceBlock)
+                         BlockKind = SyntaxKind.StructureBlock OrElse BlockKind = SyntaxKind.InterfaceBlock)
 
             _state = SyntaxKind.None
         End Sub

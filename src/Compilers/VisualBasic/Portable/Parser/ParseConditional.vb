@@ -413,34 +413,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                     Dim comma As PunctuationSyntax = Nothing
                     If Not TryGetToken(SyntaxKind.CommaToken, comma) Then
-                        If SyntaxFacts.IsTerminator(CurrentToken.Kind) Then
-                            Exit Do
-                        Else
-                            comma = InternalSyntaxFactory.MissingPunctuation(SyntaxKind.CommaToken)
-                            comma = ReportSyntaxError(comma, ERRID.ERR_ExpectedComma)
-                        End If
+                        If SyntaxFacts.IsTerminator(CurrentToken.Kind) Then Exit Do
+                        comma = InternalSyntaxFactory.MissingPunctuation(SyntaxKind.CommaToken)
+                        comma = ReportSyntaxError(comma, ERRID.ERR_ExpectedComma)
                     End If
 
-                    If comma.ContainsDiagnostics Then
-                        comma = ResyncAt(comma)
-                    End If
+                    If comma.ContainsDiagnostics Then comma = ResyncAt(comma)
                     errorCodes.AddSeparator(comma)
                 Loop
             End If
 
             Dim statement As DirectiveTriviaSyntax = Nothing
             If enableOrDisableKeyword.Kind = SyntaxKind.EnableKeyword Then
-                statement = SyntaxFactory.EnableWarningDirectiveTrivia(
-                    hashToken, enableOrDisableKeyword, warningKeyword, errorCodes.ToList)
+                statement = SyntaxFactory.EnableWarningDirectiveTrivia(hashToken, enableOrDisableKeyword, warningKeyword, errorCodes.ToList)
             ElseIf enableOrDisableKeyword.Kind = SyntaxKind.DisableKeyword Then
-                statement = SyntaxFactory.DisableWarningDirectiveTrivia(
-                    hashToken, enableOrDisableKeyword, warningKeyword, errorCodes.ToList)
+                statement = SyntaxFactory.DisableWarningDirectiveTrivia(hashToken, enableOrDisableKeyword, warningKeyword, errorCodes.ToList)
             End If
 
-            If statement IsNot Nothing Then
-                statement = CheckFeatureAvailability(Feature.WarningDirectives, statement)
-            End If
-
+            If statement IsNot Nothing Then statement = CheckFeatureAvailability(Feature.WarningDirectives, statement)
+ 
             Me._pool.Free(errorCodes)
             Return statement
         End Function
@@ -466,10 +457,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Shared Function ParseBadDirective(hashToken As PunctuationSyntax) As BadDirectiveTriviaSyntax
             Dim badDirective = InternalSyntaxFactory.BadDirectiveTrivia(hashToken)
 
-            If Not badDirective.ContainsDiagnostics Then
-                badDirective = ReportSyntaxError(badDirective, ERRID.ERR_ExpectedConditionalDirective)
-            End If
-
+            If Not badDirective.ContainsDiagnostics Then badDirective = ReportSyntaxError(badDirective, ERRID.ERR_ExpectedConditionalDirective)
             Return badDirective
         End Function
 

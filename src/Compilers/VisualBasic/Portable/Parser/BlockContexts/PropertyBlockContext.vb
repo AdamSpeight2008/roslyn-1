@@ -85,9 +85,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Friend Overrides Function TryLinkSyntax(node As VisualBasicSyntaxNode, ByRef newContext As BlockContext) As LinkResult
             newContext = Nothing
 
-            If KindEndsBlock(node.Kind) Then
-                Return UseSyntax(node, newContext)
-            End If
+            If KindEndsBlock(node.Kind) Then Return UseSyntax(node, newContext)
 
             Select Case node.Kind
 
@@ -108,9 +106,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend Overrides Function EndBlock(endStmt As StatementSyntax) As BlockContext
 
-            If IsPropertyBlock OrElse endStmt IsNot Nothing Then
-                Return MyBase.EndBlock(endStmt)
-            End If
+            If IsPropertyBlock OrElse endStmt IsNot Nothing Then Return MyBase.EndBlock(endStmt)
 
             ' This is an auto property.  Do not create a block.  Just add the property statement to the outer block
             ' TODO - Consider changing the kind to AutoProperty.  For now auto properties are just PropertyStatement

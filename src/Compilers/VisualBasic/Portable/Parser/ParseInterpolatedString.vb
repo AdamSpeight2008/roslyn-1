@@ -15,7 +15,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     Friend Partial Class Parser
 
         Private Function ParseInterpolatedStringExpression() As InterpolatedStringExpressionSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.DollarSignDoubleQuoteToken, "ParseInterpolatedStringExpression called on the wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, {SyntaxKind.DollarSignDoubleQuoteToken})
 
             ResetCurrentToken(ScannerState.InterpolatedStringPunctuation)
 
@@ -98,7 +98,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseInterpolatedStringInterpolation() As InterpolationSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.OpenBraceToken, "ParseInterpolatedStringEmbeddedExpression called on the wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.OpenBraceToken)
 
             Dim colonToken As PunctuationSyntax = Nothing
             Dim excessText As String = Nothing

@@ -818,20 +818,20 @@ End Structure
            </errors>)
     End Sub
 
-    ' old name - ParseStatementSeparatorOnSubDeclLine_ERR_MethodBodyNotAtLineStart
-    <WorkItem(905020, "DevDiv/Personal")>
-    <Fact()>
-    Public Sub BC30040ERR_MethodBodyNotAtLineStart()
-        ParseAndVerify(<![CDATA[
-    Public Class C1
-        Sub Goo() : Console.Writeline()
-        End Sub
-    End Class
-    ]]>,
-            <errors>
-                <error id="30040"/>
-            </errors>)
-    End Sub
+    '' old name - ParseStatementSeparatorOnSubDeclLine_ERR_MethodBodyNotAtLineStart
+    '<WorkItem(905020, "DevDiv/Personal")>
+    '<Fact()>
+    'Public Sub BC30040ERR_MethodBodyNotAtLineStart()
+    '    ParseAndVerify(<![CDATA[
+    'Public Class C1
+    '    Sub Goo() : Console.Writeline()
+    '    End Sub
+    'End Class
+    ']]>,
+    '        <errors>
+    '            <error id="30040"/>
+    '        </errors>)
+    'End Sub
 
     <Fact()>
     Public Sub BC30040ERR_MethodBodyNotAtLineStart_EmptyStatement()

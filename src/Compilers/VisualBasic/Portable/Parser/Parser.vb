@@ -65,9 +65,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Sub
 
         Friend Sub Dispose() Implements IDisposable.Dispose
-            If _disposeScanner Then
-                Me._scanner.Dispose()
-            End If
+            If _disposeScanner Then Me._scanner.Dispose()
         End Sub
 
         Friend ReadOnly Property IsScript As Boolean
@@ -263,9 +261,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Dim child = node.ChildNodesAndTokens.Last
 
                 node = child.AsNode
-                If node Is Nothing Then
-                    Return child.AsToken
-                End If
+                If node Is Nothing Then Return child.AsToken
             Loop
         End Function
 
@@ -681,9 +677,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                     Dim nextToken As SyntaxToken = PeekToken(1)
 
-                    If IsContinuableEOL(1) Then
-                        nextToken = PeekToken(2)
-                    End If
+                    If IsContinuableEOL(1) Then nextToken = PeekToken(2)
 
                     Dim kind As SyntaxKind = Nothing
                     If TryTokenAsKeyword(nextToken, kind) AndAlso (kind = SyntaxKind.AssemblyKeyword OrElse
@@ -779,15 +773,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return ParseStatementInMethodBodyInternal()
 
                 Case SyntaxKind.IntegerLiteralToken
-                    If IsFirstStatementOnLine(CurrentToken) Then
-                        Return ParseLabel()
-                    End If
+                    If IsFirstStatementOnLine(CurrentToken) Then Return ParseLabel()
                     Return ReportUnrecognizedStatementError(ERRID.ERR_Syntax)
 
                 Case SyntaxKind.IdentifierToken
-                    If Context.BlockKind = SyntaxKind.EnumBlock Then
-                        Return ParseEnumMemberOrLabel(Nothing)
-                    End If
+                    If Context.BlockKind = SyntaxKind.EnumBlock Then Return ParseEnumMemberOrLabel(Nothing)
 
                     ' Enables better error for wrong uses of the "Custom" modifier
                     Dim contextualKind As SyntaxKind = Nothing
@@ -806,13 +796,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     ' The following token is a keyword that starts declaration, so the current token (identifier)
                     ' is probably an incomplete specifier. Let's not parse it as a statement it will certainly be an error.
                     Dim statement = ParsePossibleDeclarationStatement()
-                    If statement IsNot Nothing Then
-                        Return statement
-                    End If
+                    If statement IsNot Nothing Then Return statement
 
-                    If Context.BlockKind = SyntaxKind.CompilationUnit Then
-                        Return ParseStatementInMethodBodyInternal()
-                    End If
+                    If Context.BlockKind = SyntaxKind.CompilationUnit Then Return ParseStatementInMethodBodyInternal()
 
                     If ShouldParseAsLabel() Then
                         Return ParseLabel()
@@ -847,9 +833,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     ' immediately follows "Namespace Global" without a new line or if the user incorrectly 
                     ' uses Global as a modifier.
                     Dim statement = ParsePossibleDeclarationStatement()
-                    If statement IsNot Nothing Then
-                        Return statement
-                    End If
+                    If statement IsNot Nothing Then Return statement
                     Return ParseStatementInMethodBodyInternal()
 
                 Case Else
@@ -1300,9 +1284,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseSpecifierDeclaration(
-            attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
-            modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
-        ) As StatementSyntax
+                                                    attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                                    modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                                  ) As StatementSyntax
+
             Dim statement As StatementSyntax = Nothing
 
             ' Current token set to token after the last specifier
@@ -1453,10 +1438,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 4352 - 4352
         ' EnumTypeStatement* .Parser::ParseEnumStatement( [ ParseTree::AttributeSpecifierList* Attributes ] [ ParseTree::SpecifierList* Specifiers ] [ Token* Start ] [ _Inout_ bool& ErrorInConstruct ] )
         Private Function ParseEnumStatement(
-                  Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax) = Nothing,
-                  Optional modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax) = Nothing
-        ) As EnumStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.EnumKeyword, "ParseEnumStatement called on the wrong token.")
+                                    Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax) = Nothing,
+                                    Optional modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax) = Nothing
+                                           ) As EnumStatementSyntax
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.EnumKeyword)
 
             Dim enumKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             Dim optionalUnderlyingType As AsClauseSyntax = Nothing
@@ -1512,9 +1497,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ParseEnumMemberOrLabel(attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax)) As StatementSyntax
 
-            If Not attributes.Any() AndAlso ShouldParseAsLabel() Then
-                Return ParseLabel()
-            End If
+            If Not attributes.Any() AndAlso ShouldParseAsLabel() Then Return ParseLabel()
 
             ' The current token should be an Identifier
             ' The Dev10 code used to look ahead to see if the statement was a declaration to exit out of en enum declaration.
@@ -1527,9 +1510,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Dim ident As IdentifierTokenSyntax = ParseIdentifier()
 
-            If ident.ContainsDiagnostics Then
-                ident = ident.AddTrailingSyntax(ResyncAt({SyntaxKind.EqualsToken}))
-            End If
+            If ident.ContainsDiagnostics Then ident = ident.AddTrailingSyntax(ResyncAt({SyntaxKind.EqualsToken}))
 
             ' See if there is an expression
 
@@ -1571,9 +1552,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 4563 - 4563
         ' TypeStatement* .Parser::ParseTypeStatement( [ ParseTree::AttributeSpecifierList* Attributes ] [ ParseTree::SpecifierList* Specifiers ] [ Token* Start ] [ _Inout_ bool& ErrorInConstruct ] )
         Private Function ParseTypeStatement(
-                  Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax) = Nothing,
-                  Optional modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax) = Nothing
-        ) As TypeStatementSyntax
+                                    Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax) = Nothing,
+                                    Optional modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax) = Nothing
+                                           ) As TypeStatementSyntax
 
             Dim kind As SyntaxKind
             Dim optionalTypeParameters As TypeParameterListSyntax = Nothing
@@ -1631,9 +1612,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Dim typeParameters As TypeParameterListSyntax = ParseGenericParameters()
 
-            If typeParameters.CloseParenToken.IsMissing Then
-                typeParameters = ResyncAt(typeParameters)
-            End If
+            If typeParameters.CloseParenToken.IsMissing Then typeParameters = ResyncAt(typeParameters)
 
             typeParameters = ReportSyntaxError(typeParameters, errid)
             typeParameters = AdjustTriviaForMissingTokens(typeParameters)
@@ -1654,9 +1633,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 allowEmptyGenericArguments,
                 AllowNonEmptyGenericArguments)
 
-            If genericArguments.CloseParenToken.IsMissing Then
-                genericArguments = ResyncAt(genericArguments)
-            End If
+            If genericArguments.CloseParenToken.IsMissing Then genericArguments = ResyncAt(genericArguments)
 
             Debug.Assert(Not genericArguments.OpenParenToken.IsMissing, "Generic params parsing lost!!!")
 
@@ -1679,14 +1656,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return True
         End Function
 
-        Private Function ParseNamespaceStatement(attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax), Specifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)) As NamespaceStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.NamespaceKeyword, "ParseNamespaceStatement called on the wrong token.")
+        Private Function ParseNamespaceStatement(attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                                 specifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                                ) As NamespaceStatementSyntax
 
-            Dim namespaceKeyword As KeywordSyntax = ReportModifiersOnStatementError(ERRID.ERR_SpecifiersInvalidOnInheritsImplOpt, attributes, Specifiers, DirectCast(CurrentToken, KeywordSyntax))
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.NamespaceKeyword)
 
-            If IsScript Then
-                namespaceKeyword = AddError(namespaceKeyword, ERRID.ERR_NamespaceNotAllowedInScript)
-            End If
+            Dim namespaceKeyword As KeywordSyntax = ReportModifiersOnStatementError(ERRID.ERR_SpecifiersInvalidOnInheritsImplOpt, attributes, specifiers, DirectCast(CurrentToken, KeywordSyntax))
+
+            If IsScript Then namespaceKeyword = AddError(namespaceKeyword, ERRID.ERR_NamespaceNotAllowedInScript)
 
             Dim unexpectedSyntax As CoreInternalSyntax.SyntaxList(Of SyntaxToken) = Nothing
             Dim result As NamespaceStatementSyntax
@@ -1718,7 +1696,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseEndStatement() As StatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.EndKeyword, "ParseEndStatement called on wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.EndKeyword)
 
             ' Dev10#708061
             ' "End" is a keyword which takes an optional next argument. Things get confusing with "End Select"...
@@ -1755,7 +1733,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 5054 - 5054
         ' .Parser::ParseGroupEndStatement( [ _Inout_ bool& ErrorInConstruct ] )
         Private Function ParseGroupEndStatement() As StatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.EndKeyword, "ParseGroupEndStatement called on wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.EndKeyword)
 
             Dim endKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             Dim nextToken = PeekToken(1)
@@ -2094,9 +2072,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 5992 - 5992
         ' Statement* .Parser::ParseVarDeclStatement( [ ParseTree::AttributeSpecifierList* Attributes ] [ ParseTree::SpecifierList* Specifiers ] [ _In_ Token* StmtStart ] [ _Inout_ bool& ErrorInConstruct ] )
         Private Function ParseVarDeclStatement(
-            attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
-            modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
-        ) As StatementSyntax
+                                                attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                                modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                              ) As StatementSyntax
             ' Parse the declarations.
 
             Dim isFieldDeclaration As Boolean = False
@@ -2221,7 +2199,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Parses the as-clause and initializer for both locals, fields and properties
         ' Properties allow Attributes before the type and allow implicit line continuations before "FROM", otherwise, fields and
         ' properties allow the same syntax.
-        Private Sub ParseFieldOrPropertyAsClauseAndInitializer(isProperty As Boolean, allowAsNewWith As Boolean, ByRef optionalAsClause As AsClauseSyntax, ByRef optionalInitializer As EqualsValueSyntax)
+        Private Sub ParseFieldOrPropertyAsClauseAndInitializer( isProperty As Boolean,
+                                                                allowAsNewWith As Boolean,
+                                                          ByRef optionalAsClause As AsClauseSyntax,
+                                                          ByRef optionalInitializer As EqualsValueSyntax)
             Dim asKeyword As KeywordSyntax = Nothing
             Dim newKeyword As KeywordSyntax = Nothing
             Dim newArguments As ArgumentListSyntax = Nothing
@@ -2472,9 +2453,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         '''  Dim x as new Customer With {.Id = 1, .Name = "A"}
         ''' </summary>
         ''' <returns>ObjectMemberInitializer</returns>
-        Private Function ParseObjectInitializerList(Optional anonymousTypeInitializer As Boolean = False, Optional anonymousTypesAllowedHere As Boolean = True) As ObjectMemberInitializerSyntax
+        Private Function ParseObjectInitializerList(
+                                            Optional anonymousTypeInitializer As Boolean = False,
+                                            Optional anonymousTypesAllowedHere As Boolean = True
+                                                   ) As ObjectMemberInitializerSyntax
 
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.WithKeyword, "ParseObjectInitializerList called with wrong token")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.WithKeyword)
 
             ' Handle the "With" clause in the following syntax:
             '  Dim x as new Customer With {.Id = 1, .Name = "A"}
@@ -2712,7 +2696,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 6816 - 6816
         ' .Parser::ParseDeclarator( [ bool AllowExplicitArraySizes ] [ _Out_ ParseTree::Declarator* Result ] [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseModifiedIdentifier(AllowExplicitArraySizes As Boolean, checkForCustom As Boolean) As ModifiedIdentifierSyntax
+        Private Function ParseModifiedIdentifier( allowExplicitArraySizes As Boolean,
+                                                  checkForCustom As Boolean
+                                                ) As ModifiedIdentifierSyntax
+
             Dim identifierStartPrev As SyntaxToken = PrevToken
             Dim identifierStart As SyntaxToken = CurrentToken
             Dim id As IdentifierTokenSyntax
@@ -2774,7 +2761,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             ' Check for an array declarator.
 
             If CurrentToken.Kind = SyntaxKind.OpenParenToken Then
-                Return ParseArrayModifiedIdentifier(id, optionalNullable, AllowExplicitArraySizes)
+                Return ParseArrayModifiedIdentifier(id, optionalNullable, allowExplicitArraySizes)
             End If
 
             Return SyntaxFactory.ModifiedIdentifier(id, optionalNullable, Nothing, Nothing)
@@ -2832,10 +2819,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="allowedEmptyGenericArguments">Controls generic argument parsing</param>
         ''' <returns>TypeName</returns>
         Friend Function ParseTypeName(
-            Optional nonArrayName As Boolean = False,
-            Optional allowEmptyGenericArguments As Boolean = False,
-            Optional ByRef allowedEmptyGenericArguments As Boolean = False
-        ) As TypeSyntax
+                              Optional nonArrayName As Boolean = False,
+                              Optional allowEmptyGenericArguments As Boolean = False,
+                        ByRef Optional allowedEmptyGenericArguments As Boolean = False
+                                     ) As TypeSyntax
 
             Dim Start As SyntaxToken = CurrentToken
             Dim prev As SyntaxToken = PrevToken
@@ -3130,9 +3117,9 @@ checkNullable:
         ' TypeList* .Parser::ParseGenericArguments( [ _Out_ Token*& Of ] [ _Out_ Token*& openParen ] [ _Out_ Token*& closeParen ] [ _Inout_ bool& AllowEmptyGenericArguments ] [ _Inout_ bool& AllowNonEmptyGenericArguments ] [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseGenericArguments(
-            ByRef allowEmptyGenericArguments As Boolean,
-            ByRef AllowNonEmptyGenericArguments As Boolean
-        ) As TypeArgumentListSyntax
+                                          ByRef allowEmptyGenericArguments As Boolean,
+                                          ByRef AllowNonEmptyGenericArguments As Boolean
+                                              ) As TypeArgumentListSyntax
 
             Debug.Assert(allowEmptyGenericArguments OrElse AllowNonEmptyGenericArguments,
                 "Cannot disallow both empty and non-empty generic arguments!!!")
@@ -3213,9 +3200,11 @@ checkNullable:
             Return genericArguments
         End Function
 
-        Private Function ParseArrayRankSpecifiers(Optional errorForExplicitArraySizes As ERRID = ERRID.ERR_NoExplicitArraySizes) As CoreInternalSyntax.SyntaxList(Of ArrayRankSpecifierSyntax)
+        Private Function ParseArrayRankSpecifiers(
+                                          Optional errorForExplicitArraySizes As ERRID = ERRID.ERR_NoExplicitArraySizes
+                                                 ) As CoreInternalSyntax.SyntaxList(Of ArrayRankSpecifierSyntax)
 
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.OpenParenToken, "should be a (.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.OpenParenToken)
 
             Dim arrayModifiers As SyntaxListBuilder(Of ArrayRankSpecifierSyntax) = Nothing
 
@@ -3266,13 +3255,12 @@ checkNullable:
         ' to handle ArrayTypeName and ModifiedIdentifier cases
 
         Private Function ParseArrayModifiedIdentifier(
-            elementType As IdentifierTokenSyntax,
-            optionalNullable As PunctuationSyntax,
-            allowExplicitSizes As Boolean
-         ) As ModifiedIdentifierSyntax
+                                                       elementType As IdentifierTokenSyntax,
+                                                       optionalNullable As PunctuationSyntax,
+                                                       allowExplicitSizes As Boolean
+                                                     ) As ModifiedIdentifierSyntax
             Debug.Assert(elementType IsNot Nothing)
-
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.OpenParenToken, "should be a (.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.OpenParenToken)
 
             Dim optionalArrayBounds As ArgumentListSyntax = Nothing
             Dim arrayModifiers As SyntaxListBuilder(Of ArrayRankSpecifierSyntax) = Nothing
@@ -3335,7 +3323,10 @@ checkNullable:
             Return SyntaxFactory.ModifiedIdentifier(elementType, optionalNullable, optionalArrayBounds, modifiersArr)
         End Function
 
-        Private Function TryReinterpretAsArraySpecifier(argumentList As ArgumentListSyntax, ByRef arrayModifiers As CoreInternalSyntax.SyntaxList(Of ArrayRankSpecifierSyntax)) As Boolean
+        Private Function TryReinterpretAsArraySpecifier( argumentList As ArgumentListSyntax,
+                                                   ByRef arrayModifiers As CoreInternalSyntax.SyntaxList(Of ArrayRankSpecifierSyntax)
+                                                       ) As Boolean
+
             Dim builder = _pool.Allocate(Of PunctuationSyntax)()
 
             ' Try to reinterpret the argumentList as arrayRankSpecifier syntax
@@ -3435,9 +3426,12 @@ checkNullable:
         End Function
 
         ' This used to be ParsePropertyOrEventProcedureDefinition
-        Private Function ParsePropertyOrEventAccessor(accessorKind As SyntaxKind, attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax), modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)) As AccessorStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.GetKeyword OrElse CurrentToken.Kind = SyntaxKind.SetKeyword OrElse
-                     CurrentToken.Kind = SyntaxKind.AddHandlerKeyword OrElse CurrentToken.Kind = SyntaxKind.RemoveHandlerKeyword OrElse CurrentToken.Kind = SyntaxKind.RaiseEventKeyword)
+        Private Function ParsePropertyOrEventAccessor( accessorKind As SyntaxKind,
+                                                       attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                                       modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                                     ) As AccessorStatementSyntax
+            CalledOnWrongToken(CurrentToken.Kind, {SyntaxKind.GetKeyword, SyntaxKind.SetKeyword, SyntaxKind.AddHandlerKeyword,
+                                                   SyntaxKind.RemoveHandlerKeyword, SyntaxKind.RaiseEventKeyword})
 
             Dim methodKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             If Not IsFirstStatementOnLine(CurrentToken) Then
@@ -3493,8 +3487,7 @@ checkNullable:
         ' NameList* .Parser::ParseImplementsList( [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseImplementsList() As ImplementsClauseSyntax
-
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ImplementsKeyword, "Implements list parsing lost.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.ImplementsKeyword)
 
             Dim implementsKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             Dim ImplementsClauses As SeparatedSyntaxListBuilder(Of QualifiedNameSyntax) =
@@ -3544,8 +3537,7 @@ checkNullable:
         ' Lines: 8062 - 8062
         ' NameList* .Parser::ParseHandlesList( [ _Inout_ bool& ErrorInConstruct ] )
         Private Function ParseHandlesList() As HandlesClauseSyntax
-
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.HandlesKeyword, "Handles list parsing lost.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.HandlesKeyword)
 
             Dim handlesKeyword = DirectCast(CurrentToken, KeywordSyntax)
             Dim handlesClauseItems As SeparatedSyntaxListBuilder(Of HandlesClauseItemSyntax) = Me._pool.AllocateSeparated(Of HandlesClauseItemSyntax)()
@@ -3556,9 +3548,7 @@ checkNullable:
                 Dim eventContainer As EventContainerSyntax
                 Dim eventMember As IdentifierNameSyntax
 
-                If CurrentToken.Kind = SyntaxKind.MyBaseKeyword OrElse
-                    CurrentToken.Kind = SyntaxKind.MyClassKeyword OrElse
-                    CurrentToken.Kind = SyntaxKind.MeKeyword Then
+                If CurrentToken.Kind.IsAnyof(SyntaxKind.MyBaseKeyword, SyntaxKind.MyClassKeyword, SyntaxKind.MeKeyword) Then
 
                     eventContainer = SyntaxFactory.KeywordEventContainer(DirectCast(CurrentToken, KeywordSyntax))
                     GetNextToken()
@@ -3641,13 +3631,12 @@ checkNullable:
         ' MethodDeclarationStatement* .Parser::ParseSubDeclaration( [ ParseTree::AttributeSpecifierList* Attributes ] [ ParseTree::SpecifierList* Specifiers ] [ _In_ Token* Start ] [ bool IsDelegate ] [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseSubStatement(
-            attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
-            modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
-        ) As MethodBaseSyntax
+                                            attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                            modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                          ) As MethodBaseSyntax
 
             Dim subKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-
-            Debug.Assert(subKeyword.Kind = SyntaxKind.SubKeyword, "must be at a Sub.")
+            CalledOnWrongToken(subKeyword.Kind, SyntaxKind.SubKeyword)
 
             GetNextToken()
 
@@ -3713,16 +3702,15 @@ checkNullable:
         End Function
 
         Private Sub ParseSubOrDelegateStatement(
-                                          kind As SyntaxKind,
-                                          ByRef ident As IdentifierTokenSyntax,
-                                          ByRef optionalGenericParams As TypeParameterListSyntax,
-                                          ByRef optionalParameters As ParameterListSyntax,
-                                          ByRef handlesClause As HandlesClauseSyntax,
-                                          ByRef implementsClause As ImplementsClauseSyntax)
+                                                 kind As SyntaxKind,
+                                           ByRef ident As IdentifierTokenSyntax,
+                                           ByRef optionalGenericParams As TypeParameterListSyntax,
+                                           ByRef optionalParameters As ParameterListSyntax,
+                                           ByRef handlesClause As HandlesClauseSyntax,
+                                           ByRef implementsClause As ImplementsClauseSyntax
+                                               )
 
-            Debug.Assert(kind = SyntaxKind.SubStatement OrElse
-                         kind = SyntaxKind.SubNewStatement OrElse
-                         kind = SyntaxKind.DelegateSubStatement, "Wrong kind passed to ParseSubOrDelegateStatement")
+            CalledOnWrongToken(kind, {SyntaxKind.SubStatement, SyntaxKind.SubNewStatement, SyntaxKind.DelegateSubStatement})
 
             'The current token is on the Sub or Delegate's name
 
@@ -3806,13 +3794,12 @@ checkNullable:
         ' MethodDeclarationStatement* .Parser::ParseFunctionDeclaration( [ ParseTree::AttributeSpecifierList* Attributes ] [ ParseTree::SpecifierList* Specifiers ] [ _In_ Token* Start ] [ bool IsDelegate ] [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseFunctionStatement(
-                attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
-                modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
-            ) As MethodStatementSyntax
+                                                 attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                                 modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                               ) As MethodStatementSyntax
 
             Dim functionKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-
-            Debug.Assert(functionKeyword.Kind = SyntaxKind.FunctionKeyword, "Function parsing lost.")
+            CalledOnWrongToken(functionKeyword.Kind, SyntaxKind.FunctionKeyword)
 
             GetNextToken()
 
@@ -3852,17 +3839,15 @@ checkNullable:
 
         End Function
 
-        Private Sub ParseFunctionOrDelegateStatement(kind As SyntaxKind,
-                                                       ByRef ident As IdentifierTokenSyntax,
-                                                       ByRef optionalGenericParams As TypeParameterListSyntax,
-                                                       ByRef optionalParameters As ParameterListSyntax,
-                                                       ByRef asClause As SimpleAsClauseSyntax,
-                                                       ByRef handlesClause As HandlesClauseSyntax,
-                                                       ByRef implementsClause As ImplementsClauseSyntax)
-
-            Debug.Assert(
-                kind = SyntaxKind.FunctionStatement OrElse
-                kind = SyntaxKind.DelegateFunctionStatement, "Wrong kind passed to ParseFunctionOrDelegateStatement")
+        Private Sub ParseFunctionOrDelegateStatement( kind As SyntaxKind,
+                                                ByRef ident As IdentifierTokenSyntax,
+                                                ByRef optionalGenericParams As TypeParameterListSyntax,
+                                                ByRef optionalParameters As ParameterListSyntax,
+                                                ByRef asClause As SimpleAsClauseSyntax,
+                                                ByRef handlesClause As HandlesClauseSyntax,
+                                                ByRef implementsClause As ImplementsClauseSyntax
+                                                    )
+            CalledOnWrongToken(kind, {SyntaxKind.FunctionStatement, SyntaxKind.DelegateFunctionStatement})
 
             'TODO - davidsch Can ParseFunctionOrDelegateDeclaration and
             'ParseSubOrDelegateDeclaration share more code? They are nearly the same.
@@ -3954,14 +3939,14 @@ checkNullable:
         ' Lines: 8711 - 8711
         ' MethodDeclarationStatement* .Parser::ParseOperatorDeclaration( [ ParseTree::AttributeSpecifierList* Attributes ] [ ParseTree::SpecifierList* Specifiers ] [ _In_ Token* Start ] [ bool IsDelegate ] [ _Inout_ bool& ErrorInConstruct ] )
         Private Function ParseOperatorStatement(
-                attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
-                modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
-            ) As OperatorStatementSyntax
+                                                 attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                                 modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                               ) As OperatorStatementSyntax
 
             'TODO - davidsch 
             ' Can ParseFunctionDeclaration and ParseSubDeclaration share more code? They are nearly the same.
             Dim operatorKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            Debug.Assert(operatorKeyword.Kind = SyntaxKind.OperatorKeyword, "Operator parsing lost.")
+            CalledOnWrongToken(operatorKeyword.Kind, SyntaxKind.OptionalKeyword)
 
             ' Dev10_504604 we are parsing a method declaration and will need to let the scanner know that we
             ' are so the scanner can correctly identify attributes vs. xml while scanning the declaration.
@@ -4135,11 +4120,11 @@ checkNullable:
         ' Used to reorder StatementList in LinkStatement if necessary.
 
         Private Function ParsePropertyDefinition(
-            attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
-            modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
-        ) As PropertyStatementSyntax
+                                                  attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                                  modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                                ) As PropertyStatementSyntax
 
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.PropertyKeyword, "ParsePropertyDefinition called on the wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.PropertyKeyword)
 
             Dim propertyKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken() ' get off PROPERTY
@@ -4147,9 +4132,7 @@ checkNullable:
             ' ====== Check for the obsolete style (Property Get, Property Set, Property Let)- not allowed any longer.
             Dim ident As IdentifierTokenSyntax
 
-            If CurrentToken.Kind = SyntaxKind.GetKeyword OrElse
-                CurrentToken.Kind = SyntaxKind.SetKeyword OrElse
-                CurrentToken.Kind = SyntaxKind.LetKeyword Then
+            If CurrentToken.Kind.IsAnyof(SyntaxKind.GetKeyword, SyntaxKind.SetKeyword, SyntaxKind.LetKeyword) Then
 
                 ident = ReportSyntaxError(ParseIdentifierAllowingKeyword(), ERRID.ERR_ObsoletePropertyGetLetSet)
 
@@ -4249,11 +4232,10 @@ checkNullable:
         ' MethodDeclarationStatement* .Parser::ParseDelegateStatement( [ ParseTree::AttributeSpecifierList* Attributes ] [ ParseTree::SpecifierList* Specifiers ] [ _In_ Token* Start ] [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseDelegateStatement(
-            attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
-            modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
-        ) As DelegateStatementSyntax
-
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.DelegateKeyword, "ParseDelegateStatement called on the wrong token.")
+                                                 attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                                 modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                               ) As DelegateStatementSyntax
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.DelegateKeyword)
 
             Dim delegateKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -4524,8 +4506,11 @@ checkNullable:
         ' Lines: 9598 - 9598
         ' ParameterList* .Parser::ParseParameters( [ _Inout_ bool& ErrorInConstruct ] [ _Out_ Token*& openParen ] [ _Out_ Token*& closeParen ] )
 
-        Private Function ParseParameters(ByRef openParen As PunctuationSyntax, ByRef closeParen As PunctuationSyntax) As CoreInternalSyntax.SeparatedSyntaxList(Of ParameterSyntax)
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.OpenParenToken, "Parameter list parsing confused.")
+        Private Function ParseParameters(
+                                    ByRef openParen As PunctuationSyntax,
+                                    ByRef closeParen As PunctuationSyntax
+                                        ) As CoreInternalSyntax.SeparatedSyntaxList(Of ParameterSyntax)
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.OpenParenToken)
             TryGetTokenAndEatNewLine(SyntaxKind.OpenParenToken, openParen)
 
             Dim parameters = _pool.AllocateSeparated(Of ParameterSyntax)()
@@ -4609,9 +4594,11 @@ checkNullable:
         ' Lines: 9748 - 9748
         ' ParameterSpecifierList* .Parser::ParseParameterSpecifiers( [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseParameterSpecifiers(ByRef specifiers As ParameterSpecifiers) As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+        Private Function ParseParameterSpecifiers(
+                                             ByRef specifiers As ParameterSpecifiers
+                                                 ) As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+            
             Dim keywords = Me._pool.Allocate(Of KeywordSyntax)()
-
             specifiers = 0
 
             'TODO - Move these checks to Binder_Utils.DecodeParameterModifiers  
@@ -4681,7 +4668,11 @@ checkNullable:
         ''' <param name="modifiers"></param>
         ''' <returns></returns>
         ''' <remarks>>This replaces both ParseParameter and ParseOptionalParameter in Dev10</remarks>
-        Private Function ParseParameter(attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax), modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)) As ParameterSyntax
+        Private Function ParseParameter(
+                                         attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                         modifiers  As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                       ) As ParameterSyntax
+
             Dim paramName = ParseModifiedIdentifier(False, False)
 
             If paramName.ContainsDiagnostics Then
@@ -4747,10 +4738,12 @@ checkNullable:
         ' Lines: 10120 - 10120
         ' ImportsStatement* .Parser::ParseImportsStatement( [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseImportsStatement(Attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax), Specifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)) As ImportsStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ImportsKeyword, "called on wrong token")
+        Private Function ParseImportsStatement(
+                                                attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                                specifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)) As ImportsStatementSyntax
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.ImportsKeyword)
 
-            Dim importsKeyword As KeywordSyntax = ReportModifiersOnStatementError(Attributes, Specifiers, DirectCast(CurrentToken, KeywordSyntax))
+            Dim importsKeyword As KeywordSyntax = ReportModifiersOnStatementError(attributes, specifiers, DirectCast(CurrentToken, KeywordSyntax))
             Dim importsClauses = Me._pool.AllocateSeparated(Of ImportsClauseSyntax)()
 
             GetNextToken()
@@ -4762,9 +4755,7 @@ checkNullable:
                 importsClauses.Add(ImportsClause)
 
                 Dim comma As PunctuationSyntax = Nothing
-                If Not TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma) Then
-                    Exit Do
-                End If
+                If Not TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma) Then  Exit Do
 
                 importsClauses.AddSeparator(comma)
             Loop
@@ -4902,10 +4893,13 @@ checkNullable:
         ' Lines: 10274 - 10274
         ' Statement* .Parser::ParseInheritsImplementsStatement( [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseInheritsImplementsStatement(Attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax), Specifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)) As InheritsOrImplementsStatementSyntax
+        Private Function ParseInheritsImplementsStatement(
+                                                           Attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                                           Specifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                                         ) As InheritsOrImplementsStatementSyntax
 
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.InheritsKeyword OrElse CurrentToken.Kind = SyntaxKind.ImplementsKeyword,
-                "ParseInheritsImplementsStatement called on the wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, {SyntaxKind.InheritsKeyword, SyntaxKind.ImplementsKeyword})
+
 
             Dim keyword As KeywordSyntax = ReportModifiersOnStatementError(Attributes, Specifiers, DirectCast(CurrentToken, KeywordSyntax))
             Dim typeNames = Me._pool.AllocateSeparated(Of TypeSyntax)()
@@ -4961,12 +4955,16 @@ checkNullable:
         ' Lines: 10345 - 10345
         ' Statement* .Parser::ParseOptionStatement( [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseOptionStatement(Attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax), Specifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)) As StatementSyntax
+        Private Function ParseOptionStatement(
+                                               Attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                               Specifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                             ) As StatementSyntax
+
             Dim ErrorId As ERRID = ERRID.ERR_None
             Dim optionType As KeywordSyntax = Nothing
             Dim optionValue As KeywordSyntax = Nothing
 
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.OptionKeyword, "must be at Option.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.OptionKeyword)
 
             Dim optionKeyword = ReportModifiersOnStatementError(Attributes, Specifiers, DirectCast(CurrentToken, KeywordSyntax))
             GetNextToken()
@@ -5070,8 +5068,11 @@ checkNullable:
         ' Lines: 10586 - 10586
         ' ForeignMethodDeclarationStatement* .Parser::ParseProcDeclareStatement( [ ParseTree::AttributeSpecifierList* Attributes ] [ ParseTree::SpecifierList* Specifiers ] [ _In_ Token* Start ] [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseProcDeclareStatement(attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax), modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)) As DeclareStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.DeclareKeyword, "ParseProcDeclareStatement called on wrong token. Must be at a Declare.")
+        Private Function ParseProcDeclareStatement(attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                                   modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                                  ) As DeclareStatementSyntax
+
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.DeclareKeyword)
 
             ' Dev10_667800 we are parsing a method declaration and will need to let the scanner know that we
             ' are so the scanner can correctly identify attributes vs. xml while scanning the declaration.
@@ -5229,11 +5230,11 @@ checkNullable:
         ' .Parser::ParseDeclareLibClause( [ _Deref_out_ ParseTree::Expression** LibResult ] [ _Deref_out_ ParseTree::Expression** AliasResult ] [ _Deref_out_ Token*& Lib ] [ _Deref_out_ Token*& Alias ] [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Sub ParseDeclareLibClause(
-                ByRef libKeyword As KeywordSyntax,
-                ByRef libraryName As LiteralExpressionSyntax,
-                ByRef optionalAliasKeyword As KeywordSyntax,
-                ByRef optionalAliasName As LiteralExpressionSyntax
-            )
+                                     ByRef libKeyword As KeywordSyntax,
+                                     ByRef libraryName As LiteralExpressionSyntax,
+                                     ByRef optionalAliasKeyword As KeywordSyntax,
+                                     ByRef optionalAliasName As LiteralExpressionSyntax
+                                         )
 
             ' Syntax: LIB StringLiteral [ALIAS StringLiteral]
 
@@ -5272,11 +5273,11 @@ checkNullable:
         ''' <returns></returns>
         ''' <remarks>This code used to be in ParseEventDefinition.</remarks>
         Private Function ParseCustomEventDefinition(
-                attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
-                modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
-        ) As StatementSyntax
+                                                     attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                                     modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                                   ) As StatementSyntax
 
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.IdentifierToken AndAlso DirectCast(CurrentToken, IdentifierTokenSyntax).PossibleKeywordKind = SyntaxKind.CustomKeyword, "ParseCustomEventDefinition called on the wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind = SyntaxKind.IdentifierToken AndAlso DirectCast(CurrentToken, IdentifierTokenSyntax).PossibleKeywordKind = SyntaxKind.CustomKeyword)
 
             ' This enables better error reporting for invalid uses of CUSTOM as a specifier.
             '
@@ -5379,11 +5380,11 @@ checkNullable:
         ' Statement* .Parser::ParseEventDefinition( [ ParseTree::AttributeSpecifierList* Attributes ] [ ParseTree::SpecifierList* Specifiers ] [ _In_ Token* StatementStart ] [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseEventDefinition(
-                attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
-                modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
-            ) As EventStatementSyntax
+                                               attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                               modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                             ) As EventStatementSyntax
 
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.EventKeyword, "ParseEventDefinition called on the wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.EventKeyword)
 
             Dim eventKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -5453,7 +5454,8 @@ checkNullable:
         End Function
 
         Private Function ParseEmptyAttributeLists() As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax)
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.LessThanGreaterThanToken)
+
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.LessThanGreaterThanToken)
 
             Dim token = CurrentToken
             Dim tokenText = token.Text
@@ -5504,7 +5506,7 @@ checkNullable:
 
         ' TODO: this function is so complex (n^2 loop?) it times out in CC verifier.
         Private Function ParseAttributeLists(allowFileLevelAttributes As Boolean) As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax)
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.LessThanToken, "ParseAttributeSpecifier called on the wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.LessThanToken)
 
             Dim attributeBlocks = _pool.Allocate(Of AttributeListSyntax)()
             Dim attributes = _pool.AllocateSeparated(Of AttributeSyntax)()

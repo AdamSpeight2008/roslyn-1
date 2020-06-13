@@ -66,13 +66,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Dim nextStmt As NextStatementSyntax = DirectCast(endStmt, NextStatementSyntax)
 
                 For i = 2 To nextStmt.ControlVariables.Count
-                    If context Is Nothing Then
-                        Exit For
-                    End If
 
-                    If context.BlockKind <> SyntaxKind.ForBlock AndAlso context.BlockKind <> SyntaxKind.ForEachBlock Then
-                        Exit For
-                    End If
+                    If context Is Nothing Then Exit For
+                    If context.BlockKind <> SyntaxKind.ForBlock AndAlso context.BlockKind <> SyntaxKind.ForEachBlock Then Exit For
 
                     blockSyntax = context.CreateBlockSyntax(s_emptyNextStatement)
                     context = context.PrevBlock

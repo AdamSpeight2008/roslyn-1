@@ -22,7 +22,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Statement* .Parser::ParseContinueStatement( [ _In_ Token* StmtStart ] [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseContinueStatement() As ContinueStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ContinueKeyword, "ParseContinueStatement called on wrong token")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.ContinueKeyword)
 
             Dim continueKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
@@ -93,7 +93,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseExitStatement() As StatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ExitKeyword, "ParseExitStatement called on wrong token")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.ExitKeyword)
 
             Dim exitKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
@@ -240,8 +240,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseCaseStatement() As CaseStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.CaseKeyword, "ParseCaseStatement called on wrong token.")
-
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.CaseKeyword)
             Dim caseKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
 
@@ -370,7 +369,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseSelectStatement() As SelectStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.SelectKeyword, "ParseSelectStatement called on wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.SelectKeyword)
 
             Dim selectKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -406,7 +405,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         'davidsch - Renamed ParseIfStatement from ParseIfConstruct
         Private Function ParseIfStatement() As IfStatementSyntax
 
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.IfKeyword, "ParseIfConstruct called on wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.IfKeyword)
 
             Dim ifKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
@@ -427,8 +426,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseElseStatement() As ElseStatementSyntax
-
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ElseKeyword, "ParseIfConstruct called on wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.ElseKeyword)
 
             Dim elseKeyword = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
@@ -485,9 +483,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ParseAnachronisticStatement() As StatementSyntax
             ' Assume CurrentToken is on ENDIF, WEND
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.EndIfKeyword OrElse
-                             CurrentToken.Kind = SyntaxKind.GosubKeyword OrElse
-                             CurrentToken.Kind = SyntaxKind.WendKeyword, "ParseAnachronisticEndIfStatement called on wrong token")
+            CalledOnWrongToken(CurrentToken.Kind, {SyntaxKind.EndIfKeyword, SyntaxKind.GosubKeyword, SyntaxKind.WendKeyword})
 
             Dim keyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -524,7 +520,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Function ParseDoStatement() As DoStatementSyntax
 
             ' Assume CurrentToken is on Do
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.DoKeyword, "ParseDoStatement called on wrong token")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.DoKeyword)
 
             Dim doKeyword = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -551,7 +547,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ParseLoopStatement() As LoopStatementSyntax
             ' Assume CurrentToken is on Loop
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.LoopKeyword, "ParseDoStatement called on wrong token")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.LoopKeyword)
 
             Dim loopKeyword = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
@@ -577,7 +573,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ParseForStatement() As StatementSyntax
             ' Assume CurrentToken is on For
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ForKeyword, "ParseForStatement called on wrong token")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.ForKeyword)
 
             Dim forKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -705,8 +701,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseNextStatement() As NextStatementSyntax
-            ' Assume CurrentToken is on Next
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.NextKeyword, "ParseNextStatement called on wrong token")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.NextKeyword)
 
             Dim nextKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -915,8 +910,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' .Parser::ParseGotoStatement( [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseGotoStatement() As StatementSyntax
-
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.GoToKeyword, "Alleged GOTO isn't.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.GoToKeyword)
 
             Dim gotoKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -935,7 +929,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function GetLabelSyntaxForIdentifierOrLineNumber(ByVal labelName As SyntaxToken) As LabelSyntax
-            Debug.Assert(labelName.Kind = SyntaxKind.IntegerLiteralToken OrElse labelName.Kind = SyntaxKind.IdentifierToken)
+            Debug.Assert(labelName.Kind.IsAnyof(SyntaxKind.IntegerLiteralToken, SyntaxKind.IdentifierToken))
             Return If(labelName.Kind = SyntaxKind.IntegerLiteralToken, SyntaxFactory.NumericLabel(labelName), SyntaxFactory.IdentifierLabel(labelName))
         End Function
 
@@ -944,8 +938,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' .Parser::ParseOnErrorStatement( [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseOnErrorStatement() As StatementSyntax
-
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.OnKeyword, "ON statement must start with ON.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.OnKeyword)
 
             Dim onKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -989,8 +982,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseOnErrorResumeNext(onKeyword As KeywordSyntax, errorKeyword As KeywordSyntax) As OnErrorResumeNextStatementSyntax
-
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ResumeKeyword, "ParseOnErrorResumeNext called on wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.ResumeKeyword)
 
             Dim resumeKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             Dim nextKeyword As KeywordSyntax = Nothing
@@ -1005,7 +997,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseOnErrorGoto(onKeyword As KeywordSyntax, errorKeyword As KeywordSyntax) As OnErrorGoToStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.GoToKeyword, "ParseOnErrorGoto called on wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.GoToKeyword)
 
             Dim gotoKeyword = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -1052,7 +1044,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' .Parser::ParseResumeStatement( [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseResumeStatement() As ResumeStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ResumeKeyword, "ParseResumeStatement called on wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.ResumeKeyword)
 
             Dim resumeKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             Dim optionalLabel As SyntaxToken = Nothing
@@ -1200,7 +1192,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' .Parser::ParseCallStatement( [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseCallStatement() As CallStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.CallKeyword, "ParseCallStatement called on wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.CallKeyword)
 
             Dim callKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
@@ -1239,7 +1231,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' .Parser::ParseRaiseEventStatement( [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseRaiseEventStatement() As RaiseEventStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.RaiseEventKeyword, "RaiseEvent statement must start with RaiseEvent.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.RaiseEventKeyword)
 
             Dim raiseEventKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -1266,8 +1258,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' .Parser::ParseRedimStatement( [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseRedimStatement() As StatementSyntax '[ReDim]
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.ReDimKeyword)
 
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ReDimKeyword, "ParseRedimStatement must start with Redim.")
             Dim reDimKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
 
@@ -1338,8 +1330,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' .Parser::ParseHandlerStatement( [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseHandlerStatement() As AddRemoveHandlerStatementSyntax
-
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.AddHandlerKeyword OrElse CurrentToken.Kind = SyntaxKind.RemoveHandlerKeyword, "Handler statement parsing confused.")
+            CalledOnWrongToken(CurrentToken.Kind, {SyntaxKind.AddHandlerKeyword, SyntaxKind.RemoveHandlerKeyword})
 
             Dim keyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             Dim kind = If(keyword.Kind = SyntaxKind.AddHandlerKeyword, SyntaxKind.AddHandlerStatement, SyntaxKind.RemoveHandlerStatement)
@@ -1377,9 +1368,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         'TODO - Rename ParseKeywordExpression and share with other statements that follow this pattern
         ' i.e. Throw, others?
         Private Function ParseExpressionBlockStatement() As StatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.WhileKeyword OrElse
-                             CurrentToken.Kind = SyntaxKind.WithKeyword OrElse
-                             CurrentToken.Kind = SyntaxKind.SyncLockKeyword, "ParseExpressionBlockStatement called on wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, {SyntaxKind.WhileKeyword, SyntaxKind.WithKeyword, SyntaxKind.SyncLockKeyword})
 
             Dim keyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -1411,7 +1400,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         'TODO - rename ParseObsoleteAssignment
         Private Function ParseAssignmentStatement() As StatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.LetKeyword OrElse CurrentToken.Kind = SyntaxKind.SetKeyword, "Assignment statement parsing is lost.")
+            CalledOnWrongToken(CurrentToken.Kind, {SyntaxKind.LetKeyword, SyntaxKind.SetKeyword})
             ' Let and set are now illegal
 
             If CurrentToken.Kind = SyntaxKind.SetKeyword AndAlso
@@ -1435,7 +1424,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 11909 - 11909
         ' .Parser::ParseTry( )
         Private Function ParseTry() As TryStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.TryKeyword, "ParseTry called on wrong token")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.TryKeyword)
 
             Dim tryKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
@@ -1450,7 +1439,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' .Parser::ParseCatch( [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseCatch() As CatchStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.CatchKeyword, "ParseCatch called on wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.CatchKeyword)
 
             Dim catchKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -1499,7 +1488,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' .Parser::ParseFinally( [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseFinally() As FinallyStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.FinallyKeyword, "ParseFinally called on wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.FinallyKeyword)
 
             Dim finallyKeyword = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
@@ -1510,7 +1499,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseThrowStatement() As ThrowStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ThrowKeyword, "ParseThrowStatement called on wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.ThrowKeyword)
 
             Dim throwKeyword = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
@@ -1528,7 +1517,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseError() As ErrorStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ErrorKeyword)
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.ErrorKeyword)
 
             Dim errorKeyword = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
@@ -1551,7 +1540,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' .Parser::ParseErase( [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseErase() As EraseStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.EraseKeyword, "Erase statement parsing lost.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.EraseKeyword)
 
             Dim eraseKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -1570,7 +1559,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseLabel() As LabelStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.IdentifierToken OrElse CurrentToken.Kind = SyntaxKind.IntegerLiteralToken)
+            CalledOnWrongToken(CurrentToken.Kind, {SyntaxKind.IdentifierToken, SyntaxKind.IntegerLiteralToken})
 
             Dim labelName = ParseLabelReference()
 
@@ -1721,7 +1710,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseReturnStatement() As ReturnStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ReturnKeyword, "ParseReturnStatement called on wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.ReturnKeyword)
 
             Dim returnKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
@@ -1772,7 +1761,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' TryStatement
         ' FinallyStatement
         Private Function ParseStopOrEndStatement() As StopOrEndStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.StopKeyword OrElse CurrentToken.Kind = SyntaxKind.EndKeyword, "ParseStopOrEndStatement called on wrong token.")
+            CalledOnWrongToken(CurrentToken.Kind, {SyntaxKind.StopKeyword, SyntaxKind.EndKeyword})
 
             Dim stopOrEndKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
@@ -1785,7 +1774,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseUsingStatement() As UsingStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.UsingKeyword, "ParseUsingStatement called on wrong token")
+            CalledOnWrongToken(CurrentToken.Kind, SyntaxKind.UsingKeyword)
 
             Dim usingKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()

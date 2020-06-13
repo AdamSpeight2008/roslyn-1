@@ -60,9 +60,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Friend Overrides Function TryLinkSyntax(node As VisualBasicSyntaxNode, ByRef newContext As BlockContext) As LinkResult
             newContext = Nothing
 
-            If KindEndsBlock(node.Kind) Then
-                Return UseSyntax(node, newContext)
-            End If
+            If KindEndsBlock(node.Kind) Then Return UseSyntax(node, newContext)
 
             Select Case node.Kind
 

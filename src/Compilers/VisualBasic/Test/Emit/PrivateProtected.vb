@@ -575,9 +575,6 @@ BC30176: Only one of 'Public', 'Private', 'Protected', 'Friend', 'Protected Frie
 BC30176: Only one of 'Public', 'Private', 'Protected', 'Friend', 'Protected Friend', or 'Private Protected' can be specified.
     Private Public Function M() As Integer : Return 1 : End Function      ' 3
             ~~~~~~
-BC30040: First statement of a method body cannot be on the same line as the method declaration.
-    Private Public Function M() As Integer : Return 1 : End Function      ' 3
-                                             ~~~~~~~~
 BC30176: Only one of 'Public', 'Private', 'Protected', 'Friend', 'Protected Friend', or 'Private Protected' can be specified.
     Private Public Class C : End Class                                    ' 4
             ~~~~~~

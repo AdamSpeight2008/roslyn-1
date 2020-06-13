@@ -24,11 +24,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Select Case node.Kind
                 Case SyntaxKind.ElseIfStatement, SyntaxKind.ElseStatement
-                    If BlockKind = SyntaxKind.ElseIfBlock Then
-                        Dim context = PrevBlock.ProcessSyntax(CreateBlockSyntax(Nothing))
-                        Debug.Assert(context Is PrevBlock)
-                        Return context.ProcessSyntax(node)
-                    End If
+                    If BlockKind <> SyntaxKind.ElseIfBlock Then Exit Select
+                    Dim context = PrevBlock.ProcessSyntax(CreateBlockSyntax(Nothing))
+                    Debug.Assert(context Is PrevBlock)
+                    Return context.ProcessSyntax(node)
             End Select
 
             Return MyBase.ProcessSyntax(node)

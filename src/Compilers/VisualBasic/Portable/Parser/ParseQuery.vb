@@ -741,9 +741,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ParseOptionalJoinOperator() As JoinClauseSyntax
             Dim joinKw As KeywordSyntax = Nothing
-            If TryEatNewLineAndGetContextualKeyword(SyntaxKind.JoinKeyword, joinKw) Then
-                Return ParseInnerJoinOrGroupJoinExpression(Nothing, joinKw)
-            End If
+            If TryEatNewLineAndGetContextualKeyword(SyntaxKind.JoinKeyword, joinKw) Then Return ParseInnerJoinOrGroupJoinExpression(Nothing, joinKw)
 
             Dim groupKw As KeywordSyntax = Nothing
             If TryEatNewLineAndGetContextualKeyword(SyntaxKind.GroupKeyword, groupKw) Then
@@ -843,9 +841,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                                         SyntaxKind.DistinctKeyword, SyntaxKind.AggregateKeyword, SyntaxKind.IntoKeyword,
                                         SyntaxKind.SkipKeyword, SyntaxKind.TakeKeyword, SyntaxKind.LetKeyword)
 
-                If peek = SyntaxKind.CommaToken Then
-                    source = source.AddTrailingSyntax(ResyncAt({peek}))
-                End If
+                If peek = SyntaxKind.CommaToken Then source = source.AddTrailingSyntax(ResyncAt({peek}))
             End If
 
             Return SyntaxFactory.CollectionRangeVariable(varName, AsClause, [In], source)
@@ -902,9 +898,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                                        SyntaxKind.TakeKeyword, SyntaxKind.LetKeyword)
                 End If
 
-                If Exprs.Count > 0 Then
-                    Exprs.AddSeparator(AndTk)
-                End If
+                If Exprs.Count > 0 Then Exprs.AddSeparator(AndTk)
+
                 Exprs.Add(element)
 
                 If TryGetTokenAndEatNewLine(SyntaxKind.AndKeyword, AndTk) Then
@@ -1031,9 +1026,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 End If
 
                 Dim clause = ParseNextQueryOperator()
-                If clause Is Nothing Then
-                    Return
-                End If
+                If clause Is Nothing Then Return
 
                 operators.Add(clause)
             Loop
@@ -1073,9 +1066,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Case SyntaxKind.IdentifierToken
                     Dim kw As KeywordSyntax = Nothing
-                    If Not TryTokenAsContextualKeyword(Start, kw) Then
-                        Return Nothing
-                    End If
+                    If Not TryTokenAsContextualKeyword(Start, kw) Then Return Nothing
 
                     Select Case kw.Kind
 
@@ -1148,9 +1139,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                                     Case SyntaxKind.DotToken, SyntaxKind.ExclamationToken, SyntaxKind.QuestionToken, SyntaxKind.OpenParenToken
                                         TryEatNewLine()
                                     Case Else
-                                        If tokenAfterEOL.IsBinaryOperator Then
-                                            TryEatNewLine()
-                                        End If
+                                        If tokenAfterEOL.IsBinaryOperator Then TryEatNewLine()
                                 End Select
                             End If
 
@@ -1246,9 +1235,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 ' //    end select
 
                 Dim nextToken = PeekToken(2)
-                If nextToken.Kind = SyntaxKind.CaseKeyword Then
-                    isQueryKwd = False
-                End If
+                If nextToken.Kind = SyntaxKind.CaseKeyword Then isQueryKwd = False
             End If
 
             Return isQueryKwd

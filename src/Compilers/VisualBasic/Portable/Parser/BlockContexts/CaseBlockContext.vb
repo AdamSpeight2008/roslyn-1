@@ -18,7 +18,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             MyBase.New(contextKind, statement, prevContext)
 
             Debug.Assert((contextKind = SyntaxKind.CaseBlock AndAlso statement.Kind = SyntaxKind.CaseStatement) OrElse
-                              (contextKind = SyntaxKind.CaseElseBlock AndAlso statement.Kind = SyntaxKind.CaseElseStatement))
+                         (contextKind = SyntaxKind.CaseElseBlock AndAlso statement.Kind = SyntaxKind.CaseElseStatement))
         End Sub
 
         Friend Overrides Function ProcessSyntax(node As VisualBasicSyntaxNode) As BlockContext

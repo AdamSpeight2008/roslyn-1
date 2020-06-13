@@ -30,8 +30,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             If Statements.Count = 0 Then
                 Dim trailingTrivia = BeginStatement.LastTriviaIfAny()
                 If trailingTrivia IsNot Nothing AndAlso
-                    trailingTrivia.Kind = SyntaxKind.ColonTrivia Then
-                    node = Parser.ReportSyntaxError(node, ERRID.ERR_MethodBodyNotAtLineStart)
+                    trailingTrivia.Kind = SyntaxKind.ColonTrivia AndAlso Parser.CheckFeatureAvailability(Feature.MethodBodyOnSameLine) Then
                 End If
             End If
 

@@ -10,7 +10,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         <Extension()>
         Friend Function EndLambda(context As BlockContext) As BlockContext
-            Dim complete = False
             Do
                 complete = context.IsLambda
                 context = context.EndBlock(Nothing)
@@ -35,9 +34,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         <Extension()>
         Friend Function FindNearest(context As BlockContext, conditionIsTrue As Func(Of BlockContext, Boolean)) As BlockContext
             While context IsNot Nothing
-                If conditionIsTrue(context) Then
-                    Return context
-                End If
+                If conditionIsTrue(context) Then Return context
                 context = context.PrevBlock
             End While
             Return Nothing
@@ -46,9 +43,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         <Extension()>
         Friend Function FindNearest(context As BlockContext, conditionIsTrue As Func(Of SyntaxKind, Boolean)) As BlockContext
             While context IsNot Nothing
-                If conditionIsTrue(context.BlockKind) Then
-                    Return context
-                End If
+                If conditionIsTrue(context.BlockKind) Then Return context
                 context = context.PrevBlock
             End While
             Return Nothing
@@ -57,9 +52,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         <Extension()>
         Friend Function FindNearest(context As BlockContext, ParamArray kinds() As SyntaxKind) As BlockContext
             While context IsNot Nothing
-                If kinds.Contains(context.BlockKind) Then
-                    Return context
-                End If
+                If kinds.Contains(context.BlockKind) Then Return context
                 context = context.PrevBlock
             End While
             Return Nothing
@@ -68,12 +61,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         <Extension()>
         Friend Function FindNearestInSameMethodScope(context As BlockContext, ParamArray kinds() As SyntaxKind) As BlockContext
             While context IsNot Nothing
-                If kinds.Contains(context.BlockKind) Then
-                    Return context
-                End If
-                If context.IsLambda Then
-                    Return Nothing
-                End If
+                If kinds.Contains(context.BlockKind) Then Return context
+                If context.IsLambda Then Return Nothing
                 context = context.PrevBlock
             End While
             Return Nothing
@@ -82,9 +71,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         <Extension()>
         Friend Function FindNearestLambdaOrSingleLineIf(context As BlockContext, lastContext As BlockContext) As BlockContext
             While context IsNot lastContext
-                If context.IsLambda OrElse context.IsLineIf Then
-                    Return context
-                End If
+                If context.IsLambda OrElse context.IsLineIf Then Return context
                 context = context.PrevBlock
             End While
             Return Nothing

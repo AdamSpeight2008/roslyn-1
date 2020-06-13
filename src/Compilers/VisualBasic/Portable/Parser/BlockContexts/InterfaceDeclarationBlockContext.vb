@@ -82,9 +82,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case SyntaxKind.EventStatement
                     Dim eventStatement = DirectCast(node, EventStatementSyntax)
                     ' 'Custom' modifier invalid on event declared in an interface.
-                    If eventStatement.CustomKeyword IsNot Nothing Then
-                        eventStatement = Parser.ReportSyntaxError(eventStatement, ERRID.ERR_CustomEventInvInInterface)
-                    End If
+                    If eventStatement.CustomKeyword IsNot Nothing Then eventStatement = Parser.ReportSyntaxError(eventStatement, ERRID.ERR_CustomEventInvInInterface)
                     Add(eventStatement)
 
                 Case SyntaxKind.EnumStatement
@@ -149,10 +147,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Friend Overrides Function TryLinkSyntax(node As VisualBasicSyntaxNode, ByRef newContext As BlockContext) As LinkResult
             newContext = Nothing
 
-            If KindEndsBlock(node.Kind) Then
-                Return UseSyntax(node, newContext)
-            End If
-
+            If KindEndsBlock(node.Kind) Then Return UseSyntax(node, newContext)
             Select Case node.Kind
 
                 Case _

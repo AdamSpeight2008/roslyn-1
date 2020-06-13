@@ -372,11 +372,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Function TryEatNewLineIfFollowedBy(kind As SyntaxKind) As Boolean
             Debug.Assert(CanUseInTryGetToken(kind))
 
-            If NextLineStartsWith(kind) Then
-                'Add trivia to the token that has been peeked on next line
-                Return TryEatNewLine()
-            End If
-            Return False
+            If Not NextLineStartsWith(kind) Then Return False
+            'Add trivia to the token that has been peeked on next line
+            Return TryEatNewLine()
         End Function
 
         ' /*****************************************************************************************
@@ -391,9 +389,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Function TryEatNewLineIfNotFollowedBy(kind As SyntaxKind) As Boolean
             Debug.Assert(CanUseInTryGetToken(kind))
 
-            If Not NextLineStartsWith(kind) Then
-                Return TryEatNewLine()
-            End If
+            If Not NextLineStartsWith(kind) Then Return TryEatNewLine()
             Return False
         End Function
 

@@ -118,9 +118,7 @@ EndBlock:
                 Case Else
                     ' Terminated if we've already seen at least one statement.
                     If _statements.Count > 0 Then
-                        If TreatOtherAsStatementTerminator Then
-                            Return ProcessOtherAsStatementTerminator()
-                        End If
+                        If TreatOtherAsStatementTerminator Then Return ProcessOtherAsStatementTerminator()
 
                         Return MyBase.ResyncAndProcessStatementTerminator(statement, lambdaContext)
                     End If

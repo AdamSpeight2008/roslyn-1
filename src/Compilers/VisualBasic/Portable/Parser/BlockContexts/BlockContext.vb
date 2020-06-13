@@ -68,9 +68,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     _isWithinIteratorMethodOrLambdaOrProperty = DirectCast(statement, MethodStatementSyntax).Modifiers.Any(SyntaxKind.IteratorKeyword)
 
                 Case SyntaxKind.SingleLineSubLambdaExpression,
-                        SyntaxKind.MultiLineSubLambdaExpression,
-                        SyntaxKind.SingleLineFunctionLambdaExpression,
-                        SyntaxKind.MultiLineFunctionLambdaExpression
+                     SyntaxKind.MultiLineSubLambdaExpression,
+                     SyntaxKind.SingleLineFunctionLambdaExpression,
+                     SyntaxKind.MultiLineFunctionLambdaExpression
 
                     _isWithinAsyncMethodOrLambda = DirectCast(statement, LambdaHeaderSyntax).Modifiers.Any(SyntaxKind.AsyncKeyword)
                     _isWithinIteratorMethodOrLambdaOrProperty = DirectCast(statement, LambdaHeaderSyntax).Modifiers.Any(SyntaxKind.IteratorKeyword)
@@ -104,14 +104,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             beginStmt = DirectCast(BeginStatement, T1)
 
-            If endStmt Is Nothing Then
-                Dim errorId As ERRID
-                endStmt = DirectCast(CreateMissingEnd(errorId), T2)
+            If endStmt IsNot Nothing Then Exit Sub
+            Dim errorId As ERRID
+            endStmt = DirectCast(CreateMissingEnd(errorId), T2)
 
-                If errorId <> Nothing Then
-                    beginStmt = Parser.ReportSyntaxError(beginStmt, errorId)
-                End If
-            End If
+            If errorId = Nothing Then Exit Sub
+            beginStmt = Parser.ReportSyntaxError(beginStmt, errorId)
         End Sub
 
         Friend Overridable Function KindEndsBlock(kind As SyntaxKind) As Boolean
@@ -312,9 +310,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Property
 
         Private Sub HandleAnyUnexpectedTokens(currentStmt As StatementSyntax, unexpected As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of SyntaxToken))
-            If unexpected.Node Is Nothing Then
-                Return
-            End If
+            If unexpected.Node Is Nothing Then Return
 
             Dim index As Integer
             Dim stmt As StatementSyntax
@@ -407,9 +403,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             ' or better we should put contextual errors on the actual block not on the offending node (if possible).
             newContext = LinkSyntax(node)
 
-            If AddMissingTerminator Then
-                Return LinkResult.Used Or LinkResult.MissingTerminator
-            End If
+            If AddMissingTerminator Then Return LinkResult.Used Or LinkResult.MissingTerminator
 
             Return LinkResult.Used
         End Function
@@ -528,10 +522,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Add(node)
 
                 Case Else
-                    If Not TypeOf node Is ExecutableStatementSyntax Then
-                        Return Nothing
-                    End If
-
+                    If TypeOf node IsNot ExecutableStatementSyntax Then Return Nothing
                     Add(node)
             End Select
             Return Me
