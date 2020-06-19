@@ -15,8 +15,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private Const s_titleSuffix As String = "_Title"
         Private Const s_descriptionSuffix As String = "_Description"
-        Private Shared ReadOnly s_helpLinksMap As Lazy(Of ImmutableDictionary(Of ERRID, String)) = New Lazy(Of ImmutableDictionary(Of ERRID, String))(AddressOf CreateHelpLinks)
-        Private Shared ReadOnly s_categoriesMap As Lazy(Of ImmutableDictionary(Of ERRID, String)) = New Lazy(Of ImmutableDictionary(Of ERRID, String))(AddressOf CreateCategoriesMap)
+        Private Shared ReadOnly s_helpLinksMap As New Lazy(Of ImmutableDictionary(Of ERRID, String))(AddressOf CreateHelpLinks)
+        Private Shared ReadOnly s_categoriesMap As New Lazy(Of ImmutableDictionary(Of ERRID, String))(AddressOf CreateCategoriesMap)
 
         Private Shared Function CreateHelpLinks() As ImmutableDictionary(Of ERRID, String)
             Dim map = New Dictionary(Of ERRID, String) From
@@ -165,11 +165,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Next
             End If
 
-            Dim message = builder.Builder.ToString()
-            builder.Free()
-
-            Return message
+            Return builder.ToStringAndFree()
         End Function
     End Class
+
+    Friend Module Exts
+        <Runtime.CompilerServices.Extension>
+        Friend Function ToStringAndFree( builder As PooledStringBuilder) As String
+            Dim message = builder.Builder.ToString()
+            builder.Free()
+            Return message
+        End Function
+    End Module
 
 End Namespace

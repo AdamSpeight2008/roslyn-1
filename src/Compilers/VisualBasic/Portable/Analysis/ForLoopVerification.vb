@@ -95,28 +95,26 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ''' </summary>
             Private Sub PostVisitForAndForEachStatement(boundForStatement As BoundForStatement)
                 ' do nothing if the array is nothing
-                If Not boundForStatement.NextVariablesOpt.IsDefault Then
+                If boundForStatement.NextVariablesOpt.IsDefault Then Exit Sub
+                ' if it's empty we just have to adjust the index for one variable
+                If boundForStatement.NextVariablesOpt.IsEmpty Then
+                    _controlVariables.Pop()
+                Else
+                    For Each nextVariable In boundForStatement.NextVariablesOpt
+                        ' m_controlVariables will not contain too much or too few elements because 
+                        ' 1. parser will fill up with missing next statements
+                        ' 2. binding will not bind spare control variables (see binding of next statement 
+                        '    in BindForBlockParts)
+                        Dim controlVariable = _controlVariables.Pop()
 
-                    ' if it's empty we just have to adjust the index for one variable
-                    If boundForStatement.NextVariablesOpt.IsEmpty Then
-                        _controlVariables.Pop()
-                    Else
-                        For Each nextVariable In boundForStatement.NextVariablesOpt
-                            ' m_controlVariables will not contain too much or too few elements because 
-                            ' 1. parser will fill up with missing next statements
-                            ' 2. binding will not bind spare control variables (see binding of next statement 
-                            '    in BindForBlockParts)
-                            Dim controlVariable = _controlVariables.Pop()
-
-                            If Not controlVariable.HasErrors AndAlso
-                                Not nextVariable.HasErrors AndAlso
-                                ForLoopVerification.ReferencedSymbol(nextVariable) <> ForLoopVerification.ReferencedSymbol(controlVariable) Then
-                                _diagnostics.Add(ERRID.ERR_NextForMismatch1,
-                                                  nextVariable.Syntax.GetLocation(),
-                                                  CustomSymbolDisplayFormatter.ShortErrorName(ForLoopVerification.ReferencedSymbol(controlVariable)))
-                            End If
-                        Next
-                    End If
+                        If Not controlVariable.HasErrors AndAlso
+                           Not nextVariable.HasErrors AndAlso
+                           ForLoopVerification.ReferencedSymbol(nextVariable) <> ForLoopVerification.ReferencedSymbol(controlVariable) Then
+                           _diagnostics.Add(ERRID.ERR_NextForMismatch1,
+                                            nextVariable.Syntax.GetLocation(),
+                                            CustomSymbolDisplayFormatter.ShortErrorName(ForLoopVerification.ReferencedSymbol(controlVariable)))
+                        End If
+                    Next
                 End If
             End Sub
 
@@ -128,24 +126,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ''' <param name="expression">The bound expression.</param>
         Friend Shared Function ReferencedSymbol(expression As BoundExpression) As Symbol
-
             Select Case expression.Kind
-                Case BoundKind.ArrayAccess
-                    Return ReferencedSymbol(DirectCast(expression, BoundArrayAccess).Expression)
-                Case BoundKind.PropertyAccess
-                    Return DirectCast(expression, BoundPropertyAccess).PropertySymbol
-                Case BoundKind.Call
-                    Return DirectCast(expression, BoundCall).Method
-                Case BoundKind.Local
-                    Return DirectCast(expression, BoundLocal).LocalSymbol
-                Case BoundKind.RangeVariable
-                    Return DirectCast(expression, BoundRangeVariable).RangeVariable
-                Case BoundKind.FieldAccess
-                    Return DirectCast(expression, BoundFieldAccess).FieldSymbol
-                Case BoundKind.Parameter
-                    Return DirectCast(expression, BoundParameter).ParameterSymbol
-                Case BoundKind.Parenthesized
-                    Return ReferencedSymbol(DirectCast(expression, BoundParenthesized).Expression)
+                   Case BoundKind.ArrayAccess       : Return ReferencedSymbol(DirectCast(expression, BoundArrayAccess).Expression)
+                   Case BoundKind.PropertyAccess    : Return DirectCast(expression, BoundPropertyAccess).PropertySymbol
+                   Case BoundKind.Call                 : Return DirectCast(expression, BoundCall).Method
+                   Case BoundKind.Local                : Return DirectCast(expression, BoundLocal).LocalSymbol
+                   Case BoundKind.RangeVariable        : Return DirectCast(expression, BoundRangeVariable).RangeVariable
+                   Case BoundKind.FieldAccess          : Return DirectCast(expression, BoundFieldAccess).FieldSymbol
+                   Case BoundKind.Parameter            : Return DirectCast(expression, BoundParameter).ParameterSymbol
+                   Case BoundKind.Parenthesized        : Return ReferencedSymbol(DirectCast(expression, BoundParenthesized).Expression)
             End Select
 
             Return Nothing

@@ -31,25 +31,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Public Function IsPrefixedBy(other As ArrayBuilder(Of Integer), ignoreLast As Boolean) As Boolean
                 Dim count As Integer = other.Count
-                If ignoreLast Then
-                    count -= 1
-                End If
-
-                If count <= Me._path.Length Then
-                    For i = 0 To count - 1
-                        If Me._path(i) <> other(i) Then
-                            Return False
-                        End If
-                    Next
-
-                    Return True
-                End If
-
-                Return False
+                If ignoreLast Then count -= 1
+                If count > Me._path.Length Then Return False
+                For i = 0 To count - 1
+                    If _path(i) <> other(i) Then Return False
+                Next
+                Return True
             End Function
 
             Private Sub New(builder As ArrayBuilder(Of Integer))
-                Me._path = builder.ToImmutable()
+                _path = builder.ToImmutable()
             End Sub
 
             Public Shared Widening Operator CType(builder As ArrayBuilder(Of Integer)) As BlockNesting
@@ -90,14 +81,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Public ReadOnly Property Label As LabelSymbol
                 Get
                     Select Case Branch.Kind
-                        Case BoundKind.ConditionalGoto
-                            Return CType(Branch, BoundConditionalGoto).Label
-                        Case BoundKind.GotoStatement
-                            Return CType(Branch, BoundGotoStatement).Label
-                        Case BoundKind.ExitStatement
-                            Return CType(Branch, BoundExitStatement).Label
-                        Case BoundKind.ContinueStatement
-                            Return CType(Branch, BoundContinueStatement).Label
+                        Case BoundKind.ConditionalGoto      : Return CType(Branch, BoundConditionalGoto).Label
+                        Case BoundKind.GotoStatement        : Return CType(Branch, BoundGotoStatement).Label
+                        Case BoundKind.ExitStatement        : Return CType(Branch, BoundExitStatement).Label
+                        Case BoundKind.ContinueStatement    : Return CType(Branch, BoundContinueStatement).Label
                         Case Else
                             Return Nothing
                     End Select

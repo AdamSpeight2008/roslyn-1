@@ -2409,7 +2409,7 @@ TryResync:
         End Function
 
         Public Overrides Function VisitSyntaxTrivia(trivia As SyntaxTrivia) As SyntaxTrivia
-            If Not trivia.Kind.IsAnyof(SyntaxKind.WhitespaceTrivia, SyntaxKind.EndOfLineTrivia}) Then Return trivia
+            If Not trivia.Kind.IsAnyof(SyntaxKind.WhitespaceTrivia, SyntaxKind.EndOfLineTrivia) Then Return trivia
             Return DirectCast(trivia.AddError(ErrorFactory.ErrorInfo(ERRID.ERR_IllegalXmlWhiteSpace)), SyntaxTrivia)
         End Function
     End Class

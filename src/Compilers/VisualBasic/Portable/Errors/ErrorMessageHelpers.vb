@@ -12,20 +12,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         <Extension()>
         Public Function ToDisplay(access As Accessibility) As String
             Select Case access
-                Case Accessibility.NotApplicable
-                    Return ""
-                Case Accessibility.Private
-                    Return "Private"
-                Case Accessibility.Protected
-                    Return "Protected"
-                Case Accessibility.ProtectedOrFriend
-                    Return "Protected Friend"
-                Case Accessibility.ProtectedAndFriend
-                    Return "Private Protected"
-                Case Accessibility.Friend
-                    Return "Friend"
-                Case Accessibility.Public
-                    Return "Public"
+                Case Accessibility.NotApplicable        : Return ""
+                Case Accessibility.Private              : Return "Private"
+                Case Accessibility.Protected            : Return "Protected" 
+                Case Accessibility.ProtectedOrFriend    : Return "Protected Friend"
+                Case Accessibility.ProtectedAndFriend   : Return "Private Protected"
+                Case Accessibility.Friend               : Return "Friend"
+                Case Accessibility.Public               : Return "Public"
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(access)
             End Select

@@ -15,13 +15,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' make two types identical.
         ''' </summary>
         Public Shared Function CanUnify(containingGenericType As NamedTypeSymbol, t1 As TypeSymbol, t2 As TypeSymbol) As Boolean
-            If Not containingGenericType.IsGenericType Then
-                Return False
-            End If
+            If Not containingGenericType.IsGenericType Then Return False
 
-            If TypeSymbol.Equals(t1, t2, TypeCompareKind.ConsiderEverything) Then
-                Return True
-            End If
+            If TypeSymbol.Equals(t1, t2, TypeCompareKind.ConsiderEverything) Then Return True
 
             Dim substitution As TypeSubstitution = Nothing
             Dim result As Boolean = CanUnifyHelper(containingGenericType,
@@ -37,13 +33,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
 #If DEBUG Then
         Private Shared Function SubstituteAllTypeParameters(substitution As TypeSubstitution, type As TypeWithModifiers) As TypeWithModifiers
-            If substitution IsNot Nothing Then
-                Dim previous As TypeWithModifiers
-                Do
-                    previous = type
-                    type = type.InternalSubstituteTypeParameters(substitution)
-                Loop While previous <> type
-            End If
+            If substitution Is Nothing Then Return type
+            Dim previous As TypeWithModifiers
+            Do
+                previous = type
+                type = type.InternalSubstituteTypeParameters(substitution)
+            Loop While previous <> type
             Return type
         End Function
 #End If
@@ -78,15 +73,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 t2 = t2.InternalSubstituteTypeParameters(substitution)
             End If
 
-            If t1 = t2 Then
-                Return True
-            End If
+            If t1 = t2 Then Return True
 
-            If Not t1.Type.IsTypeParameter() AndAlso t2.Type.IsTypeParameter() Then
-                Dim tmp As TypeWithModifiers = t1
-                t1 = t2
-                t2 = tmp
-            End If
+            If Not t1.Type.IsTypeParameter() AndAlso t2.Type.IsTypeParameter() Then t1.SwapWith(t2)
 
             Debug.Assert(t1.Type.IsTypeParameter() OrElse Not t2.Type.IsTypeParameter())
             Select Case t1.Type.Kind
@@ -241,26 +230,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         Private Shared Function Contains(type As TypeSymbol, typeParam As TypeParameterSymbol) As Boolean
             Select Case type.Kind
-                Case SymbolKind.ArrayType
-                    Return Contains((DirectCast(type, ArrayTypeSymbol)).ElementType, typeParam)
-                Case SymbolKind.NamedType, SymbolKind.ErrorType
-                    Dim namedType As NamedTypeSymbol = DirectCast(type, NamedTypeSymbol)
-                    While namedType IsNot Nothing
-                        Dim typeParts = If(namedType.IsTupleType, namedType.TupleElementTypes, namedType.TypeArgumentsNoUseSiteDiagnostics)
-                        For Each typePart In typeParts
-                            If Contains(typePart, typeParam) Then
-                                Return True
-                            End If
-                        Next
+                   Case SymbolKind.ArrayType
+                        Return Contains((DirectCast(type, ArrayTypeSymbol)).ElementType, typeParam)
+                   Case SymbolKind.NamedType, SymbolKind.ErrorType
+                        Dim namedType As NamedTypeSymbol = DirectCast(type, NamedTypeSymbol)
+                        While namedType IsNot Nothing
+                            Dim typeParts = If(namedType.IsTupleType, namedType.TupleElementTypes, namedType.TypeArgumentsNoUseSiteDiagnostics)
+                            For Each typePart In typeParts
+                                If Contains(typePart, typeParam) Then Return True
+                            Next
+                            namedType = namedType.ContainingType
+                       End While
 
-                        namedType = namedType.ContainingType
-                    End While
-
-                    Return False
-                Case SymbolKind.TypeParameter
-                    Return TypeSymbol.Equals(type, typeParam, TypeCompareKind.ConsiderEverything)
-                Case Else
-                    Return False
+                       Return False
+                   Case SymbolKind.TypeParameter
+                        Return TypeSymbol.Equals(type, typeParam, TypeCompareKind.ConsiderEverything)
+                   Case Else
+                        Return False
             End Select
         End Function
     End Class

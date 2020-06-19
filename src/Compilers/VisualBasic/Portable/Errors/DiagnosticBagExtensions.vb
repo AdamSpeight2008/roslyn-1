@@ -9,6 +9,7 @@ Imports System.Text
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports System.Runtime.CompilerServices
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -21,11 +22,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name = "code"></param>
         ''' <param name = "location"></param>
         ''' <returns></returns>
-        <System.Runtime.CompilerServices.Extension()>
+        <Extension()>
         Friend Function Add(diagnostics As DiagnosticBag, code As ERRID, location As Location) As DiagnosticInfo
             Dim info = ErrorFactory.ErrorInfo(code)
-            Dim diag = New VBDiagnostic(info, location)
-            diagnostics.Add(diag)
+            diagnostics.Add(New VBDiagnostic(info, location))
             Return info
         End Function
 
@@ -37,65 +37,44 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name = "location"></param>
         ''' <param name = "args"></param>
         ''' <returns></returns>
-        <System.Runtime.CompilerServices.Extension()>
+        <Extension()>
         Friend Function Add(diagnostics As DiagnosticBag, code As ERRID, location As Location, ParamArray args As Object()) As DiagnosticInfo
             Dim info = ErrorFactory.ErrorInfo(code, args)
-            Dim diag = New VBDiagnostic(info, location)
-            diagnostics.Add(diag)
+            diagnostics.Add(New VBDiagnostic(info, location))
             Return info
         End Function
 
-        <System.Runtime.CompilerServices.Extension()>
+        <Extension()>
         Friend Sub Add(diagnostics As DiagnosticBag, info As DiagnosticInfo, location As Location)
-            Dim diag = New VBDiagnostic(info, location)
-            diagnostics.Add(diag)
+            diagnostics.Add(New VBDiagnostic(info, location))
         End Sub
 
         ''' <summary>
         ''' Appends diagnostics from useSiteDiagnostics into diagnostics and returns True if there were any errors.
         ''' </summary>
-        <System.Runtime.CompilerServices.Extension()>
-        Friend Function Add(
-            diagnostics As DiagnosticBag,
-            node As VisualBasicSyntaxNode,
-            useSiteDiagnostics As HashSet(Of DiagnosticInfo)
-        ) As Boolean
+        <Extension()>
+        Friend Function Add(diagnostics As DiagnosticBag, node As VisualBasicSyntaxNode, useSiteDiagnostics As HashSet(Of DiagnosticInfo)) As Boolean
             Return Not useSiteDiagnostics.IsNullOrEmpty AndAlso diagnostics.Add(node.GetLocation, useSiteDiagnostics)
         End Function
 
-        <System.Runtime.CompilerServices.Extension()>
-        Friend Function Add(
-            diagnostics As DiagnosticBag,
-            node As BoundNode,
-            useSiteDiagnostics As HashSet(Of DiagnosticInfo)
-        ) As Boolean
+        <Extension()>
+        Friend Function Add(diagnostics As DiagnosticBag, node As BoundNode, useSiteDiagnostics As HashSet(Of DiagnosticInfo)) As Boolean
             Return Not useSiteDiagnostics.IsNullOrEmpty AndAlso diagnostics.Add(node.Syntax.GetLocation, useSiteDiagnostics)
         End Function
 
-        <System.Runtime.CompilerServices.Extension()>
-        Friend Function Add(
-            diagnostics As DiagnosticBag,
-            node As SyntaxNodeOrToken,
-            useSiteDiagnostics As HashSet(Of DiagnosticInfo)
-        ) As Boolean
+        <Extension()>
+        Friend Function Add(diagnostics As DiagnosticBag, node As SyntaxNodeOrToken, useSiteDiagnostics As HashSet(Of DiagnosticInfo) ) As Boolean
             Return Not useSiteDiagnostics.IsNullOrEmpty AndAlso diagnostics.Add(node.GetLocation, useSiteDiagnostics)
         End Function
 
-        <System.Runtime.CompilerServices.Extension()>
-        Friend Function Add(
-            diagnostics As DiagnosticBag,
-            location As Location,
-            useSiteDiagnostics As HashSet(Of DiagnosticInfo)
-        ) As Boolean
+        <Extension()>
+        Friend Function Add(diagnostics As DiagnosticBag, location As Location, useSiteDiagnostics As HashSet(Of DiagnosticInfo)) As Boolean
 
-            If useSiteDiagnostics.IsNullOrEmpty Then
-                Return False
-            End If
+            If useSiteDiagnostics.IsNullOrEmpty Then Return False
 
             For Each info In useSiteDiagnostics
                 Debug.Assert(info.Severity = DiagnosticSeverity.Error)
-                Dim diag As New VBDiagnostic(info, location)
-                diagnostics.Add(diag)
+                diagnostics.Add(New VBDiagnostic(info, location))
             Next
 
             Return True

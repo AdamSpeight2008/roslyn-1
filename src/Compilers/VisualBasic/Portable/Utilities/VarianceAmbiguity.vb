@@ -115,45 +115,44 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                            variance As VarianceKind,
                                                            typeArgument1 As TypeSymbol,
                                                            typeArgument2 As TypeSymbol,
-                                                           ByRef causesAmbiguity As Boolean,
-                                                           ByRef preventsAmbiguity As Boolean,
-                                                           <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo))
-            If Not typeArgument1.IsSameTypeIgnoringAll(typeArgument2) Then
-                Select Case variance
-                    Case VarianceKind.In
-                        Dim bothAreClasses = (typeArgument1.IsClassType() AndAlso typeArgument2.IsClassType())
-                        Dim oneDerivesFromOther = bothAreClasses AndAlso
-                                (Conversions.ClassifyDirectCastConversion(typeArgument1, typeArgument2, useSiteDiagnostics) And ConversionKind.Reference) <> 0
+                                                     ByRef causesAmbiguity As Boolean,
+                                                     ByRef preventsAmbiguity As Boolean,
+                                         <[In], Out> ByRef useSiteDiagnostics As HashSet(Of DiagnosticInfo))
+            If typeArgument1.IsSameTypeIgnoringAll(typeArgument2) Then Exit Sub
+            Select Case variance
+                Case VarianceKind.In
+                    Dim bothAreClasses = (typeArgument1.IsClassType() AndAlso typeArgument2.IsClassType())
+                    Dim oneDerivesFromOther = bothAreClasses AndAlso
+                            (Conversions.ClassifyDirectCastConversion(typeArgument1, typeArgument2, useSiteDiagnostics) And ConversionKind.Reference) <> 0
 
-                        ' (Note that value types are always NotInheritable)
-                        If Not typeArgument1.IsNotInheritable() AndAlso Not typeArgument2.IsNotInheritable() AndAlso
-                           (Not bothAreClasses OrElse oneDerivesFromOther) Then
-                            causesAmbiguity = True
-                        ElseIf (typeArgument1.IsValueType OrElse typeArgument2.IsValueType OrElse (bothAreClasses AndAlso Not oneDerivesFromOther)) AndAlso
-                           Not TypeUnification.CanUnify(containingType, typeArgument1, typeArgument2) Then
-                            preventsAmbiguity = True
-                        End If
+                    ' (Note that value types are always NotInheritable)
+                    If Not typeArgument1.IsNotInheritable() AndAlso Not typeArgument2.IsNotInheritable() AndAlso
+                       (Not bothAreClasses OrElse oneDerivesFromOther) Then
+                        causesAmbiguity = True
+                    ElseIf (typeArgument1.IsValueType OrElse typeArgument2.IsValueType OrElse (bothAreClasses AndAlso Not oneDerivesFromOther)) AndAlso
+                       Not TypeUnification.CanUnify(containingType, typeArgument1, typeArgument2) Then
+                        preventsAmbiguity = True
+                    End If
 
-                    Case VarianceKind.Out
-                        If typeArgument1.SpecialType <> SpecialType.System_Object AndAlso
-                           typeArgument2.SpecialType <> SpecialType.System_Object AndAlso
-                           Not typeArgument1.IsValueType AndAlso
-                           Not typeArgument2.IsValueType Then
-                            causesAmbiguity = True
-                        ElseIf (typeArgument1.IsValueType OrElse typeArgument2.IsValueType) AndAlso
-                           Not TypeUnification.CanUnify(containingType, typeArgument1, typeArgument2) Then
-                            preventsAmbiguity = True
-                        End If
+                Case VarianceKind.Out
+                    If typeArgument1.SpecialType <> SpecialType.System_Object AndAlso
+                       typeArgument2.SpecialType <> SpecialType.System_Object AndAlso
+                       Not typeArgument1.IsValueType AndAlso
+                       Not typeArgument2.IsValueType Then
+                        causesAmbiguity = True
+                    ElseIf (typeArgument1.IsValueType OrElse typeArgument2.IsValueType) AndAlso
+                       Not TypeUnification.CanUnify(containingType, typeArgument1, typeArgument2) Then
+                        preventsAmbiguity = True
+                    End If
 
-                    Case VarianceKind.None
-                        If Not TypeUnification.CanUnify(containingType, typeArgument1, typeArgument2) Then
-                            preventsAmbiguity = True
-                        End If
+                Case VarianceKind.None
+                    If Not TypeUnification.CanUnify(containingType, typeArgument1, typeArgument2) Then
+                        preventsAmbiguity = True
+                    End If
 
-                    Case Else
-                        Throw ExceptionUtilities.UnexpectedValue(variance)
-                End Select
-            End If
+                Case Else
+                    Throw ExceptionUtilities.UnexpectedValue(variance)
+            End Select
         End Sub
     End Class
 End Namespace

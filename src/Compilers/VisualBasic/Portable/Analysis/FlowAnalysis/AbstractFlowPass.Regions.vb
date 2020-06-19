@@ -51,11 +51,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary> Checks if the text span passed is inside the region </summary>
         Protected Function IsInsideRegion(span As TextSpan) As Boolean
             ' Ensuring this method only being used in region analysis
-            Debug.Assert(Me._firstInRegion IsNot Nothing)
-            If span.Length = 0 Then
-                Return Me._region.Contains(span.Start)
-            End If
-            Return Me._region.Contains(span)
+            Debug.Assert(_firstInRegion IsNot Nothing)
+            Return If(span.Length = 0, _region.Contains(span.Start), _region.Contains(span))
         End Function
 
         ''' <summary>

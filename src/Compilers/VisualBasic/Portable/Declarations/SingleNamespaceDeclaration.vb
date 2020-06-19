@@ -31,11 +31,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
         End Sub
 
         ' Is this representing the global namespace ("Namespace Global")
-        Public Overridable ReadOnly Property IsGlobalNamespace As Boolean
-            Get
-                Return False
-            End Get
-        End Property
+        Public Overridable ReadOnly Property IsGlobalNamespace As Boolean = false
+        '    Get
+        '        Return False
+        '    End Get
+        'End Property
 
         Public Overrides ReadOnly Property Kind As DeclarationKind
             Get
@@ -88,24 +88,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             For declarationIndex = 1 To singleDeclarations.Length - 1
                 Dim otherName = singleDeclarations(declarationIndex).Name
                 Dim comp = String.Compare(bestDeclarationName, otherName, StringComparison.Ordinal)
-                If comp <> 0 Then
-                    multipleSpellings = True
+                If comp = 0 Then Continue For 
+                multipleSpellings = True
 
-                    ' We detected multiple spellings. If one of the namespaces is part of the rootnamespace
-                    ' we can already return from this loop.
+                ' We detected multiple spellings. If one of the namespaces is part of the rootnamespace
+                ' we can already return from this loop.
 
-                    If singleDeclarations(0).IsPartOfRootNamespace Then
-                        Return bestDeclarationName
-                    End If
-
-                    If singleDeclarations(declarationIndex).IsPartOfRootNamespace Then
-                        Return otherName
-                    End If
-
-                    If comp > 0 Then
-                        bestDeclarationName = otherName
-                    End If
-                End If
+                If singleDeclarations(0).IsPartOfRootNamespace Then Return bestDeclarationName
+                If singleDeclarations(declarationIndex).IsPartOfRootNamespace Then Return otherName
+                If comp > 0 Then bestDeclarationName = otherName
             Next
 
             Return bestDeclarationName

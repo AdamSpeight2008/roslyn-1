@@ -13,11 +13,23 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 'TODO - This is copied from C# and should be moved to common assemble.
 Namespace Microsoft.CodeAnalysis.VisualBasic
+    Friend Module HelperExts
+        <Extension>
+        Public Sub SwapWith(Of T)(ByRef l As T, byref r As T)
+            Dim tmp = l
+            l = r
+            r = tmp
+        End Sub
+    End Module
     Friend Module FunctionExtensions
         <Extension()>
         Public Function TransitiveClosure(Of T)(relation As Func(Of T, IEnumerable(Of T)), item As T) As HashSet(Of T)
+#If NETCOREAPP Then
+            Dim closure = PooledObjects.PooledHashSet(Of T).GetInstance ' New HashSet(Of T)()
+#Else
             Dim closure = New HashSet(Of T)()
-            Dim stack = New Stack(Of T)()
+#End If
+            Dim stack as New Stack(Of T)()
             stack.Push(item)
             While stack.Count > 0
                 Dim current As T = stack.Pop()
@@ -27,7 +39,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     End If
                 Next
             End While
-            Return closure
+#If NETCOREAPP Then
+            Dim result = closure.ToHashSet()
+            closure.Free()
+#Else
+            Dim result = closure
+#End If
+            Return result
         End Function
     End Module
 End Namespace

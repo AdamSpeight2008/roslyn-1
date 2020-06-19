@@ -10,6 +10,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         <Extension()>
         Friend Function EndLambda(context As BlockContext) As BlockContext
+            Dim complete = False
             Do
                 complete = context.IsLambda
                 context = context.EndBlock(Nothing)

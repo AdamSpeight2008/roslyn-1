@@ -23,9 +23,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Inherits DiagnosticInfo
         Implements IDiagnosticInfoWithSymbols
 
-        ' not serialized
-        Private ReadOnly _badSymbol As Symbol
-
         ' Create a new bad symbol diagnostic with the given error id. This error message
         ' should have a single fill-in string, which is filled in with the symbol.
         Friend Sub New(badSymbol As Symbol, errid As ERRID)
@@ -36,23 +33,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ' is not automatically filled in as an argument.
         Friend Sub New(badSymbol As Symbol, errid As ERRID, ParamArray additionalArgs As Object())
             MyBase.New(VisualBasic.MessageProvider.Instance, errid, additionalArgs)
-            _badSymbol = badSymbol
+            Me.BadSymbol = badSymbol
         End Sub
 
-        Public ReadOnly Property BadSymbol As Symbol
-            Get
-                Return _badSymbol
-            End Get
-        End Property
+        Public Property BadSymbol As Symbol
 
         Private Sub GetAssociatedSymbols(builder As ArrayBuilder(Of Symbol)) Implements IDiagnosticInfoWithSymbols.GetAssociatedSymbols
-            builder.Add(_badSymbol)
+            builder.Add(BadSymbol)
         End Sub
 
         ' Get the locations of all the symbols.
         Public Overrides ReadOnly Property AdditionalLocations As IReadOnlyList(Of Location)
             Get
-                Return _badSymbol.Locations
+                Return BadSymbol.Locations
             End Get
         End Property
 

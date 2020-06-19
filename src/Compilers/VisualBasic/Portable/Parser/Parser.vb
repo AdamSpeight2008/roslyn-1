@@ -3946,7 +3946,7 @@ checkNullable:
             'TODO - davidsch 
             ' Can ParseFunctionDeclaration and ParseSubDeclaration share more code? They are nearly the same.
             Dim operatorKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            CalledOnWrongToken(operatorKeyword.Kind, SyntaxKind.OptionalKeyword)
+            CalledOnWrongToken(operatorKeyword.Kind, SyntaxKind.OperatorKeyword)
 
             ' Dev10_504604 we are parsing a method declaration and will need to let the scanner know that we
             ' are so the scanner can correctly identify attributes vs. xml while scanning the declaration.

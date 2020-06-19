@@ -23,47 +23,45 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim importsClauseArray = importsClauses.Select(AddressOf StringExtensions.Unquote).ToArray()
 
-            If importsClauseArray.Length > 0 Then
-                ' Create a file with Import statement for each imported name, and parse it. Use two newlines
-                ' after each to avoid issues with implicit line continuation.
-                Dim importFileText As String = importsClauseArray.Select(Function(name) "Imports " + name + vbCrLf + vbCrLf).Aggregate(Function(a, b) a & b)
-                Dim tree = VisualBasicSyntaxTree.ParseText(SourceText.From(importFileText), VisualBasicParseOptions.Default, "")
+            If importsClauseArray.Length <= 0 Then Return Array.Empty(Of GlobalImport)
 
-                ' Extract all the parsed imports back out.
-                Dim parsedImportList As New List(Of GlobalImport)
-                Dim importList As SyntaxList(Of ImportsStatementSyntax) = tree.GetCompilationUnitRoot().Imports
-                For i = 0 To importList.Count - 1
-                    Dim statement = importList(i)
-                    Dim importsClausesSyntaxList As SeparatedSyntaxList(Of ImportsClauseSyntax) = statement.ImportsClauses
+            ' Create a file with Import statement for each imported name, and parse it. Use two newlines
+            ' after each to avoid issues with implicit line continuation.
+            Dim importFileText As String = importsClauseArray.Select(Function(name) "Imports " + name + vbCrLf + vbCrLf).Aggregate(Function(a, b) a & b)
+            Dim tree = VisualBasicSyntaxTree.ParseText(SourceText.From(importFileText), VisualBasicParseOptions.Default, "")
 
-                    If importsClauses.Count > 0 Then
-                        Dim clause As ImportsClauseSyntax = importsClausesSyntaxList(0)
-                        Dim syntaxErrors As IEnumerable(Of Diagnostic) = clause.GetSyntaxErrors(tree)
+            ' Extract all the parsed imports back out.
+            Dim parsedImportList = PooledObjects.ArrayBuilder(Of GlobalImport).GetInstance  '  As New List(Of GlobalImport)
+            Dim importList As SyntaxList(Of ImportsStatementSyntax) = tree.GetCompilationUnitRoot().Imports
+            For i = 0 To importList.Count - 1
+                Dim statement = importList(i)
+                Dim importsClausesSyntaxList As SeparatedSyntaxList(Of ImportsClauseSyntax) = statement.ImportsClauses
 
-                        If importsClausesSyntaxList.Count > 1 Then
-                            ' Only allow one import clause per name. If more than one is found, report "expected end of statement".
-                            syntaxErrors = syntaxErrors.Concat(New VBDiagnostic(New DiagnosticInfo(MessageProvider.Instance, ERRID.ERR_ExpectedEOS), importsClausesSyntaxList(1).GetLocation()))
-                        End If
+                If importsClauses.Count <= 0 Then Continue For
 
-                        Dim import = New GlobalImport(clause, importsClauseArray(i))
+                Dim clause As ImportsClauseSyntax = importsClausesSyntaxList(0)
+                Dim syntaxErrors As IEnumerable(Of Diagnostic) = clause.GetSyntaxErrors(tree)
 
-                        Dim errors = From diag In syntaxErrors
-                                     Select import.MapDiagnostic(diag)
+                If importsClausesSyntaxList.Count > 1 Then
+                    ' Only allow one import clause per name. If more than one is found, report "expected end of statement".
+                    syntaxErrors = syntaxErrors.Concat(New VBDiagnostic(New DiagnosticInfo(MessageProvider.Instance, ERRID.ERR_ExpectedEOS), importsClausesSyntaxList(1).GetLocation()))
+                End If
 
-                        diagnostics.AddRange(errors)
+                Dim import = New GlobalImport(clause, importsClauseArray(i))
 
-                        If Not errors.Any(Function(diag) diag.Severity = DiagnosticSeverity.Error) Then
-                            ' only add imports without syntax errors.
-                            parsedImportList.Add(import)
-                        End If
+                Dim errors = From diag In syntaxErrors
+                             Select import.MapDiagnostic(diag)
 
-                    End If
-                Next
+                diagnostics.AddRange(errors)
 
-                Return parsedImportList.ToArray()
-            Else
-                Return Array.Empty(Of GlobalImport)
-            End If
+                If Not errors.Any(Function(diag) diag.Severity = DiagnosticSeverity.Error) Then
+                    ' only add imports without syntax errors.
+                    parsedImportList.Add(import)
+                End If
+
+            Next
+
+            Return parsedImportList.ToArrayAndFree()
         End Function
 
         ''' <summary>
@@ -99,33 +97,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Debug.Assert(name IsNot Nothing)
 
             ' Empty string is not valid.
-            If start = [end] Then
-                Return False
-            End If
+            If start = [end] Then Return False
 
             Dim lastIdentifierCharacterIndex As Integer = [end] - 1
 
             If allowEscaping AndAlso SyntaxFacts.ReturnFullWidthOrSelf(name(start)) = SyntaxFacts.FULLWIDTH_LEFT_SQUARE_BRACKET Then
-                If SyntaxFacts.ReturnFullWidthOrSelf(name(lastIdentifierCharacterIndex)) <> SyntaxFacts.FULLWIDTH_RIGHT_SQUARE_BRACKET Then
-                    Return False
-                End If
+                If SyntaxFacts.ReturnFullWidthOrSelf(name(lastIdentifierCharacterIndex)) <> SyntaxFacts.FULLWIDTH_RIGHT_SQUARE_BRACKET Then Return False
 
                 Return IsValidRootNamespaceComponent(name, start + 1, lastIdentifierCharacterIndex, allowEscaping:=False)
             End If
 
-            If Not SyntaxFacts.IsIdentifierStartCharacter(name(start)) Then
-                Return False
-            End If
+            If Not SyntaxFacts.IsIdentifierStartCharacter(name(start)) Then Return False
 
             ' an identifier starting with an underscore must at least consist of two characters
-            If ([end] - start) = 1 AndAlso SyntaxFacts.ReturnFullWidthOrSelf(name(start)) = SyntaxFacts.FULLWIDTH_LOW_LINE Then
-                Return False
-            End If
+            If ([end] - start) = 1 AndAlso SyntaxFacts.ReturnFullWidthOrSelf(name(start)) = SyntaxFacts.FULLWIDTH_LOW_LINE Then Return False
 
             For i = start + 1 To lastIdentifierCharacterIndex
-                If Not SyntaxFacts.IsIdentifierPartCharacter(name(i)) Then
-                    Return False
-                End If
+                If Not SyntaxFacts.IsIdentifierPartCharacter(name(i)) Then Return False
             Next
 
             Return True
