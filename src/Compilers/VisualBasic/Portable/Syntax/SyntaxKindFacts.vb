@@ -25,7 +25,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case SyntaxKind.ReferenceKeyword
                     Return True
                 Case SyntaxKind.AggregateKeyword To SyntaxKind.YieldKeyword
-                   Return True
+                    Return True
             End Select
             Return False
         End Function

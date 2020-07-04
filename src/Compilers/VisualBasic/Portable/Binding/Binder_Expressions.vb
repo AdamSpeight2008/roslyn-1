@@ -267,8 +267,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Private Function BindCheckedExpression(node As CheckedExpressionSyntax, diagnostics As DiagnosticBag) As BoundExpression
-            Dim expr = BindExpression(node.Expression,diagnostics)
-            Return New BoundCheckedExpression(node,expr, expr.Type)
+            Dim expr = BindExpression(node.Expression, diagnostics)
+            Return New BoundCheckedExpression(node, expr, expr.Type)
         End Function
 
         Private Function BindUncheckedExpression(node As UncheckedExpressionSyntax, diagnostics As DiagnosticBag) As BoundExpression

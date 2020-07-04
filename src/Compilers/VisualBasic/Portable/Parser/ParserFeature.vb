@@ -101,7 +101,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case Feature.UnconstrainedTypeParameterInConditional,
                     Feature.CommentsAfterLineContinuation
                     Return LanguageVersion.VisualBasic16
-                
+
                 Case Feature.CheckedExpressions,
                      Feature.UncheckedExpressions
                     Return LanguageVersion.VisualBasic16 '(PROTOTYPE)

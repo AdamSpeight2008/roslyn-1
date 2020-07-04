@@ -982,3 +982,16 @@ Partial Public Class ClsPPMTest003
         End If
     End Sub
 End Class
+Module M
+    Sub Unchecked()
+        Dim ten = 10
+        Dim i2 = Unchecked ( 2147483647  + ten )
+        System.Console.WriteLine(i2)
+    End Sub
+
+    Sub Checkeed()
+        dim i1 As UInt64 = UInt64.MaxValue
+        Dim i2 as UInt64 = Checked( i1 + CType(1, UInt64))
+        System.Console.WriteLine(i2)
+    End Sub
+End Module

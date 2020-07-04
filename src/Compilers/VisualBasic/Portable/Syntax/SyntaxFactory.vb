@@ -169,7 +169,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend Shared Sub VerifySyntaxKindOfToken(kind As SyntaxKind)
             Select Case kind
                 Case SyntaxKind.AddHandlerKeyword To SyntaxKind.EndOfXmlToken,
-                     SyntaxKind.NameOfKeyword,
+                     SyntaxKind.NameOfKeyword, SyntaxKind.UncheckedKeyword, SyntaxKind.CheckedKeyword,
                      SyntaxKind.DollarSignDoubleQuoteToken,
                      SyntaxKind.InterpolatedStringTextToken,
                      SyntaxKind.EndOfInterpolatedStringToken

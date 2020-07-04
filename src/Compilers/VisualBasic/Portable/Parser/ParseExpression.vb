@@ -97,8 +97,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                         ' unary "+" has the same precedence as unary "-"
 
-                        Dim Operand = ParseExpressionCore(OperatorPrecedence.PrecedenceNegate)
-                        expression = SyntaxFactory.UnaryPlusExpression(startToken, Operand)
+                        Dim operand = ParseExpressionCore(OperatorPrecedence.PrecedenceNegate)
+                        expression = SyntaxFactory.UnaryPlusExpression(startToken, operand)
 
                     Case SyntaxKind.AddressOfKeyword
                         GetNextToken()

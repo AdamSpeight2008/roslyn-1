@@ -1522,7 +1522,7 @@ End Module
             CompileAndVerify(compilation, expectedOutput:="-2147483639")
         End Sub
 
-                <Fact>
+        <Fact>
         Public Sub UncheckedExpression2()
 
             Dim compilationDef =
@@ -1531,7 +1531,7 @@ End Module
     Imports System
 Module M
     Sub Main()
-        Const i1 As UInt64 = UInt64.MaxValue
+        dim i1 As UInt64 = UInt64.MaxValue
         Dim i2 as UInt64 = Unchecked( i1 + CType(1, UInt64))
         System.Console.WriteLine(i2)
     End Sub
