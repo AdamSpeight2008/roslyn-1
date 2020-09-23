@@ -1167,7 +1167,7 @@ Friend Class RedNodeWriter
             Dim child = allChildren(i)
             If child.IsList Then
                 _writer.WriteLine("            Dim {0} = VisitList(node.{1})", ChildNewVarName(child), ChildPropertyName(child))
-                If KindTypeStructure(child.ChildKind).IsToken Then
+                If KindTypeStructure(child.ChildKind)?.IsToken Then
                     _writer.WriteLine("            If node.{0}.Node IsNot {1}.Node Then anyChanges = True", ChildPropertyName(child), ChildNewVarName(child))
                 Else
                     _writer.WriteLine("            If node.{0} IsNot {1}.Node Then anyChanges = True", ChildVarName(child), ChildNewVarName(child))

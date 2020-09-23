@@ -1156,6 +1156,1066 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
+    Public NotInheritable Class Grammar_BlockSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend _grammar_Statement as Grammar_StatementSyntax
+        Friend _end_Grammar_Statement as EndBlockStatementSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), grammar_Statement As Grammar_StatementSyntax, end_Grammar_Statement As EndBlockStatementSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Grammar_BlockSyntax(kind, errors, annotations, DirectCast(grammar_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Grammar_StatementSyntax), DirectCast(end_Grammar_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "Grammar" statement that begins a grammar block.
+        ''' </summary>
+        Public  ReadOnly Property Grammar_Statement As Grammar_StatementSyntax
+            Get
+                Return GetRedAtZero(_grammar_Statement)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Grammar_Statement property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithGrammar_Statement(grammar_Statement as Grammar_StatementSyntax) As Grammar_BlockSyntax
+            return Update(grammar_Statement, Me.End_Grammar_Statement)
+        End Function
+
+        ''' <summary>
+        ''' The "End Grammar" statement that ends a grammar block.
+        ''' </summary>
+        Public  ReadOnly Property End_Grammar_Statement As EndBlockStatementSyntax
+            Get
+                Return GetRed(_end_Grammar_Statement, 1)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the End_Grammar_Statement property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithEnd_Grammar_Statement(end_Grammar_Statement as EndBlockStatementSyntax) As Grammar_BlockSyntax
+            return Update(Me.Grammar_Statement, end_Grammar_Statement)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me._grammar_Statement
+                Case 1
+                    Return Me._end_Grammar_Statement
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me.Grammar_Statement
+                Case 1
+                    Return Me.End_Grammar_Statement
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitGrammar_Block(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitGrammar_Block(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="grammar_Statement">
+        ''' The value for the Grammar_Statement property.
+        ''' </param>
+        ''' <param name="end_Grammar_Statement">
+        ''' The value for the End_Grammar_Statement property.
+        ''' </param>
+        Public Function Update(grammar_Statement As Grammar_StatementSyntax, end_Grammar_Statement As EndBlockStatementSyntax) As Grammar_BlockSyntax
+            If grammar_Statement IsNot Me.Grammar_Statement OrElse end_Grammar_Statement IsNot Me.End_Grammar_Statement Then
+                Dim newNode = SyntaxFactory.Grammar_Block(grammar_Statement, end_Grammar_Statement)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    Public NotInheritable Class Syntax_BlockSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend _syntax_Statement as Syntax_StatementSyntax
+        Friend _end_Syntax_Statement as EndBlockStatementSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), syntax_Statement As Syntax_StatementSyntax, end_Syntax_Statement As EndBlockStatementSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Syntax_BlockSyntax(kind, errors, annotations, DirectCast(syntax_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Syntax_StatementSyntax), DirectCast(end_Syntax_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "Syntax" statement that begins a syntax block.
+        ''' </summary>
+        Public  ReadOnly Property Syntax_Statement As Syntax_StatementSyntax
+            Get
+                Return GetRedAtZero(_syntax_Statement)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Syntax_Statement property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithSyntax_Statement(syntax_Statement as Syntax_StatementSyntax) As Syntax_BlockSyntax
+            return Update(syntax_Statement, Me.End_Syntax_Statement)
+        End Function
+
+        ''' <summary>
+        ''' The "End Syntax" statement that ends a syntax block.
+        ''' </summary>
+        Public  ReadOnly Property End_Syntax_Statement As EndBlockStatementSyntax
+            Get
+                Return GetRed(_end_Syntax_Statement, 1)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the End_Syntax_Statement property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithEnd_Syntax_Statement(end_Syntax_Statement as EndBlockStatementSyntax) As Syntax_BlockSyntax
+            return Update(Me.Syntax_Statement, end_Syntax_Statement)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me._syntax_Statement
+                Case 1
+                    Return Me._end_Syntax_Statement
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me.Syntax_Statement
+                Case 1
+                    Return Me.End_Syntax_Statement
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitSyntax_Block(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitSyntax_Block(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="syntax_Statement">
+        ''' The value for the Syntax_Statement property.
+        ''' </param>
+        ''' <param name="end_Syntax_Statement">
+        ''' The value for the End_Syntax_Statement property.
+        ''' </param>
+        Public Function Update(syntax_Statement As Syntax_StatementSyntax, end_Syntax_Statement As EndBlockStatementSyntax) As Syntax_BlockSyntax
+            If syntax_Statement IsNot Me.Syntax_Statement OrElse end_Syntax_Statement IsNot Me.End_Syntax_Statement Then
+                Dim newNode = SyntaxFactory.Syntax_Block(syntax_Statement, end_Syntax_Statement)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    Public NotInheritable Class Kinds_BlockSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend _kinds_Statement as Kinds_StatementSyntax
+        Friend _end_Kinds_Statement as EndBlockStatementSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), kinds_Statement As Kinds_StatementSyntax, end_Kinds_Statement As EndBlockStatementSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Kinds_BlockSyntax(kind, errors, annotations, DirectCast(kinds_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Kinds_StatementSyntax), DirectCast(end_Kinds_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "Kinds" statement that begins a kinds block.
+        ''' </summary>
+        Public  ReadOnly Property Kinds_Statement As Kinds_StatementSyntax
+            Get
+                Return GetRedAtZero(_kinds_Statement)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Kinds_Statement property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithKinds_Statement(kinds_Statement as Kinds_StatementSyntax) As Kinds_BlockSyntax
+            return Update(kinds_Statement, Me.End_Kinds_Statement)
+        End Function
+
+        ''' <summary>
+        ''' The "End Kinds." statement that ends a kinds block.
+        ''' </summary>
+        Public  ReadOnly Property End_Kinds_Statement As EndBlockStatementSyntax
+            Get
+                Return GetRed(_end_Kinds_Statement, 1)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the End_Kinds_Statement property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithEnd_Kinds_Statement(end_Kinds_Statement as EndBlockStatementSyntax) As Kinds_BlockSyntax
+            return Update(Me.Kinds_Statement, end_Kinds_Statement)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me._kinds_Statement
+                Case 1
+                    Return Me._end_Kinds_Statement
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me.Kinds_Statement
+                Case 1
+                    Return Me.End_Kinds_Statement
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitKinds_Block(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitKinds_Block(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="kinds_Statement">
+        ''' The value for the Kinds_Statement property.
+        ''' </param>
+        ''' <param name="end_Kinds_Statement">
+        ''' The value for the End_Kinds_Statement property.
+        ''' </param>
+        Public Function Update(kinds_Statement As Kinds_StatementSyntax, end_Kinds_Statement As EndBlockStatementSyntax) As Kinds_BlockSyntax
+            If kinds_Statement IsNot Me.Kinds_Statement OrElse end_Kinds_Statement IsNot Me.End_Kinds_Statement Then
+                Dim newNode = SyntaxFactory.Kinds_Block(kinds_Statement, end_Kinds_Statement)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    Public NotInheritable Class Keywords_BlockSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend _keywords_Statement as Keywords_StatementSyntax
+        Friend _end_Keywords_Statement as EndBlockStatementSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), keywords_Statement As Keywords_StatementSyntax, end_Keywords_Statement As EndBlockStatementSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Keywords_BlockSyntax(kind, errors, annotations, DirectCast(keywords_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Keywords_StatementSyntax), DirectCast(end_Keywords_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "Keywords" statement that begins a keywords block.
+        ''' </summary>
+        Public  ReadOnly Property Keywords_Statement As Keywords_StatementSyntax
+            Get
+                Return GetRedAtZero(_keywords_Statement)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Keywords_Statement property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithKeywords_Statement(keywords_Statement as Keywords_StatementSyntax) As Keywords_BlockSyntax
+            return Update(keywords_Statement, Me.End_Keywords_Statement)
+        End Function
+
+        ''' <summary>
+        ''' The "End Keywords" statement that ends a keywords block.
+        ''' </summary>
+        Public  ReadOnly Property End_Keywords_Statement As EndBlockStatementSyntax
+            Get
+                Return GetRed(_end_Keywords_Statement, 1)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the End_Keywords_Statement property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithEnd_Keywords_Statement(end_Keywords_Statement as EndBlockStatementSyntax) As Keywords_BlockSyntax
+            return Update(Me.Keywords_Statement, end_Keywords_Statement)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me._keywords_Statement
+                Case 1
+                    Return Me._end_Keywords_Statement
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me.Keywords_Statement
+                Case 1
+                    Return Me.End_Keywords_Statement
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitKeywords_Block(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitKeywords_Block(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="keywords_Statement">
+        ''' The value for the Keywords_Statement property.
+        ''' </param>
+        ''' <param name="end_Keywords_Statement">
+        ''' The value for the End_Keywords_Statement property.
+        ''' </param>
+        Public Function Update(keywords_Statement As Keywords_StatementSyntax, end_Keywords_Statement As EndBlockStatementSyntax) As Keywords_BlockSyntax
+            If keywords_Statement IsNot Me.Keywords_Statement OrElse end_Keywords_Statement IsNot Me.End_Keywords_Statement Then
+                Dim newNode = SyntaxFactory.Keywords_Block(keywords_Statement, end_Keywords_Statement)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    Public NotInheritable Class Language_BlockSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend _language_Statement as Language_StatementSyntax
+        Friend _end_Language_Statement as EndBlockStatementSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), language_Statement As Language_StatementSyntax, end_Language_Statement As EndBlockStatementSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Language_BlockSyntax(kind, errors, annotations, DirectCast(language_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Language_StatementSyntax), DirectCast(end_Language_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "Language" statement that begins a language block.
+        ''' </summary>
+        Public  ReadOnly Property Language_Statement As Language_StatementSyntax
+            Get
+                Return GetRedAtZero(_language_Statement)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Language_Statement property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithLanguage_Statement(language_Statement as Language_StatementSyntax) As Language_BlockSyntax
+            return Update(language_Statement, Me.End_Language_Statement)
+        End Function
+
+        ''' <summary>
+        ''' The "End Language." statement that ends a language block.
+        ''' </summary>
+        Public  ReadOnly Property End_Language_Statement As EndBlockStatementSyntax
+            Get
+                Return GetRed(_end_Language_Statement, 1)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the End_Language_Statement property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithEnd_Language_Statement(end_Language_Statement as EndBlockStatementSyntax) As Language_BlockSyntax
+            return Update(Me.Language_Statement, end_Language_Statement)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me._language_Statement
+                Case 1
+                    Return Me._end_Language_Statement
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me.Language_Statement
+                Case 1
+                    Return Me.End_Language_Statement
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitLanguage_Block(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitLanguage_Block(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="language_Statement">
+        ''' The value for the Language_Statement property.
+        ''' </param>
+        ''' <param name="end_Language_Statement">
+        ''' The value for the End_Language_Statement property.
+        ''' </param>
+        Public Function Update(language_Statement As Language_StatementSyntax, end_Language_Statement As EndBlockStatementSyntax) As Language_BlockSyntax
+            If language_Statement IsNot Me.Language_Statement OrElse end_Language_Statement IsNot Me.End_Language_Statement Then
+                Dim newNode = SyntaxFactory.Language_Block(language_Statement, end_Language_Statement)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    ''' <summary>
+    ''' Represents the beginning statement of a language declaration. This node always
+    ''' appears as the Begin of a BlockStatement with Kind=Language_Block.
+    ''' </summary>
+    Public NotInheritable Class Language_StatementSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend _name as NameSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), language_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Language_StatementSyntax(kind, errors, annotations, language_Keyword, DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameSyntax)), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "Language" keyword.
+        ''' </summary>
+        Public  ReadOnly Property Language_Keyword As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Language_StatementSyntax)._language_Keyword, Me.Position, 0)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Language_Keyword property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithLanguage_Keyword(language_Keyword as SyntaxToken) As Language_StatementSyntax
+            return Update(language_Keyword, Me.Name)
+        End Function
+
+        ''' <summary>
+        ''' A (possibly dotted) name denoting the language being declared.
+        ''' </summary>
+        Public  ReadOnly Property Name As NameSyntax
+            Get
+                Return GetRed(_name, 1)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Name property changed to the specified value.
+        ''' Returns this instance if the specified value is the same as the current value.
+        ''' </summary>
+        Public Shadows Function WithName(name as NameSyntax) As Language_StatementSyntax
+            return Update(Me.Language_Keyword, name)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me._name
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me.Name
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitLanguage_Statement(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitLanguage_Statement(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="language_Keyword">
+        ''' The value for the Language_Keyword property.
+        ''' </param>
+        ''' <param name="name">
+        ''' The value for the Name property.
+        ''' </param>
+        Public Function Update(language_Keyword As SyntaxToken, name As NameSyntax) As Language_StatementSyntax
+            If language_Keyword <> Me.Language_Keyword OrElse name IsNot Me.Name Then
+                Dim newNode = SyntaxFactory.Language_Statement(language_Keyword, name)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    ''' <summary>
+    ''' Represents the beginning statement of a grammar declaration. This node always
+    ''' appears as the Begin of a BlockStatement with Kind=Grammar_Block.
+    ''' </summary>
+    Public NotInheritable Class Grammar_StatementSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend _name as NameSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), grammar_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Grammar_StatementSyntax(kind, errors, annotations, grammar_Keyword, DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameSyntax)), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "Language" keyword.
+        ''' </summary>
+        Public  ReadOnly Property Grammar_Keyword As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Grammar_StatementSyntax)._grammar_Keyword, Me.Position, 0)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Grammar_Keyword property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithGrammar_Keyword(grammar_Keyword as SyntaxToken) As Grammar_StatementSyntax
+            return Update(grammar_Keyword, Me.Name)
+        End Function
+
+        ''' <summary>
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </summary>
+        Public  ReadOnly Property Name As NameSyntax
+            Get
+                Return GetRed(_name, 1)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Name property changed to the specified value.
+        ''' Returns this instance if the specified value is the same as the current value.
+        ''' </summary>
+        Public Shadows Function WithName(name as NameSyntax) As Grammar_StatementSyntax
+            return Update(Me.Grammar_Keyword, name)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me._name
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me.Name
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitGrammar_Statement(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitGrammar_Statement(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="grammar_Keyword">
+        ''' The value for the Grammar_Keyword property.
+        ''' </param>
+        ''' <param name="name">
+        ''' The value for the Name property.
+        ''' </param>
+        Public Function Update(grammar_Keyword As SyntaxToken, name As NameSyntax) As Grammar_StatementSyntax
+            If grammar_Keyword <> Me.Grammar_Keyword OrElse name IsNot Me.Name Then
+                Dim newNode = SyntaxFactory.Grammar_Statement(grammar_Keyword, name)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    ''' <summary>
+    ''' Represents the beginning statement of a namespace declaration. This node always
+    ''' appears as the Begin of a BlockStatement with Kind=NamespaceBlock.
+    ''' </summary>
+    Public NotInheritable Class Syntax_StatementSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend _name as NameSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), syntax_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Syntax_StatementSyntax(kind, errors, annotations, syntax_Keyword, DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameSyntax)), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "Syntax" keyword.
+        ''' </summary>
+        Public  ReadOnly Property Syntax_Keyword As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Syntax_StatementSyntax)._syntax_Keyword, Me.Position, 0)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Syntax_Keyword property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithSyntax_Keyword(syntax_Keyword as SyntaxToken) As Syntax_StatementSyntax
+            return Update(syntax_Keyword, Me.Name)
+        End Function
+
+        ''' <summary>
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </summary>
+        Public  ReadOnly Property Name As NameSyntax
+            Get
+                Return GetRed(_name, 1)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Name property changed to the specified value.
+        ''' Returns this instance if the specified value is the same as the current value.
+        ''' </summary>
+        Public Shadows Function WithName(name as NameSyntax) As Syntax_StatementSyntax
+            return Update(Me.Syntax_Keyword, name)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me._name
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me.Name
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitSyntax_Statement(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitSyntax_Statement(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="syntax_Keyword">
+        ''' The value for the Syntax_Keyword property.
+        ''' </param>
+        ''' <param name="name">
+        ''' The value for the Name property.
+        ''' </param>
+        Public Function Update(syntax_Keyword As SyntaxToken, name As NameSyntax) As Syntax_StatementSyntax
+            If syntax_Keyword <> Me.Syntax_Keyword OrElse name IsNot Me.Name Then
+                Dim newNode = SyntaxFactory.Syntax_Statement(syntax_Keyword, name)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    ''' <summary>
+    ''' Represents the beginning statement of a kinds declaration. This node always
+    ''' appears as the Begin of a BlockStatement with Kind=Kinds_Block.
+    ''' </summary>
+    Public NotInheritable Class Kinds_StatementSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend _name as NameSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), kinds_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Kinds_StatementSyntax(kind, errors, annotations, kinds_Keyword, DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameSyntax)), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "Kinds" keyword.
+        ''' </summary>
+        Public  ReadOnly Property Kinds_Keyword As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Kinds_StatementSyntax)._kinds_Keyword, Me.Position, 0)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Kinds_Keyword property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithKinds_Keyword(kinds_Keyword as SyntaxToken) As Kinds_StatementSyntax
+            return Update(kinds_Keyword, Me.Name)
+        End Function
+
+        ''' <summary>
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </summary>
+        Public  ReadOnly Property Name As NameSyntax
+            Get
+                Return GetRed(_name, 1)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Name property changed to the specified value.
+        ''' Returns this instance if the specified value is the same as the current value.
+        ''' </summary>
+        Public Shadows Function WithName(name as NameSyntax) As Kinds_StatementSyntax
+            return Update(Me.Kinds_Keyword, name)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me._name
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me.Name
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitKinds_Statement(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitKinds_Statement(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="kinds_Keyword">
+        ''' The value for the Kinds_Keyword property.
+        ''' </param>
+        ''' <param name="name">
+        ''' The value for the Name property.
+        ''' </param>
+        Public Function Update(kinds_Keyword As SyntaxToken, name As NameSyntax) As Kinds_StatementSyntax
+            If kinds_Keyword <> Me.Kinds_Keyword OrElse name IsNot Me.Name Then
+                Dim newNode = SyntaxFactory.Kinds_Statement(kinds_Keyword, name)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    ''' <summary>
+    ''' Represents the beginning statement of a namespace declaration. This node always
+    ''' appears as the Begin of a BlockStatement with Kind=NamespaceBlock.
+    ''' </summary>
+    Public NotInheritable Class Keywords_StatementSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend _name as NameSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), keywords_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Keywords_StatementSyntax(kind, errors, annotations, keywords_Keyword, DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameSyntax)), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "Keywords" keyword.
+        ''' </summary>
+        Public  ReadOnly Property Keywords_Keyword As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Keywords_StatementSyntax)._keywords_Keyword, Me.Position, 0)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Keywords_Keyword property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithKeywords_Keyword(keywords_Keyword as SyntaxToken) As Keywords_StatementSyntax
+            return Update(keywords_Keyword, Me.Name)
+        End Function
+
+        ''' <summary>
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </summary>
+        Public  ReadOnly Property Name As NameSyntax
+            Get
+                Return GetRed(_name, 1)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Name property changed to the specified value.
+        ''' Returns this instance if the specified value is the same as the current value.
+        ''' </summary>
+        Public Shadows Function WithName(name as NameSyntax) As Keywords_StatementSyntax
+            return Update(Me.Keywords_Keyword, name)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me._name
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me.Name
+                Case Else
+                     Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitKeywords_Statement(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitKeywords_Statement(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="keywords_Keyword">
+        ''' The value for the Keywords_Keyword property.
+        ''' </param>
+        ''' <param name="name">
+        ''' The value for the Name property.
+        ''' </param>
+        Public Function Update(keywords_Keyword As SyntaxToken, name As NameSyntax) As Keywords_StatementSyntax
+            If keywords_Keyword <> Me.Keywords_Keyword OrElse name IsNot Me.Name Then
+                Dim newNode = SyntaxFactory.Keywords_Statement(keywords_Keyword, name)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
     ''' <summary>
     ''' Represents a Namespace statement, its contents and the End Namespace statement.
     ''' </summary>

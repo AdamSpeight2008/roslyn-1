@@ -68,6 +68,821 @@ Unify Enum declarations with other block type declarations.
 
 <define-parse-tree namespace="Microsoft.CodeAnalysis.VisualBasic" visitor="VisualBasicSyntaxVisitor" rewrite-visitor="VisualBasicSyntaxRewriter" factory-class="SyntaxFactory" contextual-factory-class="ContextAwareSyntaxFactory" xmlns="http://schemas.microsoft.com/VisualStudio/Roslyn/Compiler" >
   <definitions>
+    <enumeration name="_SyntaxKind">
+      <summary>Represents kind of a syntax node.</summary>
+      <enums name="_SyntaxKind">
+        <summary>Represents the kind of syntax node.</summary>
+        <!--<enum name=""  value=""><summary></summary></enum>-->
+        <enum name="Node"                                     value="0"/>
+        <enum name="List"                                     value="1"/>
+        <enum name="EmptyStatement"                           value="2"><summary>A class to represent an empty statement. This can occur when a colon is on a line without anything else.</summary></enum>
+        <!-- <enum name="" value="3" /> -->
+        <!-- <enum name="" value="4" /> -->
+        <!-- DeclarationStatment : StatementSyntax -->
+        <enum name="EndIfStatement"                           value="5" ><summary>Represents an &quot;End If&quot; statement.</summary></enum>
+        <enum name="EndUsingStatement"                        value="6" ><summary>Represents an &quot;End Using&quot; statement.</summary></enum>
+        <enum name="EndWithStatement"                         value="7" ><summary>Represents an &quot;End With&quot; statement.</summary></enum>
+        <enum name="EndSelectStatement"                       value="8" ><summary>Represents an &quot;End Select&quot; statement.</summary></enum>
+        <enum name="EndStructureStatement"                    value="9" ><summary>Represents an &quot;End Structure&quot; statement.</summary></enum>
+        <enum name="EndEnumStatement"                         value="10"><summary>Represents an &quot;End Enum&quot; statement.</summary></enum>
+        <enum name="EndInterfaceStatement"                    value="11"><summary>Represents an &quot;End Interfaces&quot; statement.</summary></enum>
+        <enum name="EndClassStatement"                        value="12"><summary>Represents an &quot;End Class&quot; statement.</summary></enum>
+        <enum name="EndModuleStatement"                       value="13"><summary>Represents an &quot;End Module&quot; statement.</summary></enum>
+        <enum name="EndNamespaceStatement"                    value="14"><summary>Represents an &quot;End Namespace&quot; statement.</summary></enum>
+        <enum name="EndSubStatement"                          value="15"><summary>Represents an &quot;End Sub&quot; statement.</summary></enum>
+        <enum name="EndFunctionStatement"                     value="16"><summary>Represents an &quot;End Function&quot; statement.</summary></enum>
+        <enum name="EndGetStatement"                          value="17"><summary>Represents an &quot;End Get&quot; statement.</summary></enum>
+        <enum name="EndSetStatement"                          value="18"><summary>Represents an &quot;End Set&quot; statement.</summary></enum>
+        <enum name="EndPropertyStatement"                     value="19"><summary>Represents an &quot;End Property&quot; statement.</summary></enum>
+        <enum name="EndOperatorStatement"                     value="20"><summary>Represents an &quot;End Operator&quot; statement.</summary></enum>
+        <enum name="EndEventStatement"                        value="21"><summary>Represents an &quot;End Event&quot; statement.</summary></enum>
+        <enum name="EndAddHandlerStatement"                   value="22"><summary>Represents an &quot;End AddHandler&quot; statement.</summary></enum>
+        <enum name="EndRemoveHandlerStatement"                value="23"><summary>Represents an &quot;End RemoveHandler&quot; statement.</summary></enum>
+        <enum name="EndRaiseEventStatement"                   value="24"><summary>Represents an &quot;End RaiseEvent&quot; statement.</summary></enum>
+        <enum name="EndWhileStatement"                        value="25"><summary>Represents an &quot;End While&quot; statement.</summary></enum>
+        <enum name="EndTryStatement"                          value="26"><summary>Represents an &quot;End Try&quot; statement.</summary></enum>
+        <enum name="EndSyncLockStatement"                     value="27"><summary>Represents an &quot;End SyncLock&quot; statement.</summary></enum>
+        <!-- <enum name="" value="28" /> -->
+        <!-- <enum name="" value="29" /> -->
+        <!-- <enum name="" value="30" /> -->
+        <!-- <enum name="" value="31" /> -->
+        <!-- <enum name="" value="32" /> -->
+        <!-- <enum name="" value="33" /> -->
+        <!-- <enum name="" value="34" /> -->
+        <!-- <enum name="" value="35" /> -->
+        <!-- <enum name="" value="36" /> -->
+        <!-- <enum name="" value="37" /> -->        
+        <enum name="CompilationUnit"                          value="38"><summary></summary></enum>
+        <enum name="OptionStatement"                          value="41"><summary></summary></enum>
+        <enum name="ImportsStatement"                         value="42"><summary></summary></enum>
+        <enum name="AliasImportsClause"                       value="43"><summary></summary></enum> <!-- Removed. -->
+        <enum name="SimpleImportsClause"                      value="44"><summary>Represents the clause of an Imports statement that imports all members of a type or namespace or aliases a type or namespace.</summary></enum>                 ' SimpleImportsClauseSyntax : ImportsClauseSyntax
+        <enum name="XmlNamespaceImportsClause"                value="45"><summary>Defines a XML namespace for XML expressions.</summary></enum>           ' XmlNamespaceImportsClauseSyntax : ImportsClauseSyntax
+        <!-- <enum name="" value="46" /> -->
+        <!-- <enum name="" value="47" /> -->        
+        <enum name="NamespaceBlock"                           value="48"><summary>Represents a declaration of a Namespace, its contents and the End Namespace statement that ends it. </summary></enum>
+        <enum name="NamespaceStatement"                       value="49"><summary>Represents a Namespacee statement ....</summary></enum>
+        <enum name="ModuleBlock"                              value="50"><summary>Represents a declaration of a Module, its contents and the End statement that ends it.</summary></enum>
+        <enum name="StructureBlock"                           value="51"><summary>Represents a declaration of a Structure, its contents and the End statement that ends it.</summary>           </enum>
+        <enum name="InterfaceBlock"                           value="52"><summary>Represents a declaration of a Interface, its contents and the End statement that ends it.</summary></enum>
+        <enum name="ClassBlock"                               value="53"><summary>Represents a declaration of a Class its contents and the End statement that ends it.</summary></enum>
+        <enum name="EnumBlock"                                value="54"><summary>Represents a declaration of an Enum, its contents and the End Enum statement that ends it. </summary></enum>
+        <!-- <enum name="" value="55" /> -->
+        <!-- <enum name="" value="56" /> -->       
+        <enum name="InheritsStatement"                        value="57"><summary>Represents an Inherits statement in a Class, Structure or Interface.</summary></enum>
+        <enum name="ImplementsStatement"                      value="58"><summary>Represents an Implements statement in a Class or Structure.</summary></enum>
+        <enum name="ModuleStatement"                          value="59"><summary>Represents the beginning statement of a Module declaration. This node always appears as the Begin of a TypeBlock with Kind=ModuleDeclarationBlock.</summary></enum>
+        <enum name="StructureStatement"                       value="60"><summary>Represents the beginning statement of a Structure declaration. This node always appears as the Begin of a TypeBlock with Kind=StructureDeclarationBlock.</summary></enum>
+        <enum name="InterfaceStatement"                       value="61"><summary>Represents the beginning statement of a Interface declaration. This node always appears as the Begin of a TypeBlock with Kind=InterfaceDeclarationBlock.</summary></enum>
+        <enum name="ClassStatement"                           value="62"><summary>Represents the beginning statement of a Class declaration. This node always appears as the Begin of a TypeBlock with Kind=ClassDeclarationBlock.</summary></enum>
+        <enum name="EnumStatement"                            value="63"><summary>Represents the beginning statement of an Enum declaration. This node always appears as the Begin of an EnumBlock with Kind=EnumDeclarationBlock.</summary></enum>
+        <!-- <enum name="" value="64" /> -->
+        <!-- <enum name="" value="65" /> -->        
+        <enum name="TypeParameterList"                        value="66"><summary>Represents the type parameter list in a declaration. </summary></enum>
+        <enum name="TypeParameter"                            value="67"><summary>Represents a type parameter on a generic type declaration.</summary></enum>
+        <!-- <enum name="" value="68" /> -->
+        <!-- <enum name="" value="69" /> -->        
+        <enum name="TypeParameterSingleConstraintClause"      value="70"><summary>One of the type parameter constraints clauses. This represents a constraint clause in the form of "As Constraint".</summary></enum>
+        <enum name="TypeParameterMultipleConstraintClause"    value="71"><summary>One of the type parameter constraints clauses. This represents a constraint clause in the form of "As { Constraints }". </summary></enum>      
+        <enum name="NewConstraint"                            value="72"><summary>One of the special type parameter constraints: New, Class or Structure. Which kind of special constraint it is can be obtained from the Kind property and is one of: NewConstraint, ReferenceConstraint or ValueConstraint. </summary></enum>
+        <enum name="ClassConstraint"                          value="73"><summary>One of the special type parameter constraints: New, Class or Structure. Which kind of special constraint it is can be obtained from the Kind property and is one of: NewConstraint, ReferenceConstraint or ValueConstraint. </summary></enum>
+        <enum name="StructureConstraint"                      value="74"><summary>One of the special type parameter constraints: New, Class or Structure. Which kind of special constraint it is can be obtained from the Kind property and is one of: NewConstraint, ReferenceConstraint or ValueConstraint. </summary></enum>
+        <enum name="TypeConstraint"                           value="75"><summary>Represents a type parameter constraint that is a type. </summary></enum>
+        <!-- <enum name="" value="76" /> -->
+        <!-- <enum name="" value="77" /> -->        
+        <enum name="EnumMemberDeclaration"                    value="78"><summary>Represents a name and value in an EnumDeclarationBlock. </summary></enum>     
+        <enum name="SubBlock"                                 value="79"><summary>Represents a Function or Sub block declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement. </summary></enum>
+        <enum name="FunctionBlock"                            value="80"><summary>Represents a Function or Sub block declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement. </summary></enum>     
+        <enum name="ConstructorBlock"                         value="81"><summary>Represents a constructor block declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement. </summary></enum>
+        <enum name="OperatorBlock"                            value="82"><summary>Represents an Operator block member declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement. </summary></enum>
+        <enum name="GetAccessorBlock"                         value="83"><summary>Represents an accessor block member declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement. Examples include property accessors and custom event accessors. </summary></enum>
+        <enum name="SetAccessorBlock"                         value="84"><summary>Represents an accessor block member declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement. Examples include property accessors and custom event accessors. </summary></enum>
+        <enum name="AddHandlerAccessorBlock"                  value="85"><summary>Represents an accessor block member declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement. Examples include property accessors and custom event accessors. </summary></enum>
+        <enum name="RemoveHandlerAccessorBlock"               value="86"><summary>Represents an accessor block member declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement. Examples include property accessors and custom event accessors. </summary></enum>
+        <enum name="RaiseEventAccessorBlock"                  value="87"><summary>Represents an accessor block member declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement. Examples include property accessors and custom event accessors. </summary></enum>
+        <enum name="PropertyBlock"                            value="88"><summary>Represents a block property declaration: A declaration that has a beginning declaration, some get or set accessor blocks and an end statement. </summary></enum>       
+        <enum name="EventBlock"                               value="89"><summary>Represents a custom event declaration: A declaration that has a beginning event declaration, some accessor blocks and an end statement. </summary></enum>    
+        <enum name="ParameterList"                            value="92"><summary>Represents the parameter list in a method declaration. </summary></enum>
+        <enum name="SubStatement"                             value="93"><summary>The statement that declares a Sub or Function. If this method has a body, this statement will be the Begin of a BlockStatement with Kind=MethodDeclarationBlock, and the body of the method will be the Body of that BlockStatement. </summary></enum>         
+        <enum name="FunctionStatement"                        value="94"><summary>The statement that declares a Sub or Function. If this method has a body, this statement will be the Begin of a BlockStatement with Kind=MethodDeclarationBlock, and the body of the method will be the Body of that BlockStatement. </summary></enum>      
+        <enum name="SubNewStatement"                          value="95"><summary>A statement that declares a constructor. This statement will be the Begin of a BlockStatement with Kind=MethodDeclarationBlock, and the body of the method will be the Body of that BlockStatement. </summary></enum>
+        <enum name="DeclareSubStatement"                      value="96"><summary>A Declare statement that declares an external DLL method.</summary></enum>       
+        <enum name="DeclareFunctionStatement"                 value="97"><summary>A Declare statement that declares an external DLL method.</summary></enum>       
+        <enum name="DelegateSubStatement"                     value="98"><summary>A statement that declares a delegate type.</summary></enum>       
+        <enum name="DelegateFunctionStatement"                value="99"><summary>A statement that declares a delegate type.</summary></enum>       
+        <!-- <enum name="" value="100" /> -->
+        <!-- <enum name="" value="101" /> -->
+        <enum name="EventStatement"                           value="102"><summary>A statement that declares an event. If the event being declared is a custom event, this statement will be the Begin of a PropertyOrEventBlock, and the accessors will be part of the Accessors of that node. </summary></enum>
+        <enum name="OperatorStatement"                        value="103"><summary>A statement that declares an operator. If this operator has a body, this statement will be the Begin of a BlockStatement with Kind=MethodDeclarationBlock, and the body of the method will be the Body of that BlockStatement. </summary></enum>       
+        <enum name="PropertyStatement"                        value="104"><summary>Statement that declares a property. If this property has accessors declared, this statement will be the Begin of a BlockNode, and the accessors will be the Body of that node. Auto properties are property declarations without a PropertyBlock.</summary></enum>       
+        <enum name="GetAccessorStatement"                     value="105"><summary>Represents a Get or Set accessor on a property declaration or an AddHandler, RemoveHandler or RaiseEvent accessor on a custom event declaration. The Kind of the node determines what kind of accessor this is. This statement is always the Begin of a BlockNode, and the body of the accessor is the Body of that node. </summary></enum>        
+        <enum name="SetAccessorStatement"                     value="106"><summary>Represents a Get or Set accessor on a property declaration or an AddHandler, RemoveHandler or RaiseEvent accessor on a custom event declaration. The Kind of the node determines what kind of accessor this is. This statement is always the Begin of a BlockNode, and the body of the accessor is the Body of that node. </summary></enum>        
+        <enum name="AddHandlerAccessorStatement"              value="107"><summary>Represents a Get or Set accessor on a property declaration or an AddHandler, RemoveHandler or RaiseEvent accessor on a custom event declaration. The Kind of the node determines what kind of accessor this is. This statement is always the Begin of a BlockNode, and the body of the accessor is the Body of that node. </summary></enum>
+        <enum name="RemoveHandlerAccessorStatement"           value="108"><summary>Represents a Get or Set accessor on a property declaration or an AddHandler, RemoveHandler or RaiseEvent accessor on a custom event declaration. The Kind of the node determines what kind of accessor this is. This statement is always the Begin of a BlockNode, and the body of the accessor is the Body of that node. </summary></enum>
+        <enum name="RaiseEventAccessorStatement"              value="111"><summary>Represents a Get or Set accessor on a property declaration or an AddHandler, RemoveHandler or RaiseEvent accessor on a custom event declaration. The Kind of the node determines what kind of accessor this is. This statement is always the Begin of a BlockNode, and the body of the accessor is the Body of that node. </summary></enum>       
+        <enum name="ImplementsClause"                         value="112"><summary>Represents the "Implements ..." clause on a type member, which describes which interface members this member implements. </summary></enum>
+        <enum name="HandlesClause"                            value="113"><summary>Represents the "Handles ..." clause on a method declaration that describes which events this method handles.</summary></enum>
+        <enum name="KeywordEventContainer"                    value="114"><summary>Represents event container specified through special keywords "Me", "MyBase" or "MyClass". </summary></enum>
+        <enum name="WithEventsEventContainer"                 value="115"><summary>Represents event container that refers to a WithEvents member. </summary></enum>
+        <enum name="WithEventsPropertyEventContainer"         value="116"><summary>Represents event container that refers to a WithEvents member's property. </summary></enum>       
+        <enum name="HandlesClauseItem"                        value="117"><summary>Represents a single handled event in a "Handles ..." clause. </summary></enum>
+        <enum name="IncompleteMember"                         value="118"><summary>Represents the beginning of a declaration. However, not enough syntax is detected to classify this as a field, method, property or event. This is node always represents a syntax error. </summary></enum>
+        <enum name="FieldDeclaration"                         value="119"><summary>Represents the declaration of one or more variables or constants, either as local variables or as class/structure members. In the case of a constant, it is represented by having "Const" in the Modifiers (although technically "Const" is not a modifier, it is represented as one in the parse trees.) </summary></enum>
+        <!-- <enum name="" value="120" /> -->
+        <!-- <enum name="" value="121" /> -->
+        <enum name="VariableDeclarator"                       value="122"><summary>Represents the part of a variable or constant declaration statement that associated one or more variable names with a type. </summary></enum>
+        <enum name="SimpleAsClause"                           value="123"><summary>Represents an "As {type-name}" clause that does not have an initializer or "New". The type has optional attributes associated with it, although attributes are not permitted in all possible places where this node occurs. </summary></enum>      
+        <enum name="AsNewClause"                              value="124"><summary>Represents an "As New {type-name} [arguments] [initializers]" clause in a declaration. The type has optional attributes associated with it, although attributes are not permitted in many places where this node occurs (they are permitted, for example, on automatically implemented properties.) </summary></enum>     
+        <enum name="ObjectMemberInitializer"                  value="125"><summary>Represents a "With {...} clause used to initialize a new object's members. </summary></enum>
+        <enum name="ObjectCollectionInitializer"              value="126"><summary>Represents a "From {...} clause used to initialize a new collection object's elements.</summary></enum>
+        <enum name="InferredFieldInitializer"                 value="127"><summary>Represent a field initializer in a With {...} initializer where the field name is inferred from the initializer expression. </summary></enum>
+        <enum name="NamedFieldInitializer"                    value="128"><summary>Represent a named field initializer in a With {...} initializer, such as ".x = expr".</summary></enum>
+        <enum name="EqualsValue"                              value="129"><summary>Represents an "= initializer" clause in a declaration for a variable, parameter or automatic property. </summary></enum>
+        <!-- <enum name="" value="130" /> -->
+        <!-- <enum name="" value="131" /> -->       
+        <enum name="Parameter"                                value="132"><summary>Represent a parameter to a method, property, constructor, etc. </summary></enum>
+        <enum name="ModifiedIdentifier"                       value="133"><summary>Represents an identifier with optional "?" or "()" or "(,,,)" modifiers, as used in parameter declarations and variable declarations. </summary></enum>       
+        <enum name="ArrayRankSpecifier"                       value="134"><summary>Represents a modifier that describes an array type, without bounds, such as "()" or "(,)". </summary></enum>       
+        <enum name="AttributeList"                            value="135"><summary>Represents a group of attributes within "&lt;" and "&gt;" brackets.</summary></enum>
+        <enum name="Attribute"                                value="136"><summary>Represents a single attribute declaration within an attribute list.</summary></enum>
+        <enum name="AttributeTarget"                          value="137"><summary>Represents a single attribute declaration within an attribute list.</summary></enum>
+        <enum name="AttributesStatement"                      value="138"><summary>Represents a file-level attribute, in which the attributes have no other syntactic element they are attached to.</summary></enum>
+        <enum name="ExpressionStatement"                      value="139"><summary>Represent an expression in a statement context. This may only be a invocation or await expression in standard code but may be any expression in VB Interactive code.</summary></enum>
+        <enum name="PrintStatement"                           value="140"><summary>Represent a "? expression" "Print" statement in VB Interactive code.</summary></enum>
+        <enum name="WhileBlock"                               value="141"><summary>Represents a While...End While statement, including the While, body and End While.</summary></enum>
+        <!-- <enum name="" value="142" /> -->
+        <!-- <enum name="" value="143" /> -->
+        <enum name="UsingBlock"                               value="144"><summary>Represents an entire Using...End Using statement, including the Using, body and End Using statements. </summary></enum>       
+        <enum name="SyncLockBlock"                            value="145"><summary>Represents a entire SyncLock...End SyncLock block, including the SyncLock statement, the enclosed statements, and the End SyncLock statement. </summary></enum>       
+        <enum name="WithBlock"                                value="146"><summary>Represents a With...End With block, include the With statement, the body of the block and the End With statement. </summary></enum>      
+        <enum name="LocalDeclarationStatement"                value="147"><summary>Represents the declaration of one or more local variables or constants. </summary></enum>      
+        <enum name="LabelStatement"                           value="148"><summary>Represents a label statement.</summary></enum>       
+        <enum name="GoToStatement"                            value="149"><summary>Represents a "GoTo" statement.</summary></enum>        
+        <enum name="IdentifierLabel"                          value="150"><summary> A label for a GoTo, Resume, or On Error statement. An identifier, line number, or next keyword. </summary></enum>       
+        <enum name="NumericLabel"                             value="151"><summary>A label for a GoTo, Resume, or On Error statement. An identifier, line number, or next keyword. </summary></enum>
+        <enum name="NextLabel"                                value="152"><summary>A label for a GoTo, Resume, or On Error statement. An identifier, line number, or next keyword. </summary></enum>       
+        <enum name="StopStatement"                            value="153"><summary>Represents a "Stop" or "End" statement. The Kind can be used to determine which kind of statement this is. </summary></enum>
+        <!-- <enum name="" value="154" /> -->
+        <!-- <enum name="" value="155" /> -->
+        <enum name="EndStatement"                             value="156"><summary>Represents a "Stop" or "End" statement. The Kind can be used to determine which kind of statement this is.</summary></enum>
+        <enum name="ExitDoStatement"                          value="157"><summary>An exit statement. The kind of block being exited can be found by examining the Kind.</summary></enum>
+        <enum name="ExitForStatement"                         value="158"><summary>An exit statement. The kind of block being exited can be found by examining the Kind.</summary></enum>
+        <enum name="ExitSubStatement"                         value="159"><summary>An exit statement. The kind of block being exited can be found by examining the Kind. </summary></enum>
+        <enum name="ExitFunctionStatement"                    value="160"><summary>An exit statement. The kind of block being exited can be found by examining the Kind.</summary></enum>        
+        <enum name="ExitOperatorStatement"                    value="161"><summary>An exit statement. The kind of block being exited can be found by examining the Kind.</summary></enum>       
+        <enum name="ExitPropertyStatement"                    value="162"><summary> An exit statement. The kind of block being exited can be found by examining the Kind.</summary></enum>
+        <enum name="ExitTryStatement"                         value="163"><summary>An exit statement. The kind of block being exited can be found by examining the Kind. </summary></enum>
+        <enum name="ExitSelectStatement"                      value="164"><summary> An exit statement. The kind of block being exited can be found by examining the Kind. </summary></enum>
+        <enum name="ExitWhileStatement"                       value="165"><summary>An exit statement. The kind of block being exited can be found by examining the Kind. </summary></enum>
+        <enum name="ContinueWhileStatement"                   value="166"><summary>Represents a "Continue (block)" statement. THe kind of block referenced can be determined by examining the Kind.</summary></enum>
+        <enum name="ContinueDoStatement"                      value="167"><summary>Represents a "Continue (block)" statement. THe kind of block referenced can be determined by examining the Kind.</summary></enum>
+        <enum name="ContinueForStatement"                     value="168"><summary>Represents a "Continue (block)" statement. THe kind of block referenced can be determined by examining the Kind.</summary></enum>
+        <enum name="ReturnStatement"                          value="169"><summary>Represents a "Return" statement.</summary></enum>
+        <enum name="SingleLineIfStatement"                    value="170"><summary>Represents a line If-Then-Else statement. </summary></enum>
+        <enum name="SingleLineIfPart"                         value="171"><summary>Represents part of a single line If statement, consisting of a beginning if-statement, followed by a body of statement controlled by that beginning statement. The Kind property returns if this is a SingleLineIf.</summary></enum>
+        <enum name="SingleLineElseClause"                     value="172"><summary>Represents the Else part of an If statement, consisting of a Else statement, followed by a body of statement controlled by that Else.</summary></enum>
+        <enum name="MultiLineIfBlock"                         value="173"><summary>Represents a block If...Then...Else...EndIf Statement. The Kind property can be used to determine if it is a block or line If.</summary></enum>
+        <!-- <enum name="" value="174" /> -->
+        <!-- <enum name="" value="175" /> -->
+        <!-- <enum name="" value="176" /> -->
+        <!-- <enum name="" value="177" /> -->
+        <!-- <enum name="" value="178" /> -->        
+        <!-- <enum name="IfPart"  value="179"> -->
+        <enum name="ElseIfBlock"                              value="180"><summary>Represents part of an If statement, consisting of a beginning statement (If or ElseIf), followed by a body of statement controlled by that beginning statement. The Kind property returns if this is an If or ElseIf.</summary></enum>
+        <enum name="ElseBlock"                                value="181"><summary>Represents the Else part of an If statement, consisting of a Else statement, followed by a body of statement controlled by that Else.</summary></enum>
+        <enum name="IfStatement"                              value="182"><summary>Represents the If part or ElseIf part of a If...End If block (or line If). This statement is always the Begin of a IfPart. The Kind can be examined to determine if this is an If or an ElseIf statement.</summary></enum>
+        <enum name="ElseIfStatement"                          value="183"><summary>Represents the If part or ElseIf part of a If...End If block (or line If). This statement is always the Begin of a IfPart. The Kind can be examined to determine if this is an If or an ElseIf statement.</summary></enum>       
+        <enum name="ElseStatement"                            value="184"><summary>Represents the Else part of a If...End If block (or line If). This statement is always the Begin of a ElsePart.</summary></enum>
+        <enum name="TryBlock"                                 value="185"><summary>Represents an entire Try...Catch...Finally...End Try statement.</summary></enum>
+        <!-- <enum name="TryPart"  value="186" /> -->'       
+        <enum name="CatchBlock"                               value="187"><summary>Represents a Catch part of a Try...Catch...Finally...End Try statement, consisting of a Catch statement, followed by a body of statements controlled by that Catch statement. The Kind property returns which kind of part this is.</summary></enum>       
+        <enum name="FinallyBlock"                             value="188"><summary>Represents the Finally part of a Try...Catch...Finally...End Try statement, consisting of a Finally statement, followed by a body of statements controlled by the Finally.</summary></enum>
+        <enum name="TryStatement"                             value="189"><summary>Represents the Try part of a Try...Catch...Finally...End Try. This statement is always the Begin of a TryPart.</summary></enum>
+        <enum name="CatchStatement"                           value="190"><summary>Represents the Catch part of a Try...Catch...Finally...End Try. This statement is always the Begin of a CatchPart.</summary></enum>
+        <enum name="CatchFilterClause"                        value="191"><summary>Represents the When/Filter clause of a Catch statement</summary></enum>
+        <!-- <enum name="" value="192" /> -->
+        <!-- <enum name="" value="193" /> -->
+        <enum name="FinallyStatement"                         value="194"><summary>Represents the Finally part of a Try...Catch...Finally...End Try. This statement is always the Begin of a FinallyPart.</summary></enum>
+        <enum name="ErrorStatement"                           value="195"><summary>Represents the "Error" statement.</summary></enum>
+        <enum name="OnErrorGoToZeroStatement"                 value="196"><summary>Represents an OnError Goto statement.</summary></enum>
+        <enum name="OnErrorGoToMinusOneStatement"             value="197"> <summary>Represents an OnError Goto statement.</summary></enum>
+        <enum name="OnErrorGoToLabelStatement"                value="198"><summary>Represents an OnError Goto statement.</summary></enum>
+        <enum name="OnErrorResumeNextStatement"               value="199"> <summary>Represents an OnError Resume Next statement.</summary></enum>
+        <enum name="ResumeStatement"                          value="200"> <summary>Represents a "Resume" statement. The Kind property can be used to determine if this is a "Resume", "Resume Next" or "Resume label" statement.</summary></enum>      
+        <enum name="ResumeLabelStatement"                     value="201"><summary>Represents a "Resume" statement. The Kind property can be used to determine if this is a "Resume", "Resume Next" or "Resume label" statement.</summary></enum>
+        <enum name="ResumeNextStatement"                      value="202"><summary>Represents a "Resume" statement. The Kind property can be used to determine if this is a "Resume", "Resume Next" or "Resume label" statement.</summary></enum>
+        <enum name="SelectBlock"                              value="203"><summary>Represents a Select Case block, including the Select Case that begins it, the contains Case blocks and the End Select.</summary></enum>
+        <enum name="SelectStatement"                          value="204"><summary>Represents a Select Case statement. This statement always occurs as the Begin of a SelectBlock.</summary></enum>       
+        <enum name="CaseBlock"                                value="207"><summary>Represents a case statement and its subsequent block.</summary></enum>
+        <enum name="CaseElseBlock"                            value="210"><summary>Represents a case statement and its subsequent block.</summary></enum>
+        <enum name="CaseStatement"                            value="211"><summary>Represents a Case or Case Else statement. This statement is always the Begin of a CaseBlock. If this is a Case Else statement, the Kind=CaseElse, otherwise the Kind=Case.</summary></enum>
+        <enum name="CaseElseStatement"                        value="212"><summary>Represents a Case or Case Else statement. This statement is always the Begin of a CaseBlock. If this is a Case Else statement, the Kind=CaseElse, otherwise the Kind=Case. </summary></enum>        
+        <enum name="ElseCaseClause"                           value="213"><summary> The "Else" part in a Case Else statement.</summary></enum>
+        <enum name="SimpleCaseClause"                         value="214"> <summary>Represents a single value in a Case.</summary></enum>       
+        <enum name="RangeCaseClause"                          value="215"> <summary>Represents a range "expression To expression" in a Case.</summary></enum>       
+        <!-- RelationalCaseClauseSyntax : CaseClauseSyntax -->       
+        <enum name="CaseEqualsClause"                         value = "216"><summary>Represents a relation clause in a Case statement, such as "Is &gt; expression". </summary></enum>        
+        <enum name="CaseNotEqualsClause"                      value = "217"><summary>Represents a relation clause in a Case statement, such as "Is &gt; expression". </summary></enum>                       
+        <enum name="CaseLessThanClause"                       value = "218"><summary>Represents a relation clause in a Case statement, such as "Is &gt; expression". </summary></enum>                   
+        <enum name="CaseLessThanOrEqualClause"                value = "219"><summary>Represents a relation clause in a Case statement, such as "Is &gt; expression". </summary></enum>         
+        <enum name="CaseGreaterThanOrEqualClause"             value = "222"><summary>Represents a relation clause in a Case statement, such as "Is &gt; expression". </summary></enum>
+        <enum name="CaseGreaterThanClause"                    value = "223"><summary>Represents a relation clause in a Case statement, such as "Is &gt; expression". </summary></enum>
+        <!-- <enum name="" value="224" /> -->
+        <!-- <enum name="" value="225" /> -->       
+        <enum name="SyncLockStatement"                        value = "226"><summary>Represents the "SyncLock" statement. This statement always occurs as the Begin of a SyncLockBlock.</summary></enum>     
+        <!-- <enum name="DoLoopTopTestBlock"     value = "227" /> -->
+        <!-- <enum name="DoLoopBottomTestBlock"  value = "228" /> -->
+        <!-- <enum name="DoLoopForeverBlock"     value = "229" /> -->
+        <!-- <enum name="DoStatement"            value = "230" /> -->
+        <!-- <enum name="LoopStatement"          value = "231" /> -->
+        <!-- <enum name="WhileClause"            value = "232" /> -->
+        <!-- <enum name="UntilClause"            value = "233" /> -->
+        <enum name="WhileStatement"                           value = "234" />
+        <!-- <enum name="" value="235" /> -->
+        <!-- <enum name="" value="236" /> -->        
+        <enum name="ForBlock"                                 value="237"><summary>Represents a For or For Each block, including the introducing statement, the body and the "Next" (which can be omitted if a containing For has a Next with multiple variables).</summary></enum>
+        <enum name="ForEachBlock"                             value="238"><summary>Represents a For or For Each block, including the introducing statement, the body and the "Next" (which can be omitted if a containing For has a Next with multiple variables).</summary></enum>
+        <enum name="ForStatement"                             value="239"><summary>The For statement that begins a For-Next block. This statement always occurs as the Begin of a ForBlock. Most of the time, the End of that ForBlock is the corresponding Next statement. However, multiple nested For statements are ended by a single Next statement with multiple variables, then the inner For statements will have End set to Nothing, and the Next statement is the End of the outermost For statement that is being ended.</summary></enum>
+        <enum name="ForStepClause"                            value="240"><summary>The Step clause in a For Statement.</summary></enum>        
+        <enum name="ForEachStatement"                         value="241"><summary>The For Each statement that begins a For Each-Next block. This statement always occurs as the Begin of a ForBlock, and the body of the For Each-Next is the Body of that ForBlock. Most of the time, the End of that ForBlock is the corresponding Next statement. However, multiple nested For statements are ended by a single Next statement with multiple variables, then the inner For statements will have End set to Nothing, and the Next statement is the End of the outermost For statement that is being ended.</summary></enum>       
+        <enum name="NextStatement"                            value="242"><summary>The Next statement that ends a For-Next or For Each-Next block. This statement always occurs as the End of a ForBlock (with Kind=ForBlock or ForEachBlock), and the body of the For-Next is the Body of that ForBlock. The Begin of that ForBlock has the corresponding For or For Each statement.</summary></enum>        
+        <enum name="UsingStatement"                           value="243"><summary>The Using statement that begins a Using block. This statement always occurs as the Begin of a UsingBlock, and the body of the Using is the Body of that UsingBlock.</summary></enum>        
+        <!-- <enum name="" value= "244"></enum> -->
+        <!-- <enum name="" value= "245"></enum> -->
+        <enum name="ThrowStatement"                           value="246"><summary>Represents a Throw statement.</summary></enum>       
+        <enum name="SimpleAssignmentStatement"                value="247"><summary>Represents a simple, compound, or Mid assignment statement. Which one can be determined by checking the Kind.</summary></enum>
+        <enum name="MidAssignmentStatement"                   value="248"><summary>Represents a simple, compound, or Mid assignment statement. Which one can be determined by checking the Kind.</summary></enum>
+        <enum name="AddAssignmentStatement"                   value="249"><summary>Represents a simple, compound, or Mid assignment statement. Which one can be determined by checking the Kind.</summary></enum>       
+        <enum name="SubtractAssignmentStatement"              value="250"><summary>Represents a simple, compound, or Mid assignment statement. Which one can be determined by checking the Kind.</summary></enum>
+        <enum name="MultiplyAssignmentStatement"              value="251"><summary>Represents a simple, compound, or Mid assignment statement. Which one can be determined by checking the Kind.</summary></enum>
+        <enum name="DivideAssignmentStatement"                value="252"><summary>Represents a simple, compound, or Mid assignment statement. Which one can be determined by checking the Kind.</summary></enum>
+        <enum name="IntegerDivideAssignmentStatement"         value="253"><summary>Represents a simple, compound, or Mid assignment statement. Which one can be determined by checking the Kind.</summary></enum>
+        <enum name="ExponentiateAssignmentStatement"          value="254"><summary>Represents a simple, compound, or Mid assignment statement. Which one can be determined by checking the Kind.</summary></enum>
+        <enum name="LeftShiftAssignmentStatement"             value="255"><summary>Represents a simple, compound, or Mid assignment statement. Which one can be determined by checking the Kind.</summary></enum>
+        <!-- <enum name="" value="256" /> -->
+        <!-- <enum name="" value="257" /> -->
+        <enum name="RightShiftAssignmentStatement"            value="258"><summary>Represents a simple, compound, or Mid assignment statement. Which one can be determined by checking the Kind.</summary></enum>
+        <enum name="ConcatenateAssignmentStatement"           value="259"><summary>Represents a simple, compound, or Mid assignment statement. Which one can be determined by checking the Kind.</summary></enum>
+        <enum name="MidExpression"                            value="260"><summary>Represents a left-hand side of a MidAssignment statement.</summary></enum>
+        <enum name="CallStatement"                            value="261"><summary>Represent a call statement (also known as a invocation statement).</summary></enum>
+        <enum name="AddHandlerStatement"                      value="262"><summary>Represents an AddHandler or RemoveHandler statement. The Kind property determines which one.</summary></enum>
+        <enum name="RemoveHandlerStatement"                   value="263"><summary>Represents an AddHandler or RemoveHandler statement. The Kind property determines which one.</summary></enum>
+        <enum name="RaiseEventStatement"                      value="264"><summary>Represent a RaiseEvent statement.</summary></enum>
+        <enum name="WithStatement"                            value="265"><summary>Represents a "With" statement. This statement always occurs as the BeginStatement of a WithBlock, and the body of the With is the Body of that WithBlock.</summary></enum>
+        <enum name="ReDimStatement"                           value="266"><summary>Represents a ReDim statement.</summary></enum>
+        <enum name="ReDimPreserveStatement"                   value="267"><summary>Represents a ReDim statement.</summary></enum>
+        <!-- <enum name="" value="268" /> -->
+        <!-- <enum name="" value="269" /> -->        
+        <enum name="RedimClause"                              value="270"><summary>Represents a ReDim statement clause.</summary></enum>
+        <enum name="EraseStatement"                           value="271"><summary>Represents an "Erase" statement.</summary></enum>
+        <enum name="CharacterLiteralExpression"               value="272"><summary>Represents a literal. The kind of literal is determined by the Kind property: IntegerLiteral, CharacterLiteral, BooleanLiteral, DecimalLiteral, FloatingLiteral, DateLiteral or StringLiteral. The value of the literal can be determined by casting the associated Token to the correct type and getting the value from the token.</summary></enum>
+        <enum name="TrueLiteralExpression"                    value="273"><summary>Represents a literal. The kind of literal is determined by the Kind property: IntegerLiteral, CharacterLiteral, BooleanLiteral, DecimalLiteral, FloatingLiteral, DateLiteral or StringLiteral. The value of the literal can be determined by casting the associated Token to the correct type and getting the value from the token.</summary></enum>
+        <enum name="FalseLiteralExpression"                   value="274"><summary>Represents a literal. The kind of literal is determined by the Kind property: IntegerLiteral, CharacterLiteral, BooleanLiteral, DecimalLiteral, FloatingLiteral, DateLiteral or StringLiteral. The value of the literal can be determined by casting the associated Token to the correct type and getting the value from the token.</summary></enum>
+        <enum name="NumericLiteralExpression"                 value="275"><summary>Represents a literal. The kind of literal is determined by the Kind property: IntegerLiteral, CharacterLiteral, BooleanLiteral, DecimalLiteral, FloatingLiteral, DateLiteral or StringLiteral. The value of the literal can be determined by casting the associated Token to the correct type and getting the value from the token.</summary></enum>
+        <enum name="DateLiteralExpression"                    value="276"><summary>Represents a literal. The kind of literal is determined by the Kind property: IntegerLiteral, CharacterLiteral, BooleanLiteral, DecimalLiteral, FloatingLiteral, DateLiteral or StringLiteral. The value of the literal can be determined by casting the associated Token to the correct type and getting the value from the token.</summary></enum>
+        <!-- <enum name="" value="277" /> -->
+        <!-- <enum name="" value="278" /> -->        
+        <enum name="StringLiteralExpression"                  value="279"><summary>Represents a literal. The kind of literal is determined by the Kind property: IntegerLiteral, CharacterLiteral, BooleanLiteral, DecimalLiteral, FloatingLiteral, DateLiteral or StringLiteral. The value of the literal can be determined by casting the associated Token to the correct type and getting the value from the token.</summary></enum>
+        <enum name="NothingLiteralExpression"                 value="280"><summary>Represents a literal. The kind of literal is determined by the Kind property: IntegerLiteral, CharacterLiteral, BooleanLiteral, DecimalLiteral, FloatingLiteral, DateLiteral or StringLiteral. The value of the literal can be determined by casting the associated Token to the correct type and getting the value from the token.</summary></enum>
+        <enum name="ParenthesizedExpression"                  value="281"><summary>Represents a parenthesized expression.</summary></enum>
+        <enum name="MeExpression"                             value="282"><summary>Identifies the special instance "Me"</summary></enum>
+        <enum name="MyBaseExpression"                         value="283"><summary>Identifies the special instance "MyBase"</summary></enum>
+        <enum name="MyClassExpression"                        value="284"><summary>Identifies the special instance "MyClass"</summary></enum>
+        <enum name="GetTypeExpression"                        value="285"><summary>Represents a GetType expression.</summary></enum>
+        <enum name="TypeOfIsExpression"                       value="286"><summary>Represents a TypeOf...Is or IsNot expression.</summary></enum>
+        <enum name="TypeOfIsNotExpression"                    value="287"><summary>Represents a TypeOf...Is or IsNot expression.</summary></enum>
+        <!-- <enum name="" value="288" /> -->
+        <!-- <enum name="" value="289" /> -->
+        <enum name="GetXmlNamespaceExpression"                value="290"><summary>Represents a GetXmlNamespace expression.</summary></enum>
+        <enum name="SimpleMemberAccessExpression"             value="291"><summary>Represents member access (.name) or dictionary access (!name). The Kind property determines which kind of access.</summary></enum>
+        <enum name="DictionaryAccessExpression"               value="292"><summary>Represents member access (.name) or dictionary access (!name). The Kind property determines which kind of access.</summary></enum>
+        <enum name="XmlElementAccessExpression"               value="293"><summary>Represents an XML member element access (node.&lt;Element&gt;), attribute access (node.@Attribute) or descendants access (node...&lt;Descendant&gt;). The Kind property determines which kind of access.</summary></enum>
+        <enum name="XmlDescendantAccessExpression"            value="294"><summary>Represents an XML member element access (node.&lt;Element&gt;), attribute access (node.@Attribute) or descendants access (node...&lt;Descendant&gt;). The Kind property determines which kind of access.</summary></enum>
+        <enum name="XmlAttributeAccessExpression"             value="295"><summary>Represents an XML member element access (node.&lt;Element&gt;), attribute access (node.@Attribute) or descendants access (node...&lt;Descendant&gt;). The Kind property determines which kind of access.</summary></enum>
+        <enum name="InvocationExpression"                     value="296"><summary>Represents an invocation expression consisting of an invocation target and an optional argument list or an array, parameterized property or object default property index.</summary></enum>
+        <enum name="ObjectCreationExpression"                 value="297"><summary>Represents a New expression that creates a new non-array object, possibly with a "With" or "From" clause.</summary></enum>
+        <enum name="AnonymousObjectCreationExpression"        value="298"><summary>Represents a New expression that create an object of anonymous type.</summary></enum>
+        <!-- <enum name="" value="299" /> -->
+        <!-- <enum name="" value="300" /> -->
+        <enum name="ArrayCreationExpression"                  value="301"><summary>Represents an expression that creates a new array.</summary></enum>
+        <enum name="CollectionInitializer"                    value="302"><summary>Represents an expression that creates a new array without naming the element type.</summary></enum>
+        <enum name="CTypeExpression"                          value="303"/>
+        <enum name="DirectCastExpression"                     value="304"/>
+        <enum name="TryCastExpression"                        value="305"/>        
+        <enum name="PredefinedCastExpression"                 value="306"><summary>Represents a cast to a pre-defined type using a pre-defined cast expression, such as CInt or CLng.</summary></enum>
+        <enum name="AddExpression"                            value="307"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>        
+        <enum name="SubtractExpression"                       value="308"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>
+        <enum name="MultiplyExpression"                       value="309"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>
+        <enum name="DivideExpression"                         value="310"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>        
+        <enum name="IntegerDivideExpression"                  value="311"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>
+        <!-- <enum name="" value= "312"></enum> -->
+        <!-- <enum name="" value= "313"></enum> -->
+        <enum name="ExponentiateExpression"                   value="314"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>        
+        <enum name="LeftShiftExpression"                      value="315"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>        
+        <enum name="RightShiftExpression"                     value="316"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>     
+        <enum name="ConcatenateExpression"                    value="317"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>
+        <enum name="ModuloExpression"                         value="318"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>
+        <enum name="EqualsExpression"                         value="319"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>          
+        <enum name="NotEqualsExpression"                      value="320"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>        
+        <enum name="LessThanExpression"                       value="321"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>        
+        <enum name="LessThanOrEqualExpression"                value="322"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>        
+        <enum name="GreaterThanOrEqualExpression"             value="323"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>
+        <enum name="GreaterThanExpression"                    value="324"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>
+        <enum name="IsExpression"                             value="325"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>
+        <enum name="IsNotExpression"                          value="326"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>
+        <enum name="LikeExpression"                           value="327"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the  exact operation being performed is determined by the Operator property.</summary></enum>
+        <enum name="OrExpression"                             value="328"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>
+        <enum name="ExclusiveOrExpression"                    value="329"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>
+        <enum name="AndExpression"                            value="330"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>
+        <enum name="OrElseExpression"                         value="331"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>
+        <enum name="AndAlsoExpression"                        value="332"><summary>Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string); the exact operation being performed is determined by the Operator property.</summary></enum>
+        <!-- Unary Operators -->
+        <!-- Prefix Operators -->
+        <enum name="UnaryPlusExpression"                      value="333"><summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary></enum>
+        <enum name="UnaryMinusExpression"                     value="334"><summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary></enum>
+        <enum name="NotExpression"                            value="335"><summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary></enum>
+        <enum name="AddressOfExpression"                      value="336"><summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary></enum>      
+        <enum name="BinaryConditionalExpression"              value="337"><summary>Represents a conditional expression, If(condition, true-expr, false-expr) or If(expr, nothing-expr).</summary></enum>
+        <enum name="TernaryConditionalExpression"             value="338"><summary>Represents a conditional expression, If(condition, true-expr, false-expr) or If(expr, nothing-expr). </summary></enum>
+        <enum name="SingleLineFunctionLambdaExpression"       value="339"><summary> Represents a single line lambda expression. </summary></enum>       
+        <!-- <enum name="" value="340" /> -->
+        <!-- <enum name="" value="341" /> -->        
+        <enum name="SingleLineSubLambdaExpression"            value="342"><summary> Represents a single line lambda expression.</summary></enum>
+        <enum name="MultiLineFunctionLambdaExpression"        value="343"><summary>Represents a multi-line lambda expression.</summary></enum>
+        <enum name="MultiLineSubLambdaExpression"             value="344"><summary>Represents a multi-line lambda expression.</summary></enum>
+        <enum name="SubLambdaHeader"                          value="345"><summary>Represents the header part of a lambda expression</summary></enum>
+        <enum name="FunctionLambdaHeader"                     value="346"><summary>Represents the header part of a lambda expression.</summary></enum>
+        <enum name="ArgumentList"                             value="347"><summary>Represents a parenthesized argument list.</summary></enum>
+        <enum name="OmittedArgument"                          value="348"><summary>Represents an omitted argument in an argument list. An omitted argument is not considered a syntax error but a valid case when no argument is required.</summary></enum>
+        <enum name="SimpleArgument"                           value="349"><summary>Represents an argument that is just an optional argument name and an expression.</summary></enum>
+        <!-- <enum name="NamedArgument"  value="350"> -->
+        <enum name="RangeArgument"                            value="351"><summary>Represents a range argument, such as "0 to 5", used in array bounds. The Value" property represents the upper bound of the range.</summary></enum>
+        <enum name="QueryExpression"                          value="352"><summary>This class represents a query expression. A query expression is composed of one or more query operators in a row. The first query operator must be a From or Aggregate.</summary></enum>
+        <enum name="CollectionRangeVariable"                  value="353"><summary>Describes a single variable of the form "x [As Type] In expression" for use in query expressions.</summary></enum>
+        <enum name="ExpressionRangeVariable"                  value="354"><summary>Describes a single variable of the form "[x [As Type] =] expression" for use in query expressions.</summary></enum>
+        <enum name="AggregationRangeVariable"                 value="355"><summary>Describes a single variable of the form "[x [As Type] =] aggregation-function" for use in the Into clause of Aggregate or Group By or Group Join query operators.</summary></enum>
+        <enum name="VariableNameEquals"                       value="356"><summary>Represents the name and optional type of an expression range variable.</summary></enum>        
+        <enum name="FunctionAggregation"                      value="357"><summary>Represents an invocation of an Aggregation function in the aggregation range variable declaration of a Group By, Group Join or Aggregate query operator.</summary></enum>
+        <enum name="GroupAggregation"                         value="358"><summary>Represents the use of "Group" as the aggregation function in the in the aggregation range variable declaration of a Group By or Group Join query operator.</summary></enum>
+        <enum name="FromClause"                               value="359"><summary>Represents a "From" query operator. If this is the beginning of a query, the Source will be Nothing. Otherwise, the Source will be the part of the query to the left of the From.</summary></enum>
+        <enum name="LetClause"                                value="360"><summary>Represents a "Let" query operator.</summary></enum>
+        <enum name="AggregateClause"                          value="361"><summary>Represents an Aggregate query operator.</summary></enum>
+        <enum name="DistinctClause"                           value="362"><summary>Represents the "Distinct" query operator.</summary></enum>
+        <enum name="WhereClause"                              value="363"><summary>Represents a "Where" query operator.</summary></enum>
+        <enum name="SkipWhileClause"                          value="364"><summary>Represents a "Skip While" or "Take While" query operator. The Kind property tells which.</summary></enum>      
+        <enum name="TakeWhileClause"                          value="365"><summary>Represents a "Skip While" or "Take While" query operator. The Kind property tells which.</summary></enum>
+        <enum name="SkipClause"                               value="366"><summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary></enum>
+        <enum name="TakeClause"                               value="367"><summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary></enum>
+        <enum name="GroupByClause"                            value="368"><summary>Represents the "Group By" query operator.</summary></enum>
+        <enum name="JoinCondition"                            value="369"><summary>Represents the "expression Equals expression" condition in a Join.</summary></enum>
+        <enum name="SimpleJoinClause"                         value="370"><summary>Represents a Join query operator.</summary></enum>
+        <enum name="GroupJoinClause"                          value="371"><summary>Represents the "Group Join" query operator.</summary></enum>
+        <enum name="OrderByClause"                            value="372"><summary>Represents the "Order By" query operator.</summary></enum>
+        <!-- <enum name="" value= "373"></enum> -->
+        <!-- <enum name="" value= "374"></enum> -->
+        <enum name="AscendingOrdering"                        value="375"><summary>An expression to order by, plus an optional ordering. The Kind indicates whether to order in ascending or descending order.</summary></enum>
+        <enum name="DescendingOrdering"                       value="376"><summary>An expression to order by, plus an optional ordering. The Kind indicates whether to order in ascending or descending order.</summary></enum>
+        <enum name="SelectClause"                             value="377"><summary>Represents the "Select" query operator.</summary></enum>
+        <enum name="XmlDocument"                              value="378"><summary>Represents an XML Document literal expression.</summary></enum>
+        <enum name="XmlDeclaration"                           value="379"><summary>Represents the XML declaration prologue in an XML literal expression.</summary></enum>
+        <enum name="XmlDeclarationOption"                     value="380"><summary>Represents an XML document prologue option - version, encoding, standalone or whitespace in an XML literal expression.</summary></enum>
+        <enum name="XmlElement"                               value="381"><summary>Represents an XML element with content in an XML literal expression.</summary></enum>        
+        <enum name="XmlText"                                  value="382"><summary>Represents Xml text.</summary></enum>
+        <enum name="XmlElementStartTag"                       value="383"><summary>Represents the start tag of an XML element of the form &lt;element&gt;.</summary></enum>       
+        <enum name="XmlElementEndTag"                         value="384"><summary>Represents the end tag of an XML element of the form &lt;/element&gt;.</summary></enum>
+        <enum name="XmlEmptyElement"                          value="385"><summary>Represents an empty XML element of the form &lt;element /&gt;.</summary></enum>
+        <enum name="XmlAttribute"                             value="386"><summary>Represents an XML attribute in an XML literal expression.</summary></enum>
+        <enum name="XmlString"                                value="387"><summary>Represents a string of XML characters embedded as the content of an XML element.</summary></enum>
+        <enum name="XmlPrefixName"                            value="388"><summary>Represents an XML name of the form 'name' appearing in GetXmlNamespace().</summary></enum>
+        <enum name="XmlName"                                  value="389"><summary>Represents an XML name of the form 'name' or 'namespace:name' appearing in source as part of an XML literal or member access expression or an XML namespace import clause.</summary></enum>
+        <enum name="XmlBracketedName"                         value="390"><summary>Represents an XML name of the form &lt;xml-name&gt; appearing in source as part of an XML literal or member access expression or an XML namespace import clause.</summary></enum>
+        <enum name="XmlPrefix"                                value="391"><summary>Represents an XML namespace prefix of the form 'prefix:' as in xml:ns="".</summary></enum>
+        <enum name="XmlComment"                               value="392"><summary>Represents an XML comment of the form &lt;!-- Comment --&gt; appearing in an XML literal expression.</summary></enum>
+        <enum name="XmlProcessingInstruction"                 value="393"><summary>Represents an XML processing instruction of the form '&lt;? XMLProcessingTarget XMLProcessingValue ?&gt;'.</summary></enum>
+        <enum name="XmlCDataSection"                          value="394"><summary>Represents an XML CDATA section in an XML literal expression.</summary></enum>
+        <enum name="XmlEmbeddedExpression"                    value="395"><summary>Represents an embedded expression in an XML literal e.g. '&lt;name&gt;&lt;%=obj.Name =%&gt;&lt;/name&gt;'.</summary></enum>
+        <enum name="ArrayType"                                value="396"><summary>Represents an array type, such as "A() or "A(,)", without bounds specified for the array.</summary></enum>
+        <enum name="NullableType"                             value="397"><summary>A type name that represents a nullable type, such as "Integer?".</summary></enum>
+        <enum name="PredefinedType"                           value="398"><summary>Represents an occurrence of a Visual Basic built-in type such as Integer or String in source code. </summary></enum>
+        <enum name="IdentifierName"                           value="399"><summary>Represents a type name consisting of a single identifier (which might include brackets or a type character). </summary></enum>
+        <enum name="GenericName"                              value="400"><summary>Represents a simple type name with one or more generic arguments, such as "X(Of Y, Z). </summary></enum>
+        <enum name="QualifiedName"                            value="401"><summary>Represents a qualified type name, for example X.Y or X(Of Z).Y. </summary></enum>
+        <enum name="GlobalName"                               value="402"><summary>Represents a name in the global namespace.</summary></enum>
+        <enum name="TypeArgumentList"                         value="403"><summary>Represents a parenthesized list of generic type arguments.</summary></enum>       
+        <enum name="CrefReference"                            value="404"><summary>Syntax node class that represents a value of 'cref' attribute inside documentation comment trivia.</summary></enum>
+        <!-- <enum name="" value="405"></enum> -->
+        <!-- <enum name="" value="465"></enum> -->
+        <enum name="CrefSignature"                            value="407"></enum>                   
+        <enum name="CrefSignaturePart"                        value="408"></enum>               
+        <enum name="CrefOperatorReference"                    value="409"></enum>           
+        <enum name="QualifiedCrefOperatorReference"           value="410"></enum>      
+        <enum name="YieldStatement"                           value="411"><summary>Represent a Yield statement. </summary></enum>
+        <enum name="AwaitExpression"                          value="412"><summary>Represent a Await expression. </summary></enum>
+         <!-- KeywordSyntax : SyntaxToken -->
+        <enum name="AddHandlerKeyword"                        value="413"><summary>Represent the keyword ''.  </summary></enum>       
+        <enum name="AddressOfKeyword"                         value="414"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="AliasKeyword"                             value="415"><summary>Represent the keyword ''.  </summary></enum>                                 
+        <enum name="AndKeyword"                               value="416"><summary>Represent the keyword ''.  </summary></enum>        
+        <enum name="AndAlsoKeyword"                           value="417"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="AsKeyword"                                value="418"><summary>Represent the keyword ''.  </summary></enum>                          
+        <!-- <enum name-"" value="419"/> -->
+        <!-- <enum name-"" value="420"/> -->
+        <enum name="BooleanKeyword"                           value="421"><summary>Represent the keyword ''.  </summary></enum>      
+        <enum name="ByRefKeyword"                             value="422"><summary>Represent the keyword ''.  </summary></enum>      
+        <enum name="ByteKeyword"                              value="423"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="ByValKeyword"                             value="424"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CallKeyword"                              value="425"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CaseKeyword"                              value="426"><summary>Represent the keyword ''.  </summary></enum>        
+        <enum name="CatchKeyword"                             value="427"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CBoolKeyword"                             value="428"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CByteKeyword"                             value="429"><summary>Represent the keyword ''.  </summary></enum>
+        <!--<enum name-"" value="430"/> -->
+        <!--<enum name-"" value="431"/> -->   
+        <enum name="CCharKeyword"                             value="432"><summary>Represent the keyword ''.  </summary></enum>       
+        <enum name="CDateKeyword"                             value="433"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CDecKeyword"                              value="434"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CDblKeyword"                              value="435"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CharKeyword"                              value="436"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CIntKeyword"                              value="437"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="ClassKeyword"                             value="438"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CLngKeyword"                              value="439"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CObjKeyword"                              value="440"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="ConstKeyword"                             value="441"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="ReferenceKeyword"                         value="442"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="ContinueKeyword"                          value="443"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CSByteKeyword"                            value="444"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CShortKeyword"                            value="445"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CSngKeyword"                              value="446"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CStrKeyword"                              value="447"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CTypeKeyword"                             value="448"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CUIntKeyword"                             value="449"><summary>Represent the keyword ''.  </summary></enum>
+        <enum name="CULngKeyword"                             value="450"><summary>Represent the keyword ''.  </summary></enum>
+        <!-- <enum name-"" value="451" /> -->
+        <!-- <enum name-"" value="452" /> -->
+        <enum name="CUShortKeyword"                           value="453"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="DateKeyword"                              value="454"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="DecimalKeyword"                           value="455"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="DeclareKeyword"                           value="456"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="DefaultKeyword"                           value="457"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="DelegateKeyword"                          value="458"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="DimKeyword"                               value="459"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="DirectCastKeyword"                        value="460"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="DoKeyword"                                value="461"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="DoubleKeyword"                            value="462"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="EachKeyword"                              value="463"><summary>Represents the keyword '' .</summary></enum>       
+        <enum name="ElseKeyword"                              value="464"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ElseIfKeyword"                            value="465"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="EndKeyword"                               value="466"><summary>Represents the keyword '' .</summary></enum>        
+        <enum name="EnumKeyword"                              value="467"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="EraseKeyword"                             value="468"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ErrorKeyword"                             value="469"><summary>Represents the keyword '' .</summary></enum>       
+        <enum name="EventKeyword"                             value="470"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ExitKeyword"                              value="471"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="FalseKeyword"                             value="474"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="FinallyKeyword"                           value="475"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ForKeyword"                               value="476"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="FriendKeyword"                            value="477"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="FunctionKeyword"                          value="478"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="GetKeyword"                               value="479"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="GetTypeKeyword"                           value="480"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="GetXmlNamespaceKeyword"                   value="481"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="GlobalKeyword"                            value="482"><summary>Represents the keyword '' .</summary></enum>    
+        <enum name="GoToKeyword"                              value="483"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="HandlesKeyword"                           value="484"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="IfKeyword"                                value="485"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ImplementsKeyword"                        value="486"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ImportsKeyword"                           value="487"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="InKeyword"                                value="488"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="InheritsKeyword"                          value="489"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="IntegerKeyword"                           value="490"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="InterfaceKeyword"                         value="491"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="IsKeyword"                                value="492"><summary>Represents the keyword '' .</summary></enum>
+        <!-- <enum name-"" value="493" /> -->
+        <!-- <enum name-"" value="494" /> -->
+        <enum name="IsNotKeyword"                             value="495"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="LetKeyword"                               value="496"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="LibKeyword"                               value="497"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="LikeKeyword"                              value="498"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="LongKeyword"                              value="499"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="LoopKeyword"                              value="500"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="MeKeyword"                                value="501"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ModKeyword"                               value="502"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ModuleKeyword"                            value="503"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="MustInheritKeyword"                       value="504"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="MustOverrideKeyword"                      value="505"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="MyBaseKeyword"                            value="506"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="MyClassKeyword"                           value="507"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="NamespaceKeyword"                         value="508"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="NarrowingKeyword"                         value="509"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="NextKeyword"                              value="510"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="NewKeyword"                               value="511"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="NotKeyword"                               value="512"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="NothingKeyword"                           value="513"><summary>Represents the keyword '' .</summary></enum>
+        <!-- <enum name="" value= "514"></enum> -->
+        <!-- <enum name="" value= "515"></enum> -->
+        <enum name="NotInheritableKeyword"                    value="516"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="NotOverridableKeyword"                    value="517"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ObjectKeyword"                            value="518"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="OfKeyword"                                value="519"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="OnKeyword"                                value="520"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="OperatorKeyword"                          value="521"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="OptionKeyword"                            value="522"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="OptionalKeyword"                          value="523"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="OrKeyword"                                value="524"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="OrElseKeyword"                            value="525"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="OverloadsKeyword"                         value="526"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="OverridableKeyword"                       value="527"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="OverridesKeyword"                         value="528"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ParamArrayKeyword"                        value="529"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="PartialKeyword"                           value="530"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="PrivateKeyword"                           value="531"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="PropertyKeyword"                          value="532"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ProtectedKeyword"                         value="533"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="PublicKeyword"                            value="534"><summary>Represents the keyword '' .</summary></enum>
+        <!-- <enum name="" value= "535"></enum> -->
+        <!-- <enum name="" value= "536"></enum> -->
+        <enum name="RaiseEventKeyword"                        value="537"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ReadOnlyKeyword"                          value="538"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ReDimKeyword"                             value="539"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="REMKeyword"                               value="540"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="RemoveHandlerKeyword"                     value="541"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ResumeKeyword"                            value="542"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ReturnKeyword"                            value="543"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="SByteKeyword"                             value="544"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="SelectKeyword"                            value="545"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="SetKeyword"                               value="546"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ShadowsKeyword"                           value="547"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="SharedKeyword"                            value="548"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ShortKeyword"                             value="549"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="SingleKeyword"                            value="550"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="StaticKeyword"                            value="551"><summary>Represents the keyword '' .</summary></enum>                
+        <enum name="StepKeyword"                              value="552"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="StopKeyword"                              value="553"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="StringKeyword"                            value="554"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="StructureKeyword"                         value="555"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="SubKeyword"                               value="558"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="SyncLockKeyword"                          value="559"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ThenKeyword"                              value="560"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ThrowKeyword"                             value="561"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ToKeyword"                                value="562"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="TrueKeyword"                              value="563"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="TryKeyword"                               value="564"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="TryCastKeyword"                           value="565"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="TypeOfKeyword"                            value="566"><summary>Represents the keyword '' .</summary></enum>        
+        <enum name="UIntegerKeyword"                          value="567"><summary>Represents the keyword '' .</summary></enum>        
+        <enum name="ULongKeyword"                             value="568"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="UShortKeyword"                            value="569"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="UsingKeyword"                             value="570"><summary>Represents the keyword '' .</summary></enum>        
+        <enum name="WhenKeyword"                              value="571"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="WhileKeyword"                             value="572"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="WideningKeyword"                          value="573"><summary>Represents the keyword '' .</summary></enum>       
+        <enum name="WithKeyword"                              value="574"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="WithEventsKeyword"                        value="575"><summary>Represents the keyword '' .</summary></enum>
+        <!-- <enum name-"" value="576"/> -->
+        <!-- <enum name-"" value="577"/> -->    
+        <enum name="WriteOnlyKeyword"                         value="578"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="XorKeyword"                               value="579"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="EndIfKeyword"                             value="580"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="GosubKeyword"                             value="581"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="VariantKeyword"                           value="582"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="WendKeyword"                              value="583"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="AggregateKeyword"                         value="584"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="AllKeyword"                               value="585"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="AnsiKeyword"                              value="586"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="AscendingKeyword"                         value="587"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="AssemblyKeyword"                          value="588"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="AutoKeyword"                              value="589"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="BinaryKeyword"                            value="590"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ByKeyword"                                value="591"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="CompareKeyword"                           value="592"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="CustomKeyword"                            value="593"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="DescendingKeyword"                        value="594"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="DisableKeyword"                           value="595"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="DistinctKeyword"                          value="596"><summary>Represents the keyword '' .</summary></enum>
+        <!--<enum name-"" value="597"/> -->
+        <!--<enum name-"" value="598"/> -->        
+        <enum name="EnableKeyword"                            value="599"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="EqualsKeyword"                            value="600"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ExplicitKeyword"                          value="601"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ExternalSourceKeyword"                    value="602"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="ExternalChecksumKeyword"                  value="603"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="FromKeyword"                              value="604"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="GroupKeyword"                             value="605"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="InferKeyword"                             value="606"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="IntoKeyword"                              value="607"><summary>Represents the keyword '' .</summary></enum>     
+        <enum name="IsFalseKeyword"                           value="608"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="IsTrueKeyword"                            value="609"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="JoinKeyword"                              value="610"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="KeyKeyword"                               value="611"><summary>Represents the keyword '' .</summary></enum>     
+        <enum name="MidKeyword"                               value="612"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="OffKeyword"                               value="613"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="OrderKeyword"                             value="614"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="OutKeyword"                               value="615"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="PreserveKeyword"                          value="616"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="RegionKeyword"                            value="617"><summary>Represents the keyword '' .</summary></enum>
+        <!-- <enum name-"618" value=""/> -->
+        <!-- <enum name-"619" value=""/> -->
+        <enum name="SkipKeyword"                              value="620"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="StrictKeyword"                            value="621"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="TakeKeyword"                              value="622"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="TextKeyword"                              value="623"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="UnicodeKeyword"                           value="624"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="UntilKeyword"                             value="625"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="WarningKeyword"                           value="626"><summary>Represents the keyword '' .</summary></enum>      
+        <enum name="WhereKeyword"                             value="627"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="TypeKeyword"                              value="628"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="XmlKeyword"                               value="629"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="AsyncKeyword"                             value="630"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="AwaitKeyword"                             value="631"><summary>Represents the keyword '' .</summary></enum>
+        <enum name="IteratorKeyword"                          value="632"><summary>Represents the keyword '' .</summary></enum>             
+        <enum name="YieldKeyword"                             value="633"><summary>Represents the keyword '' .</summary></enum>
+        <!-- Punctuation Syntax -->
+        <!-- ... : PunctuationSynax : Syntax -->
+        <enum name="ExclamationToken"                         value="634"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="AtToken"                                  value="635"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="CommaToken"                               value="636"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="HashToken"                                value="637"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="AmpersandToken"                           value="638"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <!-- <enum name-"" value="639"/> -->
+        <!-- <enum name-"" value="640"/> -->
+        <enum name="SingleQuoteToken"                         value="641"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="OpenParenToken"                           value="642"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="CloseParenToken"                          value="643"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="OpenBraceToken"                           value="644"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="CloseBraceToken"                          value="645"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="SemicolonToken"                           value="646"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="AsteriskToken"                            value="647"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="PlusToken"                                value="648"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="MinusToken"                               value="649"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="DotToken"                                 value="650"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="SlashToken"                               value="651"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="ColonToken"                               value="652"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="LessThanToken"                            value="653"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="LessThanEqualsToken"                      value="654"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="LessThanGreaterThanToken"                 value="655"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="EqualsToken"                              value="656"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="GreaterThanToken"                         value="657"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="GreaterThanEqualsToken"                   value="658"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="BackslashToken"                           value="659"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <!-- <enum name-"" value="660"/> -->
+        <!-- <enum name-"" value="661"/> -->
+        <enum name="CaretToken"                               value="662"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="ColonEqualsToken"                         value="663"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="AmpersandEqualsToken"                     value="664"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="AsteriskEqualsToken"                      value="665"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="PlusEqualsToken"                          value="666"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="MinusEqualsToken"                         value="667"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="SlashEqualsToken"                         value="668"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="BackslashEqualsToken"                     value="669"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="CaretEqualsToken"                         value="670"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="LessThanLessThanToken"                    value="671"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="GreaterThanGreaterThanToken"              value="672"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="LessThanLessThanEqualsToken"              value="673"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="GreaterThanGreaterThanEqualsToken"        value="674"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="QuestionToken"                            value="675"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="DoubleQuoteToken"                         value="676"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="StatementTerminatorToken"                 value="677"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="EndOfFileToken"                           value="678"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="EmptyToken"                               value="679"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="SlashGreaterThanToken"                    value="680"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="LessThanSlashToken"                       value="683"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="LessThanExclamationMinusMinusToken"       value="684"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>       
+        <enum name="MinusMinusGreaterThanToken"               value="685"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="LessThanQuestionToken"                    value="686"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="QuestionGreaterThanToken"                 value="687"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="LessThanPercentEqualsToken"               value="688"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="PercentGreaterThanToken"                  value="689"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>       
+        <enum name="BeginCDataToken"                          value="690"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>       
+        <enum name="EndCDataToken"                            value="691"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <enum name="EndOfXmlToken"                            value="692"><summary>Represents a single punctuation mark or operator in a VB program. Which one can be determined from the Kind property. </summary></enum>
+        <!--  -->       
+        <enum name="BadToken"                                 value="693"><summary>Represents a sequence of characters appearing in source with no possible meaning in the Visual Basic language (e.g. the semicolon ';'). This token should only appear in SkippedTokenTrivia as an artifact of parsing error recovery. </summary></enum>
+        <!-- XML -->
+        <enum name="XmlNameToken"                             value="694"><summary>Represents an Xml NCName per Namespaces in XML 1.0 </summary></enum>
+        <enum name="XmlTextLiteralToken"                      value="695"><summary>Represents character data in Xml content also known as PCData or in an Xml attribute value. All text is here for now even text that does not need normalization such as comment, pi and cdata text. </summary></enum>
+        <enum name="XmlEntityLiteralToken"                    value="696"><summary>Represents character data in Xml content also known as PCData or in an Xml attribute value. All text is here for now even text that does not need normalization such as comment, pi and cdata text. </summary></enum>      
+        <enum name="DocumentationCommentLineBreakToken"       value="697"><summary>Represents character data in Xml content also known as PCData or in an Xml attribute value. All text is here for now even text that does not need normalization such as comment, pi and cdata text. </summary></enum>
+        <!-- <enum name-"" value="698"/> -->
+        <!-- <enum name-"" value="699"/> -->       
+        <enum name="IdentifierToken"                          value="700"><summary>Represents an identifier token. This might include brackets around the name and a type character.</summary></enum>
+        <!-- Literal Tokens -->
+        <enum name="IntegerLiteralToken"                      value="701"><summary>Represents an integer literal token.</summary></enum>
+        <enum name="FloatingLiteralToken"                     value="702"><summary>Represents a floating literal token.</summary></enum>
+        <enum name="DecimalLiteralToken"                      value="703"><summary>Represents a Decimal literal token.</summary></enum>
+        <enum name="DateLiteralToken"                         value="704"><summary>Represents a Date literal token.</summary></enum>
+        <enum name="StringLiteralToken"                       value="705"><summary>Represents a string literal token.</summary></enum>
+        <enum name="CharacterLiteralToken"                    value="706"><summary>Represents a string literal token. </summary></enum>
+        <enum name="SkippedTokensTrivia"                      value="709"><summary>Represents tokens that were skipped by the parser as part of error recovery, and thus are not part of any syntactic structure. </summary></enum>
+        <enum name="DocumentationCommentTrivia"               value="710"><summary>Represents a documentation comment e.g. ''' &lt;Summary&gt; appearing in source. </summary></enum>
+        <enum name="XmlCrefAttribute"                         value="711"><summary>A symbol referenced by a cref attribute (e.g. in a &lt;see&gt; or &lt;seealso&gt; documentation comment tag). For example, the M in &lt;seecref="M" /&gt;. </summary></enum>
+        <enum name="XmlNameAttribute"                         value="712"><summary>A param or type param symbol referenced by a name attribute (e.g. in a &lt;param&gt; or &lt;typeparam&gt; documentation comment tag). For example, the M in &lt;param name="M" /&gt;. </summary></enum>
+        <enum name="ConditionalAccessExpression"              value="713"><summary>ExpressionSyntax node representing the object conditionally accessed.</summary></enum>
+        <!-- <enum name-"" value="714"/> -->
+        <!-- <enum name-"" value="715"/> -->
+        <!-- <enum name-"" value="716"/> -->
+        <!-- <enum name-"" value="717"/> -->
+        <!-- <enum name-"" value="718"/> -->
+        <!-- <enum name-"" value="719"/> -->
+        <!-- <enum name-"" value="720"/> -->
+        <!-- <enum name-"" value="721"/> -->
+        <!-- <enum name-"" value="722"/> -->
+        <!-- <enum name-"" value="723"/> -->
+        <!-- <enum name-"" value="724"/> -->
+        <!-- <enum name-"" value="725"/> -->
+        <!-- <enum name-"" value="726"/> -->
+        <!-- <enum name-"" value="727"/> -->
+        <!-- <enum name-"" value="728"/> -->
+        <enum name="WhitespaceTrivia"                         value="729"><summary>Represents true whitespace: spaces, tabs, newlines and the like. </summary></enum>
+        <enum name="EndOfLineTrivia"                          value="730"><summary>Represents line breaks that are syntactically insignificant.</summary></enum>
+        <enum name="ColonTrivia"                              value="731"><summary>Represents colons that are syntactically insignificant.</summary></enum>
+        <enum name="CommentTrivia"                            value="732"><summary>Represents a comment.</summary></enum>
+        <enum name="LineContinuationTrivia"                   value="733"><summary>Represents an explicit line continuation character at the end of a line, i.e.  _ </summary></enum>
+        <enum name="DocumentationCommentExteriorTrivia"       value="734"><summary>Represents a ''' prefix for an XML Documentation Comment.</summary></enum>
+        <enum name="DisabledTextTrivia"                       value="735"><summary>Represents text in a false preprocessor block.</summary></enum>
+        <enum name="ConstDirectiveTrivia"                     value="736"><summary>Represents a #Const pre-processing constant declaration appearing in source.</summary></enum>
+        <enum name="IfDirectiveTrivia"                        value="737"><summary>Represents the beginning of an #If pre-processing directive appearing in source.</summary></enum>
+        <enum name="ElseIfDirectiveTrivia"                    value="738"><summary>Represents the beginning of an #If pre-processing directive appearing in source.</summary></enum>
+        <enum name="ElseDirectiveTrivia"                      value="739"><summary>Represents an #Else pre-processing directive appearing in source.</summary></enum>
+        <enum name="EndIfDirectiveTrivia"                     value="740"><summary>Represents an #End If pre-processing directive appearing in source.</summary></enum>
+        <enum name="RegionDirectiveTrivia"                    value="741"><summary>Represents the beginning of a #Region directive appearing in source.</summary></enum>
+        <!-- <enum name-"" value="742"/> -->
+        <!-- <enum name-"" value="743"/> -->
+        <enum name="EndRegionDirectiveTrivia"                 value="744"><summary>Represents an #End Region directive appearing in source.</summary></enum>
+        <enum name="ExternalSourceDirectiveTrivia"            value="745"><summary>Represents the beginning of a #ExternalSource pre-processing directive appearing in source.</summary></enum>
+        <enum name="EndExternalSourceDirectiveTrivia"         value="746"><summary>Represents an #End ExternalSource pre-processing directive appearing in source.</summary></enum>
+        <enum name="ExternalChecksumDirectiveTrivia"          value="747"><summary>Represents an #ExternalChecksum pre-processing directive appearing in source.</summary></enum>
+        <enum name="EnableWarningDirectiveTrivia"             value="748"><summary>Represents #Enable Warning pre-processing directive appearing in source.</summary></enum>
+        <enum name="DisableWarningDirectiveTrivia"            value="749"><summary>Represents #Disable Warning pre-processing directive appearing in source.</summary></enum>
+        <enum name="ReferenceDirectiveTrivia"                 value="750"><summary>Represents an #r directive appearing in scripts.</summary></enum>
+        <!--<enum name-"" value="751"/> -->
+        <!--<enum name-"" value="752"/> -->
+        <enum name="BadDirectiveTrivia"                       value="753"><summary>Represents an unrecognized pre-processing directive. This occurs when the parser encounters a hash '#' token at the beginning of a physical line but does recognize the text that follows as a valid Visual Basic pre-processing directive.</summary></enum>
+        <enum name="ImportAliasClause"                        value="754"><summary>Represents an alias identifier followed by an "=" token in an Imports clause.</summary></enum>
+        <enum name="NameColonEquals"                          value="755"><summary>Represents an identifier name followed by a ":=" token in a named argument.</summary></enum>
+        <enum name="SimpleDoLoopBlock"                        value="756"><summary>Represents a "Do ... Loop" block.</summary></enum>
+        <enum name="DoWhileLoopBlock"                         value="757"><summary>Represents a "Do ... Loop" block.</summary></enum>
+        <enum name="DoUntilLoopBlock"                         value="758"><summary>Represents a "Do ... Loop" block.</summary></enum>
+        <enum name="DoLoopWhileBlock"                         value="759"><summary>Represents a "Do ... Loop" block.</summary></enum>
+        <enum name="DoLoopUntilBlock"                         value="760"><summary>Represents a "Do ... Loop" block.</summary></enum>
+        <!--<enum name-"" value="761"/> -->
+        <!--<enum name-"" value="762"/> -->
+        <!--<enum name-"" value="763"/> -->
+        <!--<enum name-"" value="764"/> -->
+        <!--<enum name-"" value="765"/> -->
+        <!--<enum name-"" value="766"/> -->
+        <!--<enum name-"" value="767"/> -->
+        <!--<enum name-"" value="768"/> -->
+        <!--<enum name-"" value="769"/> -->
+        <enum name="SimpleDoStatement"                        value = "770"><summary>Represents a simple "Do" statement that begins a "Do ... Loop" block. </summary></enum>
+        <enum name="DoWhileStatement"                         value = "771"><summary>Represents a "Do While" statement that begins a "Do ... Loop" block.</summary></enum>
+        <enum name="DoUntilStatement"                         value = "772"><summary>Represents a "Do Until" statement that begins a "Do ... Loop" block.</summary></enum>
+        <enum name="SimpleLoopStatement"                      value = "773"><summary>Represents a simple "Loop" statement that end a "Do ... Loop" block.</summary></enum>
+        <enum name="LoopWhileStatement"                       value = "774"><summary>Represents a "Loop While" statement that end a "Do ... Loop" block.</summary></enum>
+        <enum name="LoopUntilStatement"                       value = "775"><summary>Represents a "Loop Until" statement that end a "Do ... Loop" block.</summary></enum>
+        <enum name="WhileClause"                              value = "776"><summary>Represents a "While ..." clause of a "Do" or "Loop" statement.</summary></enum>
+        <enum name="UntilClause"                              value = "777"><summary>Represents an "Until ..." clause of a "Do" or "Loop" statement. </summary></enum>        
+        <!-- FEATURE: NameOf Expression  -->
+        <enum name = "NameOfKeyword"                          value = "778"><summary>Represents a single keyword in a VB program. Which keyword can be determined from the Kind property.</summary></enum>
+        <enum name = "NameOfExpression"                       value = "779"><summary>Represents a NameOf expression.</summary></enum>
+        <!-- Interpolated string expression -->
+        <enum name = "InterpolatedStringExpression"           value = "780"><summary>Represents an interpolated string expression.</summary></enum> <!-- InterpolatedStringExpressionSyntax : ExpressionSyntax -->
+        <enum name = "InterpolatedStringText"                 value = "781"><summary>Represents literal text content in an interpolated string.</summary></enum><!-- InterpolatedStringTextSyntax : InterpolatedStringContentSyntax -->
+        <enum name = "Interpolation"                          value = "782"><summary>Represents an embedded expression in an interpolated string expression e.g. '{expression[,alignment][:formatString]}'.</summary></enum> <!-- InterpolationSyntax : InterpolatedStringContentSyntax -->      
+        <enum name = "InterpolationAlignmentClause"           value = "783"><summary>Represents an alignment clause ', alignment' of an interpolated string embedded expression.</summary></enum>        <!-- InterpolationAlignmentClauseSyntax : VisualBasicSyntaxNode -->
+        <enum name = "InterpolationFormatClause"              value = "784"><summary>Represents a format string clause ':formatString' of an interpolated string embedded expression.</summary></enum>    <!-- InterpolationFormatClauseSyntax : VisualBasicSyntaxNode -->
+        <enum name = "DollarSignDoubleQuoteToken"             value = "785"><summary>Represents a '$"' token in an interpolated string expression.</summary></enum> <!-- DollarSignDoubleQuoteTokenSyntax : PunctuationSyntax -->
+        <enum name = "InterpolatedStringTextToken"            value = "786"><summary>Represents literal character data in interpolated string expression.</summary></enum><!-- InterpolatedStringTextTokenSyntax : SyntaxToken -->
+        <enum name = "EndOfInterpolatedStringToken"           value = "787"><summary>Represents the end of interpolated string when parsing.</summary></enum> <!-- PunctuationSyntax : SyntaxToken -->
+        <!-- Tuples -->
+        <enum name = "TupleExpression"                        value = "788"><summary>Represents tuple literal expression.</summary></enum>
+        <enum name = "TupleType"                              value = "789"><summary>Represents tuple type.</summary></enum>
+        <enum name = "TypedTupleElement"                      value = "790"><summary>Represents an element of a tuple type supplying only the type.</summary></enum>
+        <enum name = "NamedTupleElement"                      value = "791"><summary>Represents an element of a tuple type supplying element name and optionally a type. </summary></enum>
+        <!-- Conflict Marker -->
+        <enum name = "ConflictMarkerTrivia"                   value = "792"><summary>Trivia created when merge conflict markers (like "&lt;&lt;&lt;&lt;&lt;&lt;&lt;") are detected in source code</summary></enum>
+        <!-- FEATURE:= Language Grammar  --> 
+        <enum name = "Language_Block"                         value = "793"/>         
+        <enum name = "Language_Keyword"                       value = "794"/>     
+        <enum name = "Language_Statement"                     value = "795"/>      
+        <enum name = "EndLanguage_Statement"                  value = "796"/>   
+        <enum name = "Grammar_Block"                          value = "797"/>           
+        <enum name = "Grammar_Keyword"                        value = "798"/>         
+        <enum name = "Grammar_Statement"                      value = "799"/>       
+        <enum name = "EndGrammar_Statement"                   value = "800"/>    
+        <enum name = "Syntax_Block"                           value = "801"/>            
+        <enum name = "Syntax_Keyword"                         value = "802"/>          
+        <enum name = "Syntax_Statement"                       value = "803"/>        
+        <enum name = "EndSyntax_Statement"                    value = "804"/>     
+        <enum name = "Keywords_Block"                         value = "805"/>         
+        <enum name = "Keywords_Keyword"                       value = "806"/>        
+        <enum name = "Keywords_Statement"                     value = "807"/>
+        <enum name = "EndKeywords_Statement"                  value = "808"/>   
+        <enum name = "Kinds_Block"                            value = "809"/>
+        <enum name = "Kinds_Keyword"                          value = "810"/>
+        <enum name = "Kinds_Statement"                        value = "811"/>
+        <enum name = "EndKinds_Statement"                     value = "812"/>
+      </enums>
+    </enumeration>
 
     <!--
     <node-structure name="SyntaxNode" abstract="true" partial="true" predefined="true">
@@ -247,6 +1062,12 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name="Statement.Opcodes.EndSyncLock" />
       </node-kind>
 
+      <node-kind name="EndLanguage_Statement" />
+      <node-kind name="EndGrammar_Statement"  />
+      <node-kind name="EndSyntax_Statement"   />
+      <node-kind name="EndKeywords_Statement" />
+      <node-kind name="EndKinds_Statement"    />
+
       <child name="EndKeyword" kind="EndKeyword">
         <description>The "End" keyword</description>
         <lm-equiv name="EndKeyword"></lm-equiv>
@@ -283,6 +1104,12 @@ Unify Enum declarations with other block type declarations.
         <kind name="WhileKeyword" node-kind="EndWhileStatement"/>
         <kind name="TryKeyword" node-kind="EndTryStatement"/>
         <kind name="SyncLockKeyword" node-kind="EndSyncLockStatement"/>
+        
+        <kind name="Language_Keyword" node-kind="EndLanguage_Statement"  />
+        <kind name="Grammar_Keyword"  node-kind="EndGrammar_Statement"   />
+        <kind name="Syntax_Keyword"   node-kind="EndSyntax_Statement"   />
+        <kind name="Kinds_Keyword"    node-kind="EndKinds_Statement"    />
+        <kind name="Keywords_Keyword" node-kind="EndKeywords_Statement" />
       </child>
     </node-structure>
 
@@ -519,6 +1346,97 @@ Unify Enum declarations with other block type declarations.
     </node-structure>
 
 
+    <!-- Langauge Grammar -->
+
+
+    <node-structure name="Grammar_BlockSyntax" parent="DeclarationStatementSyntax">
+      <node-kind name="Grammar_Block" />
+      <child name="Grammar_Statement"     kind="Grammar_Statement"     order="10"> <description>The "Grammar" statement that begins a grammar block.</description> </child>
+      <child name="End_Grammar_Statement" kind="EndGrammar_Statement" order="50"> <description>The "End Grammar" statement that ends a grammar block.</description> </child>
+    </node-structure>
+    <node-structure name="Syntax_BlockSyntax" parent="DeclarationStatementSyntax">
+      <node-kind name="Syntax_Block" />
+      <child name="Syntax_Statement"     kind="Syntax_Statement"     order="10"> <description>The "Syntax" statement that begins a syntax block.</description> </child>
+      <child name="End_Syntax_Statement" kind="EndSyntax_Statement" order="50"> <description>The "End Syntax" statement that ends a syntax block.</description> </child>
+    </node-structure>
+    <node-structure name="Kinds_BlockSyntax" parent="DeclarationStatementSyntax">
+      <node-kind name="Kinds_Block" />
+      <child name="Kinds_Statement"     kind="Kinds_Statement"     order="10"> <description>The "Kinds" statement that begins a kinds block.</description> </child>
+      <child name="End_Kinds_Statement" kind="EndKinds_Statement" order="50"> <description>The "End Kinds." statement that ends a kinds block.</description> </child>
+    </node-structure>
+    <node-structure name="Keywords_BlockSyntax" parent="DeclarationStatementSyntax">
+      <node-kind name="Keywords_Block" />
+      <child name="Keywords_Statement"     kind="Keywords_Statement"     order="10"> <description>The "Keywords" statement that begins a keywords block.</description> </child>
+      <child name="End_Keywords_Statement" kind="EndKeywords_Statement" order="50"> <description>The "End Keywords" statement that ends a keywords block.</description> </child>
+    </node-structure>
+    <node-structure name="Language_BlockSyntax" parent="DeclarationStatementSyntax">
+      <node-kind name="Language_Block" />
+      <child name="Language_Statement"     kind="Language_Statement"     order="10"> <description>The "Language" statement that begins a language block.</description> </child>
+      <child name="End_Language_Statement" kind="EndLanguage_Statement" order="50"> <description>The "End Language." statement that ends a language block.</description> </child>
+    </node-structure>
+    
+    <node-structure name="Language_StatementSyntax" parent="DeclarationStatementSyntax">
+      <description>
+        Represents the beginning statement of a language declaration. This node
+        always appears as the Begin of a BlockStatement with Kind=Language_Block.
+      </description>
+
+      <node-kind name="Language_Statement" />
+
+      <child name="Language_Keyword" kind="Language_Keyword"> <description>The "Language" keyword.</description> </child>
+      <child name="Name"             kind="@NameSyntax">      <description>A (possibly dotted) name denoting the language being declared.</description> </child>
+    </node-structure>
+
+    <node-structure name="Grammar_StatementSyntax" parent="DeclarationStatementSyntax">
+      <description>
+        Represents the beginning statement of a grammar declaration. This node
+        always appears as the Begin of a BlockStatement with Kind=Grammar_Block.
+      </description>
+
+      <node-kind name="Grammar_Statement" />
+
+      <child name="Grammar_Keyword" kind="Grammar_Keyword"> <description>The "Language" keyword.</description> </child>
+      <child name="Name"            kind="@NameSyntax">      <description>A (possibly dotted) name denoting the ... being declared.</description> </child>
+    </node-structure>
+
+    <node-structure name="Syntax_StatementSyntax" parent="DeclarationStatementSyntax">
+      <description>
+        Represents the beginning statement of a namespace declaration. This node
+        always appears as the Begin of a BlockStatement with Kind=NamespaceBlock.
+      </description>
+
+      <node-kind name="Syntax_Statement" />
+
+      <child name="Syntax_Keyword" kind="Syntax_Keyword">  <description>The "Syntax" keyword.</description> </child>
+      <child name="Name"           kind="@NameSyntax">     <description>A (possibly dotted) name denoting the ... being declared.</description> </child>
+    </node-structure>
+    
+    <node-structure name="Kinds_StatementSyntax" parent="DeclarationStatementSyntax">
+      <description>
+        Represents the beginning statement of a kinds declaration. This node
+        always appears as the Begin of a BlockStatement with Kind=Kinds_Block.
+      </description>
+
+      <node-kind name="Kinds_Statement" />
+
+      <child name="Kinds_Keyword" kind="Kinds_Keyword">  <description>The "Kinds" keyword.</description>      </child>
+      <child name="Name"          kind="@NameSyntax">    <description>A (possibly dotted) name denoting the ... being declared.</description> </child>
+    </node-structure>
+    
+    <node-structure name="Keywords_StatementSyntax" parent="DeclarationStatementSyntax">
+      <description>
+        Represents the beginning statement of a namespace declaration. This node
+        always appears as the Begin of a BlockStatement with Kind=NamespaceBlock.
+      </description>
+
+      <node-kind name="Keywords_Statement" />
+
+      <child name="Keywords_Keyword" kind="Language_Keyword">  <description>The "Keywords" keyword.</description>      </child>
+      <child name="Name"             kind="@NameSyntax">       <description>A (possibly dotted) name denoting the ... being declared.</description>
+      </child>
+    </node-structure>
+    
+    
     <!-- ************************************************************************************************** -->
     <!-- **  NAMESPACE AND TYPE DECLARATIONS                                                             ** -->
     <!-- ************************************************************************************************** -->
@@ -8399,6 +9317,15 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="WendKeyword" />
         <native-equiv name="" />
       </node-kind>
+      
+      
+      <!-- Language Grammar Keywords -->
+      <node-kind name="Language_Keyword" token-text="Language" />
+      <node-kind name="Grammar_Keyword"  token-text="Grammar"  />
+      <node-kind name="Syntax_Keyword"   token-text="Syntax"   />
+      <node-kind name="Kinds_Keyword"    token-text="Kinds"    />
+      <node-kind name="Keywords_Keyword" token-text="Keywords" />
+
 
       <!-- Contextual Keywords -->
       <node-kind name="AggregateKeyword" token-text="Aggregate">
@@ -8931,64 +9858,33 @@ Unify Enum declarations with other block type declarations.
       -  TypeSuffix
       **********************-->
     <enumeration name="TypeCharacter">
-      <description>
+      <summary>
         Represents one of the type characters or literal suffixes of VB. Used to describe
         a) the type character suffixes that can be placed on identifiers, and
         b) the suffixes that can be placed on integer literals.
-      </description>
+      </summary>
       <lm-equiv name="TypeCharacter"></lm-equiv>
       <native-equiv name="typeChars"></native-equiv>
       <native-equiv name="Type.Opcodes"></native-equiv>
 
-      <enumerators>
-        <enumerator name="None" />
-        <enumerator name="Integer">
-          <description>The "%" type character."</description>
-        </enumerator>
-        <enumerator name="Long">
-          <description>The "&amp;" type character."</description>
-        </enumerator>
-        <enumerator name="Decimal">
-          <description>The "@" type character."</description>
-        </enumerator>
-        <enumerator name="Single">
-          <description>The "!" type character."</description>
-        </enumerator>
-        <enumerator name="Double">
-          <description>The "#" type character."</description>
-        </enumerator>
-        <enumerator name="String">
-          <description>The "$" type character."</description>
-        </enumerator>
-
-        <enumerator name="ShortLiteral">
-          <description>The "S" literal suffix denoting "Short"</description>
-        </enumerator>
-        <enumerator name="UShortLiteral">
-          <description>The "US" literal suffix denoting "UShort"</description>
-        </enumerator>
-        <enumerator name="IntegerLiteral">
-          <description>The "I" literal suffix denoting "Integer"</description>
-        </enumerator>
-        <enumerator name="UIntegerLiteral">
-          <description>The "UI" literal suffix denoting "UInteger"</description>
-        </enumerator>
-        <enumerator name="LongLiteral">
-          <description>The "L" literal suffix denoting "Long"</description>
-        </enumerator>
-        <enumerator name="ULongLiteral">
-          <description>The "UL" literal suffix denoting "ULong"</description>
-        </enumerator>
-        <enumerator name="SingleLiteral">
-          <description>The "F" literal suffix denoting "Single"</description>
-        </enumerator>
-        <enumerator name="DoubleLiteral">
-          <description>The "R" literal suffix denoting "Double"</description>
-        </enumerator>
-        <enumerator name="DecimalLiteral">
-          <description>The "D" literal suffix denoting "Decimal"</description>
-        </enumerator>
-      </enumerators>
+      <enums>
+        <enum name="None"             value="0" />
+        <enum name="Integer"          value="1"><description>The "%" type character."</description></enum>
+        <enum name="Long"             value="2"><description>The "&amp;" type character."</description></enum>
+        <enum name="Decimal"          value="3"><description>The "@" type character."</description></enum>
+        <enum name="Single"           value="4"><description>The "!" type character."</description></enum>
+        <enum name="Double"           value="5"><description>The "#" type character."</description></enum>
+        <enum name="String"           value="6"><description>The "$" type character."</description></enum>
+        <enum name="ShortLiteral"     value="7"><description>The "S" literal suffix denoting "Short"</description></enum>
+        <enum name="UShortLiteral"    value="8"><description>The "US" literal suffix denoting "UShort"</description></enum>
+        <enum name="IntegerLiteral"   value="9"><description>The "I" literal suffix denoting "Integer"</description></enum>
+        <enum name="UIntegerLiteral"  value="10"><description>The "UI" literal suffix denoting "UInteger"</description></enum>
+        <enum name="LongLiteral"      value="11"><description>The "L" literal suffix denoting "Long"</description></enum>
+        <enum name="ULongLiteral"     value="12"><description>The "UL" literal suffix denoting "ULong"</description></enum>
+        <enum name="SingleLiteral"    value="13"><description>The "F" literal suffix denoting "Single"</description></enum>
+        <enum name="DoubleLiteral"    value="14"><description>The "R" literal suffix denoting "Double"</description></enum>
+        <enum name="DecimalLiteral"   value="15"><description>The "D" literal suffix denoting "Decimal"</description></enum>
+      </enums>
     </enumeration>
 
     <!--********************
@@ -9129,18 +10025,16 @@ Unify Enum declarations with other block type declarations.
       </field>
     </node-structure>
 
-    <enumeration name="LiteralBase">
-      <description>
-        The four possible number bases that a literal can be written in.
-      </description>
+    <enumeration name="LiteralBase" type="Integer">
+      <summary>The four possible number bases that a literal can be written in.</summary>
       <native-equiv name="LiteralBase"></native-equiv>
 
-      <enumerators>
-        <enumerator name="Decimal" />
-        <enumerator name="Hexadecimal" />
-        <enumerator name="Octal" />
-        <enumerator name="Binary" />
-      </enumerators>
+      <enums>
+        <enum name="Binary"      value="2"  ><summary>Represents numeric base 2  (BIN)</summary></enum>
+        <enum name="Octal"       value="8"  ><summary>Represents numeric base 8  (OCT)</summary></enum>
+        <enum name="Decimal"     value="10" ><summary>Represents numeric base 10 (DEC)</summary></enum>
+        <enum name="Hexadecimal" value="!6" ><summary>Represents numeric base 16 (HEX)</summary></enum>
+      </enums>
     </enumeration>
 
     <!-- ************************************************************************************************** -->
@@ -9557,5 +10451,15 @@ Unify Enum declarations with other block type declarations.
       </description>
       <node-kind name="BadDirectiveTrivia"></node-kind>
     </node-structure>
+
+    <!-- Feature: Inline Dim Expression -->
+
+    <noide-structure name="InlineDimExpression" parent="ExpressionSyntax">
+      <child name="DimKeyword"  kind="DimKeyword" />
+      <child name="Name"        kind="ModifiedIdentiferSyntax" />
+      <child name="AsClause"    kind="AsClauseSyntax"    optional="true"/>
+      <child name="Initializer" kind="EqualsValueSyntax" optional="true"/>
+    </noide-structure>
+    
   </definitions>
 </define-parse-tree>

@@ -35,6 +35,36 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Function VisitXmlNamespaceImportsClause(ByVal node As XmlNamespaceImportsClauseSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
+        Public Overridable Function VisitGrammar_Block(ByVal node As Grammar_BlockSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
+        Public Overridable Function VisitSyntax_Block(ByVal node As Syntax_BlockSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
+        Public Overridable Function VisitKinds_Block(ByVal node As Kinds_BlockSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
+        Public Overridable Function VisitKeywords_Block(ByVal node As Keywords_BlockSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
+        Public Overridable Function VisitLanguage_Block(ByVal node As Language_BlockSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
+        Public Overridable Function VisitLanguage_Statement(ByVal node As Language_StatementSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
+        Public Overridable Function VisitGrammar_Statement(ByVal node As Grammar_StatementSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
+        Public Overridable Function VisitSyntax_Statement(ByVal node As Syntax_StatementSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
+        Public Overridable Function VisitKinds_Statement(ByVal node As Kinds_StatementSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
+        Public Overridable Function VisitKeywords_Statement(ByVal node As Keywords_StatementSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
         Public Overridable Function VisitNamespaceBlock(ByVal node As NamespaceBlockSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
@@ -768,6 +798,36 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitXmlNamespaceImportsClause(ByVal node As XmlNamespaceImportsClauseSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitGrammar_Block(ByVal node As Grammar_BlockSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitSyntax_Block(ByVal node As Syntax_BlockSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitKinds_Block(ByVal node As Kinds_BlockSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitKeywords_Block(ByVal node As Keywords_BlockSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitLanguage_Block(ByVal node As Language_BlockSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitLanguage_Statement(ByVal node As Language_StatementSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitGrammar_Statement(ByVal node As Grammar_StatementSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitSyntax_Statement(ByVal node As Syntax_StatementSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitKinds_Statement(ByVal node As Kinds_StatementSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitKeywords_Statement(ByVal node As Keywords_StatementSyntax)
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitNamespaceBlock(ByVal node As NamespaceBlockSyntax)
@@ -1606,6 +1666,156 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If anyChanges Then
                 Return New XmlNamespaceImportsClauseSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newLessThanToken, newXmlNamespace, newGreaterThanToken)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitGrammar_Block(ByVal node As Grammar_BlockSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newGrammar_Statement = DirectCast(Visit(node.Grammar_Statement), Grammar_StatementSyntax)
+            If node.Grammar_Statement IsNot newGrammar_Statement Then anyChanges = True
+            Dim newEnd_Grammar_Statement = DirectCast(Visit(node.End_Grammar_Statement), EndBlockStatementSyntax)
+            If node.End_Grammar_Statement IsNot newEnd_Grammar_Statement Then anyChanges = True
+
+            If anyChanges Then
+                Return New Grammar_BlockSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newGrammar_Statement, newEnd_Grammar_Statement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitSyntax_Block(ByVal node As Syntax_BlockSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newSyntax_Statement = DirectCast(Visit(node.Syntax_Statement), Syntax_StatementSyntax)
+            If node.Syntax_Statement IsNot newSyntax_Statement Then anyChanges = True
+            Dim newEnd_Syntax_Statement = DirectCast(Visit(node.End_Syntax_Statement), EndBlockStatementSyntax)
+            If node.End_Syntax_Statement IsNot newEnd_Syntax_Statement Then anyChanges = True
+
+            If anyChanges Then
+                Return New Syntax_BlockSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newSyntax_Statement, newEnd_Syntax_Statement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitKinds_Block(ByVal node As Kinds_BlockSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newKinds_Statement = DirectCast(Visit(node.Kinds_Statement), Kinds_StatementSyntax)
+            If node.Kinds_Statement IsNot newKinds_Statement Then anyChanges = True
+            Dim newEnd_Kinds_Statement = DirectCast(Visit(node.End_Kinds_Statement), EndBlockStatementSyntax)
+            If node.End_Kinds_Statement IsNot newEnd_Kinds_Statement Then anyChanges = True
+
+            If anyChanges Then
+                Return New Kinds_BlockSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newKinds_Statement, newEnd_Kinds_Statement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitKeywords_Block(ByVal node As Keywords_BlockSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newKeywords_Statement = DirectCast(Visit(node.Keywords_Statement), Keywords_StatementSyntax)
+            If node.Keywords_Statement IsNot newKeywords_Statement Then anyChanges = True
+            Dim newEnd_Keywords_Statement = DirectCast(Visit(node.End_Keywords_Statement), EndBlockStatementSyntax)
+            If node.End_Keywords_Statement IsNot newEnd_Keywords_Statement Then anyChanges = True
+
+            If anyChanges Then
+                Return New Keywords_BlockSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newKeywords_Statement, newEnd_Keywords_Statement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitLanguage_Block(ByVal node As Language_BlockSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newLanguage_Statement = DirectCast(Visit(node.Language_Statement), Language_StatementSyntax)
+            If node.Language_Statement IsNot newLanguage_Statement Then anyChanges = True
+            Dim newEnd_Language_Statement = DirectCast(Visit(node.End_Language_Statement), EndBlockStatementSyntax)
+            If node.End_Language_Statement IsNot newEnd_Language_Statement Then anyChanges = True
+
+            If anyChanges Then
+                Return New Language_BlockSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newLanguage_Statement, newEnd_Language_Statement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitLanguage_Statement(ByVal node As Language_StatementSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newLanguage_Keyword = DirectCast(VisitToken(node.Language_Keyword).Node, InternalSyntax.KeywordSyntax)
+            If node.Language_Keyword.Node IsNot newLanguage_Keyword Then anyChanges = True
+            Dim newName = DirectCast(Visit(node.Name), NameSyntax)
+            If node.Name IsNot newName Then anyChanges = True
+
+            If anyChanges Then
+                Return New Language_StatementSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newLanguage_Keyword, newName)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitGrammar_Statement(ByVal node As Grammar_StatementSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newGrammar_Keyword = DirectCast(VisitToken(node.Grammar_Keyword).Node, InternalSyntax.KeywordSyntax)
+            If node.Grammar_Keyword.Node IsNot newGrammar_Keyword Then anyChanges = True
+            Dim newName = DirectCast(Visit(node.Name), NameSyntax)
+            If node.Name IsNot newName Then anyChanges = True
+
+            If anyChanges Then
+                Return New Grammar_StatementSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newGrammar_Keyword, newName)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitSyntax_Statement(ByVal node As Syntax_StatementSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newSyntax_Keyword = DirectCast(VisitToken(node.Syntax_Keyword).Node, InternalSyntax.KeywordSyntax)
+            If node.Syntax_Keyword.Node IsNot newSyntax_Keyword Then anyChanges = True
+            Dim newName = DirectCast(Visit(node.Name), NameSyntax)
+            If node.Name IsNot newName Then anyChanges = True
+
+            If anyChanges Then
+                Return New Syntax_StatementSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newSyntax_Keyword, newName)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitKinds_Statement(ByVal node As Kinds_StatementSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newKinds_Keyword = DirectCast(VisitToken(node.Kinds_Keyword).Node, InternalSyntax.KeywordSyntax)
+            If node.Kinds_Keyword.Node IsNot newKinds_Keyword Then anyChanges = True
+            Dim newName = DirectCast(Visit(node.Name), NameSyntax)
+            If node.Name IsNot newName Then anyChanges = True
+
+            If anyChanges Then
+                Return New Kinds_StatementSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newKinds_Keyword, newName)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitKeywords_Statement(ByVal node As Keywords_StatementSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newKeywords_Keyword = DirectCast(VisitToken(node.Keywords_Keyword).Node, InternalSyntax.KeywordSyntax)
+            If node.Keywords_Keyword.Node IsNot newKeywords_Keyword Then anyChanges = True
+            Dim newName = DirectCast(Visit(node.Name), NameSyntax)
+            If node.Name IsNot newName Then anyChanges = True
+
+            If anyChanges Then
+                Return New Keywords_StatementSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newKeywords_Keyword, newName)
             Else
                 Return node
             End If
@@ -5749,7 +5959,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case SyntaxKind.RaiseEventKeyword:
                 Case SyntaxKind.WhileKeyword:
                 Case SyntaxKind.TryKeyword:
-                Case SyntaxKind.SyncLockKeyword
+                Case SyntaxKind.SyncLockKeyword:
+                Case SyntaxKind.Language_Keyword:
+                Case SyntaxKind.Grammar_Keyword:
+                Case SyntaxKind.Syntax_Keyword:
+                Case SyntaxKind.Kinds_Keyword:
+                Case SyntaxKind.Keywords_Keyword
                 Case Else
                     Throw new ArgumentException("blockKeyword")
              End Select
@@ -6538,6 +6753,181 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' Represents an "End XXX" statement, where XXX is a single keyword.
         ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Public Shared Function EndLanguage_Statement(endKeyword As SyntaxToken, blockKeyword As SyntaxToken) As EndBlockStatementSyntax
+            Select Case endKeyword.Kind()
+                Case SyntaxKind.EndKeyword
+                Case Else
+                    Throw new ArgumentException("endKeyword")
+             End Select
+            Select Case blockKeyword.Kind()
+                Case SyntaxKind.Language_Keyword
+                Case Else
+                    Throw new ArgumentException("blockKeyword")
+             End Select
+            Return New EndBlockStatementSyntax(SyntaxKind.EndLanguage_Statement, Nothing, Nothing, DirectCast(endKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        Public Shared Function EndLanguage_Statement() As EndBlockStatementSyntax
+            Return SyntaxFactory.EndLanguage_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.Language_Keyword))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Public Shared Function EndGrammar_Statement(endKeyword As SyntaxToken, blockKeyword As SyntaxToken) As EndBlockStatementSyntax
+            Select Case endKeyword.Kind()
+                Case SyntaxKind.EndKeyword
+                Case Else
+                    Throw new ArgumentException("endKeyword")
+             End Select
+            Select Case blockKeyword.Kind()
+                Case SyntaxKind.Grammar_Keyword
+                Case Else
+                    Throw new ArgumentException("blockKeyword")
+             End Select
+            Return New EndBlockStatementSyntax(SyntaxKind.EndGrammar_Statement, Nothing, Nothing, DirectCast(endKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        Public Shared Function EndGrammar_Statement() As EndBlockStatementSyntax
+            Return SyntaxFactory.EndGrammar_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.Grammar_Keyword))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Public Shared Function EndSyntax_Statement(endKeyword As SyntaxToken, blockKeyword As SyntaxToken) As EndBlockStatementSyntax
+            Select Case endKeyword.Kind()
+                Case SyntaxKind.EndKeyword
+                Case Else
+                    Throw new ArgumentException("endKeyword")
+             End Select
+            Select Case blockKeyword.Kind()
+                Case SyntaxKind.Syntax_Keyword
+                Case Else
+                    Throw new ArgumentException("blockKeyword")
+             End Select
+            Return New EndBlockStatementSyntax(SyntaxKind.EndSyntax_Statement, Nothing, Nothing, DirectCast(endKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        Public Shared Function EndSyntax_Statement() As EndBlockStatementSyntax
+            Return SyntaxFactory.EndSyntax_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.Syntax_Keyword))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Public Shared Function EndKeywords_Statement(endKeyword As SyntaxToken, blockKeyword As SyntaxToken) As EndBlockStatementSyntax
+            Select Case endKeyword.Kind()
+                Case SyntaxKind.EndKeyword
+                Case Else
+                    Throw new ArgumentException("endKeyword")
+             End Select
+            Select Case blockKeyword.Kind()
+                Case SyntaxKind.Keywords_Keyword
+                Case Else
+                    Throw new ArgumentException("blockKeyword")
+             End Select
+            Return New EndBlockStatementSyntax(SyntaxKind.EndKeywords_Statement, Nothing, Nothing, DirectCast(endKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        Public Shared Function EndKeywords_Statement() As EndBlockStatementSyntax
+            Return SyntaxFactory.EndKeywords_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.Keywords_Keyword))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Public Shared Function EndKinds_Statement(endKeyword As SyntaxToken, blockKeyword As SyntaxToken) As EndBlockStatementSyntax
+            Select Case endKeyword.Kind()
+                Case SyntaxKind.EndKeyword
+                Case Else
+                    Throw new ArgumentException("endKeyword")
+             End Select
+            Select Case blockKeyword.Kind()
+                Case SyntaxKind.Kinds_Keyword
+                Case Else
+                    Throw new ArgumentException("blockKeyword")
+             End Select
+            Return New EndBlockStatementSyntax(SyntaxKind.EndKinds_Statement, Nothing, Nothing, DirectCast(endKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        Public Shared Function EndKinds_Statement() As EndBlockStatementSyntax
+            Return SyntaxFactory.EndKinds_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.Kinds_Keyword))
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' EndBlockStatementSyntax. One of EndIfStatement, EndUsingStatement,
@@ -6546,7 +6936,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' EndNamespaceStatement, EndSubStatement, EndFunctionStatement, EndGetStatement,
         ''' EndSetStatement, EndPropertyStatement, EndOperatorStatement, EndEventStatement,
         ''' EndAddHandlerStatement, EndRemoveHandlerStatement, EndRaiseEventStatement,
-        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement.
+        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement,
+        ''' EndLanguage_Statement, EndGrammar_Statement, EndSyntax_Statement,
+        ''' EndKeywords_Statement, EndKinds_Statement.
         ''' </param>
         ''' <param name="endKeyword">
         ''' The "End" keyword
@@ -6620,6 +7012,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Return SyntaxKind.TryKeyword
                 Case SyntaxKind.EndSyncLockStatement
                     Return SyntaxKind.SyncLockKeyword
+                Case SyntaxKind.EndLanguage_Statement
+                    Return SyntaxKind.Language_Keyword
+                Case SyntaxKind.EndGrammar_Statement
+                    Return SyntaxKind.Grammar_Keyword
+                Case SyntaxKind.EndSyntax_Statement
+                    Return SyntaxKind.Syntax_Keyword
+                Case SyntaxKind.EndKeywords_Statement
+                    Return SyntaxKind.Keywords_Keyword
+                Case SyntaxKind.EndKinds_Statement
+                    Return SyntaxKind.Kinds_Keyword
                 Case Else
                     Throw New ArgumentException("BlockKeyword")
             End Select
@@ -6636,7 +7038,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' EndNamespaceStatement, EndSubStatement, EndFunctionStatement, EndGetStatement,
         ''' EndSetStatement, EndPropertyStatement, EndOperatorStatement, EndEventStatement,
         ''' EndAddHandlerStatement, EndRemoveHandlerStatement, EndRaiseEventStatement,
-        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement.
+        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement,
+        ''' EndLanguage_Statement, EndGrammar_Statement, EndSyntax_Statement,
+        ''' EndKeywords_Statement, EndKinds_Statement.
         ''' </param>
         ''' <param name="blockKeyword">
         ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
@@ -6935,6 +7339,406 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </param>
         Public Shared Function XmlNamespaceImportsClause(xmlNamespace As XmlAttributeSyntax) As XmlNamespaceImportsClauseSyntax
             Return SyntaxFactory.XmlNamespaceImportsClause(SyntaxFactory.Token(SyntaxKind.LessThanToken), xmlNamespace, SyntaxFactory.Token(SyntaxKind.GreaterThanToken))
+        End Function
+
+
+        ''' <param name="grammar_Statement">
+        ''' The "Grammar" statement that begins a grammar block.
+        ''' </param>
+        ''' <param name="end_Grammar_Statement">
+        ''' The "End Grammar" statement that ends a grammar block.
+        ''' </param>
+        Public Shared Function Grammar_Block(grammar_Statement As Grammar_StatementSyntax, end_Grammar_Statement As EndBlockStatementSyntax) As Grammar_BlockSyntax
+            if grammar_Statement Is Nothing Then
+                Throw New ArgumentNullException(NameOf(grammar_Statement))
+            End If
+            Select Case grammar_Statement.Kind()
+                Case SyntaxKind.Grammar_Statement
+                Case Else
+                    Throw new ArgumentException("grammar_Statement")
+             End Select
+            if end_Grammar_Statement Is Nothing Then
+                Throw New ArgumentNullException(NameOf(end_Grammar_Statement))
+            End If
+            Select Case end_Grammar_Statement.Kind()
+                Case SyntaxKind.EndGrammar_Statement
+                Case Else
+                    Throw new ArgumentException("end_Grammar_Statement")
+             End Select
+            Return New Grammar_BlockSyntax(SyntaxKind.Grammar_Block, Nothing, Nothing, grammar_Statement, end_Grammar_Statement)
+        End Function
+
+
+        ''' <param name="grammar_Statement">
+        ''' The "Grammar" statement that begins a grammar block.
+        ''' </param>
+        Public Shared Function Grammar_Block(grammar_Statement As Grammar_StatementSyntax) As Grammar_BlockSyntax
+            Return SyntaxFactory.Grammar_Block(grammar_Statement, SyntaxFactory.EndGrammar_Statement())
+        End Function
+
+
+        ''' <param name="syntax_Statement">
+        ''' The "Syntax" statement that begins a syntax block.
+        ''' </param>
+        ''' <param name="end_Syntax_Statement">
+        ''' The "End Syntax" statement that ends a syntax block.
+        ''' </param>
+        Public Shared Function Syntax_Block(syntax_Statement As Syntax_StatementSyntax, end_Syntax_Statement As EndBlockStatementSyntax) As Syntax_BlockSyntax
+            if syntax_Statement Is Nothing Then
+                Throw New ArgumentNullException(NameOf(syntax_Statement))
+            End If
+            Select Case syntax_Statement.Kind()
+                Case SyntaxKind.Syntax_Statement
+                Case Else
+                    Throw new ArgumentException("syntax_Statement")
+             End Select
+            if end_Syntax_Statement Is Nothing Then
+                Throw New ArgumentNullException(NameOf(end_Syntax_Statement))
+            End If
+            Select Case end_Syntax_Statement.Kind()
+                Case SyntaxKind.EndSyntax_Statement
+                Case Else
+                    Throw new ArgumentException("end_Syntax_Statement")
+             End Select
+            Return New Syntax_BlockSyntax(SyntaxKind.Syntax_Block, Nothing, Nothing, syntax_Statement, end_Syntax_Statement)
+        End Function
+
+
+        ''' <param name="syntax_Statement">
+        ''' The "Syntax" statement that begins a syntax block.
+        ''' </param>
+        Public Shared Function Syntax_Block(syntax_Statement As Syntax_StatementSyntax) As Syntax_BlockSyntax
+            Return SyntaxFactory.Syntax_Block(syntax_Statement, SyntaxFactory.EndSyntax_Statement())
+        End Function
+
+
+        ''' <param name="kinds_Statement">
+        ''' The "Kinds" statement that begins a kinds block.
+        ''' </param>
+        ''' <param name="end_Kinds_Statement">
+        ''' The "End Kinds." statement that ends a kinds block.
+        ''' </param>
+        Public Shared Function Kinds_Block(kinds_Statement As Kinds_StatementSyntax, end_Kinds_Statement As EndBlockStatementSyntax) As Kinds_BlockSyntax
+            if kinds_Statement Is Nothing Then
+                Throw New ArgumentNullException(NameOf(kinds_Statement))
+            End If
+            Select Case kinds_Statement.Kind()
+                Case SyntaxKind.Kinds_Statement
+                Case Else
+                    Throw new ArgumentException("kinds_Statement")
+             End Select
+            if end_Kinds_Statement Is Nothing Then
+                Throw New ArgumentNullException(NameOf(end_Kinds_Statement))
+            End If
+            Select Case end_Kinds_Statement.Kind()
+                Case SyntaxKind.EndKinds_Statement
+                Case Else
+                    Throw new ArgumentException("end_Kinds_Statement")
+             End Select
+            Return New Kinds_BlockSyntax(SyntaxKind.Kinds_Block, Nothing, Nothing, kinds_Statement, end_Kinds_Statement)
+        End Function
+
+
+        ''' <param name="kinds_Statement">
+        ''' The "Kinds" statement that begins a kinds block.
+        ''' </param>
+        Public Shared Function Kinds_Block(kinds_Statement As Kinds_StatementSyntax) As Kinds_BlockSyntax
+            Return SyntaxFactory.Kinds_Block(kinds_Statement, SyntaxFactory.EndKinds_Statement())
+        End Function
+
+
+        ''' <param name="keywords_Statement">
+        ''' The "Keywords" statement that begins a keywords block.
+        ''' </param>
+        ''' <param name="end_Keywords_Statement">
+        ''' The "End Keywords" statement that ends a keywords block.
+        ''' </param>
+        Public Shared Function Keywords_Block(keywords_Statement As Keywords_StatementSyntax, end_Keywords_Statement As EndBlockStatementSyntax) As Keywords_BlockSyntax
+            if keywords_Statement Is Nothing Then
+                Throw New ArgumentNullException(NameOf(keywords_Statement))
+            End If
+            Select Case keywords_Statement.Kind()
+                Case SyntaxKind.Keywords_Statement
+                Case Else
+                    Throw new ArgumentException("keywords_Statement")
+             End Select
+            if end_Keywords_Statement Is Nothing Then
+                Throw New ArgumentNullException(NameOf(end_Keywords_Statement))
+            End If
+            Select Case end_Keywords_Statement.Kind()
+                Case SyntaxKind.EndKeywords_Statement
+                Case Else
+                    Throw new ArgumentException("end_Keywords_Statement")
+             End Select
+            Return New Keywords_BlockSyntax(SyntaxKind.Keywords_Block, Nothing, Nothing, keywords_Statement, end_Keywords_Statement)
+        End Function
+
+
+        ''' <param name="keywords_Statement">
+        ''' The "Keywords" statement that begins a keywords block.
+        ''' </param>
+        Public Shared Function Keywords_Block(keywords_Statement As Keywords_StatementSyntax) As Keywords_BlockSyntax
+            Return SyntaxFactory.Keywords_Block(keywords_Statement, SyntaxFactory.EndKeywords_Statement())
+        End Function
+
+
+        ''' <param name="language_Statement">
+        ''' The "Language" statement that begins a language block.
+        ''' </param>
+        ''' <param name="end_Language_Statement">
+        ''' The "End Language." statement that ends a language block.
+        ''' </param>
+        Public Shared Function Language_Block(language_Statement As Language_StatementSyntax, end_Language_Statement As EndBlockStatementSyntax) As Language_BlockSyntax
+            if language_Statement Is Nothing Then
+                Throw New ArgumentNullException(NameOf(language_Statement))
+            End If
+            Select Case language_Statement.Kind()
+                Case SyntaxKind.Language_Statement
+                Case Else
+                    Throw new ArgumentException("language_Statement")
+             End Select
+            if end_Language_Statement Is Nothing Then
+                Throw New ArgumentNullException(NameOf(end_Language_Statement))
+            End If
+            Select Case end_Language_Statement.Kind()
+                Case SyntaxKind.EndLanguage_Statement
+                Case Else
+                    Throw new ArgumentException("end_Language_Statement")
+             End Select
+            Return New Language_BlockSyntax(SyntaxKind.Language_Block, Nothing, Nothing, language_Statement, end_Language_Statement)
+        End Function
+
+
+        ''' <param name="language_Statement">
+        ''' The "Language" statement that begins a language block.
+        ''' </param>
+        Public Shared Function Language_Block(language_Statement As Language_StatementSyntax) As Language_BlockSyntax
+            Return SyntaxFactory.Language_Block(language_Statement, SyntaxFactory.EndLanguage_Statement())
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a language declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=Language_Block.
+        ''' </summary>
+        ''' <param name="language_Keyword">
+        ''' The "Language" keyword.
+        ''' </param>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the language being declared.
+        ''' </param>
+        Public Shared Function Language_Statement(language_Keyword As SyntaxToken, name As NameSyntax) As Language_StatementSyntax
+            Select Case language_Keyword.Kind()
+                Case SyntaxKind.Language_Keyword
+                Case Else
+                    Throw new ArgumentException("language_Keyword")
+             End Select
+            if name Is Nothing Then
+                Throw New ArgumentNullException(NameOf(name))
+            End If
+            Select Case name.Kind()
+                Case SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference
+                Case Else
+                    Throw new ArgumentException("name")
+             End Select
+            Return New Language_StatementSyntax(SyntaxKind.Language_Statement, Nothing, Nothing, DirectCast(language_Keyword.Node, InternalSyntax.KeywordSyntax), name)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a language declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=Language_Block.
+        ''' </summary>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the language being declared.
+        ''' </param>
+        Public Shared Function Language_Statement(name As NameSyntax) As Language_StatementSyntax
+            Return SyntaxFactory.Language_Statement(SyntaxFactory.Token(SyntaxKind.Language_Keyword), name)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a grammar declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=Grammar_Block.
+        ''' </summary>
+        ''' <param name="grammar_Keyword">
+        ''' The "Language" keyword.
+        ''' </param>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </param>
+        Public Shared Function Grammar_Statement(grammar_Keyword As SyntaxToken, name As NameSyntax) As Grammar_StatementSyntax
+            Select Case grammar_Keyword.Kind()
+                Case SyntaxKind.Grammar_Keyword
+                Case Else
+                    Throw new ArgumentException("grammar_Keyword")
+             End Select
+            if name Is Nothing Then
+                Throw New ArgumentNullException(NameOf(name))
+            End If
+            Select Case name.Kind()
+                Case SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference
+                Case Else
+                    Throw new ArgumentException("name")
+             End Select
+            Return New Grammar_StatementSyntax(SyntaxKind.Grammar_Statement, Nothing, Nothing, DirectCast(grammar_Keyword.Node, InternalSyntax.KeywordSyntax), name)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a grammar declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=Grammar_Block.
+        ''' </summary>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </param>
+        Public Shared Function Grammar_Statement(name As NameSyntax) As Grammar_StatementSyntax
+            Return SyntaxFactory.Grammar_Statement(SyntaxFactory.Token(SyntaxKind.Grammar_Keyword), name)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a namespace declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=NamespaceBlock.
+        ''' </summary>
+        ''' <param name="syntax_Keyword">
+        ''' The "Syntax" keyword.
+        ''' </param>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </param>
+        Public Shared Function Syntax_Statement(syntax_Keyword As SyntaxToken, name As NameSyntax) As Syntax_StatementSyntax
+            Select Case syntax_Keyword.Kind()
+                Case SyntaxKind.Syntax_Keyword
+                Case Else
+                    Throw new ArgumentException("syntax_Keyword")
+             End Select
+            if name Is Nothing Then
+                Throw New ArgumentNullException(NameOf(name))
+            End If
+            Select Case name.Kind()
+                Case SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference
+                Case Else
+                    Throw new ArgumentException("name")
+             End Select
+            Return New Syntax_StatementSyntax(SyntaxKind.Syntax_Statement, Nothing, Nothing, DirectCast(syntax_Keyword.Node, InternalSyntax.KeywordSyntax), name)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a namespace declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=NamespaceBlock.
+        ''' </summary>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </param>
+        Public Shared Function Syntax_Statement(name As NameSyntax) As Syntax_StatementSyntax
+            Return SyntaxFactory.Syntax_Statement(SyntaxFactory.Token(SyntaxKind.Syntax_Keyword), name)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a kinds declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=Kinds_Block.
+        ''' </summary>
+        ''' <param name="kinds_Keyword">
+        ''' The "Kinds" keyword.
+        ''' </param>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </param>
+        Public Shared Function Kinds_Statement(kinds_Keyword As SyntaxToken, name As NameSyntax) As Kinds_StatementSyntax
+            Select Case kinds_Keyword.Kind()
+                Case SyntaxKind.Kinds_Keyword
+                Case Else
+                    Throw new ArgumentException("kinds_Keyword")
+             End Select
+            if name Is Nothing Then
+                Throw New ArgumentNullException(NameOf(name))
+            End If
+            Select Case name.Kind()
+                Case SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference
+                Case Else
+                    Throw new ArgumentException("name")
+             End Select
+            Return New Kinds_StatementSyntax(SyntaxKind.Kinds_Statement, Nothing, Nothing, DirectCast(kinds_Keyword.Node, InternalSyntax.KeywordSyntax), name)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a kinds declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=Kinds_Block.
+        ''' </summary>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </param>
+        Public Shared Function Kinds_Statement(name As NameSyntax) As Kinds_StatementSyntax
+            Return SyntaxFactory.Kinds_Statement(SyntaxFactory.Token(SyntaxKind.Kinds_Keyword), name)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a namespace declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=NamespaceBlock.
+        ''' </summary>
+        ''' <param name="keywords_Keyword">
+        ''' The "Keywords" keyword.
+        ''' </param>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </param>
+        Public Shared Function Keywords_Statement(keywords_Keyword As SyntaxToken, name As NameSyntax) As Keywords_StatementSyntax
+            Select Case keywords_Keyword.Kind()
+                Case SyntaxKind.Language_Keyword
+                Case Else
+                    Throw new ArgumentException("keywords_Keyword")
+             End Select
+            if name Is Nothing Then
+                Throw New ArgumentNullException(NameOf(name))
+            End If
+            Select Case name.Kind()
+                Case SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference
+                Case Else
+                    Throw new ArgumentException("name")
+             End Select
+            Return New Keywords_StatementSyntax(SyntaxKind.Keywords_Statement, Nothing, Nothing, DirectCast(keywords_Keyword.Node, InternalSyntax.KeywordSyntax), name)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a namespace declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=NamespaceBlock.
+        ''' </summary>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </param>
+        Public Shared Function Keywords_Statement(name As NameSyntax) As Keywords_StatementSyntax
+            Return SyntaxFactory.Keywords_Statement(SyntaxFactory.Token(SyntaxKind.Language_Keyword), name)
         End Function
 
 
@@ -35801,8 +36605,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.EndWhileStatement,
                      SyntaxKind.EndTryStatement,
                      SyntaxKind.EndSyncLockStatement,
+                     SyntaxKind.EndLanguage_Statement,
+                     SyntaxKind.EndGrammar_Statement,
+                     SyntaxKind.EndSyntax_Statement,
+                     SyntaxKind.EndKeywords_Statement,
+                     SyntaxKind.EndKinds_Statement,
                      SyntaxKind.OptionStatement,
                      SyntaxKind.ImportsStatement,
+                     SyntaxKind.Grammar_Block,
+                     SyntaxKind.Syntax_Block,
+                     SyntaxKind.Kinds_Block,
+                     SyntaxKind.Keywords_Block,
+                     SyntaxKind.Language_Block,
+                     SyntaxKind.Language_Statement,
+                     SyntaxKind.Grammar_Statement,
+                     SyntaxKind.Syntax_Statement,
+                     SyntaxKind.Kinds_Statement,
+                     SyntaxKind.Keywords_Statement,
                      SyntaxKind.NamespaceBlock,
                      SyntaxKind.NamespaceStatement,
                      SyntaxKind.ModuleBlock,
@@ -36095,8 +36914,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.EndWhileStatement,
                      SyntaxKind.EndTryStatement,
                      SyntaxKind.EndSyncLockStatement,
+                     SyntaxKind.EndLanguage_Statement,
+                     SyntaxKind.EndGrammar_Statement,
+                     SyntaxKind.EndSyntax_Statement,
+                     SyntaxKind.EndKeywords_Statement,
+                     SyntaxKind.EndKinds_Statement,
                      SyntaxKind.OptionStatement,
                      SyntaxKind.ImportsStatement,
+                     SyntaxKind.Grammar_Block,
+                     SyntaxKind.Syntax_Block,
+                     SyntaxKind.Kinds_Block,
+                     SyntaxKind.Keywords_Block,
+                     SyntaxKind.Language_Block,
+                     SyntaxKind.Language_Statement,
+                     SyntaxKind.Grammar_Statement,
+                     SyntaxKind.Syntax_Statement,
+                     SyntaxKind.Kinds_Statement,
+                     SyntaxKind.Keywords_Statement,
                      SyntaxKind.NamespaceBlock,
                      SyntaxKind.NamespaceStatement,
                      SyntaxKind.ModuleBlock,
@@ -36397,8 +37231,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                      SyntaxKind.EndWhileStatement,
                      SyntaxKind.EndTryStatement,
                      SyntaxKind.EndSyncLockStatement,
+                     SyntaxKind.EndLanguage_Statement,
+                     SyntaxKind.EndGrammar_Statement,
+                     SyntaxKind.EndSyntax_Statement,
+                     SyntaxKind.EndKeywords_Statement,
+                     SyntaxKind.EndKinds_Statement,
                      SyntaxKind.OptionStatement,
                      SyntaxKind.ImportsStatement,
+                     SyntaxKind.Grammar_Block,
+                     SyntaxKind.Syntax_Block,
+                     SyntaxKind.Kinds_Block,
+                     SyntaxKind.Keywords_Block,
+                     SyntaxKind.Language_Block,
+                     SyntaxKind.Language_Statement,
+                     SyntaxKind.Grammar_Statement,
+                     SyntaxKind.Syntax_Statement,
+                     SyntaxKind.Kinds_Statement,
+                     SyntaxKind.Keywords_Statement,
                      SyntaxKind.NamespaceBlock,
                      SyntaxKind.NamespaceStatement,
                      SyntaxKind.ModuleBlock,
@@ -44025,7 +44874,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 SyntaxKind.EndRaiseEventStatement,
                 SyntaxKind.EndWhileStatement,
                 SyntaxKind.EndTryStatement,
-                SyntaxKind.EndSyncLockStatement
+                SyntaxKind.EndSyncLockStatement,
+                SyntaxKind.EndLanguage_Statement,
+                SyntaxKind.EndGrammar_Statement,
+                SyntaxKind.EndSyntax_Statement,
+                SyntaxKind.EndKeywords_Statement,
+                SyntaxKind.EndKinds_Statement
                     Return True
             End Select
             Return False
@@ -44056,7 +44910,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 SyntaxKind.RaiseEventKeyword,
                 SyntaxKind.WhileKeyword,
                 SyntaxKind.TryKeyword,
-                SyntaxKind.SyncLockKeyword
+                SyntaxKind.SyncLockKeyword,
+                SyntaxKind.Language_Keyword,
+                SyntaxKind.Grammar_Keyword,
+                SyntaxKind.Syntax_Keyword,
+                SyntaxKind.Keywords_Keyword,
+                SyntaxKind.Kinds_Keyword
                     Return True
             End Select
             Return False
@@ -45140,6 +45999,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 SyntaxKind.GosubKeyword,
                 SyntaxKind.VariantKeyword,
                 SyntaxKind.WendKeyword,
+                SyntaxKind.Language_Keyword,
+                SyntaxKind.Grammar_Keyword,
+                SyntaxKind.Syntax_Keyword,
+                SyntaxKind.Kinds_Keyword,
+                SyntaxKind.Keywords_Keyword,
                 SyntaxKind.AggregateKeyword,
                 SyntaxKind.AllKeyword,
                 SyntaxKind.AnsiKeyword,
@@ -45654,6 +46518,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return "Variant"
         Case SyntaxKind.WendKeyword
             Return "Wend"
+        Case SyntaxKind.Language_Keyword
+            Return "Language"
+        Case SyntaxKind.Grammar_Keyword
+            Return "Grammar"
+        Case SyntaxKind.Syntax_Keyword
+            Return "Syntax"
+        Case SyntaxKind.Kinds_Keyword
+            Return "Kinds"
+        Case SyntaxKind.Keywords_Keyword
+            Return "Keywords"
         Case SyntaxKind.AggregateKeyword
             Return "Aggregate"
         Case SyntaxKind.AllKeyword

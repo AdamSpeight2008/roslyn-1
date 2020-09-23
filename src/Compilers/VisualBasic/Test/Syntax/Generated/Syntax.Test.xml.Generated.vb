@@ -112,6 +112,26 @@ Partial Public Class GeneratedTests
             return InternalSyntax.SyntaxFactory.EndSyncLockStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.EndKeyword, String.Empty, Nothing, Nothing), new InternalSyntax.KeywordSyntax(SyntaxKind.SyncLockKeyword, String.Empty, Nothing, Nothing))
         End Function
 
+        Private Shared Function GenerateGreenEndLanguage_Statement() As InternalSyntax.EndBlockStatementSyntax
+            return InternalSyntax.SyntaxFactory.EndLanguage_Statement(new InternalSyntax.KeywordSyntax(SyntaxKind.EndKeyword, String.Empty, Nothing, Nothing), new InternalSyntax.KeywordSyntax(SyntaxKind.Language_Keyword, String.Empty, Nothing, Nothing))
+        End Function
+
+        Private Shared Function GenerateGreenEndGrammar_Statement() As InternalSyntax.EndBlockStatementSyntax
+            return InternalSyntax.SyntaxFactory.EndGrammar_Statement(new InternalSyntax.KeywordSyntax(SyntaxKind.EndKeyword, String.Empty, Nothing, Nothing), new InternalSyntax.KeywordSyntax(SyntaxKind.Grammar_Keyword, String.Empty, Nothing, Nothing))
+        End Function
+
+        Private Shared Function GenerateGreenEndSyntax_Statement() As InternalSyntax.EndBlockStatementSyntax
+            return InternalSyntax.SyntaxFactory.EndSyntax_Statement(new InternalSyntax.KeywordSyntax(SyntaxKind.EndKeyword, String.Empty, Nothing, Nothing), new InternalSyntax.KeywordSyntax(SyntaxKind.Syntax_Keyword, String.Empty, Nothing, Nothing))
+        End Function
+
+        Private Shared Function GenerateGreenEndKeywords_Statement() As InternalSyntax.EndBlockStatementSyntax
+            return InternalSyntax.SyntaxFactory.EndKeywords_Statement(new InternalSyntax.KeywordSyntax(SyntaxKind.EndKeyword, String.Empty, Nothing, Nothing), new InternalSyntax.KeywordSyntax(SyntaxKind.Keywords_Keyword, String.Empty, Nothing, Nothing))
+        End Function
+
+        Private Shared Function GenerateGreenEndKinds_Statement() As InternalSyntax.EndBlockStatementSyntax
+            return InternalSyntax.SyntaxFactory.EndKinds_Statement(new InternalSyntax.KeywordSyntax(SyntaxKind.EndKeyword, String.Empty, Nothing, Nothing), new InternalSyntax.KeywordSyntax(SyntaxKind.Kinds_Keyword, String.Empty, Nothing, Nothing))
+        End Function
+
         Private Shared Function GenerateGreenCompilationUnit() As InternalSyntax.CompilationUnitSyntax
             return InternalSyntax.SyntaxFactory.CompilationUnit(Nothing, Nothing, Nothing, Nothing, new InternalSyntax.PunctuationSyntax(SyntaxKind.EndOfFileToken, String.Empty, Nothing, Nothing))
         End Function
@@ -134,6 +154,46 @@ Partial Public Class GeneratedTests
 
         Private Shared Function GenerateGreenXmlNamespaceImportsClause() As InternalSyntax.XmlNamespaceImportsClauseSyntax
             return InternalSyntax.SyntaxFactory.XmlNamespaceImportsClause(new InternalSyntax.PunctuationSyntax(SyntaxKind.LessThanToken, String.Empty, Nothing, Nothing), GenerateGreenXmlAttribute(), new InternalSyntax.PunctuationSyntax(SyntaxKind.GreaterThanToken, String.Empty, Nothing, Nothing))
+        End Function
+
+        Private Shared Function GenerateGreenGrammar_Block() As InternalSyntax.Grammar_BlockSyntax
+            return InternalSyntax.SyntaxFactory.Grammar_Block(GenerateGreenGrammar_Statement(), GenerateGreenEndGrammar_Statement())
+        End Function
+
+        Private Shared Function GenerateGreenSyntax_Block() As InternalSyntax.Syntax_BlockSyntax
+            return InternalSyntax.SyntaxFactory.Syntax_Block(GenerateGreenSyntax_Statement(), GenerateGreenEndSyntax_Statement())
+        End Function
+
+        Private Shared Function GenerateGreenKinds_Block() As InternalSyntax.Kinds_BlockSyntax
+            return InternalSyntax.SyntaxFactory.Kinds_Block(GenerateGreenKinds_Statement(), GenerateGreenEndKinds_Statement())
+        End Function
+
+        Private Shared Function GenerateGreenKeywords_Block() As InternalSyntax.Keywords_BlockSyntax
+            return InternalSyntax.SyntaxFactory.Keywords_Block(GenerateGreenKeywords_Statement(), GenerateGreenEndKeywords_Statement())
+        End Function
+
+        Private Shared Function GenerateGreenLanguage_Block() As InternalSyntax.Language_BlockSyntax
+            return InternalSyntax.SyntaxFactory.Language_Block(GenerateGreenLanguage_Statement(), GenerateGreenEndLanguage_Statement())
+        End Function
+
+        Private Shared Function GenerateGreenLanguage_Statement() As InternalSyntax.Language_StatementSyntax
+            return InternalSyntax.SyntaxFactory.Language_Statement(new InternalSyntax.KeywordSyntax(SyntaxKind.Language_Keyword, String.Empty, Nothing, Nothing), GenerateGreenIdentifierName())
+        End Function
+
+        Private Shared Function GenerateGreenGrammar_Statement() As InternalSyntax.Grammar_StatementSyntax
+            return InternalSyntax.SyntaxFactory.Grammar_Statement(new InternalSyntax.KeywordSyntax(SyntaxKind.Grammar_Keyword, String.Empty, Nothing, Nothing), GenerateGreenIdentifierName())
+        End Function
+
+        Private Shared Function GenerateGreenSyntax_Statement() As InternalSyntax.Syntax_StatementSyntax
+            return InternalSyntax.SyntaxFactory.Syntax_Statement(new InternalSyntax.KeywordSyntax(SyntaxKind.Syntax_Keyword, String.Empty, Nothing, Nothing), GenerateGreenIdentifierName())
+        End Function
+
+        Private Shared Function GenerateGreenKinds_Statement() As InternalSyntax.Kinds_StatementSyntax
+            return InternalSyntax.SyntaxFactory.Kinds_Statement(new InternalSyntax.KeywordSyntax(SyntaxKind.Kinds_Keyword, String.Empty, Nothing, Nothing), GenerateGreenIdentifierName())
+        End Function
+
+        Private Shared Function GenerateGreenKeywords_Statement() As InternalSyntax.Keywords_StatementSyntax
+            return InternalSyntax.SyntaxFactory.Keywords_Statement(new InternalSyntax.KeywordSyntax(SyntaxKind.Language_Keyword, String.Empty, Nothing, Nothing), GenerateGreenIdentifierName())
         End Function
 
         Private Shared Function GenerateGreenNamespaceBlock() As InternalSyntax.NamespaceBlockSyntax
@@ -1696,6 +1756,36 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestGreenEndLanguage_Statement()
+            dim objectUnderTest = GenerateGreenEndLanguage_Statement()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenEndGrammar_Statement()
+            dim objectUnderTest = GenerateGreenEndGrammar_Statement()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenEndSyntax_Statement()
+            dim objectUnderTest = GenerateGreenEndSyntax_Statement()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenEndKeywords_Statement()
+            dim objectUnderTest = GenerateGreenEndKeywords_Statement()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenEndKinds_Statement()
+            dim objectUnderTest = GenerateGreenEndKinds_Statement()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
         Public Sub TestGreenCompilationUnit()
             dim objectUnderTest = GenerateGreenCompilationUnit()
             AttachAndCheckDiagnostics(objectUnderTest)
@@ -1728,6 +1818,66 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenXmlNamespaceImportsClause()
             dim objectUnderTest = GenerateGreenXmlNamespaceImportsClause()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenGrammar_Block()
+            dim objectUnderTest = GenerateGreenGrammar_Block()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenSyntax_Block()
+            dim objectUnderTest = GenerateGreenSyntax_Block()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenKinds_Block()
+            dim objectUnderTest = GenerateGreenKinds_Block()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenKeywords_Block()
+            dim objectUnderTest = GenerateGreenKeywords_Block()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenLanguage_Block()
+            dim objectUnderTest = GenerateGreenLanguage_Block()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenLanguage_Statement()
+            dim objectUnderTest = GenerateGreenLanguage_Statement()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenGrammar_Statement()
+            dim objectUnderTest = GenerateGreenGrammar_Statement()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenSyntax_Statement()
+            dim objectUnderTest = GenerateGreenSyntax_Statement()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenKinds_Statement()
+            dim objectUnderTest = GenerateGreenKinds_Statement()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenKeywords_Statement()
+            dim objectUnderTest = GenerateGreenKeywords_Statement()
             AttachAndCheckDiagnostics(objectUnderTest)
         End Sub
 
@@ -4045,6 +4195,46 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestGreenEndLanguage_StatementRewriter()
+            dim oldNode = GenerateGreenEndLanguage_Statement()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenEndGrammar_StatementRewriter()
+            dim oldNode = GenerateGreenEndGrammar_Statement()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenEndSyntax_StatementRewriter()
+            dim oldNode = GenerateGreenEndSyntax_Statement()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenEndKeywords_StatementRewriter()
+            dim oldNode = GenerateGreenEndKeywords_Statement()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenEndKinds_StatementRewriter()
+            dim oldNode = GenerateGreenEndKinds_Statement()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
         Public Sub TestGreenCompilationUnitRewriter()
             dim oldNode = GenerateGreenCompilationUnit()
             Dim rewriter = New GreenIdentityRewriter()
@@ -4087,6 +4277,86 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenXmlNamespaceImportsClauseRewriter()
             dim oldNode = GenerateGreenXmlNamespaceImportsClause()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenGrammar_BlockRewriter()
+            dim oldNode = GenerateGreenGrammar_Block()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenSyntax_BlockRewriter()
+            dim oldNode = GenerateGreenSyntax_Block()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenKinds_BlockRewriter()
+            dim oldNode = GenerateGreenKinds_Block()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenKeywords_BlockRewriter()
+            dim oldNode = GenerateGreenKeywords_Block()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenLanguage_BlockRewriter()
+            dim oldNode = GenerateGreenLanguage_Block()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenLanguage_StatementRewriter()
+            dim oldNode = GenerateGreenLanguage_Statement()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenGrammar_StatementRewriter()
+            dim oldNode = GenerateGreenGrammar_Statement()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenSyntax_StatementRewriter()
+            dim oldNode = GenerateGreenSyntax_Statement()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenKinds_StatementRewriter()
+            dim oldNode = GenerateGreenKinds_Statement()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenKeywords_StatementRewriter()
+            dim oldNode = GenerateGreenKeywords_Statement()
             Dim rewriter = New GreenIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)
@@ -6952,6 +7222,41 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestGreenEndLanguage_StatementVisitor()
+            Dim oldNode = GenerateGreenEndLanguage_Statement()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenEndGrammar_StatementVisitor()
+            Dim oldNode = GenerateGreenEndGrammar_Statement()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenEndSyntax_StatementVisitor()
+            Dim oldNode = GenerateGreenEndSyntax_Statement()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenEndKeywords_StatementVisitor()
+            Dim oldNode = GenerateGreenEndKeywords_Statement()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenEndKinds_StatementVisitor()
+            Dim oldNode = GenerateGreenEndKinds_Statement()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
         Public Sub TestGreenCompilationUnitVisitor()
             Dim oldNode = GenerateGreenCompilationUnit()
             Dim visitor = New GreenNodeVisitor()
@@ -6989,6 +7294,76 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenXmlNamespaceImportsClauseVisitor()
             Dim oldNode = GenerateGreenXmlNamespaceImportsClause()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenGrammar_BlockVisitor()
+            Dim oldNode = GenerateGreenGrammar_Block()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenSyntax_BlockVisitor()
+            Dim oldNode = GenerateGreenSyntax_Block()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenKinds_BlockVisitor()
+            Dim oldNode = GenerateGreenKinds_Block()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenKeywords_BlockVisitor()
+            Dim oldNode = GenerateGreenKeywords_Block()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenLanguage_BlockVisitor()
+            Dim oldNode = GenerateGreenLanguage_Block()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenLanguage_StatementVisitor()
+            Dim oldNode = GenerateGreenLanguage_Statement()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenGrammar_StatementVisitor()
+            Dim oldNode = GenerateGreenGrammar_Statement()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenSyntax_StatementVisitor()
+            Dim oldNode = GenerateGreenSyntax_Statement()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenKinds_StatementVisitor()
+            Dim oldNode = GenerateGreenKinds_Statement()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenKeywords_StatementVisitor()
+            Dim oldNode = GenerateGreenKeywords_Statement()
             Dim visitor = New GreenNodeVisitor()
             visitor.Visit(oldNode)
         End Sub
@@ -10028,6 +10403,151 @@ Partial Public Class GeneratedTests
             return SyntaxFactory.EndSyncLockStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.SyncLockKeyword))
         End Function
 
+        Private Shared Function GenerateRedEndLanguage_Statement() As EndBlockStatementSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.EndLanguage_Statement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), SyntaxFactory.Token(SyntaxKind.Language_Keyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.EndLanguage_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.EndLanguage_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.EndLanguage_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.Language_Keyword))
+        End Function
+
+        Private Shared Function GenerateRedEndGrammar_Statement() As EndBlockStatementSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.EndGrammar_Statement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), SyntaxFactory.Token(SyntaxKind.Grammar_Keyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.EndGrammar_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.EndGrammar_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.EndGrammar_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.Grammar_Keyword))
+        End Function
+
+        Private Shared Function GenerateRedEndSyntax_Statement() As EndBlockStatementSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.EndSyntax_Statement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), SyntaxFactory.Token(SyntaxKind.Syntax_Keyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.EndSyntax_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.EndSyntax_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.EndSyntax_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.Syntax_Keyword))
+        End Function
+
+        Private Shared Function GenerateRedEndKeywords_Statement() As EndBlockStatementSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.EndKeywords_Statement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), SyntaxFactory.Token(SyntaxKind.Keywords_Keyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.EndKeywords_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.EndKeywords_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.EndKeywords_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.Keywords_Keyword))
+        End Function
+
+        Private Shared Function GenerateRedEndKinds_Statement() As EndBlockStatementSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.EndKinds_Statement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), SyntaxFactory.Token(SyntaxKind.Kinds_Keyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.EndKinds_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.EndKinds_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.EndKinds_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.Kinds_Keyword))
+        End Function
+
         Private Shared Function GenerateRedCompilationUnit() As CompilationUnitSyntax
             Dim exceptionTest as boolean = false
             Try
@@ -10144,6 +10664,216 @@ Partial Public Class GeneratedTests
             exceptionTest = false
 
             return SyntaxFactory.XmlNamespaceImportsClause(SyntaxFactory.Token(SyntaxKind.LessThanToken), GenerateRedXmlAttribute(), SyntaxFactory.Token(SyntaxKind.GreaterThanToken))
+        End Function
+
+        Private Shared Function GenerateRedGrammar_Block() As Grammar_BlockSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.Grammar_Block(Nothing, GenerateRedEndGrammar_Statement())
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.Grammar_Block(GenerateRedGrammar_Statement(), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.Grammar_Block(GenerateRedGrammar_Statement(), GenerateRedEndGrammar_Statement())
+        End Function
+
+        Private Shared Function GenerateRedSyntax_Block() As Syntax_BlockSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.Syntax_Block(Nothing, GenerateRedEndSyntax_Statement())
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.Syntax_Block(GenerateRedSyntax_Statement(), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.Syntax_Block(GenerateRedSyntax_Statement(), GenerateRedEndSyntax_Statement())
+        End Function
+
+        Private Shared Function GenerateRedKinds_Block() As Kinds_BlockSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.Kinds_Block(Nothing, GenerateRedEndKinds_Statement())
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.Kinds_Block(GenerateRedKinds_Statement(), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.Kinds_Block(GenerateRedKinds_Statement(), GenerateRedEndKinds_Statement())
+        End Function
+
+        Private Shared Function GenerateRedKeywords_Block() As Keywords_BlockSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.Keywords_Block(Nothing, GenerateRedEndKeywords_Statement())
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.Keywords_Block(GenerateRedKeywords_Statement(), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.Keywords_Block(GenerateRedKeywords_Statement(), GenerateRedEndKeywords_Statement())
+        End Function
+
+        Private Shared Function GenerateRedLanguage_Block() As Language_BlockSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.Language_Block(Nothing, GenerateRedEndLanguage_Statement())
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.Language_Block(GenerateRedLanguage_Statement(), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.Language_Block(GenerateRedLanguage_Statement(), GenerateRedEndLanguage_Statement())
+        End Function
+
+        Private Shared Function GenerateRedLanguage_Statement() As Language_StatementSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.Language_Statement(SyntaxFactory.Token(SyntaxKind.Language_Keyword), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.Language_Statement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedIdentifierName())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.Language_Statement(SyntaxFactory.Token(SyntaxKind.Language_Keyword), GenerateRedIdentifierName())
+        End Function
+
+        Private Shared Function GenerateRedGrammar_Statement() As Grammar_StatementSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.Grammar_Statement(SyntaxFactory.Token(SyntaxKind.Grammar_Keyword), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.Grammar_Statement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedIdentifierName())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.Grammar_Statement(SyntaxFactory.Token(SyntaxKind.Grammar_Keyword), GenerateRedIdentifierName())
+        End Function
+
+        Private Shared Function GenerateRedSyntax_Statement() As Syntax_StatementSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.Syntax_Statement(SyntaxFactory.Token(SyntaxKind.Syntax_Keyword), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.Syntax_Statement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedIdentifierName())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.Syntax_Statement(SyntaxFactory.Token(SyntaxKind.Syntax_Keyword), GenerateRedIdentifierName())
+        End Function
+
+        Private Shared Function GenerateRedKinds_Statement() As Kinds_StatementSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.Kinds_Statement(SyntaxFactory.Token(SyntaxKind.Kinds_Keyword), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.Kinds_Statement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedIdentifierName())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.Kinds_Statement(SyntaxFactory.Token(SyntaxKind.Kinds_Keyword), GenerateRedIdentifierName())
+        End Function
+
+        Private Shared Function GenerateRedKeywords_Statement() As Keywords_StatementSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.Keywords_Statement(SyntaxFactory.Token(SyntaxKind.Language_Keyword), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.Keywords_Statement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedIdentifierName())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.Keywords_Statement(SyntaxFactory.Token(SyntaxKind.Language_Keyword), GenerateRedIdentifierName())
         End Function
 
         Private Shared Function GenerateRedNamespaceBlock() As NamespaceBlockSyntax
@@ -18671,6 +19401,51 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestRedEndLanguage_Statement()
+            dim objectUnderTest = GenerateRedEndLanguage_Statement()
+            Assert.NotNull(objectUnderTest.endKeyword)
+            Assert.NotNull(objectUnderTest.blockKeyword)
+            Dim withObj = objectUnderTest.WithEndKeyword(objectUnderTest.EndKeyword).WithBlockKeyword(objectUnderTest.BlockKeyword)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedEndGrammar_Statement()
+            dim objectUnderTest = GenerateRedEndGrammar_Statement()
+            Assert.NotNull(objectUnderTest.endKeyword)
+            Assert.NotNull(objectUnderTest.blockKeyword)
+            Dim withObj = objectUnderTest.WithEndKeyword(objectUnderTest.EndKeyword).WithBlockKeyword(objectUnderTest.BlockKeyword)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedEndSyntax_Statement()
+            dim objectUnderTest = GenerateRedEndSyntax_Statement()
+            Assert.NotNull(objectUnderTest.endKeyword)
+            Assert.NotNull(objectUnderTest.blockKeyword)
+            Dim withObj = objectUnderTest.WithEndKeyword(objectUnderTest.EndKeyword).WithBlockKeyword(objectUnderTest.BlockKeyword)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedEndKeywords_Statement()
+            dim objectUnderTest = GenerateRedEndKeywords_Statement()
+            Assert.NotNull(objectUnderTest.endKeyword)
+            Assert.NotNull(objectUnderTest.blockKeyword)
+            Dim withObj = objectUnderTest.WithEndKeyword(objectUnderTest.EndKeyword).WithBlockKeyword(objectUnderTest.BlockKeyword)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedEndKinds_Statement()
+            dim objectUnderTest = GenerateRedEndKinds_Statement()
+            Assert.NotNull(objectUnderTest.endKeyword)
+            Assert.NotNull(objectUnderTest.blockKeyword)
+            Dim withObj = objectUnderTest.WithEndKeyword(objectUnderTest.EndKeyword).WithBlockKeyword(objectUnderTest.BlockKeyword)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
         Public Sub TestRedCompilationUnit()
             dim objectUnderTest = GenerateRedCompilationUnit()
             Assert.NotNull(objectUnderTest.endOfFileToken)
@@ -18719,6 +19494,96 @@ Partial Public Class GeneratedTests
             Assert.NotNull(objectUnderTest.xmlNamespace)
             Assert.NotNull(objectUnderTest.greaterThanToken)
             Dim withObj = objectUnderTest.WithLessThanToken(objectUnderTest.LessThanToken).WithXmlNamespace(objectUnderTest.XmlNamespace).WithGreaterThanToken(objectUnderTest.GreaterThanToken)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedGrammar_Block()
+            dim objectUnderTest = GenerateRedGrammar_Block()
+            Assert.NotNull(objectUnderTest.grammar_Statement)
+            Assert.NotNull(objectUnderTest.end_Grammar_Statement)
+            Dim withObj = objectUnderTest.WithGrammar_Statement(objectUnderTest.Grammar_Statement).WithEnd_Grammar_Statement(objectUnderTest.End_Grammar_Statement)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedSyntax_Block()
+            dim objectUnderTest = GenerateRedSyntax_Block()
+            Assert.NotNull(objectUnderTest.syntax_Statement)
+            Assert.NotNull(objectUnderTest.end_Syntax_Statement)
+            Dim withObj = objectUnderTest.WithSyntax_Statement(objectUnderTest.Syntax_Statement).WithEnd_Syntax_Statement(objectUnderTest.End_Syntax_Statement)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedKinds_Block()
+            dim objectUnderTest = GenerateRedKinds_Block()
+            Assert.NotNull(objectUnderTest.kinds_Statement)
+            Assert.NotNull(objectUnderTest.end_Kinds_Statement)
+            Dim withObj = objectUnderTest.WithKinds_Statement(objectUnderTest.Kinds_Statement).WithEnd_Kinds_Statement(objectUnderTest.End_Kinds_Statement)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedKeywords_Block()
+            dim objectUnderTest = GenerateRedKeywords_Block()
+            Assert.NotNull(objectUnderTest.keywords_Statement)
+            Assert.NotNull(objectUnderTest.end_Keywords_Statement)
+            Dim withObj = objectUnderTest.WithKeywords_Statement(objectUnderTest.Keywords_Statement).WithEnd_Keywords_Statement(objectUnderTest.End_Keywords_Statement)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedLanguage_Block()
+            dim objectUnderTest = GenerateRedLanguage_Block()
+            Assert.NotNull(objectUnderTest.language_Statement)
+            Assert.NotNull(objectUnderTest.end_Language_Statement)
+            Dim withObj = objectUnderTest.WithLanguage_Statement(objectUnderTest.Language_Statement).WithEnd_Language_Statement(objectUnderTest.End_Language_Statement)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedLanguage_Statement()
+            dim objectUnderTest = GenerateRedLanguage_Statement()
+            Assert.NotNull(objectUnderTest.language_Keyword)
+            Assert.NotNull(objectUnderTest.name)
+            Dim withObj = objectUnderTest.WithLanguage_Keyword(objectUnderTest.Language_Keyword).WithName(objectUnderTest.Name)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedGrammar_Statement()
+            dim objectUnderTest = GenerateRedGrammar_Statement()
+            Assert.NotNull(objectUnderTest.grammar_Keyword)
+            Assert.NotNull(objectUnderTest.name)
+            Dim withObj = objectUnderTest.WithGrammar_Keyword(objectUnderTest.Grammar_Keyword).WithName(objectUnderTest.Name)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedSyntax_Statement()
+            dim objectUnderTest = GenerateRedSyntax_Statement()
+            Assert.NotNull(objectUnderTest.syntax_Keyword)
+            Assert.NotNull(objectUnderTest.name)
+            Dim withObj = objectUnderTest.WithSyntax_Keyword(objectUnderTest.Syntax_Keyword).WithName(objectUnderTest.Name)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedKinds_Statement()
+            dim objectUnderTest = GenerateRedKinds_Statement()
+            Assert.NotNull(objectUnderTest.kinds_Keyword)
+            Assert.NotNull(objectUnderTest.name)
+            Dim withObj = objectUnderTest.WithKinds_Keyword(objectUnderTest.Kinds_Keyword).WithName(objectUnderTest.Name)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedKeywords_Statement()
+            dim objectUnderTest = GenerateRedKeywords_Statement()
+            Assert.NotNull(objectUnderTest.keywords_Keyword)
+            Assert.NotNull(objectUnderTest.name)
+            Dim withObj = objectUnderTest.WithKeywords_Keyword(objectUnderTest.Keywords_Keyword).WithName(objectUnderTest.Name)
             Assert.Equal(withobj, objectUnderTest)
         End Sub
 
@@ -22105,6 +22970,46 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestRedEndLanguage_StatementRewriter()
+            dim oldNode = GenerateRedEndLanguage_Statement()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedEndGrammar_StatementRewriter()
+            dim oldNode = GenerateRedEndGrammar_Statement()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedEndSyntax_StatementRewriter()
+            dim oldNode = GenerateRedEndSyntax_Statement()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedEndKeywords_StatementRewriter()
+            dim oldNode = GenerateRedEndKeywords_Statement()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedEndKinds_StatementRewriter()
+            dim oldNode = GenerateRedEndKinds_Statement()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
         Public Sub TestRedCompilationUnitRewriter()
             dim oldNode = GenerateRedCompilationUnit()
             Dim rewriter = New RedIdentityRewriter()
@@ -22147,6 +23052,86 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestRedXmlNamespaceImportsClauseRewriter()
             dim oldNode = GenerateRedXmlNamespaceImportsClause()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedGrammar_BlockRewriter()
+            dim oldNode = GenerateRedGrammar_Block()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedSyntax_BlockRewriter()
+            dim oldNode = GenerateRedSyntax_Block()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedKinds_BlockRewriter()
+            dim oldNode = GenerateRedKinds_Block()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedKeywords_BlockRewriter()
+            dim oldNode = GenerateRedKeywords_Block()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedLanguage_BlockRewriter()
+            dim oldNode = GenerateRedLanguage_Block()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedLanguage_StatementRewriter()
+            dim oldNode = GenerateRedLanguage_Statement()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedGrammar_StatementRewriter()
+            dim oldNode = GenerateRedGrammar_Statement()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedSyntax_StatementRewriter()
+            dim oldNode = GenerateRedSyntax_Statement()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedKinds_StatementRewriter()
+            dim oldNode = GenerateRedKinds_Statement()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedKeywords_StatementRewriter()
+            dim oldNode = GenerateRedKeywords_Statement()
             Dim rewriter = New RedIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)

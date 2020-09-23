@@ -3201,5 +3201,33 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ConflictMarkerTrivia = 792
 
+
+        ' Language Grammar 
+
+        Language_Block
+        Language_Keyword
+        Language_Statement
+        EndLanguage_Statement
+
+        Grammar_Block
+        Grammar_Keyword
+        Grammar_Statement
+        EndGrammar_Statement
+
+        Syntax_Block
+        Syntax_Keyword
+        Syntax_Statement
+        EndSyntax_Statement
+
+        Keywords_Block
+        Keywords_Keyword
+        Keywords_Statement
+        EndKeywords_Statement
+
+        Kinds_Block
+        Kinds_Keyword
+        Kinds_Statement
+        EndKinds_Statement
+
     End Enum
 End Namespace

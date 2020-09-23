@@ -394,7 +394,12 @@ Public MustInherit Class WriteUtils
         If TypeOf kind Is ParseNodeKind Then
             Return CType(kind, ParseNodeKind).NodeStructure
         ElseIf TypeOf kind Is List(Of ParseNodeKind) Then
-            Return GetCommonStructure(CType(kind, List(Of ParseNodeKind)))
+            Dim ns = CType(kind, List(Of ParseNodeKind))
+            If ns IsNot Nothing Then
+                Return GetCommonStructure(ns)
+            Else
+                Return Nothing
+            End if
         End If
 
         Return Nothing
@@ -465,15 +470,16 @@ Public MustInherit Class WriteUtils
         Dim structList = kindList.Select(Function(kind) kind.NodeStructure).ToList() ' list of the structures.
 
         ' Any candidate ancestor is an ancestor (or same) of the first element
-        Dim candidate As ParseNodeStructure = structList(0)
+        Dim candidate As ParseNodeStructure = If(structList Is Nothing,nothing,structList(0))
 
-        Do
-            If IsAncestorOfAll(candidate, structList) Then
+        While candidate IsNot nothing
+             If IsAncestorOfAll(candidate, structList) Then
                 Return candidate
             End If
-
+            
             candidate = candidate.ParentStructure
-        Loop While (candidate IsNot Nothing)
+
+       End While
 
         Return Nothing ' no ancestor
     End Function

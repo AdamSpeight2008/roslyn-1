@@ -179,15 +179,25 @@ declaration_statement
   | enum_statement
   | event_block
   | field_declaration
+  | grammar___block
+  | grammar___statement
   | imports_statement
   | incomplete_member
   | inherits_or_implements_statement
+  | keywords___block
+  | keywords___statement
+  | kinds___block
+  | kinds___statement
+  | language___block
+  | language___statement
   | method_base
   | method_block_base
   | namespace_block
   | namespace_statement
   | option_statement
   | property_block
+  | syntax___block
+  | syntax___statement
   | type_block
   | type_statement
   ;
@@ -199,8 +209,12 @@ end_block_statement
   | end_event_statement
   | end_function_statement
   | end_get_statement
+  | end_grammar___statement
   | end_if_statement
   | end_interface_statement
+  | end_keywords___statement
+  | end_kinds___statement
+  | end_language___statement
   | end_module_statement
   | end_namespace_statement
   | end_operator_statement
@@ -212,6 +226,7 @@ end_block_statement
   | end_structure_statement
   | end_sub_statement
   | end_sync_lock_statement
+  | end_syntax___statement
   | end_try_statement
   | end_using_statement
   | end_while_statement
@@ -242,12 +257,28 @@ end_get_statement
   : 'End' 'Get'
   ;
 
+end_grammar___statement
+  : 'End' 'Grammar'
+  ;
+
 end_if_statement
   : 'End' 'If'
   ;
 
 end_interface_statement
   : 'End' 'Interface'
+  ;
+
+end_keywords___statement
+  : 'End' 'Kinds'
+  ;
+
+end_kinds___statement
+  : 'End' 'Keywords'
+  ;
+
+end_language___statement
+  : 'End' 'Language'
   ;
 
 end_module_statement
@@ -292,6 +323,10 @@ end_sub_statement
 
 end_sync_lock_statement
   : 'End' 'SyncLock'
+  ;
+
+end_syntax___statement
+  : 'End' 'Syntax'
   ;
 
 end_try_statement
@@ -492,6 +527,14 @@ variable_declarator
   : modified_identifier (',' modified_identifier)* as_clause? equals_value?
   ;
 
+grammar___block
+  : grammar___statement end_grammar___statement
+  ;
+
+grammar___statement
+  : 'Grammar' name
+  ;
+
 incomplete_member
   : attribute_list* modifier* identifier_token?
   ;
@@ -507,6 +550,30 @@ implements_statement
 
 inherits_statement
   : 'Inherits' type (',' type)*
+  ;
+
+keywords___block
+  : keywords___statement end_keywords___statement
+  ;
+
+keywords___statement
+  : 'Language' name
+  ;
+
+kinds___block
+  : kinds___statement end_kinds___statement
+  ;
+
+kinds___statement
+  : 'Kinds' name
+  ;
+
+language___block
+  : language___statement end_language___statement
+  ;
+
+language___statement
+  : 'Language' name
   ;
 
 method_base
@@ -712,6 +779,14 @@ namespace_statement
 
 property_block
   : property_statement accessor_block* end_property_statement
+  ;
+
+syntax___block
+  : syntax___statement end_syntax___statement
+  ;
+
+syntax___statement
+  : 'Syntax' name
   ;
 
 type_block

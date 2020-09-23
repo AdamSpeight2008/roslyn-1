@@ -316,6 +316,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return "Variant"
         Case SyntaxKind.WendKeyword
             Return "Wend"
+        Case SyntaxKind.Language_Keyword
+            Return "Language"
+        Case SyntaxKind.Grammar_Keyword
+            Return "Grammar"
+        Case SyntaxKind.Syntax_Keyword
+            Return "Syntax"
+        Case SyntaxKind.Kinds_Keyword
+            Return "Kinds"
+        Case SyntaxKind.Keywords_Keyword
+            Return "Keywords"
         Case SyntaxKind.AggregateKeyword
             Return "Aggregate"
         Case SyntaxKind.AllKeyword

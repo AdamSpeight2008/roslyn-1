@@ -1,1 +1,160 @@
-
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax.End_Grammar_Statement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax.Grammar_Statement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax.Update(grammar_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax, end_Grammar_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax.WithEnd_Grammar_Statement(end_Grammar_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax.WithGrammar_Statement(grammar_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax.Grammar_Keyword() -> Microsoft.CodeAnalysis.SyntaxToken
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax.Name() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax.Update(grammar_Keyword As Microsoft.CodeAnalysis.SyntaxToken, name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax.WithGrammar_Keyword(grammar_Keyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax.WithName(name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax.End_Keywords_Statement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax.Keywords_Statement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax.Update(keywords_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax, end_Keywords_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax.WithEnd_Keywords_Statement(end_Keywords_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax.WithKeywords_Statement(keywords_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax.Keywords_Keyword() -> Microsoft.CodeAnalysis.SyntaxToken
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax.Name() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax.Update(keywords_Keyword As Microsoft.CodeAnalysis.SyntaxToken, name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax.WithKeywords_Keyword(keywords_Keyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax.WithName(name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax.End_Kinds_Statement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax.Kinds_Statement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax.Update(kinds_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax, end_Kinds_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax.WithEnd_Kinds_Statement(end_Kinds_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax.WithKinds_Statement(kinds_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax.Kinds_Keyword() -> Microsoft.CodeAnalysis.SyntaxToken
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax.Name() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax.Update(kinds_Keyword As Microsoft.CodeAnalysis.SyntaxToken, name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax.WithKinds_Keyword(kinds_Keyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax.WithName(name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax.End_Language_Statement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax.Language_Statement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax.Update(language_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax, end_Language_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax.WithEnd_Language_Statement(end_Language_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax.WithLanguage_Statement(language_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax.Language_Keyword() -> Microsoft.CodeAnalysis.SyntaxToken
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax.Name() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax.Update(language_Keyword As Microsoft.CodeAnalysis.SyntaxToken, name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax.WithLanguage_Keyword(language_Keyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax.WithName(name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax.End_Syntax_Statement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax.Syntax_Statement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax.Update(syntax_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax, end_Syntax_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax.WithEnd_Syntax_Statement(end_Syntax_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax.WithSyntax_Statement(syntax_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax.Name() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax.Syntax_Keyword() -> Microsoft.CodeAnalysis.SyntaxToken
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax.Update(syntax_Keyword As Microsoft.CodeAnalysis.SyntaxToken, name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax.WithName(name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax.WithSyntax_Keyword(syntax_Keyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.EndGrammar_Statement = 800 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.EndKeywords_Statement = 808 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.EndKinds_Statement = 812 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.EndLanguage_Statement = 796 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.EndSyntax_Statement = 804 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.Grammar_Block = 797 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.Grammar_Keyword = 798 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.Grammar_Statement = 799 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.Keywords_Block = 805 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.Keywords_Keyword = 806 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.Keywords_Statement = 807 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.Kinds_Block = 809 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.Kinds_Keyword = 810 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.Kinds_Statement = 811 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.Language_Block = 793 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.Language_Keyword = 794 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.Language_Statement = 795 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.Syntax_Block = 801 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.Syntax_Keyword = 802 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.Syntax_Statement = 803 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitGrammar_Block(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitGrammar_Statement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitKeywords_Block(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitKeywords_Statement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitKinds_Block(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitKinds_Statement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitLanguage_Block(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitLanguage_Statement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitSyntax_Block(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitSyntax_Statement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitGrammar_Block(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax) -> Void
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitGrammar_Statement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax) -> Void
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitKeywords_Block(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax) -> Void
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitKeywords_Statement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax) -> Void
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitKinds_Block(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax) -> Void
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitKinds_Statement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax) -> Void
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitLanguage_Block(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax) -> Void
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitLanguage_Statement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax) -> Void
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitSyntax_Block(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax) -> Void
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitSyntax_Statement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitGrammar_Block(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitGrammar_Statement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitKeywords_Block(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitKeywords_Statement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitKinds_Block(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitKinds_Statement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitLanguage_Block(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitLanguage_Statement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitSyntax_Block(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitSyntax_Statement(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.EndGrammar_Statement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.EndGrammar_Statement(endKeyword As Microsoft.CodeAnalysis.SyntaxToken, blockKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.EndKeywords_Statement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.EndKeywords_Statement(endKeyword As Microsoft.CodeAnalysis.SyntaxToken, blockKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.EndKinds_Statement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.EndKinds_Statement(endKeyword As Microsoft.CodeAnalysis.SyntaxToken, blockKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.EndLanguage_Statement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.EndLanguage_Statement(endKeyword As Microsoft.CodeAnalysis.SyntaxToken, blockKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.EndSyntax_Statement() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.EndSyntax_Statement(endKeyword As Microsoft.CodeAnalysis.SyntaxToken, blockKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Grammar_Block(grammar_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Grammar_Block(grammar_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax, end_Grammar_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Grammar_Statement(grammar_Keyword As Microsoft.CodeAnalysis.SyntaxToken, name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Grammar_Statement(name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Keywords_Block(keywords_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Keywords_Block(keywords_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax, end_Keywords_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Keywords_Statement(keywords_Keyword As Microsoft.CodeAnalysis.SyntaxToken, name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Keywords_Statement(name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Kinds_Block(kinds_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Kinds_Block(kinds_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax, end_Kinds_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Kinds_Statement(kinds_Keyword As Microsoft.CodeAnalysis.SyntaxToken, name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Kinds_Statement(name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Language_Block(language_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Language_Block(language_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax, end_Language_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Language_Statement(language_Keyword As Microsoft.CodeAnalysis.SyntaxToken, name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Language_Statement(name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Syntax_Block(syntax_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Syntax_Block(syntax_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax, end_Syntax_Statement As Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Syntax_Statement(name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.Syntax_Statement(syntax_Keyword As Microsoft.CodeAnalysis.SyntaxToken, name As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax

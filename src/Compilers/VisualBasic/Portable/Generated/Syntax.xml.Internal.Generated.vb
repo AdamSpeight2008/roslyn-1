@@ -1246,6 +1246,1186 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
+    Friend NotInheritable Class Grammar_BlockSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend ReadOnly _grammar_Statement as Grammar_StatementSyntax
+        Friend ReadOnly _end_Grammar_Statement as EndBlockStatementSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, grammar_Statement As Grammar_StatementSyntax, end_Grammar_Statement As EndBlockStatementSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(grammar_Statement)
+            Me._grammar_Statement = grammar_Statement
+            AdjustFlagsAndWidth(end_Grammar_Statement)
+            Me._end_Grammar_Statement = end_Grammar_Statement
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, grammar_Statement As Grammar_StatementSyntax, end_Grammar_Statement As EndBlockStatementSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(grammar_Statement)
+            Me._grammar_Statement = grammar_Statement
+            AdjustFlagsAndWidth(end_Grammar_Statement)
+            Me._end_Grammar_Statement = end_Grammar_Statement
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), grammar_Statement As Grammar_StatementSyntax, end_Grammar_Statement As EndBlockStatementSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(grammar_Statement)
+            Me._grammar_Statement = grammar_Statement
+            AdjustFlagsAndWidth(end_Grammar_Statement)
+            Me._end_Grammar_Statement = end_Grammar_Statement
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _grammar_Statement = DirectCast(reader.ReadValue(), Grammar_StatementSyntax)
+          If _grammar_Statement isnot Nothing 
+             AdjustFlagsAndWidth(_grammar_Statement)
+             Me._grammar_Statement = _grammar_Statement
+          End If
+          Dim _end_Grammar_Statement = DirectCast(reader.ReadValue(), EndBlockStatementSyntax)
+          If _end_Grammar_Statement isnot Nothing 
+             AdjustFlagsAndWidth(_end_Grammar_Statement)
+             Me._end_Grammar_Statement = _end_Grammar_Statement
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New Grammar_BlockSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._grammar_Statement)
+          writer.WriteValue(Me._end_Grammar_Statement)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(Grammar_BlockSyntax), Function(r) New Grammar_BlockSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' The "Grammar" statement that begins a grammar block.
+        ''' </summary>
+        Friend  ReadOnly Property Grammar_Statement As InternalSyntax.Grammar_StatementSyntax
+            Get
+                Return Me._grammar_Statement
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' The "End Grammar" statement that ends a grammar block.
+        ''' </summary>
+        Friend  ReadOnly Property End_Grammar_Statement As InternalSyntax.EndBlockStatementSyntax
+            Get
+                Return Me._end_Grammar_Statement
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._grammar_Statement
+                Case 1
+                    Return Me._end_Grammar_Statement
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new Grammar_BlockSyntax(Me.Kind, newErrors, GetAnnotations, _grammar_Statement, _end_Grammar_Statement)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new Grammar_BlockSyntax(Me.Kind, GetDiagnostics, annotations, _grammar_Statement, _end_Grammar_Statement)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitGrammar_Block(Me)
+        End Function
+
+    End Class
+
+    Friend NotInheritable Class Syntax_BlockSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend ReadOnly _syntax_Statement as Syntax_StatementSyntax
+        Friend ReadOnly _end_Syntax_Statement as EndBlockStatementSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, syntax_Statement As Syntax_StatementSyntax, end_Syntax_Statement As EndBlockStatementSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(syntax_Statement)
+            Me._syntax_Statement = syntax_Statement
+            AdjustFlagsAndWidth(end_Syntax_Statement)
+            Me._end_Syntax_Statement = end_Syntax_Statement
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, syntax_Statement As Syntax_StatementSyntax, end_Syntax_Statement As EndBlockStatementSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(syntax_Statement)
+            Me._syntax_Statement = syntax_Statement
+            AdjustFlagsAndWidth(end_Syntax_Statement)
+            Me._end_Syntax_Statement = end_Syntax_Statement
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), syntax_Statement As Syntax_StatementSyntax, end_Syntax_Statement As EndBlockStatementSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(syntax_Statement)
+            Me._syntax_Statement = syntax_Statement
+            AdjustFlagsAndWidth(end_Syntax_Statement)
+            Me._end_Syntax_Statement = end_Syntax_Statement
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _syntax_Statement = DirectCast(reader.ReadValue(), Syntax_StatementSyntax)
+          If _syntax_Statement isnot Nothing 
+             AdjustFlagsAndWidth(_syntax_Statement)
+             Me._syntax_Statement = _syntax_Statement
+          End If
+          Dim _end_Syntax_Statement = DirectCast(reader.ReadValue(), EndBlockStatementSyntax)
+          If _end_Syntax_Statement isnot Nothing 
+             AdjustFlagsAndWidth(_end_Syntax_Statement)
+             Me._end_Syntax_Statement = _end_Syntax_Statement
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New Syntax_BlockSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._syntax_Statement)
+          writer.WriteValue(Me._end_Syntax_Statement)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(Syntax_BlockSyntax), Function(r) New Syntax_BlockSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' The "Syntax" statement that begins a syntax block.
+        ''' </summary>
+        Friend  ReadOnly Property Syntax_Statement As InternalSyntax.Syntax_StatementSyntax
+            Get
+                Return Me._syntax_Statement
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' The "End Syntax" statement that ends a syntax block.
+        ''' </summary>
+        Friend  ReadOnly Property End_Syntax_Statement As InternalSyntax.EndBlockStatementSyntax
+            Get
+                Return Me._end_Syntax_Statement
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._syntax_Statement
+                Case 1
+                    Return Me._end_Syntax_Statement
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new Syntax_BlockSyntax(Me.Kind, newErrors, GetAnnotations, _syntax_Statement, _end_Syntax_Statement)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new Syntax_BlockSyntax(Me.Kind, GetDiagnostics, annotations, _syntax_Statement, _end_Syntax_Statement)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitSyntax_Block(Me)
+        End Function
+
+    End Class
+
+    Friend NotInheritable Class Kinds_BlockSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend ReadOnly _kinds_Statement as Kinds_StatementSyntax
+        Friend ReadOnly _end_Kinds_Statement as EndBlockStatementSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, kinds_Statement As Kinds_StatementSyntax, end_Kinds_Statement As EndBlockStatementSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(kinds_Statement)
+            Me._kinds_Statement = kinds_Statement
+            AdjustFlagsAndWidth(end_Kinds_Statement)
+            Me._end_Kinds_Statement = end_Kinds_Statement
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, kinds_Statement As Kinds_StatementSyntax, end_Kinds_Statement As EndBlockStatementSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(kinds_Statement)
+            Me._kinds_Statement = kinds_Statement
+            AdjustFlagsAndWidth(end_Kinds_Statement)
+            Me._end_Kinds_Statement = end_Kinds_Statement
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), kinds_Statement As Kinds_StatementSyntax, end_Kinds_Statement As EndBlockStatementSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(kinds_Statement)
+            Me._kinds_Statement = kinds_Statement
+            AdjustFlagsAndWidth(end_Kinds_Statement)
+            Me._end_Kinds_Statement = end_Kinds_Statement
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _kinds_Statement = DirectCast(reader.ReadValue(), Kinds_StatementSyntax)
+          If _kinds_Statement isnot Nothing 
+             AdjustFlagsAndWidth(_kinds_Statement)
+             Me._kinds_Statement = _kinds_Statement
+          End If
+          Dim _end_Kinds_Statement = DirectCast(reader.ReadValue(), EndBlockStatementSyntax)
+          If _end_Kinds_Statement isnot Nothing 
+             AdjustFlagsAndWidth(_end_Kinds_Statement)
+             Me._end_Kinds_Statement = _end_Kinds_Statement
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New Kinds_BlockSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._kinds_Statement)
+          writer.WriteValue(Me._end_Kinds_Statement)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(Kinds_BlockSyntax), Function(r) New Kinds_BlockSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' The "Kinds" statement that begins a kinds block.
+        ''' </summary>
+        Friend  ReadOnly Property Kinds_Statement As InternalSyntax.Kinds_StatementSyntax
+            Get
+                Return Me._kinds_Statement
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' The "End Kinds." statement that ends a kinds block.
+        ''' </summary>
+        Friend  ReadOnly Property End_Kinds_Statement As InternalSyntax.EndBlockStatementSyntax
+            Get
+                Return Me._end_Kinds_Statement
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._kinds_Statement
+                Case 1
+                    Return Me._end_Kinds_Statement
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new Kinds_BlockSyntax(Me.Kind, newErrors, GetAnnotations, _kinds_Statement, _end_Kinds_Statement)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new Kinds_BlockSyntax(Me.Kind, GetDiagnostics, annotations, _kinds_Statement, _end_Kinds_Statement)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitKinds_Block(Me)
+        End Function
+
+    End Class
+
+    Friend NotInheritable Class Keywords_BlockSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend ReadOnly _keywords_Statement as Keywords_StatementSyntax
+        Friend ReadOnly _end_Keywords_Statement as EndBlockStatementSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, keywords_Statement As Keywords_StatementSyntax, end_Keywords_Statement As EndBlockStatementSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(keywords_Statement)
+            Me._keywords_Statement = keywords_Statement
+            AdjustFlagsAndWidth(end_Keywords_Statement)
+            Me._end_Keywords_Statement = end_Keywords_Statement
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, keywords_Statement As Keywords_StatementSyntax, end_Keywords_Statement As EndBlockStatementSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(keywords_Statement)
+            Me._keywords_Statement = keywords_Statement
+            AdjustFlagsAndWidth(end_Keywords_Statement)
+            Me._end_Keywords_Statement = end_Keywords_Statement
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), keywords_Statement As Keywords_StatementSyntax, end_Keywords_Statement As EndBlockStatementSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(keywords_Statement)
+            Me._keywords_Statement = keywords_Statement
+            AdjustFlagsAndWidth(end_Keywords_Statement)
+            Me._end_Keywords_Statement = end_Keywords_Statement
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _keywords_Statement = DirectCast(reader.ReadValue(), Keywords_StatementSyntax)
+          If _keywords_Statement isnot Nothing 
+             AdjustFlagsAndWidth(_keywords_Statement)
+             Me._keywords_Statement = _keywords_Statement
+          End If
+          Dim _end_Keywords_Statement = DirectCast(reader.ReadValue(), EndBlockStatementSyntax)
+          If _end_Keywords_Statement isnot Nothing 
+             AdjustFlagsAndWidth(_end_Keywords_Statement)
+             Me._end_Keywords_Statement = _end_Keywords_Statement
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New Keywords_BlockSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._keywords_Statement)
+          writer.WriteValue(Me._end_Keywords_Statement)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(Keywords_BlockSyntax), Function(r) New Keywords_BlockSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' The "Keywords" statement that begins a keywords block.
+        ''' </summary>
+        Friend  ReadOnly Property Keywords_Statement As InternalSyntax.Keywords_StatementSyntax
+            Get
+                Return Me._keywords_Statement
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' The "End Keywords" statement that ends a keywords block.
+        ''' </summary>
+        Friend  ReadOnly Property End_Keywords_Statement As InternalSyntax.EndBlockStatementSyntax
+            Get
+                Return Me._end_Keywords_Statement
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._keywords_Statement
+                Case 1
+                    Return Me._end_Keywords_Statement
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new Keywords_BlockSyntax(Me.Kind, newErrors, GetAnnotations, _keywords_Statement, _end_Keywords_Statement)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new Keywords_BlockSyntax(Me.Kind, GetDiagnostics, annotations, _keywords_Statement, _end_Keywords_Statement)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitKeywords_Block(Me)
+        End Function
+
+    End Class
+
+    Friend NotInheritable Class Language_BlockSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend ReadOnly _language_Statement as Language_StatementSyntax
+        Friend ReadOnly _end_Language_Statement as EndBlockStatementSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, language_Statement As Language_StatementSyntax, end_Language_Statement As EndBlockStatementSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(language_Statement)
+            Me._language_Statement = language_Statement
+            AdjustFlagsAndWidth(end_Language_Statement)
+            Me._end_Language_Statement = end_Language_Statement
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, language_Statement As Language_StatementSyntax, end_Language_Statement As EndBlockStatementSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(language_Statement)
+            Me._language_Statement = language_Statement
+            AdjustFlagsAndWidth(end_Language_Statement)
+            Me._end_Language_Statement = end_Language_Statement
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), language_Statement As Language_StatementSyntax, end_Language_Statement As EndBlockStatementSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(language_Statement)
+            Me._language_Statement = language_Statement
+            AdjustFlagsAndWidth(end_Language_Statement)
+            Me._end_Language_Statement = end_Language_Statement
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _language_Statement = DirectCast(reader.ReadValue(), Language_StatementSyntax)
+          If _language_Statement isnot Nothing 
+             AdjustFlagsAndWidth(_language_Statement)
+             Me._language_Statement = _language_Statement
+          End If
+          Dim _end_Language_Statement = DirectCast(reader.ReadValue(), EndBlockStatementSyntax)
+          If _end_Language_Statement isnot Nothing 
+             AdjustFlagsAndWidth(_end_Language_Statement)
+             Me._end_Language_Statement = _end_Language_Statement
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New Language_BlockSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._language_Statement)
+          writer.WriteValue(Me._end_Language_Statement)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(Language_BlockSyntax), Function(r) New Language_BlockSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' The "Language" statement that begins a language block.
+        ''' </summary>
+        Friend  ReadOnly Property Language_Statement As InternalSyntax.Language_StatementSyntax
+            Get
+                Return Me._language_Statement
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' The "End Language." statement that ends a language block.
+        ''' </summary>
+        Friend  ReadOnly Property End_Language_Statement As InternalSyntax.EndBlockStatementSyntax
+            Get
+                Return Me._end_Language_Statement
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._language_Statement
+                Case 1
+                    Return Me._end_Language_Statement
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new Language_BlockSyntax(Me.Kind, newErrors, GetAnnotations, _language_Statement, _end_Language_Statement)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new Language_BlockSyntax(Me.Kind, GetDiagnostics, annotations, _language_Statement, _end_Language_Statement)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitLanguage_Block(Me)
+        End Function
+
+    End Class
+
+    ''' <summary>
+    ''' Represents the beginning statement of a language declaration. This node always
+    ''' appears as the Begin of a BlockStatement with Kind=Language_Block.
+    ''' </summary>
+    Friend NotInheritable Class Language_StatementSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend ReadOnly _language_Keyword as KeywordSyntax
+        Friend ReadOnly _name as NameSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, language_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(language_Keyword)
+            Me._language_Keyword = language_Keyword
+            AdjustFlagsAndWidth(name)
+            Me._name = name
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, language_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(language_Keyword)
+            Me._language_Keyword = language_Keyword
+            AdjustFlagsAndWidth(name)
+            Me._name = name
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), language_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(language_Keyword)
+            Me._language_Keyword = language_Keyword
+            AdjustFlagsAndWidth(name)
+            Me._name = name
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _language_Keyword = DirectCast(reader.ReadValue(), KeywordSyntax)
+          If _language_Keyword isnot Nothing 
+             AdjustFlagsAndWidth(_language_Keyword)
+             Me._language_Keyword = _language_Keyword
+          End If
+          Dim _name = DirectCast(reader.ReadValue(), NameSyntax)
+          If _name isnot Nothing 
+             AdjustFlagsAndWidth(_name)
+             Me._name = _name
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New Language_StatementSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._language_Keyword)
+          writer.WriteValue(Me._name)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(Language_StatementSyntax), Function(r) New Language_StatementSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' The "Language" keyword.
+        ''' </summary>
+        Friend  ReadOnly Property Language_Keyword As InternalSyntax.KeywordSyntax
+            Get
+                Return Me._language_Keyword
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' A (possibly dotted) name denoting the language being declared.
+        ''' </summary>
+        Friend  ReadOnly Property Name As InternalSyntax.NameSyntax
+            Get
+                Return Me._name
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._language_Keyword
+                Case 1
+                    Return Me._name
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new Language_StatementSyntax(Me.Kind, newErrors, GetAnnotations, _language_Keyword, _name)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new Language_StatementSyntax(Me.Kind, GetDiagnostics, annotations, _language_Keyword, _name)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitLanguage_Statement(Me)
+        End Function
+
+    End Class
+
+    ''' <summary>
+    ''' Represents the beginning statement of a grammar declaration. This node always
+    ''' appears as the Begin of a BlockStatement with Kind=Grammar_Block.
+    ''' </summary>
+    Friend NotInheritable Class Grammar_StatementSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend ReadOnly _grammar_Keyword as KeywordSyntax
+        Friend ReadOnly _name as NameSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, grammar_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(grammar_Keyword)
+            Me._grammar_Keyword = grammar_Keyword
+            AdjustFlagsAndWidth(name)
+            Me._name = name
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, grammar_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(grammar_Keyword)
+            Me._grammar_Keyword = grammar_Keyword
+            AdjustFlagsAndWidth(name)
+            Me._name = name
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), grammar_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(grammar_Keyword)
+            Me._grammar_Keyword = grammar_Keyword
+            AdjustFlagsAndWidth(name)
+            Me._name = name
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _grammar_Keyword = DirectCast(reader.ReadValue(), KeywordSyntax)
+          If _grammar_Keyword isnot Nothing 
+             AdjustFlagsAndWidth(_grammar_Keyword)
+             Me._grammar_Keyword = _grammar_Keyword
+          End If
+          Dim _name = DirectCast(reader.ReadValue(), NameSyntax)
+          If _name isnot Nothing 
+             AdjustFlagsAndWidth(_name)
+             Me._name = _name
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New Grammar_StatementSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._grammar_Keyword)
+          writer.WriteValue(Me._name)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(Grammar_StatementSyntax), Function(r) New Grammar_StatementSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' The "Language" keyword.
+        ''' </summary>
+        Friend  ReadOnly Property Grammar_Keyword As InternalSyntax.KeywordSyntax
+            Get
+                Return Me._grammar_Keyword
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </summary>
+        Friend  ReadOnly Property Name As InternalSyntax.NameSyntax
+            Get
+                Return Me._name
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._grammar_Keyword
+                Case 1
+                    Return Me._name
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new Grammar_StatementSyntax(Me.Kind, newErrors, GetAnnotations, _grammar_Keyword, _name)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new Grammar_StatementSyntax(Me.Kind, GetDiagnostics, annotations, _grammar_Keyword, _name)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitGrammar_Statement(Me)
+        End Function
+
+    End Class
+
+    ''' <summary>
+    ''' Represents the beginning statement of a namespace declaration. This node always
+    ''' appears as the Begin of a BlockStatement with Kind=NamespaceBlock.
+    ''' </summary>
+    Friend NotInheritable Class Syntax_StatementSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend ReadOnly _syntax_Keyword as KeywordSyntax
+        Friend ReadOnly _name as NameSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, syntax_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(syntax_Keyword)
+            Me._syntax_Keyword = syntax_Keyword
+            AdjustFlagsAndWidth(name)
+            Me._name = name
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, syntax_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(syntax_Keyword)
+            Me._syntax_Keyword = syntax_Keyword
+            AdjustFlagsAndWidth(name)
+            Me._name = name
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), syntax_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(syntax_Keyword)
+            Me._syntax_Keyword = syntax_Keyword
+            AdjustFlagsAndWidth(name)
+            Me._name = name
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _syntax_Keyword = DirectCast(reader.ReadValue(), KeywordSyntax)
+          If _syntax_Keyword isnot Nothing 
+             AdjustFlagsAndWidth(_syntax_Keyword)
+             Me._syntax_Keyword = _syntax_Keyword
+          End If
+          Dim _name = DirectCast(reader.ReadValue(), NameSyntax)
+          If _name isnot Nothing 
+             AdjustFlagsAndWidth(_name)
+             Me._name = _name
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New Syntax_StatementSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._syntax_Keyword)
+          writer.WriteValue(Me._name)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(Syntax_StatementSyntax), Function(r) New Syntax_StatementSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' The "Syntax" keyword.
+        ''' </summary>
+        Friend  ReadOnly Property Syntax_Keyword As InternalSyntax.KeywordSyntax
+            Get
+                Return Me._syntax_Keyword
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </summary>
+        Friend  ReadOnly Property Name As InternalSyntax.NameSyntax
+            Get
+                Return Me._name
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._syntax_Keyword
+                Case 1
+                    Return Me._name
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new Syntax_StatementSyntax(Me.Kind, newErrors, GetAnnotations, _syntax_Keyword, _name)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new Syntax_StatementSyntax(Me.Kind, GetDiagnostics, annotations, _syntax_Keyword, _name)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitSyntax_Statement(Me)
+        End Function
+
+    End Class
+
+    ''' <summary>
+    ''' Represents the beginning statement of a kinds declaration. This node always
+    ''' appears as the Begin of a BlockStatement with Kind=Kinds_Block.
+    ''' </summary>
+    Friend NotInheritable Class Kinds_StatementSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend ReadOnly _kinds_Keyword as KeywordSyntax
+        Friend ReadOnly _name as NameSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, kinds_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(kinds_Keyword)
+            Me._kinds_Keyword = kinds_Keyword
+            AdjustFlagsAndWidth(name)
+            Me._name = name
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, kinds_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(kinds_Keyword)
+            Me._kinds_Keyword = kinds_Keyword
+            AdjustFlagsAndWidth(name)
+            Me._name = name
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), kinds_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(kinds_Keyword)
+            Me._kinds_Keyword = kinds_Keyword
+            AdjustFlagsAndWidth(name)
+            Me._name = name
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _kinds_Keyword = DirectCast(reader.ReadValue(), KeywordSyntax)
+          If _kinds_Keyword isnot Nothing 
+             AdjustFlagsAndWidth(_kinds_Keyword)
+             Me._kinds_Keyword = _kinds_Keyword
+          End If
+          Dim _name = DirectCast(reader.ReadValue(), NameSyntax)
+          If _name isnot Nothing 
+             AdjustFlagsAndWidth(_name)
+             Me._name = _name
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New Kinds_StatementSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._kinds_Keyword)
+          writer.WriteValue(Me._name)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(Kinds_StatementSyntax), Function(r) New Kinds_StatementSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' The "Kinds" keyword.
+        ''' </summary>
+        Friend  ReadOnly Property Kinds_Keyword As InternalSyntax.KeywordSyntax
+            Get
+                Return Me._kinds_Keyword
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </summary>
+        Friend  ReadOnly Property Name As InternalSyntax.NameSyntax
+            Get
+                Return Me._name
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._kinds_Keyword
+                Case 1
+                    Return Me._name
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new Kinds_StatementSyntax(Me.Kind, newErrors, GetAnnotations, _kinds_Keyword, _name)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new Kinds_StatementSyntax(Me.Kind, GetDiagnostics, annotations, _kinds_Keyword, _name)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitKinds_Statement(Me)
+        End Function
+
+    End Class
+
+    ''' <summary>
+    ''' Represents the beginning statement of a namespace declaration. This node always
+    ''' appears as the Begin of a BlockStatement with Kind=NamespaceBlock.
+    ''' </summary>
+    Friend NotInheritable Class Keywords_StatementSyntax
+        Inherits DeclarationStatementSyntax
+
+        Friend ReadOnly _keywords_Keyword as KeywordSyntax
+        Friend ReadOnly _name as NameSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, keywords_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(keywords_Keyword)
+            Me._keywords_Keyword = keywords_Keyword
+            AdjustFlagsAndWidth(name)
+            Me._name = name
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, keywords_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(keywords_Keyword)
+            Me._keywords_Keyword = keywords_Keyword
+            AdjustFlagsAndWidth(name)
+            Me._name = name
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), keywords_Keyword As InternalSyntax.KeywordSyntax, name As NameSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 2
+
+            AdjustFlagsAndWidth(keywords_Keyword)
+            Me._keywords_Keyword = keywords_Keyword
+            AdjustFlagsAndWidth(name)
+            Me._name = name
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 2
+          Dim _keywords_Keyword = DirectCast(reader.ReadValue(), KeywordSyntax)
+          If _keywords_Keyword isnot Nothing 
+             AdjustFlagsAndWidth(_keywords_Keyword)
+             Me._keywords_Keyword = _keywords_Keyword
+          End If
+          Dim _name = DirectCast(reader.ReadValue(), NameSyntax)
+          If _name isnot Nothing 
+             AdjustFlagsAndWidth(_name)
+             Me._name = _name
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New Keywords_StatementSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._keywords_Keyword)
+          writer.WriteValue(Me._name)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(Keywords_StatementSyntax), Function(r) New Keywords_StatementSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' The "Keywords" keyword.
+        ''' </summary>
+        Friend  ReadOnly Property Keywords_Keyword As InternalSyntax.KeywordSyntax
+            Get
+                Return Me._keywords_Keyword
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </summary>
+        Friend  ReadOnly Property Name As InternalSyntax.NameSyntax
+            Get
+                Return Me._name
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._keywords_Keyword
+                Case 1
+                    Return Me._name
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new Keywords_StatementSyntax(Me.Kind, newErrors, GetAnnotations, _keywords_Keyword, _name)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new Keywords_StatementSyntax(Me.Kind, GetDiagnostics, annotations, _keywords_Keyword, _name)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitKeywords_Statement(Me)
+        End Function
+
+    End Class
+
     ''' <summary>
     ''' Represents a Namespace statement, its contents and the End Namespace statement.
     ''' </summary>
@@ -36661,6 +37841,46 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(node IsNot Nothing)
             Return VisitImportsClause(node)
         End Function
+        Public Overridable Function VisitGrammar_Block(ByVal node As Grammar_BlockSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitDeclarationStatement(node)
+        End Function
+        Public Overridable Function VisitSyntax_Block(ByVal node As Syntax_BlockSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitDeclarationStatement(node)
+        End Function
+        Public Overridable Function VisitKinds_Block(ByVal node As Kinds_BlockSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitDeclarationStatement(node)
+        End Function
+        Public Overridable Function VisitKeywords_Block(ByVal node As Keywords_BlockSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitDeclarationStatement(node)
+        End Function
+        Public Overridable Function VisitLanguage_Block(ByVal node As Language_BlockSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitDeclarationStatement(node)
+        End Function
+        Public Overridable Function VisitLanguage_Statement(ByVal node As Language_StatementSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitDeclarationStatement(node)
+        End Function
+        Public Overridable Function VisitGrammar_Statement(ByVal node As Grammar_StatementSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitDeclarationStatement(node)
+        End Function
+        Public Overridable Function VisitSyntax_Statement(ByVal node As Syntax_StatementSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitDeclarationStatement(node)
+        End Function
+        Public Overridable Function VisitKinds_Statement(ByVal node As Kinds_StatementSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitDeclarationStatement(node)
+        End Function
+        Public Overridable Function VisitKeywords_Statement(ByVal node As Keywords_StatementSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitDeclarationStatement(node)
+        End Function
         Public Overridable Function VisitNamespaceBlock(ByVal node As NamespaceBlockSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
             Return VisitDeclarationStatement(node)
@@ -37861,6 +39081,156 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             If anyChanges Then
                 Return New XmlNamespaceImportsClauseSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newLessThanToken, newXmlNamespace, newGreaterThanToken)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitGrammar_Block(ByVal node As Grammar_BlockSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newGrammar_Statement = DirectCast(Visit(node._grammar_Statement), Grammar_StatementSyntax)
+            If node._grammar_Statement IsNot newGrammar_Statement Then anyChanges = True
+            Dim newEnd_Grammar_Statement = DirectCast(Visit(node._end_Grammar_Statement), EndBlockStatementSyntax)
+            If node._end_Grammar_Statement IsNot newEnd_Grammar_Statement Then anyChanges = True
+
+            If anyChanges Then
+                Return New Grammar_BlockSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newGrammar_Statement, newEnd_Grammar_Statement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitSyntax_Block(ByVal node As Syntax_BlockSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newSyntax_Statement = DirectCast(Visit(node._syntax_Statement), Syntax_StatementSyntax)
+            If node._syntax_Statement IsNot newSyntax_Statement Then anyChanges = True
+            Dim newEnd_Syntax_Statement = DirectCast(Visit(node._end_Syntax_Statement), EndBlockStatementSyntax)
+            If node._end_Syntax_Statement IsNot newEnd_Syntax_Statement Then anyChanges = True
+
+            If anyChanges Then
+                Return New Syntax_BlockSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newSyntax_Statement, newEnd_Syntax_Statement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitKinds_Block(ByVal node As Kinds_BlockSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newKinds_Statement = DirectCast(Visit(node._kinds_Statement), Kinds_StatementSyntax)
+            If node._kinds_Statement IsNot newKinds_Statement Then anyChanges = True
+            Dim newEnd_Kinds_Statement = DirectCast(Visit(node._end_Kinds_Statement), EndBlockStatementSyntax)
+            If node._end_Kinds_Statement IsNot newEnd_Kinds_Statement Then anyChanges = True
+
+            If anyChanges Then
+                Return New Kinds_BlockSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newKinds_Statement, newEnd_Kinds_Statement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitKeywords_Block(ByVal node As Keywords_BlockSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newKeywords_Statement = DirectCast(Visit(node._keywords_Statement), Keywords_StatementSyntax)
+            If node._keywords_Statement IsNot newKeywords_Statement Then anyChanges = True
+            Dim newEnd_Keywords_Statement = DirectCast(Visit(node._end_Keywords_Statement), EndBlockStatementSyntax)
+            If node._end_Keywords_Statement IsNot newEnd_Keywords_Statement Then anyChanges = True
+
+            If anyChanges Then
+                Return New Keywords_BlockSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newKeywords_Statement, newEnd_Keywords_Statement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitLanguage_Block(ByVal node As Language_BlockSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newLanguage_Statement = DirectCast(Visit(node._language_Statement), Language_StatementSyntax)
+            If node._language_Statement IsNot newLanguage_Statement Then anyChanges = True
+            Dim newEnd_Language_Statement = DirectCast(Visit(node._end_Language_Statement), EndBlockStatementSyntax)
+            If node._end_Language_Statement IsNot newEnd_Language_Statement Then anyChanges = True
+
+            If anyChanges Then
+                Return New Language_BlockSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newLanguage_Statement, newEnd_Language_Statement)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitLanguage_Statement(ByVal node As Language_StatementSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newLanguage_Keyword = DirectCast(Visit(node.Language_Keyword), KeywordSyntax)
+            If node._language_Keyword IsNot newLanguage_Keyword Then anyChanges = True
+            Dim newName = DirectCast(Visit(node._name), NameSyntax)
+            If node._name IsNot newName Then anyChanges = True
+
+            If anyChanges Then
+                Return New Language_StatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newLanguage_Keyword, newName)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitGrammar_Statement(ByVal node As Grammar_StatementSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newGrammar_Keyword = DirectCast(Visit(node.Grammar_Keyword), KeywordSyntax)
+            If node._grammar_Keyword IsNot newGrammar_Keyword Then anyChanges = True
+            Dim newName = DirectCast(Visit(node._name), NameSyntax)
+            If node._name IsNot newName Then anyChanges = True
+
+            If anyChanges Then
+                Return New Grammar_StatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newGrammar_Keyword, newName)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitSyntax_Statement(ByVal node As Syntax_StatementSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newSyntax_Keyword = DirectCast(Visit(node.Syntax_Keyword), KeywordSyntax)
+            If node._syntax_Keyword IsNot newSyntax_Keyword Then anyChanges = True
+            Dim newName = DirectCast(Visit(node._name), NameSyntax)
+            If node._name IsNot newName Then anyChanges = True
+
+            If anyChanges Then
+                Return New Syntax_StatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newSyntax_Keyword, newName)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitKinds_Statement(ByVal node As Kinds_StatementSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newKinds_Keyword = DirectCast(Visit(node.Kinds_Keyword), KeywordSyntax)
+            If node._kinds_Keyword IsNot newKinds_Keyword Then anyChanges = True
+            Dim newName = DirectCast(Visit(node._name), NameSyntax)
+            If node._name IsNot newName Then anyChanges = True
+
+            If anyChanges Then
+                Return New Kinds_StatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newKinds_Keyword, newName)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitKeywords_Statement(ByVal node As Keywords_StatementSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newKeywords_Keyword = DirectCast(Visit(node.Keywords_Keyword), KeywordSyntax)
+            If node._keywords_Keyword IsNot newKeywords_Keyword Then anyChanges = True
+            Dim newName = DirectCast(Visit(node._name), NameSyntax)
+            If node._name IsNot newName Then anyChanges = True
+
+            If anyChanges Then
+                Return New Keywords_StatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newKeywords_Keyword, newName)
             Else
                 Return node
             End If
@@ -41951,6 +43321,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
               GetType(SimpleImportsClauseSyntax),
               GetType(ImportAliasClauseSyntax),
               GetType(XmlNamespaceImportsClauseSyntax),
+              GetType(Grammar_BlockSyntax),
+              GetType(Syntax_BlockSyntax),
+              GetType(Kinds_BlockSyntax),
+              GetType(Keywords_BlockSyntax),
+              GetType(Language_BlockSyntax),
+              GetType(Language_StatementSyntax),
+              GetType(Grammar_StatementSyntax),
+              GetType(Syntax_StatementSyntax),
+              GetType(Kinds_StatementSyntax),
+              GetType(Keywords_StatementSyntax),
               GetType(NamespaceBlockSyntax),
               GetType(NamespaceStatementSyntax),
               GetType(TypeBlockSyntax),
@@ -42979,6 +44359,161 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <summary>
         ''' Represents an "End XXX" statement, where XXX is a single keyword.
         ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Friend Shared Function EndLanguage_Statement(endKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As EndBlockStatementSyntax
+            Debug.Assert(endKeyword IsNot Nothing AndAlso endKeyword.Kind = SyntaxKind.EndKeyword)
+            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.Language_Keyword)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.EndLanguage_Statement, endKeyword, blockKeyword, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, EndBlockStatementSyntax)
+            End If
+
+            Dim result = New EndBlockStatementSyntax(SyntaxKind.EndLanguage_Statement, endKeyword, blockKeyword)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Friend Shared Function EndGrammar_Statement(endKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As EndBlockStatementSyntax
+            Debug.Assert(endKeyword IsNot Nothing AndAlso endKeyword.Kind = SyntaxKind.EndKeyword)
+            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.Grammar_Keyword)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.EndGrammar_Statement, endKeyword, blockKeyword, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, EndBlockStatementSyntax)
+            End If
+
+            Dim result = New EndBlockStatementSyntax(SyntaxKind.EndGrammar_Statement, endKeyword, blockKeyword)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Friend Shared Function EndSyntax_Statement(endKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As EndBlockStatementSyntax
+            Debug.Assert(endKeyword IsNot Nothing AndAlso endKeyword.Kind = SyntaxKind.EndKeyword)
+            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.Syntax_Keyword)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.EndSyntax_Statement, endKeyword, blockKeyword, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, EndBlockStatementSyntax)
+            End If
+
+            Dim result = New EndBlockStatementSyntax(SyntaxKind.EndSyntax_Statement, endKeyword, blockKeyword)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Friend Shared Function EndKeywords_Statement(endKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As EndBlockStatementSyntax
+            Debug.Assert(endKeyword IsNot Nothing AndAlso endKeyword.Kind = SyntaxKind.EndKeyword)
+            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.Keywords_Keyword)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.EndKeywords_Statement, endKeyword, blockKeyword, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, EndBlockStatementSyntax)
+            End If
+
+            Dim result = New EndBlockStatementSyntax(SyntaxKind.EndKeywords_Statement, endKeyword, blockKeyword)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Friend Shared Function EndKinds_Statement(endKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As EndBlockStatementSyntax
+            Debug.Assert(endKeyword IsNot Nothing AndAlso endKeyword.Kind = SyntaxKind.EndKeyword)
+            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.Kinds_Keyword)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.EndKinds_Statement, endKeyword, blockKeyword, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, EndBlockStatementSyntax)
+            End If
+
+            Dim result = New EndBlockStatementSyntax(SyntaxKind.EndKinds_Statement, endKeyword, blockKeyword)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' EndBlockStatementSyntax. One of EndIfStatement, EndUsingStatement,
@@ -42987,7 +44522,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' EndNamespaceStatement, EndSubStatement, EndFunctionStatement, EndGetStatement,
         ''' EndSetStatement, EndPropertyStatement, EndOperatorStatement, EndEventStatement,
         ''' EndAddHandlerStatement, EndRemoveHandlerStatement, EndRaiseEventStatement,
-        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement.
+        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement,
+        ''' EndLanguage_Statement, EndGrammar_Statement, EndSyntax_Statement,
+        ''' EndKeywords_Statement, EndKinds_Statement.
         ''' </param>
         ''' <param name="endKeyword">
         ''' The "End" keyword
@@ -43181,6 +44718,276 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim result = New XmlNamespaceImportsClauseSyntax(SyntaxKind.XmlNamespaceImportsClause, lessThanToken, xmlNamespace, greaterThanToken)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <param name="grammar_Statement">
+        ''' The "Grammar" statement that begins a grammar block.
+        ''' </param>
+        ''' <param name="end_Grammar_Statement">
+        ''' The "End Grammar" statement that ends a grammar block.
+        ''' </param>
+        Friend Shared Function Grammar_Block(grammar_Statement As Grammar_StatementSyntax, end_Grammar_Statement As EndBlockStatementSyntax) As Grammar_BlockSyntax
+            Debug.Assert(grammar_Statement IsNot Nothing)
+            Debug.Assert(end_Grammar_Statement IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.Grammar_Block, grammar_Statement, end_Grammar_Statement, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Grammar_BlockSyntax)
+            End If
+
+            Dim result = New Grammar_BlockSyntax(SyntaxKind.Grammar_Block, grammar_Statement, end_Grammar_Statement)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <param name="syntax_Statement">
+        ''' The "Syntax" statement that begins a syntax block.
+        ''' </param>
+        ''' <param name="end_Syntax_Statement">
+        ''' The "End Syntax" statement that ends a syntax block.
+        ''' </param>
+        Friend Shared Function Syntax_Block(syntax_Statement As Syntax_StatementSyntax, end_Syntax_Statement As EndBlockStatementSyntax) As Syntax_BlockSyntax
+            Debug.Assert(syntax_Statement IsNot Nothing)
+            Debug.Assert(end_Syntax_Statement IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.Syntax_Block, syntax_Statement, end_Syntax_Statement, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Syntax_BlockSyntax)
+            End If
+
+            Dim result = New Syntax_BlockSyntax(SyntaxKind.Syntax_Block, syntax_Statement, end_Syntax_Statement)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <param name="kinds_Statement">
+        ''' The "Kinds" statement that begins a kinds block.
+        ''' </param>
+        ''' <param name="end_Kinds_Statement">
+        ''' The "End Kinds." statement that ends a kinds block.
+        ''' </param>
+        Friend Shared Function Kinds_Block(kinds_Statement As Kinds_StatementSyntax, end_Kinds_Statement As EndBlockStatementSyntax) As Kinds_BlockSyntax
+            Debug.Assert(kinds_Statement IsNot Nothing)
+            Debug.Assert(end_Kinds_Statement IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.Kinds_Block, kinds_Statement, end_Kinds_Statement, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Kinds_BlockSyntax)
+            End If
+
+            Dim result = New Kinds_BlockSyntax(SyntaxKind.Kinds_Block, kinds_Statement, end_Kinds_Statement)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <param name="keywords_Statement">
+        ''' The "Keywords" statement that begins a keywords block.
+        ''' </param>
+        ''' <param name="end_Keywords_Statement">
+        ''' The "End Keywords" statement that ends a keywords block.
+        ''' </param>
+        Friend Shared Function Keywords_Block(keywords_Statement As Keywords_StatementSyntax, end_Keywords_Statement As EndBlockStatementSyntax) As Keywords_BlockSyntax
+            Debug.Assert(keywords_Statement IsNot Nothing)
+            Debug.Assert(end_Keywords_Statement IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.Keywords_Block, keywords_Statement, end_Keywords_Statement, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Keywords_BlockSyntax)
+            End If
+
+            Dim result = New Keywords_BlockSyntax(SyntaxKind.Keywords_Block, keywords_Statement, end_Keywords_Statement)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <param name="language_Statement">
+        ''' The "Language" statement that begins a language block.
+        ''' </param>
+        ''' <param name="end_Language_Statement">
+        ''' The "End Language." statement that ends a language block.
+        ''' </param>
+        Friend Shared Function Language_Block(language_Statement As Language_StatementSyntax, end_Language_Statement As EndBlockStatementSyntax) As Language_BlockSyntax
+            Debug.Assert(language_Statement IsNot Nothing)
+            Debug.Assert(end_Language_Statement IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.Language_Block, language_Statement, end_Language_Statement, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Language_BlockSyntax)
+            End If
+
+            Dim result = New Language_BlockSyntax(SyntaxKind.Language_Block, language_Statement, end_Language_Statement)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a language declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=Language_Block.
+        ''' </summary>
+        ''' <param name="language_Keyword">
+        ''' The "Language" keyword.
+        ''' </param>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the language being declared.
+        ''' </param>
+        Friend Shared Function Language_Statement(language_Keyword As KeywordSyntax, name As NameSyntax) As Language_StatementSyntax
+            Debug.Assert(language_Keyword IsNot Nothing AndAlso language_Keyword.Kind = SyntaxKind.Language_Keyword)
+            Debug.Assert(name IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.Language_Statement, language_Keyword, name, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Language_StatementSyntax)
+            End If
+
+            Dim result = New Language_StatementSyntax(SyntaxKind.Language_Statement, language_Keyword, name)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a grammar declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=Grammar_Block.
+        ''' </summary>
+        ''' <param name="grammar_Keyword">
+        ''' The "Language" keyword.
+        ''' </param>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </param>
+        Friend Shared Function Grammar_Statement(grammar_Keyword As KeywordSyntax, name As NameSyntax) As Grammar_StatementSyntax
+            Debug.Assert(grammar_Keyword IsNot Nothing AndAlso grammar_Keyword.Kind = SyntaxKind.Grammar_Keyword)
+            Debug.Assert(name IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.Grammar_Statement, grammar_Keyword, name, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Grammar_StatementSyntax)
+            End If
+
+            Dim result = New Grammar_StatementSyntax(SyntaxKind.Grammar_Statement, grammar_Keyword, name)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a namespace declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=NamespaceBlock.
+        ''' </summary>
+        ''' <param name="syntax_Keyword">
+        ''' The "Syntax" keyword.
+        ''' </param>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </param>
+        Friend Shared Function Syntax_Statement(syntax_Keyword As KeywordSyntax, name As NameSyntax) As Syntax_StatementSyntax
+            Debug.Assert(syntax_Keyword IsNot Nothing AndAlso syntax_Keyword.Kind = SyntaxKind.Syntax_Keyword)
+            Debug.Assert(name IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.Syntax_Statement, syntax_Keyword, name, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Syntax_StatementSyntax)
+            End If
+
+            Dim result = New Syntax_StatementSyntax(SyntaxKind.Syntax_Statement, syntax_Keyword, name)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a kinds declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=Kinds_Block.
+        ''' </summary>
+        ''' <param name="kinds_Keyword">
+        ''' The "Kinds" keyword.
+        ''' </param>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </param>
+        Friend Shared Function Kinds_Statement(kinds_Keyword As KeywordSyntax, name As NameSyntax) As Kinds_StatementSyntax
+            Debug.Assert(kinds_Keyword IsNot Nothing AndAlso kinds_Keyword.Kind = SyntaxKind.Kinds_Keyword)
+            Debug.Assert(name IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.Kinds_Statement, kinds_Keyword, name, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Kinds_StatementSyntax)
+            End If
+
+            Dim result = New Kinds_StatementSyntax(SyntaxKind.Kinds_Statement, kinds_Keyword, name)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a namespace declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=NamespaceBlock.
+        ''' </summary>
+        ''' <param name="keywords_Keyword">
+        ''' The "Keywords" keyword.
+        ''' </param>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </param>
+        Friend Shared Function Keywords_Statement(keywords_Keyword As KeywordSyntax, name As NameSyntax) As Keywords_StatementSyntax
+            Debug.Assert(keywords_Keyword IsNot Nothing AndAlso keywords_Keyword.Kind = SyntaxKind.Language_Keyword)
+            Debug.Assert(name IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.Keywords_Statement, keywords_Keyword, name, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Keywords_StatementSyntax)
+            End If
+
+            Dim result = New Keywords_StatementSyntax(SyntaxKind.Keywords_Statement, keywords_Keyword, name)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -55055,6 +56862,161 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <summary>
         ''' Represents an "End XXX" statement, where XXX is a single keyword.
         ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Friend Function EndLanguage_Statement(endKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As EndBlockStatementSyntax
+            Debug.Assert(endKeyword IsNot Nothing AndAlso endKeyword.Kind = SyntaxKind.EndKeyword)
+            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.Language_Keyword)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.EndLanguage_Statement, endKeyword, blockKeyword, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, EndBlockStatementSyntax)
+            End If
+
+            Dim result = New EndBlockStatementSyntax(SyntaxKind.EndLanguage_Statement, endKeyword, blockKeyword, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Friend Function EndGrammar_Statement(endKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As EndBlockStatementSyntax
+            Debug.Assert(endKeyword IsNot Nothing AndAlso endKeyword.Kind = SyntaxKind.EndKeyword)
+            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.Grammar_Keyword)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.EndGrammar_Statement, endKeyword, blockKeyword, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, EndBlockStatementSyntax)
+            End If
+
+            Dim result = New EndBlockStatementSyntax(SyntaxKind.EndGrammar_Statement, endKeyword, blockKeyword, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Friend Function EndSyntax_Statement(endKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As EndBlockStatementSyntax
+            Debug.Assert(endKeyword IsNot Nothing AndAlso endKeyword.Kind = SyntaxKind.EndKeyword)
+            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.Syntax_Keyword)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.EndSyntax_Statement, endKeyword, blockKeyword, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, EndBlockStatementSyntax)
+            End If
+
+            Dim result = New EndBlockStatementSyntax(SyntaxKind.EndSyntax_Statement, endKeyword, blockKeyword, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Friend Function EndKeywords_Statement(endKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As EndBlockStatementSyntax
+            Debug.Assert(endKeyword IsNot Nothing AndAlso endKeyword.Kind = SyntaxKind.EndKeyword)
+            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.Keywords_Keyword)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.EndKeywords_Statement, endKeyword, blockKeyword, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, EndBlockStatementSyntax)
+            End If
+
+            Dim result = New EndBlockStatementSyntax(SyntaxKind.EndKeywords_Statement, endKeyword, blockKeyword, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
+        ''' <param name="endKeyword">
+        ''' The "End" keyword
+        ''' </param>
+        ''' <param name="blockKeyword">
+        ''' The keyword that ends the block. Must be one of: "If", "Using", "With",
+        ''' "Select", "Structure", "Enum", "Interface", "Class", "Module", "Namespace",
+        ''' "Sub", "Function", "Get, "Set", "Property", "Operator", "Event", "AddHandler",
+        ''' "RemoveHandler", "RaiseEvent", "While", "Try" or "SyncLock".
+        ''' </param>
+        Friend Function EndKinds_Statement(endKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As EndBlockStatementSyntax
+            Debug.Assert(endKeyword IsNot Nothing AndAlso endKeyword.Kind = SyntaxKind.EndKeyword)
+            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.Kinds_Keyword)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.EndKinds_Statement, endKeyword, blockKeyword, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, EndBlockStatementSyntax)
+            End If
+
+            Dim result = New EndBlockStatementSyntax(SyntaxKind.EndKinds_Statement, endKeyword, blockKeyword, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an "End XXX" statement, where XXX is a single keyword.
+        ''' </summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' EndBlockStatementSyntax. One of EndIfStatement, EndUsingStatement,
@@ -55063,7 +57025,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' EndNamespaceStatement, EndSubStatement, EndFunctionStatement, EndGetStatement,
         ''' EndSetStatement, EndPropertyStatement, EndOperatorStatement, EndEventStatement,
         ''' EndAddHandlerStatement, EndRemoveHandlerStatement, EndRaiseEventStatement,
-        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement.
+        ''' EndWhileStatement, EndTryStatement, EndSyncLockStatement,
+        ''' EndLanguage_Statement, EndGrammar_Statement, EndSyntax_Statement,
+        ''' EndKeywords_Statement, EndKinds_Statement.
         ''' </param>
         ''' <param name="endKeyword">
         ''' The "End" keyword
@@ -55257,6 +57221,276 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim result = New XmlNamespaceImportsClauseSyntax(SyntaxKind.XmlNamespaceImportsClause, lessThanToken, xmlNamespace, greaterThanToken, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <param name="grammar_Statement">
+        ''' The "Grammar" statement that begins a grammar block.
+        ''' </param>
+        ''' <param name="end_Grammar_Statement">
+        ''' The "End Grammar" statement that ends a grammar block.
+        ''' </param>
+        Friend Function Grammar_Block(grammar_Statement As Grammar_StatementSyntax, end_Grammar_Statement As EndBlockStatementSyntax) As Grammar_BlockSyntax
+            Debug.Assert(grammar_Statement IsNot Nothing)
+            Debug.Assert(end_Grammar_Statement IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.Grammar_Block, grammar_Statement, end_Grammar_Statement, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Grammar_BlockSyntax)
+            End If
+
+            Dim result = New Grammar_BlockSyntax(SyntaxKind.Grammar_Block, grammar_Statement, end_Grammar_Statement, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <param name="syntax_Statement">
+        ''' The "Syntax" statement that begins a syntax block.
+        ''' </param>
+        ''' <param name="end_Syntax_Statement">
+        ''' The "End Syntax" statement that ends a syntax block.
+        ''' </param>
+        Friend Function Syntax_Block(syntax_Statement As Syntax_StatementSyntax, end_Syntax_Statement As EndBlockStatementSyntax) As Syntax_BlockSyntax
+            Debug.Assert(syntax_Statement IsNot Nothing)
+            Debug.Assert(end_Syntax_Statement IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.Syntax_Block, syntax_Statement, end_Syntax_Statement, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Syntax_BlockSyntax)
+            End If
+
+            Dim result = New Syntax_BlockSyntax(SyntaxKind.Syntax_Block, syntax_Statement, end_Syntax_Statement, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <param name="kinds_Statement">
+        ''' The "Kinds" statement that begins a kinds block.
+        ''' </param>
+        ''' <param name="end_Kinds_Statement">
+        ''' The "End Kinds." statement that ends a kinds block.
+        ''' </param>
+        Friend Function Kinds_Block(kinds_Statement As Kinds_StatementSyntax, end_Kinds_Statement As EndBlockStatementSyntax) As Kinds_BlockSyntax
+            Debug.Assert(kinds_Statement IsNot Nothing)
+            Debug.Assert(end_Kinds_Statement IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.Kinds_Block, kinds_Statement, end_Kinds_Statement, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Kinds_BlockSyntax)
+            End If
+
+            Dim result = New Kinds_BlockSyntax(SyntaxKind.Kinds_Block, kinds_Statement, end_Kinds_Statement, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <param name="keywords_Statement">
+        ''' The "Keywords" statement that begins a keywords block.
+        ''' </param>
+        ''' <param name="end_Keywords_Statement">
+        ''' The "End Keywords" statement that ends a keywords block.
+        ''' </param>
+        Friend Function Keywords_Block(keywords_Statement As Keywords_StatementSyntax, end_Keywords_Statement As EndBlockStatementSyntax) As Keywords_BlockSyntax
+            Debug.Assert(keywords_Statement IsNot Nothing)
+            Debug.Assert(end_Keywords_Statement IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.Keywords_Block, keywords_Statement, end_Keywords_Statement, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Keywords_BlockSyntax)
+            End If
+
+            Dim result = New Keywords_BlockSyntax(SyntaxKind.Keywords_Block, keywords_Statement, end_Keywords_Statement, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <param name="language_Statement">
+        ''' The "Language" statement that begins a language block.
+        ''' </param>
+        ''' <param name="end_Language_Statement">
+        ''' The "End Language." statement that ends a language block.
+        ''' </param>
+        Friend Function Language_Block(language_Statement As Language_StatementSyntax, end_Language_Statement As EndBlockStatementSyntax) As Language_BlockSyntax
+            Debug.Assert(language_Statement IsNot Nothing)
+            Debug.Assert(end_Language_Statement IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.Language_Block, language_Statement, end_Language_Statement, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Language_BlockSyntax)
+            End If
+
+            Dim result = New Language_BlockSyntax(SyntaxKind.Language_Block, language_Statement, end_Language_Statement, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a language declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=Language_Block.
+        ''' </summary>
+        ''' <param name="language_Keyword">
+        ''' The "Language" keyword.
+        ''' </param>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the language being declared.
+        ''' </param>
+        Friend Function Language_Statement(language_Keyword As KeywordSyntax, name As NameSyntax) As Language_StatementSyntax
+            Debug.Assert(language_Keyword IsNot Nothing AndAlso language_Keyword.Kind = SyntaxKind.Language_Keyword)
+            Debug.Assert(name IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.Language_Statement, language_Keyword, name, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Language_StatementSyntax)
+            End If
+
+            Dim result = New Language_StatementSyntax(SyntaxKind.Language_Statement, language_Keyword, name, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a grammar declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=Grammar_Block.
+        ''' </summary>
+        ''' <param name="grammar_Keyword">
+        ''' The "Language" keyword.
+        ''' </param>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </param>
+        Friend Function Grammar_Statement(grammar_Keyword As KeywordSyntax, name As NameSyntax) As Grammar_StatementSyntax
+            Debug.Assert(grammar_Keyword IsNot Nothing AndAlso grammar_Keyword.Kind = SyntaxKind.Grammar_Keyword)
+            Debug.Assert(name IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.Grammar_Statement, grammar_Keyword, name, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Grammar_StatementSyntax)
+            End If
+
+            Dim result = New Grammar_StatementSyntax(SyntaxKind.Grammar_Statement, grammar_Keyword, name, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a namespace declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=NamespaceBlock.
+        ''' </summary>
+        ''' <param name="syntax_Keyword">
+        ''' The "Syntax" keyword.
+        ''' </param>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </param>
+        Friend Function Syntax_Statement(syntax_Keyword As KeywordSyntax, name As NameSyntax) As Syntax_StatementSyntax
+            Debug.Assert(syntax_Keyword IsNot Nothing AndAlso syntax_Keyword.Kind = SyntaxKind.Syntax_Keyword)
+            Debug.Assert(name IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.Syntax_Statement, syntax_Keyword, name, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Syntax_StatementSyntax)
+            End If
+
+            Dim result = New Syntax_StatementSyntax(SyntaxKind.Syntax_Statement, syntax_Keyword, name, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a kinds declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=Kinds_Block.
+        ''' </summary>
+        ''' <param name="kinds_Keyword">
+        ''' The "Kinds" keyword.
+        ''' </param>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </param>
+        Friend Function Kinds_Statement(kinds_Keyword As KeywordSyntax, name As NameSyntax) As Kinds_StatementSyntax
+            Debug.Assert(kinds_Keyword IsNot Nothing AndAlso kinds_Keyword.Kind = SyntaxKind.Kinds_Keyword)
+            Debug.Assert(name IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.Kinds_Statement, kinds_Keyword, name, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Kinds_StatementSyntax)
+            End If
+
+            Dim result = New Kinds_StatementSyntax(SyntaxKind.Kinds_Statement, kinds_Keyword, name, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the beginning statement of a namespace declaration. This node always
+        ''' appears as the Begin of a BlockStatement with Kind=NamespaceBlock.
+        ''' </summary>
+        ''' <param name="keywords_Keyword">
+        ''' The "Keywords" keyword.
+        ''' </param>
+        ''' <param name="name">
+        ''' A (possibly dotted) name denoting the ... being declared.
+        ''' </param>
+        Friend Function Keywords_Statement(keywords_Keyword As KeywordSyntax, name As NameSyntax) As Keywords_StatementSyntax
+            Debug.Assert(keywords_Keyword IsNot Nothing AndAlso keywords_Keyword.Kind = SyntaxKind.Language_Keyword)
+            Debug.Assert(name IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.Keywords_Statement, keywords_Keyword, name, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, Keywords_StatementSyntax)
+            End If
+
+            Dim result = New Keywords_StatementSyntax(SyntaxKind.Keywords_Statement, keywords_Keyword, name, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
