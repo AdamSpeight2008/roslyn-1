@@ -10,103 +10,2235 @@ Imports Roslyn.Utilities
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
-    ''' <summary>
-    ''' Represents one of the type characters or literal suffixes of VB. Used to
-    ''' describe a) the type character suffixes that can be placed on identifiers, and
-    ''' b) the suffixes that can be placed on integer literals.
-    ''' </summary>
-    Public Enum TypeCharacter
-
-        None
-
+    Public Enum SyntaxKind As UShort
+        Node                                  = 0
+        List                                  = 1
         ''' <summary>
-        ''' The "%" type character."
+        ''' A class to represent an empty statement. This can occur when a colon is on a
+        ''' line without anything else.
         ''' </summary>
-        [Integer]
-
+        EmptyStatement                        = 2
+        ''' <summary>Represents an "End If" statement.</summary>
+        EndIfStatement                        = 5
+        ''' <summary>Represents an "End Using" statement.</summary>
+        EndUsingStatement                     = 6
+        ''' <summary>Represents an "End With" statement.</summary>
+        EndWithStatement                      = 7
+        ''' <summary>Represents an "End Select" statement.</summary>
+        EndSelectStatement                    = 8
+        ''' <summary>Represents an "End Structure" statement.</summary>
+        EndStructureStatement                 = 9
+        ''' <summary>Represents an "End Enum" statement.</summary>
+        EndEnumStatement                      = 10
+        ''' <summary>Represents an "End Interfaces" statement.</summary>
+        EndInterfaceStatement                 = 11
+        ''' <summary>Represents an "End Class" statement.</summary>
+        EndClassStatement                     = 12
+        ''' <summary>Represents an "End Module" statement.</summary>
+        EndModuleStatement                    = 13
+        ''' <summary>Represents an "End Namespace" statement.</summary>
+        EndNamespaceStatement                 = 14
+        ''' <summary>Represents an "End Sub" statement.</summary>
+        EndSubStatement                       = 15
+        ''' <summary>Represents an "End Function" statement.</summary>
+        EndFunctionStatement                  = 16
+        ''' <summary>Represents an "End Get" statement.</summary>
+        EndGetStatement                       = 17
+        ''' <summary>Represents an "End Set" statement.</summary>
+        EndSetStatement                       = 18
+        ''' <summary>Represents an "End Property" statement.</summary>
+        EndPropertyStatement                  = 19
+        ''' <summary>Represents an "End Operator" statement.</summary>
+        EndOperatorStatement                  = 20
+        ''' <summary>Represents an "End Event" statement.</summary>
+        EndEventStatement                     = 21
+        ''' <summary>Represents an "End AddHandler" statement.</summary>
+        EndAddHandlerStatement                = 22
+        ''' <summary>Represents an "End RemoveHandler" statement.</summary>
+        EndRemoveHandlerStatement             = 23
+        ''' <summary>Represents an "End RaiseEvent" statement.</summary>
+        EndRaiseEventStatement                = 24
+        ''' <summary>Represents an "End While" statement.</summary>
+        EndWhileStatement                     = 25
+        ''' <summary>Represents an "End Try" statement.</summary>
+        EndTryStatement                       = 26
+        ''' <summary>Represents an "End SyncLock" statement.</summary>
+        EndSyncLockStatement                  = 27
+        CompilationUnit                       = 38
+        OptionStatement                       = 41
+        ImportsStatement                      = 42
+        AliasImportsClause                    = 43
         ''' <summary>
-        ''' The "&amp;" type character."
+        ''' Represents the clause of an Imports statement that imports all members of a
+        ''' type or namespace or aliases a type or namespace.
         ''' </summary>
-        [Long]
-
+        SimpleImportsClause                   = 44
+        ''' <summary>Defines a XML namespace for XML expressions.</summary>
+        XmlNamespaceImportsClause             = 45
         ''' <summary>
-        ''' The "@" type character."
+        ''' Represents a declaration of a Namespace, its contents and the End Namespace
+        ''' statement that ends it.
         ''' </summary>
-        [Decimal]
-
+        NamespaceBlock                        = 48
+        ''' <summary>Represents a Namespacee statement ....</summary>
+        NamespaceStatement                    = 49
         ''' <summary>
-        ''' The "!" type character."
+        ''' Represents a declaration of a Module, its contents and the End statement that
+        ''' ends it.
         ''' </summary>
-        [Single]
-
+        ModuleBlock                           = 50
         ''' <summary>
-        ''' The "#" type character."
+        ''' Represents a declaration of a Structure, its contents and the End statement
+        ''' that ends it.
         ''' </summary>
-        [Double]
-
+        StructureBlock                        = 51
         ''' <summary>
-        ''' The "$" type character."
+        ''' Represents a declaration of a Interface, its contents and the End statement
+        ''' that ends it.
         ''' </summary>
-        [String]
-
+        InterfaceBlock                        = 52
         ''' <summary>
-        ''' The "S" literal suffix denoting "Short"
+        ''' Represents a declaration of a Class its contents and the End statement that
+        ''' ends it.
         ''' </summary>
-        ShortLiteral
-
+        ClassBlock                            = 53
         ''' <summary>
-        ''' The "US" literal suffix denoting "UShort"
+        ''' Represents a declaration of an Enum, its contents and the End Enum statement
+        ''' that ends it.
         ''' </summary>
-        UShortLiteral
-
+        EnumBlock                             = 54
+        ''' <summary>Represents an Inherits statement in a Class, Structure or Interface.</summary>
+        InheritsStatement                     = 57
+        ''' <summary>Represents an Implements statement in a Class or Structure.</summary>
+        ImplementsStatement                   = 58
         ''' <summary>
-        ''' The "I" literal suffix denoting "Integer"
+        ''' Represents the beginning statement of a Module declaration. This node always
+        ''' appears as the Begin of a TypeBlock with Kind=ModuleDeclarationBlock.
         ''' </summary>
-        IntegerLiteral
-
+        ModuleStatement                       = 59
         ''' <summary>
-        ''' The "UI" literal suffix denoting "UInteger"
+        ''' Represents the beginning statement of a Structure declaration. This node always
+        ''' appears as the Begin of a TypeBlock with Kind=StructureDeclarationBlock.
         ''' </summary>
-        UIntegerLiteral
-
+        StructureStatement                    = 60
         ''' <summary>
-        ''' The "L" literal suffix denoting "Long"
+        ''' Represents the beginning statement of a Interface declaration. This node always
+        ''' appears as the Begin of a TypeBlock with Kind=InterfaceDeclarationBlock.
         ''' </summary>
-        LongLiteral
-
+        InterfaceStatement                    = 61
         ''' <summary>
-        ''' The "UL" literal suffix denoting "ULong"
+        ''' Represents the beginning statement of a Class declaration. This node always
+        ''' appears as the Begin of a TypeBlock with Kind=ClassDeclarationBlock.
         ''' </summary>
-        ULongLiteral
-
+        ClassStatement                        = 62
         ''' <summary>
-        ''' The "F" literal suffix denoting "Single"
+        ''' Represents the beginning statement of an Enum declaration. This node always
+        ''' appears as the Begin of an EnumBlock with Kind=EnumDeclarationBlock.
         ''' </summary>
-        SingleLiteral
-
+        EnumStatement                         = 63
+        ''' <summary>Represents the type parameter list in a declaration.</summary>
+        TypeParameterList                     = 66
+        ''' <summary>Represents a type parameter on a generic type declaration.</summary>
+        TypeParameter                         = 67
         ''' <summary>
-        ''' The "R" literal suffix denoting "Double"
+        ''' One of the type parameter constraints clauses. This represents a constraint
+        ''' clause in the form of "As Constraint".
         ''' </summary>
-        DoubleLiteral
-
+        TypeParameterSingleConstraintClause   = 70
         ''' <summary>
-        ''' The "D" literal suffix denoting "Decimal"
+        ''' One of the type parameter constraints clauses. This represents a constraint
+        ''' clause in the form of "As { Constraints }".
         ''' </summary>
-        DecimalLiteral
+        TypeParameterMultipleConstraintClause = 71
+        ''' <summary>
+        ''' One of the special type parameter constraints: New, Class or Structure. Which
+        ''' kind of special constraint it is can be obtained from the Kind property and is
+        ''' one of: NewConstraint, ReferenceConstraint or ValueConstraint.
+        ''' </summary>
+        NewConstraint                         = 72
+        ''' <summary>
+        ''' One of the special type parameter constraints: New, Class or Structure. Which
+        ''' kind of special constraint it is can be obtained from the Kind property and is
+        ''' one of: NewConstraint, ReferenceConstraint or ValueConstraint.
+        ''' </summary>
+        ClassConstraint                       = 73
+        ''' <summary>
+        ''' One of the special type parameter constraints: New, Class or Structure. Which
+        ''' kind of special constraint it is can be obtained from the Kind property and is
+        ''' one of: NewConstraint, ReferenceConstraint or ValueConstraint.
+        ''' </summary>
+        StructureConstraint                   = 74
+        ''' <summary>Represents a type parameter constraint that is a type.</summary>
+        TypeConstraint                        = 75
+        ''' <summary>Represents a name and value in an EnumDeclarationBlock.</summary>
+        EnumMemberDeclaration                 = 78
+        ''' <summary>
+        ''' Represents a Function or Sub block declaration: A declaration that has a
+        ''' beginning declaration, a body of executable statements and an end statement.
+        ''' </summary>
+        SubBlock                              = 79
+        ''' <summary>
+        ''' Represents a Function or Sub block declaration: A declaration that has a
+        ''' beginning declaration, a body of executable statements and an end statement.
+        ''' </summary>
+        FunctionBlock                         = 80
+        ''' <summary>
+        ''' Represents a constructor block declaration: A declaration that has a beginning
+        ''' declaration, a body of executable statements and an end statement.
+        ''' </summary>
+        ConstructorBlock                      = 81
+        ''' <summary>
+        ''' Represents an Operator block member declaration: A declaration that has a
+        ''' beginning declaration, a body of executable statements and an end statement.
+        ''' </summary>
+        OperatorBlock                         = 82
+        ''' <summary>
+        ''' Represents an accessor block member declaration: A declaration that has a
+        ''' beginning declaration, a body of executable statements and an end statement.
+        ''' Examples include property accessors and custom event accessors.
+        ''' </summary>
+        GetAccessorBlock                      = 83
+        ''' <summary>
+        ''' Represents an accessor block member declaration: A declaration that has a
+        ''' beginning declaration, a body of executable statements and an end statement.
+        ''' Examples include property accessors and custom event accessors.
+        ''' </summary>
+        SetAccessorBlock                      = 84
+        ''' <summary>
+        ''' Represents an accessor block member declaration: A declaration that has a
+        ''' beginning declaration, a body of executable statements and an end statement.
+        ''' Examples include property accessors and custom event accessors.
+        ''' </summary>
+        AddHandlerAccessorBlock               = 85
+        ''' <summary>
+        ''' Represents an accessor block member declaration: A declaration that has a
+        ''' beginning declaration, a body of executable statements and an end statement.
+        ''' Examples include property accessors and custom event accessors.
+        ''' </summary>
+        RemoveHandlerAccessorBlock            = 86
+        ''' <summary>
+        ''' Represents an accessor block member declaration: A declaration that has a
+        ''' beginning declaration, a body of executable statements and an end statement.
+        ''' Examples include property accessors and custom event accessors.
+        ''' </summary>
+        RaiseEventAccessorBlock               = 87
+        ''' <summary>
+        ''' Represents a block property declaration: A declaration that has a beginning
+        ''' declaration, some get or set accessor blocks and an end statement.
+        ''' </summary>
+        PropertyBlock                         = 88
+        ''' <summary>
+        ''' Represents a custom event declaration: A declaration that has a beginning event
+        ''' declaration, some accessor blocks and an end statement.
+        ''' </summary>
+        EventBlock                            = 89
+        ''' <summary>Represents the parameter list in a method declaration.</summary>
+        ParameterList                         = 92
+        ''' <summary>
+        ''' The statement that declares a Sub or Function. If this method has a body, this
+        ''' statement will be the Begin of a BlockStatement with
+        ''' Kind=MethodDeclarationBlock, and the body of the method will be the Body of
+        ''' that BlockStatement.
+        ''' </summary>
+        SubStatement                          = 93
+        ''' <summary>
+        ''' The statement that declares a Sub or Function. If this method has a body, this
+        ''' statement will be the Begin of a BlockStatement with
+        ''' Kind=MethodDeclarationBlock, and the body of the method will be the Body of
+        ''' that BlockStatement.
+        ''' </summary>
+        FunctionStatement                     = 94
+        ''' <summary>
+        ''' A statement that declares a constructor. This statement will be the Begin of a
+        ''' BlockStatement with Kind=MethodDeclarationBlock, and the body of the method
+        ''' will be the Body of that BlockStatement.
+        ''' </summary>
+        SubNewStatement                       = 95
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
+        DeclareSubStatement                   = 96
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
+        DeclareFunctionStatement              = 97
+        ''' <summary>A statement that declares a delegate type.</summary>
+        DelegateSubStatement                  = 98
+        ''' <summary>A statement that declares a delegate type.</summary>
+        DelegateFunctionStatement             = 99
+        ''' <summary>
+        ''' A statement that declares an event. If the event being declared is a custom
+        ''' event, this statement will be the Begin of a PropertyOrEventBlock, and the
+        ''' accessors will be part of the Accessors of that node.
+        ''' </summary>
+        EventStatement                        = 102
+        ''' <summary>
+        ''' A statement that declares an operator. If this operator has a body, this
+        ''' statement will be the Begin of a BlockStatement with
+        ''' Kind=MethodDeclarationBlock, and the body of the method will be the Body of
+        ''' that BlockStatement.
+        ''' </summary>
+        OperatorStatement                     = 103
+        ''' <summary>
+        ''' Statement that declares a property. If this property has accessors declared,
+        ''' this statement will be the Begin of a BlockNode, and the accessors will be the
+        ''' Body of that node. Auto properties are property declarations without a
+        ''' PropertyBlock.
+        ''' </summary>
+        PropertyStatement                     = 104
+        ''' <summary>
+        ''' Represents a Get or Set accessor on a property declaration or an AddHandler,
+        ''' RemoveHandler or RaiseEvent accessor on a custom event declaration. The Kind of
+        ''' the node determines what kind of accessor this is. This statement is always the
+        ''' Begin of a BlockNode, and the body of the accessor is the Body of that node.
+        ''' </summary>
+        GetAccessorStatement                  = 105
+        ''' <summary>
+        ''' Represents a Get or Set accessor on a property declaration or an AddHandler,
+        ''' RemoveHandler or RaiseEvent accessor on a custom event declaration. The Kind of
+        ''' the node determines what kind of accessor this is. This statement is always the
+        ''' Begin of a BlockNode, and the body of the accessor is the Body of that node.
+        ''' </summary>
+        SetAccessorStatement                  = 106
+        ''' <summary>
+        ''' Represents a Get or Set accessor on a property declaration or an AddHandler,
+        ''' RemoveHandler or RaiseEvent accessor on a custom event declaration. The Kind of
+        ''' the node determines what kind of accessor this is. This statement is always the
+        ''' Begin of a BlockNode, and the body of the accessor is the Body of that node.
+        ''' </summary>
+        AddHandlerAccessorStatement           = 107
+        ''' <summary>
+        ''' Represents a Get or Set accessor on a property declaration or an AddHandler,
+        ''' RemoveHandler or RaiseEvent accessor on a custom event declaration. The Kind of
+        ''' the node determines what kind of accessor this is. This statement is always the
+        ''' Begin of a BlockNode, and the body of the accessor is the Body of that node.
+        ''' </summary>
+        RemoveHandlerAccessorStatement        = 108
+        ''' <summary>
+        ''' Represents a Get or Set accessor on a property declaration or an AddHandler,
+        ''' RemoveHandler or RaiseEvent accessor on a custom event declaration. The Kind of
+        ''' the node determines what kind of accessor this is. This statement is always the
+        ''' Begin of a BlockNode, and the body of the accessor is the Body of that node.
+        ''' </summary>
+        RaiseEventAccessorStatement           = 111
+        ''' <summary>
+        ''' Represents the "Implements ..." clause on a type member, which describes which
+        ''' interface members this member implements.
+        ''' </summary>
+        ImplementsClause                      = 112
+        ''' <summary>
+        ''' Represents the "Handles ..." clause on a method declaration that describes
+        ''' which events this method handles.
+        ''' </summary>
+        HandlesClause                         = 113
+        ''' <summary>
+        ''' Represents event container specified through special keywords "Me", "MyBase" or
+        ''' "MyClass".
+        ''' </summary>
+        KeywordEventContainer                 = 114
+        ''' <summary>Represents event container that refers to a WithEvents member.</summary>
+        WithEventsEventContainer              = 115
+        ''' <summary>Represents event container that refers to a WithEvents member's property.</summary>
+        WithEventsPropertyEventContainer      = 116
+        ''' <summary>Represents a single handled event in a "Handles ..." clause.</summary>
+        HandlesClauseItem                     = 117
+        ''' <summary>
+        ''' Represents the beginning of a declaration. However, not enough syntax is
+        ''' detected to classify this as a field, method, property or event. This is node
+        ''' always represents a syntax error.
+        ''' </summary>
+        IncompleteMember                      = 118
+        ''' <summary>
+        ''' Represents the declaration of one or more variables or constants, either as
+        ''' local variables or as class/structure members. In the case of a constant, it is
+        ''' represented by having "Const" in the Modifiers (although technically "Const" is
+        ''' not a modifier, it is represented as one in the parse trees.)
+        ''' </summary>
+        FieldDeclaration                      = 119
+        ''' <summary>
+        ''' Represents the part of a variable or constant declaration statement that
+        ''' associated one or more variable names with a type.
+        ''' </summary>
+        VariableDeclarator                    = 122
+        ''' <summary>
+        ''' Represents an "As {type-name}" clause that does not have an initializer or
+        ''' "New". The type has optional attributes associated with it, although attributes
+        ''' are not permitted in all possible places where this node occurs.
+        ''' </summary>
+        SimpleAsClause                        = 123
+        ''' <summary>
+        ''' Represents an "As New {type-name} [arguments] [initializers]" clause in a
+        ''' declaration. The type has optional attributes associated with it, although
+        ''' attributes are not permitted in many places where this node occurs (they are
+        ''' permitted, for example, on automatically implemented properties.)
+        ''' </summary>
+        AsNewClause                           = 124
+        ''' <summary>Represents a "With {...} clause used to initialize a new object's members.</summary>
+        ObjectMemberInitializer               = 125
+        ''' <summary>
+        ''' Represents a "From {...} clause used to initialize a new collection object's
+        ''' elements.
+        ''' </summary>
+        ObjectCollectionInitializer           = 126
+        ''' <summary>
+        ''' Represent a field initializer in a With {...} initializer where the field name
+        ''' is inferred from the initializer expression.
+        ''' </summary>
+        InferredFieldInitializer              = 127
+        ''' <summary>
+        ''' Represent a named field initializer in a With {...} initializer, such as ".x =
+        ''' expr".
+        ''' </summary>
+        NamedFieldInitializer                 = 128
+        ''' <summary>
+        ''' Represents an "= initializer" clause in a declaration for a variable, parameter
+        ''' or automatic property.
+        ''' </summary>
+        EqualsValue                           = 129
+        ''' <summary>Represent a parameter to a method, property, constructor, etc.</summary>
+        Parameter                             = 132
+        ''' <summary>
+        ''' Represents an identifier with optional "?" or "()" or "(,,,)" modifiers, as
+        ''' used in parameter declarations and variable declarations.
+        ''' </summary>
+        ModifiedIdentifier                    = 133
+        ''' <summary>
+        ''' Represents a modifier that describes an array type, without bounds, such as
+        ''' "()" or "(,)".
+        ''' </summary>
+        ArrayRankSpecifier                    = 134
+        ''' <summary>Represents a group of attributes within "&lt;" and "&gt;" brackets.</summary>
+        AttributeList                         = 135
+        ''' <summary>Represents a single attribute declaration within an attribute list.</summary>
+        Attribute                             = 136
+        ''' <summary>Represents a single attribute declaration within an attribute list.</summary>
+        AttributeTarget                       = 137
+        ''' <summary>
+        ''' Represents a file-level attribute, in which the attributes have no other
+        ''' syntactic element they are attached to.
+        ''' </summary>
+        AttributesStatement                   = 138
+        ''' <summary>
+        ''' Represent an expression in a statement context. This may only be a invocation
+        ''' or await expression in standard code but may be any expression in VB
+        ''' Interactive code.
+        ''' </summary>
+        ExpressionStatement                   = 139
+        ''' <summary>Represent a "? expression" "Print" statement in VB Interactive code.</summary>
+        PrintStatement                        = 140
+        ''' <summary>
+        ''' Represents a While...End While statement, including the While, body and End
+        ''' While.
+        ''' </summary>
+        WhileBlock                            = 141
+        ''' <summary>
+        ''' Represents an entire Using...End Using statement, including the Using, body and
+        ''' End Using statements.
+        ''' </summary>
+        UsingBlock                            = 144
+        ''' <summary>
+        ''' Represents a entire SyncLock...End SyncLock block, including the SyncLock
+        ''' statement, the enclosed statements, and the End SyncLock statement.
+        ''' </summary>
+        SyncLockBlock                         = 145
+        ''' <summary>
+        ''' Represents a With...End With block, include the With statement, the body of the
+        ''' block and the End With statement.
+        ''' </summary>
+        WithBlock                             = 146
+        ''' <summary>Represents the declaration of one or more local variables or constants.</summary>
+        LocalDeclarationStatement             = 147
+        ''' <summary>Represents a label statement.</summary>
+        LabelStatement                        = 148
+        ''' <summary>Represents a "GoTo" statement.</summary>
+        GoToStatement                         = 149
+        ''' <summary>
+        ''' A label for a GoTo, Resume, or On Error statement. An identifier, line number,
+        ''' or next keyword.
+        ''' </summary>
+        IdentifierLabel                       = 150
+        ''' <summary>
+        ''' A label for a GoTo, Resume, or On Error statement. An identifier, line number,
+        ''' or next keyword.
+        ''' </summary>
+        NumericLabel                          = 151
+        ''' <summary>
+        ''' A label for a GoTo, Resume, or On Error statement. An identifier, line number,
+        ''' or next keyword.
+        ''' </summary>
+        NextLabel                             = 152
+        ''' <summary>
+        ''' Represents a "Stop" or "End" statement. The Kind can be used to determine which
+        ''' kind of statement this is.
+        ''' </summary>
+        StopStatement                         = 153
+        ''' <summary>
+        ''' Represents a "Stop" or "End" statement. The Kind can be used to determine which
+        ''' kind of statement this is.
+        ''' </summary>
+        EndStatement                          = 156
+        ''' <summary>
+        ''' An exit statement. The kind of block being exited can be found by examining the
+        ''' Kind.
+        ''' </summary>
+        ExitDoStatement                       = 157
+        ''' <summary>
+        ''' An exit statement. The kind of block being exited can be found by examining the
+        ''' Kind.
+        ''' </summary>
+        ExitForStatement                      = 158
+        ''' <summary>
+        ''' An exit statement. The kind of block being exited can be found by examining the
+        ''' Kind.
+        ''' </summary>
+        ExitSubStatement                      = 159
+        ''' <summary>
+        ''' An exit statement. The kind of block being exited can be found by examining the
+        ''' Kind.
+        ''' </summary>
+        ExitFunctionStatement                 = 160
+        ''' <summary>
+        ''' An exit statement. The kind of block being exited can be found by examining the
+        ''' Kind.
+        ''' </summary>
+        ExitOperatorStatement                 = 161
+        ''' <summary>
+        ''' An exit statement. The kind of block being exited can be found by examining the
+        ''' Kind.
+        ''' </summary>
+        ExitPropertyStatement                 = 162
+        ''' <summary>
+        ''' An exit statement. The kind of block being exited can be found by examining the
+        ''' Kind.
+        ''' </summary>
+        ExitTryStatement                      = 163
+        ''' <summary>
+        ''' An exit statement. The kind of block being exited can be found by examining the
+        ''' Kind.
+        ''' </summary>
+        ExitSelectStatement                   = 164
+        ''' <summary>
+        ''' An exit statement. The kind of block being exited can be found by examining the
+        ''' Kind.
+        ''' </summary>
+        ExitWhileStatement                    = 165
+        ''' <summary>
+        ''' Represents a "Continue (block)" statement. THe kind of block referenced can be
+        ''' determined by examining the Kind.
+        ''' </summary>
+        ContinueWhileStatement                = 166
+        ''' <summary>
+        ''' Represents a "Continue (block)" statement. THe kind of block referenced can be
+        ''' determined by examining the Kind.
+        ''' </summary>
+        ContinueDoStatement                   = 167
+        ''' <summary>
+        ''' Represents a "Continue (block)" statement. THe kind of block referenced can be
+        ''' determined by examining the Kind.
+        ''' </summary>
+        ContinueForStatement                  = 168
+        ''' <summary>Represents a "Return" statement.</summary>
+        ReturnStatement                       = 169
+        ''' <summary>Represents a line If-Then-Else statement.</summary>
+        SingleLineIfStatement                 = 170
+        ''' <summary>
+        ''' Represents part of a single line If statement, consisting of a beginning
+        ''' if-statement, followed by a body of statement controlled by that beginning
+        ''' statement. The Kind property returns if this is a SingleLineIf.
+        ''' </summary>
+        SingleLineIfPart                      = 171
+        ''' <summary>
+        ''' Represents the Else part of an If statement, consisting of a Else statement,
+        ''' followed by a body of statement controlled by that Else.
+        ''' </summary>
+        SingleLineElseClause                  = 172
+        ''' <summary>
+        ''' Represents a block If...Then...Else...EndIf Statement. The Kind property can be
+        ''' used to determine if it is a block or line If.
+        ''' </summary>
+        MultiLineIfBlock                      = 173
+        ''' <summary>
+        ''' Represents part of an If statement, consisting of a beginning statement (If or
+        ''' ElseIf), followed by a body of statement controlled by that beginning
+        ''' statement. The Kind property returns if this is an If or ElseIf.
+        ''' </summary>
+        ElseIfBlock                           = 180
+        ''' <summary>
+        ''' Represents the Else part of an If statement, consisting of a Else statement,
+        ''' followed by a body of statement controlled by that Else.
+        ''' </summary>
+        ElseBlock                             = 181
+        ''' <summary>
+        ''' Represents the If part or ElseIf part of a If...End If block (or line If). This
+        ''' statement is always the Begin of a IfPart. The Kind can be examined to
+        ''' determine if this is an If or an ElseIf statement.
+        ''' </summary>
+        IfStatement                           = 182
+        ''' <summary>
+        ''' Represents the If part or ElseIf part of a If...End If block (or line If). This
+        ''' statement is always the Begin of a IfPart. The Kind can be examined to
+        ''' determine if this is an If or an ElseIf statement.
+        ''' </summary>
+        ElseIfStatement                       = 183
+        ''' <summary>
+        ''' Represents the Else part of a If...End If block (or line If). This statement is
+        ''' always the Begin of a ElsePart.
+        ''' </summary>
+        ElseStatement                         = 184
+        ''' <summary>Represents an entire Try...Catch...Finally...End Try statement.</summary>
+        TryBlock                              = 185
+        ''' <summary>
+        ''' Represents a Catch part of a Try...Catch...Finally...End Try statement,
+        ''' consisting of a Catch statement, followed by a body of statements controlled by
+        ''' that Catch statement. The Kind property returns which kind of part this is.
+        ''' </summary>
+        CatchBlock                            = 187
+        ''' <summary>
+        ''' Represents the Finally part of a Try...Catch...Finally...End Try statement,
+        ''' consisting of a Finally statement, followed by a body of statements controlled
+        ''' by the Finally.
+        ''' </summary>
+        FinallyBlock                          = 188
+        ''' <summary>
+        ''' Represents the Try part of a Try...Catch...Finally...End Try. This statement is
+        ''' always the Begin of a TryPart.
+        ''' </summary>
+        TryStatement                          = 189
+        ''' <summary>
+        ''' Represents the Catch part of a Try...Catch...Finally...End Try. This statement
+        ''' is always the Begin of a CatchPart.
+        ''' </summary>
+        CatchStatement                        = 190
+        ''' <summary>Represents the When/Filter clause of a Catch statement</summary>
+        CatchFilterClause                     = 191
+        ''' <summary>
+        ''' Represents the Finally part of a Try...Catch...Finally...End Try. This
+        ''' statement is always the Begin of a FinallyPart.
+        ''' </summary>
+        FinallyStatement                      = 194
+        ''' <summary>Represents the "Error" statement.</summary>
+        ErrorStatement                        = 195
+        ''' <summary>Represents an OnError Goto statement.</summary>
+        OnErrorGoToZeroStatement              = 196
+        ''' <summary>Represents an OnError Goto statement.</summary>
+        OnErrorGoToMinusOneStatement          = 197
+        ''' <summary>Represents an OnError Goto statement.</summary>
+        OnErrorGoToLabelStatement             = 198
+        ''' <summary>Represents an OnError Resume Next statement.</summary>
+        OnErrorResumeNextStatement            = 199
+        ''' <summary>
+        ''' Represents a "Resume" statement. The Kind property can be used to determine if
+        ''' this is a "Resume", "Resume Next" or "Resume label" statement.
+        ''' </summary>
+        ResumeStatement                       = 200
+        ''' <summary>
+        ''' Represents a "Resume" statement. The Kind property can be used to determine if
+        ''' this is a "Resume", "Resume Next" or "Resume label" statement.
+        ''' </summary>
+        ResumeLabelStatement                  = 201
+        ''' <summary>
+        ''' Represents a "Resume" statement. The Kind property can be used to determine if
+        ''' this is a "Resume", "Resume Next" or "Resume label" statement.
+        ''' </summary>
+        ResumeNextStatement                   = 202
+        ''' <summary>
+        ''' Represents a Select Case block, including the Select Case that begins it, the
+        ''' contains Case blocks and the End Select.
+        ''' </summary>
+        SelectBlock                           = 203
+        ''' <summary>
+        ''' Represents a Select Case statement. This statement always occurs as the Begin
+        ''' of a SelectBlock.
+        ''' </summary>
+        SelectStatement                       = 204
+        ''' <summary>Represents a case statement and its subsequent block.</summary>
+        CaseBlock                             = 207
+        ''' <summary>Represents a case statement and its subsequent block.</summary>
+        CaseElseBlock                         = 210
+        ''' <summary>
+        ''' Represents a Case or Case Else statement. This statement is always the Begin of
+        ''' a CaseBlock. If this is a Case Else statement, the Kind=CaseElse, otherwise the
+        ''' Kind=Case.
+        ''' </summary>
+        CaseStatement                         = 211
+        ''' <summary>
+        ''' Represents a Case or Case Else statement. This statement is always the Begin of
+        ''' a CaseBlock. If this is a Case Else statement, the Kind=CaseElse, otherwise the
+        ''' Kind=Case.
+        ''' </summary>
+        CaseElseStatement                     = 212
+        ''' <summary>The "Else" part in a Case Else statement.</summary>
+        ElseCaseClause                        = 213
+        ''' <summary>Represents a single value in a Case.</summary>
+        SimpleCaseClause                      = 214
+        ''' <summary>Represents a range "expression To expression" in a Case.</summary>
+        RangeCaseClause                       = 215
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
+        CaseEqualsClause                      = 216
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
+        CaseNotEqualsClause                   = 217
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
+        CaseLessThanClause                    = 218
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
+        CaseLessThanOrEqualClause             = 219
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
+        CaseGreaterThanOrEqualClause          = 222
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
+        CaseGreaterThanClause                 = 223
+        ''' <summary>
+        ''' Represents the "SyncLock" statement. This statement always occurs as the Begin
+        ''' of a SyncLockBlock.
+        ''' </summary>
+        SyncLockStatement                     = 226
+        WhileStatement                        = 234
+        ''' <summary>
+        ''' Represents a For or For Each block, including the introducing statement, the
+        ''' body and the "Next" (which can be omitted if a containing For has a Next with
+        ''' multiple variables).
+        ''' </summary>
+        ForBlock                              = 237
+        ''' <summary>
+        ''' Represents a For or For Each block, including the introducing statement, the
+        ''' body and the "Next" (which can be omitted if a containing For has a Next with
+        ''' multiple variables).
+        ''' </summary>
+        ForEachBlock                          = 238
+        ''' <summary>
+        ''' The For statement that begins a For-Next block. This statement always occurs as
+        ''' the Begin of a ForBlock. Most of the time, the End of that ForBlock is the
+        ''' corresponding Next statement. However, multiple nested For statements are ended
+        ''' by a single Next statement with multiple variables, then the inner For
+        ''' statements will have End set to Nothing, and the Next statement is the End of
+        ''' the outermost For statement that is being ended.
+        ''' </summary>
+        ForStatement                          = 239
+        ''' <summary>The Step clause in a For Statement.</summary>
+        ForStepClause                         = 240
+        ''' <summary>
+        ''' The For Each statement that begins a For Each-Next block. This statement always
+        ''' occurs as the Begin of a ForBlock, and the body of the For Each-Next is the
+        ''' Body of that ForBlock. Most of the time, the End of that ForBlock is the
+        ''' corresponding Next statement. However, multiple nested For statements are ended
+        ''' by a single Next statement with multiple variables, then the inner For
+        ''' statements will have End set to Nothing, and the Next statement is the End of
+        ''' the outermost For statement that is being ended.
+        ''' </summary>
+        ForEachStatement                      = 241
+        ''' <summary>
+        ''' The Next statement that ends a For-Next or For Each-Next block. This statement
+        ''' always occurs as the End of a ForBlock (with Kind=ForBlock or ForEachBlock),
+        ''' and the body of the For-Next is the Body of that ForBlock. The Begin of that
+        ''' ForBlock has the corresponding For or For Each statement.
+        ''' </summary>
+        NextStatement                         = 242
+        ''' <summary>
+        ''' The Using statement that begins a Using block. This statement always occurs as
+        ''' the Begin of a UsingBlock, and the body of the Using is the Body of that
+        ''' UsingBlock.
+        ''' </summary>
+        UsingStatement                        = 243
+        ''' <summary>Represents a Throw statement.</summary>
+        ThrowStatement                        = 246
+        ''' <summary>
+        ''' Represents a simple, compound, or Mid assignment statement. Which one can be
+        ''' determined by checking the Kind.
+        ''' </summary>
+        SimpleAssignmentStatement             = 247
+        ''' <summary>
+        ''' Represents a simple, compound, or Mid assignment statement. Which one can be
+        ''' determined by checking the Kind.
+        ''' </summary>
+        MidAssignmentStatement                = 248
+        ''' <summary>
+        ''' Represents a simple, compound, or Mid assignment statement. Which one can be
+        ''' determined by checking the Kind.
+        ''' </summary>
+        AddAssignmentStatement                = 249
+        ''' <summary>
+        ''' Represents a simple, compound, or Mid assignment statement. Which one can be
+        ''' determined by checking the Kind.
+        ''' </summary>
+        SubtractAssignmentStatement           = 250
+        ''' <summary>
+        ''' Represents a simple, compound, or Mid assignment statement. Which one can be
+        ''' determined by checking the Kind.
+        ''' </summary>
+        MultiplyAssignmentStatement           = 251
+        ''' <summary>
+        ''' Represents a simple, compound, or Mid assignment statement. Which one can be
+        ''' determined by checking the Kind.
+        ''' </summary>
+        DivideAssignmentStatement             = 252
+        ''' <summary>
+        ''' Represents a simple, compound, or Mid assignment statement. Which one can be
+        ''' determined by checking the Kind.
+        ''' </summary>
+        IntegerDivideAssignmentStatement      = 253
+        ''' <summary>
+        ''' Represents a simple, compound, or Mid assignment statement. Which one can be
+        ''' determined by checking the Kind.
+        ''' </summary>
+        ExponentiateAssignmentStatement       = 254
+        ''' <summary>
+        ''' Represents a simple, compound, or Mid assignment statement. Which one can be
+        ''' determined by checking the Kind.
+        ''' </summary>
+        LeftShiftAssignmentStatement          = 255
+        ''' <summary>
+        ''' Represents a simple, compound, or Mid assignment statement. Which one can be
+        ''' determined by checking the Kind.
+        ''' </summary>
+        RightShiftAssignmentStatement         = 258
+        ''' <summary>
+        ''' Represents a simple, compound, or Mid assignment statement. Which one can be
+        ''' determined by checking the Kind.
+        ''' </summary>
+        ConcatenateAssignmentStatement        = 259
+        ''' <summary>Represents a left-hand side of a MidAssignment statement.</summary>
+        MidExpression                         = 260
+        ''' <summary>Represent a call statement (also known as a invocation statement).</summary>
+        CallStatement                         = 261
+        ''' <summary>
+        ''' Represents an AddHandler or RemoveHandler statement. The Kind property
+        ''' determines which one.
+        ''' </summary>
+        AddHandlerStatement                   = 262
+        ''' <summary>
+        ''' Represents an AddHandler or RemoveHandler statement. The Kind property
+        ''' determines which one.
+        ''' </summary>
+        RemoveHandlerStatement                = 263
+        ''' <summary>Represent a RaiseEvent statement.</summary>
+        RaiseEventStatement                   = 264
+        ''' <summary>
+        ''' Represents a "With" statement. This statement always occurs as the
+        ''' BeginStatement of a WithBlock, and the body of the With is the Body of that
+        ''' WithBlock.
+        ''' </summary>
+        WithStatement                         = 265
+        ''' <summary>Represents a ReDim statement.</summary>
+        ReDimStatement                        = 266
+        ''' <summary>Represents a ReDim statement.</summary>
+        ReDimPreserveStatement                = 267
+        ''' <summary>Represents a ReDim statement clause.</summary>
+        RedimClause                           = 270
+        ''' <summary>Represents an "Erase" statement.</summary>
+        EraseStatement                        = 271
+        ''' <summary>
+        ''' Represents a literal. The kind of literal is determined by the Kind property:
+        ''' IntegerLiteral, CharacterLiteral, BooleanLiteral, DecimalLiteral,
+        ''' FloatingLiteral, DateLiteral or StringLiteral. The value of the literal can be
+        ''' determined by casting the associated Token to the correct type and getting the
+        ''' value from the token.
+        ''' </summary>
+        CharacterLiteralExpression            = 272
+        ''' <summary>
+        ''' Represents a literal. The kind of literal is determined by the Kind property:
+        ''' IntegerLiteral, CharacterLiteral, BooleanLiteral, DecimalLiteral,
+        ''' FloatingLiteral, DateLiteral or StringLiteral. The value of the literal can be
+        ''' determined by casting the associated Token to the correct type and getting the
+        ''' value from the token.
+        ''' </summary>
+        TrueLiteralExpression                 = 273
+        ''' <summary>
+        ''' Represents a literal. The kind of literal is determined by the Kind property:
+        ''' IntegerLiteral, CharacterLiteral, BooleanLiteral, DecimalLiteral,
+        ''' FloatingLiteral, DateLiteral or StringLiteral. The value of the literal can be
+        ''' determined by casting the associated Token to the correct type and getting the
+        ''' value from the token.
+        ''' </summary>
+        FalseLiteralExpression                = 274
+        ''' <summary>
+        ''' Represents a literal. The kind of literal is determined by the Kind property:
+        ''' IntegerLiteral, CharacterLiteral, BooleanLiteral, DecimalLiteral,
+        ''' FloatingLiteral, DateLiteral or StringLiteral. The value of the literal can be
+        ''' determined by casting the associated Token to the correct type and getting the
+        ''' value from the token.
+        ''' </summary>
+        NumericLiteralExpression              = 275
+        ''' <summary>
+        ''' Represents a literal. The kind of literal is determined by the Kind property:
+        ''' IntegerLiteral, CharacterLiteral, BooleanLiteral, DecimalLiteral,
+        ''' FloatingLiteral, DateLiteral or StringLiteral. The value of the literal can be
+        ''' determined by casting the associated Token to the correct type and getting the
+        ''' value from the token.
+        ''' </summary>
+        DateLiteralExpression                 = 276
+        ''' <summary>
+        ''' Represents a literal. The kind of literal is determined by the Kind property:
+        ''' IntegerLiteral, CharacterLiteral, BooleanLiteral, DecimalLiteral,
+        ''' FloatingLiteral, DateLiteral or StringLiteral. The value of the literal can be
+        ''' determined by casting the associated Token to the correct type and getting the
+        ''' value from the token.
+        ''' </summary>
+        StringLiteralExpression               = 279
+        ''' <summary>
+        ''' Represents a literal. The kind of literal is determined by the Kind property:
+        ''' IntegerLiteral, CharacterLiteral, BooleanLiteral, DecimalLiteral,
+        ''' FloatingLiteral, DateLiteral or StringLiteral. The value of the literal can be
+        ''' determined by casting the associated Token to the correct type and getting the
+        ''' value from the token.
+        ''' </summary>
+        NothingLiteralExpression              = 280
+        ''' <summary>Represents a parenthesized expression.</summary>
+        ParenthesizedExpression               = 281
+        ''' <summary>Identifies the special instance "Me"</summary>
+        MeExpression                          = 282
+        ''' <summary>Identifies the special instance "MyBase"</summary>
+        MyBaseExpression                      = 283
+        ''' <summary>Identifies the special instance "MyClass"</summary>
+        MyClassExpression                     = 284
+        ''' <summary>Represents a GetType expression.</summary>
+        GetTypeExpression                     = 285
+        ''' <summary>Represents a TypeOf...Is or IsNot expression.</summary>
+        TypeOfIsExpression                    = 286
+        ''' <summary>Represents a TypeOf...Is or IsNot expression.</summary>
+        TypeOfIsNotExpression                 = 287
+        ''' <summary>Represents a GetXmlNamespace expression.</summary>
+        GetXmlNamespaceExpression             = 290
+        ''' <summary>
+        ''' Represents member access (.name) or dictionary access (!name). The Kind
+        ''' property determines which kind of access.
+        ''' </summary>
+        SimpleMemberAccessExpression          = 291
+        ''' <summary>
+        ''' Represents member access (.name) or dictionary access (!name). The Kind
+        ''' property determines which kind of access.
+        ''' </summary>
+        DictionaryAccessExpression            = 292
+        ''' <summary>
+        ''' Represents an XML member element access (node.&lt;Element&gt;), attribute
+        ''' access (node.@Attribute) or descendants access (node...&lt;Descendant&gt;). The
+        ''' Kind property determines which kind of access.
+        ''' </summary>
+        XmlElementAccessExpression            = 293
+        ''' <summary>
+        ''' Represents an XML member element access (node.&lt;Element&gt;), attribute
+        ''' access (node.@Attribute) or descendants access (node...&lt;Descendant&gt;). The
+        ''' Kind property determines which kind of access.
+        ''' </summary>
+        XmlDescendantAccessExpression         = 294
+        ''' <summary>
+        ''' Represents an XML member element access (node.&lt;Element&gt;), attribute
+        ''' access (node.@Attribute) or descendants access (node...&lt;Descendant&gt;). The
+        ''' Kind property determines which kind of access.
+        ''' </summary>
+        XmlAttributeAccessExpression          = 295
+        ''' <summary>
+        ''' Represents an invocation expression consisting of an invocation target and an
+        ''' optional argument list or an array, parameterized property or object default
+        ''' property index.
+        ''' </summary>
+        InvocationExpression                  = 296
+        ''' <summary>
+        ''' Represents a New expression that creates a new non-array object, possibly with
+        ''' a "With" or "From" clause.
+        ''' </summary>
+        ObjectCreationExpression              = 297
+        ''' <summary>Represents a New expression that create an object of anonymous type.</summary>
+        AnonymousObjectCreationExpression     = 298
+        ''' <summary>Represents an expression that creates a new array.</summary>
+        ArrayCreationExpression               = 301
+        ''' <summary>
+        ''' Represents an expression that creates a new array without naming the element
+        ''' type.
+        ''' </summary>
+        CollectionInitializer                 = 302
+        CTypeExpression                       = 303
+        DirectCastExpression                  = 304
+        TryCastExpression                     = 305
+        ''' <summary>
+        ''' Represents a cast to a pre-defined type using a pre-defined cast expression,
+        ''' such as CInt or CLng.
+        ''' </summary>
+        PredefinedCastExpression              = 306
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        AddExpression                         = 307
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        SubtractExpression                    = 308
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        MultiplyExpression                    = 309
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        DivideExpression                      = 310
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        IntegerDivideExpression               = 311
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        ExponentiateExpression                = 314
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        LeftShiftExpression                   = 315
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        RightShiftExpression                  = 316
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        ConcatenateExpression                 = 317
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        ModuloExpression                      = 318
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        EqualsExpression                      = 319
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        NotEqualsExpression                   = 320
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        LessThanExpression                    = 321
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        LessThanOrEqualExpression             = 322
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        GreaterThanOrEqualExpression          = 323
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        GreaterThanExpression                 = 324
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        IsExpression                          = 325
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        IsNotExpression                       = 326
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        LikeExpression                        = 327
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        OrExpression                          = 328
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        ExclusiveOrExpression                 = 329
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        AndExpression                         = 330
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        OrElseExpression                      = 331
+        ''' <summary>
+        ''' Represents a binary operator. The Kind property classifies the operators into
+        ''' similar kind of operators (arithmetic, relational, logical or string); the
+        ''' exact operation being performed is determined by the Operator property.
+        ''' </summary>
+        AndAlsoExpression                     = 332
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
+        UnaryPlusExpression                   = 333
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
+        UnaryMinusExpression                  = 334
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
+        NotExpression                         = 335
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
+        AddressOfExpression                   = 336
+        ''' <summary>
+        ''' Represents a conditional expression, If(condition, true-expr, false-expr) or
+        ''' If(expr, nothing-expr).
+        ''' </summary>
+        BinaryConditionalExpression           = 337
+        ''' <summary>
+        ''' Represents a conditional expression, If(condition, true-expr, false-expr) or
+        ''' If(expr, nothing-expr).
+        ''' </summary>
+        TernaryConditionalExpression          = 338
+        ''' <summary>Represents a single line lambda expression.</summary>
+        SingleLineFunctionLambdaExpression    = 339
+        ''' <summary>Represents a single line lambda expression.</summary>
+        SingleLineSubLambdaExpression         = 342
+        ''' <summary>Represents a multi-line lambda expression.</summary>
+        MultiLineFunctionLambdaExpression     = 343
+        ''' <summary>Represents a multi-line lambda expression.</summary>
+        MultiLineSubLambdaExpression          = 344
+        ''' <summary>Represents the header part of a lambda expression</summary>
+        SubLambdaHeader                       = 345
+        ''' <summary>Represents the header part of a lambda expression.</summary>
+        FunctionLambdaHeader                  = 346
+        ''' <summary>Represents a parenthesized argument list.</summary>
+        ArgumentList                          = 347
+        ''' <summary>
+        ''' Represents an omitted argument in an argument list. An omitted argument is not
+        ''' considered a syntax error but a valid case when no argument is required.
+        ''' </summary>
+        OmittedArgument                       = 348
+        ''' <summary>
+        ''' Represents an argument that is just an optional argument name and an
+        ''' expression.
+        ''' </summary>
+        SimpleArgument                        = 349
+        ''' <summary>
+        ''' Represents a range argument, such as "0 to 5", used in array bounds. The Value"
+        ''' property represents the upper bound of the range.
+        ''' </summary>
+        RangeArgument                         = 351
+        ''' <summary>
+        ''' This class represents a query expression. A query expression is composed of one
+        ''' or more query operators in a row. The first query operator must be a From or
+        ''' Aggregate.
+        ''' </summary>
+        QueryExpression                       = 352
+        ''' <summary>
+        ''' Describes a single variable of the form "x [As Type] In expression" for use in
+        ''' query expressions.
+        ''' </summary>
+        CollectionRangeVariable               = 353
+        ''' <summary>
+        ''' Describes a single variable of the form "[x [As Type] =] expression" for use in
+        ''' query expressions.
+        ''' </summary>
+        ExpressionRangeVariable               = 354
+        ''' <summary>
+        ''' Describes a single variable of the form "[x [As Type] =] aggregation-function"
+        ''' for use in the Into clause of Aggregate or Group By or Group Join query
+        ''' operators.
+        ''' </summary>
+        AggregationRangeVariable              = 355
+        ''' <summary>Represents the name and optional type of an expression range variable.</summary>
+        VariableNameEquals                    = 356
+        ''' <summary>
+        ''' Represents an invocation of an Aggregation function in the aggregation range
+        ''' variable declaration of a Group By, Group Join or Aggregate query operator.
+        ''' </summary>
+        FunctionAggregation                   = 357
+        ''' <summary>
+        ''' Represents the use of "Group" as the aggregation function in the in the
+        ''' aggregation range variable declaration of a Group By or Group Join query
+        ''' operator.
+        ''' </summary>
+        GroupAggregation                      = 358
+        ''' <summary>
+        ''' Represents a "From" query operator. If this is the beginning of a query, the
+        ''' Source will be Nothing. Otherwise, the Source will be the part of the query to
+        ''' the left of the From.
+        ''' </summary>
+        FromClause                            = 359
+        ''' <summary>Represents a "Let" query operator.</summary>
+        LetClause                             = 360
+        ''' <summary>Represents an Aggregate query operator.</summary>
+        AggregateClause                       = 361
+        ''' <summary>Represents the "Distinct" query operator.</summary>
+        DistinctClause                        = 362
+        ''' <summary>Represents a "Where" query operator.</summary>
+        WhereClause                           = 363
+        ''' <summary>
+        ''' Represents a "Skip While" or "Take While" query operator. The Kind property
+        ''' tells which.
+        ''' </summary>
+        SkipWhileClause                       = 364
+        ''' <summary>
+        ''' Represents a "Skip While" or "Take While" query operator. The Kind property
+        ''' tells which.
+        ''' </summary>
+        TakeWhileClause                       = 365
+        ''' <summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary>
+        SkipClause                            = 366
+        ''' <summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary>
+        TakeClause                            = 367
+        ''' <summary>Represents the "Group By" query operator.</summary>
+        GroupByClause                         = 368
+        ''' <summary>Represents the "expression Equals expression" condition in a Join.</summary>
+        JoinCondition                         = 369
+        ''' <summary>Represents a Join query operator.</summary>
+        SimpleJoinClause                      = 370
+        ''' <summary>Represents the "Group Join" query operator.</summary>
+        GroupJoinClause                       = 371
+        ''' <summary>Represents the "Order By" query operator.</summary>
+        OrderByClause                         = 372
+        ''' <summary>
+        ''' An expression to order by, plus an optional ordering. The Kind indicates
+        ''' whether to order in ascending or descending order.
+        ''' </summary>
+        AscendingOrdering                     = 375
+        ''' <summary>
+        ''' An expression to order by, plus an optional ordering. The Kind indicates
+        ''' whether to order in ascending or descending order.
+        ''' </summary>
+        DescendingOrdering                    = 376
+        ''' <summary>Represents the "Select" query operator.</summary>
+        SelectClause                          = 377
+        ''' <summary>Represents an XML Document literal expression.</summary>
+        XmlDocument                           = 378
+        ''' <summary>Represents the XML declaration prologue in an XML literal expression.</summary>
+        XmlDeclaration                        = 379
+        ''' <summary>
+        ''' Represents an XML document prologue option - version, encoding, standalone or
+        ''' whitespace in an XML literal expression.
+        ''' </summary>
+        XmlDeclarationOption                  = 380
+        ''' <summary>Represents an XML element with content in an XML literal expression.</summary>
+        XmlElement                            = 381
+        ''' <summary>Represents Xml text.</summary>
+        XmlText                               = 382
+        ''' <summary>Represents the start tag of an XML element of the form &lt;element&gt;.</summary>
+        XmlElementStartTag                    = 383
+        ''' <summary>Represents the end tag of an XML element of the form &lt;/element&gt;.</summary>
+        XmlElementEndTag                      = 384
+        ''' <summary>Represents an empty XML element of the form &lt;element /&gt;.</summary>
+        XmlEmptyElement                       = 385
+        ''' <summary>Represents an XML attribute in an XML literal expression.</summary>
+        XmlAttribute                          = 386
+        ''' <summary>
+        ''' Represents a string of XML characters embedded as the content of an XML
+        ''' element.
+        ''' </summary>
+        XmlString                             = 387
+        ''' <summary>Represents an XML name of the form 'name' appearing in GetXmlNamespace().</summary>
+        XmlPrefixName                         = 388
+        ''' <summary>
+        ''' Represents an XML name of the form 'name' or 'namespace:name' appearing in
+        ''' source as part of an XML literal or member access expression or an XML
+        ''' namespace import clause.
+        ''' </summary>
+        XmlName                               = 389
+        ''' <summary>
+        ''' Represents an XML name of the form &lt;xml-name&gt; appearing in source as part
+        ''' of an XML literal or member access expression or an XML namespace import
+        ''' clause.
+        ''' </summary>
+        XmlBracketedName                      = 390
+        ''' <summary>Represents an XML namespace prefix of the form 'prefix:' as in xml:ns="".</summary>
+        XmlPrefix                             = 391
+        ''' <summary>
+        ''' Represents an XML comment of the form &lt;!-- Comment --&gt; appearing in an
+        ''' XML literal expression.
+        ''' </summary>
+        XmlComment                            = 392
+        ''' <summary>
+        ''' Represents an XML processing instruction of the form '&lt;? XMLProcessingTarget
+        ''' XMLProcessingValue ?&gt;'.
+        ''' </summary>
+        XmlProcessingInstruction              = 393
+        ''' <summary>Represents an XML CDATA section in an XML literal expression.</summary>
+        XmlCDataSection                       = 394
+        ''' <summary>
+        ''' Represents an embedded expression in an XML literal e.g.
+        ''' '&lt;name&gt;&lt;%=obj.Name =%&gt;&lt;/name&gt;'.
+        ''' </summary>
+        XmlEmbeddedExpression                 = 395
+        ''' <summary>
+        ''' Represents an array type, such as "A() or "A(,)", without bounds specified for
+        ''' the array.
+        ''' </summary>
+        ArrayType                             = 396
+        ''' <summary>A type name that represents a nullable type, such as "Integer?".</summary>
+        NullableType                          = 397
+        ''' <summary>
+        ''' Represents an occurrence of a Visual Basic built-in type such as Integer or
+        ''' String in source code.
+        ''' </summary>
+        PredefinedType                        = 398
+        ''' <summary>
+        ''' Represents a type name consisting of a single identifier (which might include
+        ''' brackets or a type character).
+        ''' </summary>
+        IdentifierName                        = 399
+        ''' <summary>
+        ''' Represents a simple type name with one or more generic arguments, such as "X(Of
+        ''' Y, Z).
+        ''' </summary>
+        GenericName                           = 400
+        ''' <summary>Represents a qualified type name, for example X.Y or X(Of Z).Y.</summary>
+        QualifiedName                         = 401
+        ''' <summary>Represents a name in the global namespace.</summary>
+        GlobalName                            = 402
+        ''' <summary>Represents a parenthesized list of generic type arguments.</summary>
+        TypeArgumentList                      = 403
+        ''' <summary>
+        ''' Syntax node class that represents a value of 'cref' attribute inside
+        ''' documentation comment trivia.
+        ''' </summary>
+        CrefReference                         = 404
+        CrefSignature                         = 407
+        CrefSignaturePart                     = 408
+        CrefOperatorReference                 = 409
+        QualifiedCrefOperatorReference        = 410
+        ''' <summary>Represent a Yield statement.</summary>
+        YieldStatement                        = 411
+        ''' <summary>Represent a Await expression.</summary>
+        AwaitExpression                       = 412
+        ''' <summary>Represent the keyword ''.</summary>
+        AddHandlerKeyword                     = 413
+        ''' <summary>Represent the keyword ''.</summary>
+        AddressOfKeyword                      = 414
+        ''' <summary>Represent the keyword ''.</summary>
+        AliasKeyword                          = 415
+        ''' <summary>Represent the keyword ''.</summary>
+        AndKeyword                            = 416
+        ''' <summary>Represent the keyword ''.</summary>
+        AndAlsoKeyword                        = 417
+        ''' <summary>Represent the keyword ''.</summary>
+        AsKeyword                             = 418
+        ''' <summary>Represent the keyword ''.</summary>
+        BooleanKeyword                        = 421
+        ''' <summary>Represent the keyword ''.</summary>
+        ByRefKeyword                          = 422
+        ''' <summary>Represent the keyword ''.</summary>
+        ByteKeyword                           = 423
+        ''' <summary>Represent the keyword ''.</summary>
+        ByValKeyword                          = 424
+        ''' <summary>Represent the keyword ''.</summary>
+        CallKeyword                           = 425
+        ''' <summary>Represent the keyword ''.</summary>
+        CaseKeyword                           = 426
+        ''' <summary>Represent the keyword ''.</summary>
+        CatchKeyword                          = 427
+        ''' <summary>Represent the keyword ''.</summary>
+        CBoolKeyword                          = 428
+        ''' <summary>Represent the keyword ''.</summary>
+        CByteKeyword                          = 429
+        ''' <summary>Represent the keyword ''.</summary>
+        CCharKeyword                          = 432
+        ''' <summary>Represent the keyword ''.</summary>
+        CDateKeyword                          = 433
+        ''' <summary>Represent the keyword ''.</summary>
+        CDecKeyword                           = 434
+        ''' <summary>Represent the keyword ''.</summary>
+        CDblKeyword                           = 435
+        ''' <summary>Represent the keyword ''.</summary>
+        CharKeyword                           = 436
+        ''' <summary>Represent the keyword ''.</summary>
+        CIntKeyword                           = 437
+        ''' <summary>Represent the keyword ''.</summary>
+        ClassKeyword                          = 438
+        ''' <summary>Represent the keyword ''.</summary>
+        CLngKeyword                           = 439
+        ''' <summary>Represent the keyword ''.</summary>
+        CObjKeyword                           = 440
+        ''' <summary>Represent the keyword ''.</summary>
+        ConstKeyword                          = 441
+        ''' <summary>Represent the keyword ''.</summary>
+        ReferenceKeyword                      = 442
+        ''' <summary>Represent the keyword ''.</summary>
+        ContinueKeyword                       = 443
+        ''' <summary>Represent the keyword ''.</summary>
+        CSByteKeyword                         = 444
+        ''' <summary>Represent the keyword ''.</summary>
+        CShortKeyword                         = 445
+        ''' <summary>Represent the keyword ''.</summary>
+        CSngKeyword                           = 446
+        ''' <summary>Represent the keyword ''.</summary>
+        CStrKeyword                           = 447
+        ''' <summary>Represent the keyword ''.</summary>
+        CTypeKeyword                          = 448
+        ''' <summary>Represent the keyword ''.</summary>
+        CUIntKeyword                          = 449
+        ''' <summary>Represent the keyword ''.</summary>
+        CULngKeyword                          = 450
+        ''' <summary>Represents the keyword '' .</summary>
+        CUShortKeyword                        = 453
+        ''' <summary>Represents the keyword '' .</summary>
+        DateKeyword                           = 454
+        ''' <summary>Represents the keyword '' .</summary>
+        DecimalKeyword                        = 455
+        ''' <summary>Represents the keyword '' .</summary>
+        DeclareKeyword                        = 456
+        ''' <summary>Represents the keyword '' .</summary>
+        DefaultKeyword                        = 457
+        ''' <summary>Represents the keyword '' .</summary>
+        DelegateKeyword                       = 458
+        ''' <summary>Represents the keyword '' .</summary>
+        DimKeyword                            = 459
+        ''' <summary>Represents the keyword '' .</summary>
+        DirectCastKeyword                     = 460
+        ''' <summary>Represents the keyword '' .</summary>
+        DoKeyword                             = 461
+        ''' <summary>Represents the keyword '' .</summary>
+        DoubleKeyword                         = 462
+        ''' <summary>Represents the keyword '' .</summary>
+        EachKeyword                           = 463
+        ''' <summary>Represents the keyword '' .</summary>
+        ElseKeyword                           = 464
+        ''' <summary>Represents the keyword '' .</summary>
+        ElseIfKeyword                         = 465
+        ''' <summary>Represents the keyword '' .</summary>
+        EndKeyword                            = 466
+        ''' <summary>Represents the keyword '' .</summary>
+        EnumKeyword                           = 467
+        ''' <summary>Represents the keyword '' .</summary>
+        EraseKeyword                          = 468
+        ''' <summary>Represents the keyword '' .</summary>
+        ErrorKeyword                          = 469
+        ''' <summary>Represents the keyword '' .</summary>
+        EventKeyword                          = 470
+        ''' <summary>Represents the keyword '' .</summary>
+        ExitKeyword                           = 471
+        ''' <summary>Represents the keyword '' .</summary>
+        FalseKeyword                          = 474
+        ''' <summary>Represents the keyword '' .</summary>
+        FinallyKeyword                        = 475
+        ''' <summary>Represents the keyword '' .</summary>
+        ForKeyword                            = 476
+        ''' <summary>Represents the keyword '' .</summary>
+        FriendKeyword                         = 477
+        ''' <summary>Represents the keyword '' .</summary>
+        FunctionKeyword                       = 478
+        ''' <summary>Represents the keyword '' .</summary>
+        GetKeyword                            = 479
+        ''' <summary>Represents the keyword '' .</summary>
+        GetTypeKeyword                        = 480
+        ''' <summary>Represents the keyword '' .</summary>
+        GetXmlNamespaceKeyword                = 481
+        ''' <summary>Represents the keyword '' .</summary>
+        GlobalKeyword                         = 482
+        ''' <summary>Represents the keyword '' .</summary>
+        GoToKeyword                           = 483
+        ''' <summary>Represents the keyword '' .</summary>
+        HandlesKeyword                        = 484
+        ''' <summary>Represents the keyword '' .</summary>
+        IfKeyword                             = 485
+        ''' <summary>Represents the keyword '' .</summary>
+        ImplementsKeyword                     = 486
+        ''' <summary>Represents the keyword '' .</summary>
+        ImportsKeyword                        = 487
+        ''' <summary>Represents the keyword '' .</summary>
+        InKeyword                             = 488
+        ''' <summary>Represents the keyword '' .</summary>
+        InheritsKeyword                       = 489
+        ''' <summary>Represents the keyword '' .</summary>
+        IntegerKeyword                        = 490
+        ''' <summary>Represents the keyword '' .</summary>
+        InterfaceKeyword                      = 491
+        ''' <summary>Represents the keyword '' .</summary>
+        IsKeyword                             = 492
+        ''' <summary>Represents the keyword '' .</summary>
+        IsNotKeyword                          = 495
+        ''' <summary>Represents the keyword '' .</summary>
+        LetKeyword                            = 496
+        ''' <summary>Represents the keyword '' .</summary>
+        LibKeyword                            = 497
+        ''' <summary>Represents the keyword '' .</summary>
+        LikeKeyword                           = 498
+        ''' <summary>Represents the keyword '' .</summary>
+        LongKeyword                           = 499
+        ''' <summary>Represents the keyword '' .</summary>
+        LoopKeyword                           = 500
+        ''' <summary>Represents the keyword '' .</summary>
+        MeKeyword                             = 501
+        ''' <summary>Represents the keyword '' .</summary>
+        ModKeyword                            = 502
+        ''' <summary>Represents the keyword '' .</summary>
+        ModuleKeyword                         = 503
+        ''' <summary>Represents the keyword '' .</summary>
+        MustInheritKeyword                    = 504
+        ''' <summary>Represents the keyword '' .</summary>
+        MustOverrideKeyword                   = 505
+        ''' <summary>Represents the keyword '' .</summary>
+        MyBaseKeyword                         = 506
+        ''' <summary>Represents the keyword '' .</summary>
+        MyClassKeyword                        = 507
+        ''' <summary>Represents the keyword '' .</summary>
+        NamespaceKeyword                      = 508
+        ''' <summary>Represents the keyword '' .</summary>
+        NarrowingKeyword                      = 509
+        ''' <summary>Represents the keyword '' .</summary>
+        NextKeyword                           = 510
+        ''' <summary>Represents the keyword '' .</summary>
+        NewKeyword                            = 511
+        ''' <summary>Represents the keyword '' .</summary>
+        NotKeyword                            = 512
+        ''' <summary>Represents the keyword '' .</summary>
+        NothingKeyword                        = 513
+        ''' <summary>Represents the keyword '' .</summary>
+        NotInheritableKeyword                 = 516
+        ''' <summary>Represents the keyword '' .</summary>
+        NotOverridableKeyword                 = 517
+        ''' <summary>Represents the keyword '' .</summary>
+        ObjectKeyword                         = 518
+        ''' <summary>Represents the keyword '' .</summary>
+        OfKeyword                             = 519
+        ''' <summary>Represents the keyword '' .</summary>
+        OnKeyword                             = 520
+        ''' <summary>Represents the keyword '' .</summary>
+        OperatorKeyword                       = 521
+        ''' <summary>Represents the keyword '' .</summary>
+        OptionKeyword                         = 522
+        ''' <summary>Represents the keyword '' .</summary>
+        OptionalKeyword                       = 523
+        ''' <summary>Represents the keyword '' .</summary>
+        OrKeyword                             = 524
+        ''' <summary>Represents the keyword '' .</summary>
+        OrElseKeyword                         = 525
+        ''' <summary>Represents the keyword '' .</summary>
+        OverloadsKeyword                      = 526
+        ''' <summary>Represents the keyword '' .</summary>
+        OverridableKeyword                    = 527
+        ''' <summary>Represents the keyword '' .</summary>
+        OverridesKeyword                      = 528
+        ''' <summary>Represents the keyword '' .</summary>
+        ParamArrayKeyword                     = 529
+        ''' <summary>Represents the keyword '' .</summary>
+        PartialKeyword                        = 530
+        ''' <summary>Represents the keyword '' .</summary>
+        PrivateKeyword                        = 531
+        ''' <summary>Represents the keyword '' .</summary>
+        PropertyKeyword                       = 532
+        ''' <summary>Represents the keyword '' .</summary>
+        ProtectedKeyword                      = 533
+        ''' <summary>Represents the keyword '' .</summary>
+        PublicKeyword                         = 534
+        ''' <summary>Represents the keyword '' .</summary>
+        RaiseEventKeyword                     = 537
+        ''' <summary>Represents the keyword '' .</summary>
+        ReadOnlyKeyword                       = 538
+        ''' <summary>Represents the keyword '' .</summary>
+        ReDimKeyword                          = 539
+        ''' <summary>Represents the keyword '' .</summary>
+        REMKeyword                            = 540
+        ''' <summary>Represents the keyword '' .</summary>
+        RemoveHandlerKeyword                  = 541
+        ''' <summary>Represents the keyword '' .</summary>
+        ResumeKeyword                         = 542
+        ''' <summary>Represents the keyword '' .</summary>
+        ReturnKeyword                         = 543
+        ''' <summary>Represents the keyword '' .</summary>
+        SByteKeyword                          = 544
+        ''' <summary>Represents the keyword '' .</summary>
+        SelectKeyword                         = 545
+        ''' <summary>Represents the keyword '' .</summary>
+        SetKeyword                            = 546
+        ''' <summary>Represents the keyword '' .</summary>
+        ShadowsKeyword                        = 547
+        ''' <summary>Represents the keyword '' .</summary>
+        SharedKeyword                         = 548
+        ''' <summary>Represents the keyword '' .</summary>
+        ShortKeyword                          = 549
+        ''' <summary>Represents the keyword '' .</summary>
+        SingleKeyword                         = 550
+        ''' <summary>Represents the keyword '' .</summary>
+        StaticKeyword                         = 551
+        ''' <summary>Represents the keyword '' .</summary>
+        StepKeyword                           = 552
+        ''' <summary>Represents the keyword '' .</summary>
+        StopKeyword                           = 553
+        ''' <summary>Represents the keyword '' .</summary>
+        StringKeyword                         = 554
+        ''' <summary>Represents the keyword '' .</summary>
+        StructureKeyword                      = 555
+        ''' <summary>Represents the keyword '' .</summary>
+        SubKeyword                            = 558
+        ''' <summary>Represents the keyword '' .</summary>
+        SyncLockKeyword                       = 559
+        ''' <summary>Represents the keyword '' .</summary>
+        ThenKeyword                           = 560
+        ''' <summary>Represents the keyword '' .</summary>
+        ThrowKeyword                          = 561
+        ''' <summary>Represents the keyword '' .</summary>
+        ToKeyword                             = 562
+        ''' <summary>Represents the keyword '' .</summary>
+        TrueKeyword                           = 563
+        ''' <summary>Represents the keyword '' .</summary>
+        TryKeyword                            = 564
+        ''' <summary>Represents the keyword '' .</summary>
+        TryCastKeyword                        = 565
+        ''' <summary>Represents the keyword '' .</summary>
+        TypeOfKeyword                         = 566
+        ''' <summary>Represents the keyword '' .</summary>
+        UIntegerKeyword                       = 567
+        ''' <summary>Represents the keyword '' .</summary>
+        ULongKeyword                          = 568
+        ''' <summary>Represents the keyword '' .</summary>
+        UShortKeyword                         = 569
+        ''' <summary>Represents the keyword '' .</summary>
+        UsingKeyword                          = 570
+        ''' <summary>Represents the keyword '' .</summary>
+        WhenKeyword                           = 571
+        ''' <summary>Represents the keyword '' .</summary>
+        WhileKeyword                          = 572
+        ''' <summary>Represents the keyword '' .</summary>
+        WideningKeyword                       = 573
+        ''' <summary>Represents the keyword '' .</summary>
+        WithKeyword                           = 574
+        ''' <summary>Represents the keyword '' .</summary>
+        WithEventsKeyword                     = 575
+        ''' <summary>Represents the keyword '' .</summary>
+        WriteOnlyKeyword                      = 578
+        ''' <summary>Represents the keyword '' .</summary>
+        XorKeyword                            = 579
+        ''' <summary>Represents the keyword '' .</summary>
+        EndIfKeyword                          = 580
+        ''' <summary>Represents the keyword '' .</summary>
+        GosubKeyword                          = 581
+        ''' <summary>Represents the keyword '' .</summary>
+        VariantKeyword                        = 582
+        ''' <summary>Represents the keyword '' .</summary>
+        WendKeyword                           = 583
+        ''' <summary>Represents the keyword '' .</summary>
+        AggregateKeyword                      = 584
+        ''' <summary>Represents the keyword '' .</summary>
+        AllKeyword                            = 585
+        ''' <summary>Represents the keyword '' .</summary>
+        AnsiKeyword                           = 586
+        ''' <summary>Represents the keyword '' .</summary>
+        AscendingKeyword                      = 587
+        ''' <summary>Represents the keyword '' .</summary>
+        AssemblyKeyword                       = 588
+        ''' <summary>Represents the keyword '' .</summary>
+        AutoKeyword                           = 589
+        ''' <summary>Represents the keyword '' .</summary>
+        BinaryKeyword                         = 590
+        ''' <summary>Represents the keyword '' .</summary>
+        ByKeyword                             = 591
+        ''' <summary>Represents the keyword '' .</summary>
+        CompareKeyword                        = 592
+        ''' <summary>Represents the keyword '' .</summary>
+        CustomKeyword                         = 593
+        ''' <summary>Represents the keyword '' .</summary>
+        DescendingKeyword                     = 594
+        ''' <summary>Represents the keyword '' .</summary>
+        DisableKeyword                        = 595
+        ''' <summary>Represents the keyword '' .</summary>
+        DistinctKeyword                       = 596
+        ''' <summary>Represents the keyword '' .</summary>
+        EnableKeyword                         = 599
+        ''' <summary>Represents the keyword '' .</summary>
+        EqualsKeyword                         = 600
+        ''' <summary>Represents the keyword '' .</summary>
+        ExplicitKeyword                       = 601
+        ''' <summary>Represents the keyword '' .</summary>
+        ExternalSourceKeyword                 = 602
+        ''' <summary>Represents the keyword '' .</summary>
+        ExternalChecksumKeyword               = 603
+        ''' <summary>Represents the keyword '' .</summary>
+        FromKeyword                           = 604
+        ''' <summary>Represents the keyword '' .</summary>
+        GroupKeyword                          = 605
+        ''' <summary>Represents the keyword '' .</summary>
+        InferKeyword                          = 606
+        ''' <summary>Represents the keyword '' .</summary>
+        IntoKeyword                           = 607
+        ''' <summary>Represents the keyword '' .</summary>
+        IsFalseKeyword                        = 608
+        ''' <summary>Represents the keyword '' .</summary>
+        IsTrueKeyword                         = 609
+        ''' <summary>Represents the keyword '' .</summary>
+        JoinKeyword                           = 610
+        ''' <summary>Represents the keyword '' .</summary>
+        KeyKeyword                            = 611
+        ''' <summary>Represents the keyword '' .</summary>
+        MidKeyword                            = 612
+        ''' <summary>Represents the keyword '' .</summary>
+        OffKeyword                            = 613
+        ''' <summary>Represents the keyword '' .</summary>
+        OrderKeyword                          = 614
+        ''' <summary>Represents the keyword '' .</summary>
+        OutKeyword                            = 615
+        ''' <summary>Represents the keyword '' .</summary>
+        PreserveKeyword                       = 616
+        ''' <summary>Represents the keyword '' .</summary>
+        RegionKeyword                         = 617
+        ''' <summary>Represents the keyword '' .</summary>
+        SkipKeyword                           = 620
+        ''' <summary>Represents the keyword '' .</summary>
+        StrictKeyword                         = 621
+        ''' <summary>Represents the keyword '' .</summary>
+        TakeKeyword                           = 622
+        ''' <summary>Represents the keyword '' .</summary>
+        TextKeyword                           = 623
+        ''' <summary>Represents the keyword '' .</summary>
+        UnicodeKeyword                        = 624
+        ''' <summary>Represents the keyword '' .</summary>
+        UntilKeyword                          = 625
+        ''' <summary>Represents the keyword '' .</summary>
+        WarningKeyword                        = 626
+        ''' <summary>Represents the keyword '' .</summary>
+        WhereKeyword                          = 627
+        ''' <summary>Represents the keyword '' .</summary>
+        TypeKeyword                           = 628
+        ''' <summary>Represents the keyword '' .</summary>
+        XmlKeyword                            = 629
+        ''' <summary>Represents the keyword '' .</summary>
+        AsyncKeyword                          = 630
+        ''' <summary>Represents the keyword '' .</summary>
+        AwaitKeyword                          = 631
+        ''' <summary>Represents the keyword '' .</summary>
+        IteratorKeyword                       = 632
+        ''' <summary>Represents the keyword '' .</summary>
+        YieldKeyword                          = 633
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        ExclamationToken                      = 634
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        AtToken                               = 635
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        CommaToken                            = 636
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        HashToken                             = 637
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        AmpersandToken                        = 638
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        SingleQuoteToken                      = 641
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        OpenParenToken                        = 642
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        CloseParenToken                       = 643
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        OpenBraceToken                        = 644
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        CloseBraceToken                       = 645
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        SemicolonToken                        = 646
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        AsteriskToken                         = 647
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        PlusToken                             = 648
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        MinusToken                            = 649
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        DotToken                              = 650
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        SlashToken                            = 651
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        ColonToken                            = 652
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        LessThanToken                         = 653
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        LessThanEqualsToken                   = 654
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        LessThanGreaterThanToken              = 655
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        EqualsToken                           = 656
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        GreaterThanToken                      = 657
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        GreaterThanEqualsToken                = 658
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        BackslashToken                        = 659
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        CaretToken                            = 662
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        ColonEqualsToken                      = 663
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        AmpersandEqualsToken                  = 664
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        AsteriskEqualsToken                   = 665
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        PlusEqualsToken                       = 666
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        MinusEqualsToken                      = 667
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        SlashEqualsToken                      = 668
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        BackslashEqualsToken                  = 669
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        CaretEqualsToken                      = 670
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        LessThanLessThanToken                 = 671
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        GreaterThanGreaterThanToken           = 672
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        LessThanLessThanEqualsToken           = 673
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        GreaterThanGreaterThanEqualsToken     = 674
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        QuestionToken                         = 675
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        DoubleQuoteToken                      = 676
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        StatementTerminatorToken              = 677
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        EndOfFileToken                        = 678
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        EmptyToken                            = 679
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        SlashGreaterThanToken                 = 680
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        LessThanSlashToken                    = 683
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        LessThanExclamationMinusMinusToken    = 684
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        MinusMinusGreaterThanToken            = 685
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        LessThanQuestionToken                 = 686
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        QuestionGreaterThanToken              = 687
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        LessThanPercentEqualsToken            = 688
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        PercentGreaterThanToken               = 689
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        BeginCDataToken                       = 690
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        EndCDataToken                         = 691
+        ''' <summary>
+        ''' Represents a single punctuation mark or operator in a VB program. Which one can
+        ''' be determined from the Kind property.
+        ''' </summary>
+        EndOfXmlToken                         = 692
+        ''' <summary>
+        ''' Represents a sequence of characters appearing in source with no possible
+        ''' meaning in the Visual Basic language (e.g. the semicolon ';'). This token
+        ''' should only appear in SkippedTokenTrivia as an artifact of parsing error
+        ''' recovery.
+        ''' </summary>
+        BadToken                              = 693
+        ''' <summary>Represents an Xml NCName per Namespaces in XML 1.0</summary>
+        XmlNameToken                          = 694
+        ''' <summary>
+        ''' Represents character data in Xml content also known as PCData or in an Xml
+        ''' attribute value. All text is here for now even text that does not need
+        ''' normalization such as comment, pi and cdata text.
+        ''' </summary>
+        XmlTextLiteralToken                   = 695
+        ''' <summary>
+        ''' Represents character data in Xml content also known as PCData or in an Xml
+        ''' attribute value. All text is here for now even text that does not need
+        ''' normalization such as comment, pi and cdata text.
+        ''' </summary>
+        XmlEntityLiteralToken                 = 696
+        ''' <summary>
+        ''' Represents character data in Xml content also known as PCData or in an Xml
+        ''' attribute value. All text is here for now even text that does not need
+        ''' normalization such as comment, pi and cdata text.
+        ''' </summary>
+        DocumentationCommentLineBreakToken    = 697
+        ''' <summary>
+        ''' Represents an identifier token. This might include brackets around the name and
+        ''' a type character.
+        ''' </summary>
+        IdentifierToken                       = 700
+        ''' <summary>Represents an integer literal token.</summary>
+        IntegerLiteralToken                   = 701
+        ''' <summary>Represents a floating literal token.</summary>
+        FloatingLiteralToken                  = 702
+        ''' <summary>Represents a Decimal literal token.</summary>
+        DecimalLiteralToken                   = 703
+        ''' <summary>Represents a Date literal token.</summary>
+        DateLiteralToken                      = 704
+        ''' <summary>Represents a string literal token.</summary>
+        StringLiteralToken                    = 705
+        ''' <summary>Represents a string literal token.</summary>
+        CharacterLiteralToken                 = 706
+        ''' <summary>
+        ''' Represents tokens that were skipped by the parser as part of error recovery,
+        ''' and thus are not part of any syntactic structure.
+        ''' </summary>
+        SkippedTokensTrivia                   = 709
+        ''' <summary>
+        ''' Represents a documentation comment e.g. ''' &lt;Summary&gt; appearing in
+        ''' source.
+        ''' </summary>
+        DocumentationCommentTrivia            = 710
+        ''' <summary>
+        ''' A symbol referenced by a cref attribute (e.g. in a &lt;see&gt; or
+        ''' &lt;seealso&gt; documentation comment tag). For example, the M in
+        ''' &lt;seecref="M" /&gt;.
+        ''' </summary>
+        XmlCrefAttribute                      = 711
+        ''' <summary>
+        ''' A param or type param symbol referenced by a name attribute (e.g. in a
+        ''' &lt;param&gt; or &lt;typeparam&gt; documentation comment tag). For example, the
+        ''' M in &lt;param name="M" /&gt;.
+        ''' </summary>
+        XmlNameAttribute                      = 712
+        ''' <summary>ExpressionSyntax node representing the object conditionally accessed.</summary>
+        ConditionalAccessExpression           = 713
+        ''' <summary>Represents true whitespace: spaces, tabs, newlines and the like.</summary>
+        WhitespaceTrivia                      = 729
+        ''' <summary>Represents line breaks that are syntactically insignificant.</summary>
+        EndOfLineTrivia                       = 730
+        ''' <summary>Represents colons that are syntactically insignificant.</summary>
+        ColonTrivia                           = 731
+        ''' <summary>Represents a comment.</summary>
+        CommentTrivia                         = 732
+        ''' <summary>Represents an explicit line continuation character at the end of a line, i.e. _</summary>
+        LineContinuationTrivia                = 733
+        ''' <summary>Represents a ''' prefix for an XML Documentation Comment.</summary>
+        DocumentationCommentExteriorTrivia    = 734
+        ''' <summary>Represents text in a false preprocessor block.</summary>
+        DisabledTextTrivia                    = 735
+        ''' <summary>Represents a #Const pre-processing constant declaration appearing in source.</summary>
+        ConstDirectiveTrivia                  = 736
+        ''' <summary>
+        ''' Represents the beginning of an #If pre-processing directive appearing in
+        ''' source.
+        ''' </summary>
+        IfDirectiveTrivia                     = 737
+        ''' <summary>
+        ''' Represents the beginning of an #If pre-processing directive appearing in
+        ''' source.
+        ''' </summary>
+        ElseIfDirectiveTrivia                 = 738
+        ''' <summary>Represents an #Else pre-processing directive appearing in source.</summary>
+        ElseDirectiveTrivia                   = 739
+        ''' <summary>Represents an #End If pre-processing directive appearing in source.</summary>
+        EndIfDirectiveTrivia                  = 740
+        ''' <summary>Represents the beginning of a #Region directive appearing in source.</summary>
+        RegionDirectiveTrivia                 = 741
+        ''' <summary>Represents an #End Region directive appearing in source.</summary>
+        EndRegionDirectiveTrivia              = 744
+        ''' <summary>
+        ''' Represents the beginning of a #ExternalSource pre-processing directive
+        ''' appearing in source.
+        ''' </summary>
+        ExternalSourceDirectiveTrivia         = 745
+        ''' <summary>Represents an #End ExternalSource pre-processing directive appearing in source.</summary>
+        EndExternalSourceDirectiveTrivia      = 746
+        ''' <summary>Represents an #ExternalChecksum pre-processing directive appearing in source.</summary>
+        ExternalChecksumDirectiveTrivia       = 747
+        ''' <summary>Represents #Enable Warning pre-processing directive appearing in source.</summary>
+        EnableWarningDirectiveTrivia          = 748
+        ''' <summary>Represents #Disable Warning pre-processing directive appearing in source.</summary>
+        DisableWarningDirectiveTrivia         = 749
+        ''' <summary>Represents an #r directive appearing in scripts.</summary>
+        ReferenceDirectiveTrivia              = 750
+        ''' <summary>
+        ''' Represents an unrecognized pre-processing directive. This occurs when the
+        ''' parser encounters a hash '#' token at the beginning of a physical line but does
+        ''' recognize the text that follows as a valid Visual Basic pre-processing
+        ''' directive.
+        ''' </summary>
+        BadDirectiveTrivia                    = 753
+        ''' <summary>Represents an alias identifier followed by an "=" token in an Imports clause.</summary>
+        ImportAliasClause                     = 754
+        ''' <summary>Represents an identifier name followed by a ":=" token in a named argument.</summary>
+        NameColonEquals                       = 755
+        ''' <summary>Represents a "Do ... Loop" block.</summary>
+        SimpleDoLoopBlock                     = 756
+        ''' <summary>Represents a "Do ... Loop" block.</summary>
+        DoWhileLoopBlock                      = 757
+        ''' <summary>Represents a "Do ... Loop" block.</summary>
+        DoUntilLoopBlock                      = 758
+        ''' <summary>Represents a "Do ... Loop" block.</summary>
+        DoLoopWhileBlock                      = 759
+        ''' <summary>Represents a "Do ... Loop" block.</summary>
+        DoLoopUntilBlock                      = 760
+        ''' <summary>Represents a simple "Do" statement that begins a "Do ... Loop" block.</summary>
+        SimpleDoStatement                     = 770
+        ''' <summary>Represents a "Do While" statement that begins a "Do ... Loop" block.</summary>
+        DoWhileStatement                      = 771
+        ''' <summary>Represents a "Do Until" statement that begins a "Do ... Loop" block.</summary>
+        DoUntilStatement                      = 772
+        ''' <summary>Represents a simple "Loop" statement that end a "Do ... Loop" block.</summary>
+        SimpleLoopStatement                   = 773
+        ''' <summary>Represents a "Loop While" statement that end a "Do ... Loop" block.</summary>
+        LoopWhileStatement                    = 774
+        ''' <summary>Represents a "Loop Until" statement that end a "Do ... Loop" block.</summary>
+        LoopUntilStatement                    = 775
+        ''' <summary>Represents a "While ..." clause of a "Do" or "Loop" statement.</summary>
+        WhileClause                           = 776
+        ''' <summary>Represents an "Until ..." clause of a "Do" or "Loop" statement.</summary>
+        UntilClause                           = 777
+        ''' <summary>
+        ''' Represents a single keyword in a VB program. Which keyword can be determined
+        ''' from the Kind property.
+        ''' </summary>
+        NameOfKeyword                         = 778
+        ''' <summary>Represents a NameOf expression.</summary>
+        NameOfExpression                      = 779
+        ''' <summary>Represents an interpolated string expression.</summary>
+        InterpolatedStringExpression          = 780
+        ''' <summary>Represents literal text content in an interpolated string.</summary>
+        InterpolatedStringText                = 781
+        ''' <summary>
+        ''' Represents an embedded expression in an interpolated string expression e.g.
+        ''' '{expression[,alignment][:formatString]}'.
+        ''' </summary>
+        Interpolation                         = 782
+        ''' <summary>
+        ''' Represents an alignment clause ', alignment' of an interpolated string embedded
+        ''' expression.
+        ''' </summary>
+        InterpolationAlignmentClause          = 783
+        ''' <summary>
+        ''' Represents a format string clause ':formatString' of an interpolated string
+        ''' embedded expression.
+        ''' </summary>
+        InterpolationFormatClause             = 784
+        ''' <summary>Represents a '$"' token in an interpolated string expression.</summary>
+        DollarSignDoubleQuoteToken            = 785
+        ''' <summary>Represents literal character data in interpolated string expression.</summary>
+        InterpolatedStringTextToken           = 786
+        ''' <summary>Represents the end of interpolated string when parsing.</summary>
+        EndOfInterpolatedStringToken          = 787
+        ''' <summary>Represents tuple literal expression.</summary>
+        TupleExpression                       = 788
+        ''' <summary>Represents tuple type.</summary>
+        TupleType                             = 789
+        ''' <summary>Represents an element of a tuple type supplying only the type.</summary>
+        TypedTupleElement                     = 790
+        ''' <summary>
+        ''' Represents an element of a tuple type supplying element name and optionally a
+        ''' type.
+        ''' </summary>
+        NamedTupleElement                     = 791
+        ''' <summary>
+        ''' Trivia created when merge conflict markers (like
+        ''' "&lt;&lt;&lt;&lt;&lt;&lt;&lt;") are detected in source code
+        ''' </summary>
+        ConflictMarkerTrivia                  = 792
+        Language_Block                        = 793
+        Language_Keyword                      = 794
+        Language_Statement                    = 795
+        EndLanguage_Statement                 = 796
+        Grammar_Block                         = 797
+        Grammar_Keyword                       = 798
+        Grammar_Statement                     = 799
+        EndGrammar_Statement                  = 800
+        Syntax_Block                          = 801
+        Syntax_Keyword                        = 802
+        Syntax_Statement                      = 803
+        EndSyntax_Statement                   = 804
+        Keywords_Block                        = 805
+        Keywords_Keyword                      = 806
+        Keywords_Statement                    = 807
+        EndKeywords_Statement                 = 808
+        Kinds_Block                           = 809
+        Kinds_Keyword                         = 810
+        Kinds_Statement                       = 811
+        EndKinds_Statement                    = 812
     End Enum
 
-    ''' <summary>
-    ''' The four possible number bases that a literal can be written in.
-    ''' </summary>
+    Public Enum TypeCharacter
+        None            = 0
+        [Integer]       = 1
+        [Long]          = 2
+        [Decimal]       = 3
+        [Single]        = 4
+        [Double]        = 5
+        [String]        = 6
+        ShortLiteral    = 7
+        UShortLiteral   = 8
+        IntegerLiteral  = 9
+        UIntegerLiteral = 10
+        LongLiteral     = 11
+        ULongLiteral    = 12
+        SingleLiteral   = 13
+        DoubleLiteral   = 14
+        DecimalLiteral  = 15
+    End Enum
+
     Public Enum LiteralBase
-
-        [Decimal]
-
-        Hexadecimal
-
-        Octal
-
-        Binary
+        ''' <summary>Represents numeric base 2 (BIN)</summary>
+        Binary      = 2
+        ''' <summary>Represents numeric base 8 (OCT)</summary>
+        Octal       = 8
+        ''' <summary>Represents numeric base 10 (DEC)</summary>
+        [Decimal]   = 10
+        ''' <summary>Represents numeric base 16 (HEX)</summary>
+        Hexadecimal = 16
     End Enum
 
 
@@ -128,9 +2260,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' The base class for all nodes that represent executable statements.
-    ''' </summary>
+    ''' <summary>The base class for all nodes that represent executable statements.</summary>
     Public MustInherit Class ExecutableStatementSyntax
         Inherits StatementSyntax
 
@@ -177,9 +2307,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EmptyStatementSyntax(kind, errors, annotations, empty), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' An empty token because all non terminals must have a token.
-        ''' </summary>
+        ''' <summary>An empty token because all non terminals must have a token.</summary>
         Public  ReadOnly Property Empty As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EmptyStatementSyntax)._empty, Me.Position, 0)
@@ -236,9 +2364,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an "End XXX" statement, where XXX is a single keyword.
-    ''' </summary>
+    ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
     Public NotInheritable Class EndBlockStatementSyntax
         Inherits DeclarationStatementSyntax
 
@@ -253,9 +2379,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax(kind, errors, annotations, endKeyword, blockKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "End" keyword
-        ''' </summary>
+        ''' <summary>The "End" keyword</summary>
         Public  ReadOnly Property EndKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)._endKeyword, Me.Position, 0)
@@ -342,9 +2466,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an entire source file of VB code.
-    ''' </summary>
+    ''' <summary>Represents an entire source file of VB code.</summary>
     Partial Public NotInheritable Class CompilationUnitSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -363,12 +2485,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CompilationUnitSyntax(kind, errors, annotations, if(options IsNot Nothing, options.Green, Nothing), if([imports] IsNot Nothing, [imports].Green, Nothing), if(attributes IsNot Nothing, attributes.Green, Nothing), if(members IsNot Nothing, members.Green, Nothing), endOfFileToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' Represents the list of Option statements at the beginning of a source file.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>Represents the list of Option statements at the beginning of a source file.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Options As SyntaxList(Of OptionStatementSyntax)
             Get
                 Dim listNode = GetRedAtZero(_options)
@@ -389,12 +2507,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithOptions(Me.Options.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' Represents the list of Imports statements at the beginning of a source file.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>Represents the list of Imports statements at the beginning of a source file.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property [Imports] As SyntaxList(Of ImportsStatementSyntax)
             Get
                 Dim listNode = GetRed(_imports, 1)
@@ -419,9 +2533,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' Represents the list of AttributeStatements at the beginning of a source file
         ''' that contain the Assembly and Module attributes.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Attributes As SyntaxList(Of AttributesStatementSyntax)
             Get
                 Dim listNode = GetRed(_attributes, 2)
@@ -447,9 +2559,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' top-level type and namespace declarations in the file. May also contain
         ''' Statements that are not valid
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Members As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_members, 3)
@@ -561,9 +2671,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an Option statement, such as "Option Strict On".
-    ''' </summary>
+    ''' <summary>Represents an Option statement, such as "Option Strict On".</summary>
     Public NotInheritable Class OptionStatementSyntax
         Inherits DeclarationStatementSyntax
 
@@ -578,9 +2686,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OptionStatementSyntax(kind, errors, annotations, optionKeyword, nameKeyword, valueKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Option" keyword.
-        ''' </summary>
+        ''' <summary>The "Option" keyword.</summary>
         Public  ReadOnly Property OptionKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OptionStatementSyntax)._optionKeyword, Me.Position, 0)
@@ -619,9 +2725,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The keyword that identifiers the value being set for the option: On, Off, Text
         ''' or Binary.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property ValueKeyword As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OptionStatementSyntax)._valueKeyword
@@ -691,9 +2795,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an Imports statement, which has one or more imports clauses.
-    ''' </summary>
+    ''' <summary>Represents an Imports statement, which has one or more imports clauses.</summary>
     Public NotInheritable Class ImportsStatementSyntax
         Inherits DeclarationStatementSyntax
 
@@ -709,9 +2811,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ImportsStatementSyntax(kind, errors, annotations, importsKeyword, if(importsClauses IsNot Nothing, importsClauses.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Imports" keyword.
-        ''' </summary>
+        ''' <summary>The "Imports" keyword.</summary>
         Public  ReadOnly Property ImportsKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ImportsStatementSyntax)._importsKeyword, Me.Position, 0)
@@ -731,9 +2831,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of one or more import clauses. Each clause is either an alias, namespace
         ''' or XML namespace import.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property ImportsClauses As SeparatedSyntaxList(Of ImportsClauseSyntax)
             Get
                 Dim listNode = GetRed(_importsClauses, 1)
@@ -808,9 +2906,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' The base class for the possible clauses of an Imports statement.
-    ''' </summary>
+    ''' <summary>The base class for the possible clauses of an Imports statement.</summary>
     Public MustInherit Class ImportsClauseSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -843,12 +2939,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SimpleImportsClauseSyntax(kind, errors, annotations, if([alias] IsNot Nothing , DirectCast([alias].Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ImportAliasClauseSyntax), Nothing) , DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' An optional alias for the namespace or type being imported.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>An optional alias for the namespace or type being imported.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property [Alias] As ImportAliasClauseSyntax
             Get
                 Return GetRedAtZero(_alias)
@@ -864,9 +2956,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update([alias], Me.Name)
         End Function
 
-        ''' <summary>
-        ''' The namespace or type being imported.
-        ''' </summary>
+        ''' <summary>The namespace or type being imported.</summary>
         Public  ReadOnly Property Name As NameSyntax
             Get
                 Return GetRed(_name, 1)
@@ -936,9 +3026,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an alias identifier followed by an "=" token in an Imports clause.
-    ''' </summary>
+    ''' <summary>Represents an alias identifier followed by an "=" token in an Imports clause.</summary>
     Public NotInheritable Class ImportAliasClauseSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -953,9 +3041,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ImportAliasClauseSyntax(kind, errors, annotations, identifier, equalsToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The identifier being introduced.
-        ''' </summary>
+        ''' <summary>The identifier being introduced.</summary>
         Public  ReadOnly Property Identifier As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ImportAliasClauseSyntax)._identifier, Me.Position, 0)
@@ -971,9 +3057,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(identifier, Me.EqualsToken)
         End Function
 
-        ''' <summary>
-        ''' The "=" token.
-        ''' </summary>
+        ''' <summary>The "=" token.</summary>
         Public  ReadOnly Property EqualsToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ImportAliasClauseSyntax)._equalsToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -1036,9 +3120,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Defines a XML namespace for XML expressions.
-    ''' </summary>
+    ''' <summary>Defines a XML namespace for XML expressions.</summary>
     Public NotInheritable Class XmlNamespaceImportsClauseSyntax
         Inherits ImportsClauseSyntax
 
@@ -1069,9 +3151,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(lessThanToken, Me.XmlNamespace, Me.GreaterThanToken)
         End Function
 
-        ''' <summary>
-        ''' Identifies the XML namespace alias and URI.
-        ''' </summary>
+        ''' <summary>Identifies the XML namespace alias and URI.</summary>
         Public  ReadOnly Property XmlNamespace As XmlAttributeSyntax
             Get
                 Return GetRed(_xmlNamespace, 1)
@@ -1172,9 +3252,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Grammar_BlockSyntax(kind, errors, annotations, DirectCast(grammar_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Grammar_StatementSyntax), DirectCast(end_Grammar_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Grammar" statement that begins a grammar block.
-        ''' </summary>
+        ''' <summary>The "Grammar" statement that begins a grammar block.</summary>
         Public  ReadOnly Property Grammar_Statement As Grammar_StatementSyntax
             Get
                 Return GetRedAtZero(_grammar_Statement)
@@ -1190,9 +3268,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(grammar_Statement, Me.End_Grammar_Statement)
         End Function
 
-        ''' <summary>
-        ''' The "End Grammar" statement that ends a grammar block.
-        ''' </summary>
+        ''' <summary>The "End Grammar" statement that ends a grammar block.</summary>
         Public  ReadOnly Property End_Grammar_Statement As EndBlockStatementSyntax
             Get
                 Return GetRed(_end_Grammar_Statement, 1)
@@ -1279,9 +3355,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Syntax_BlockSyntax(kind, errors, annotations, DirectCast(syntax_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Syntax_StatementSyntax), DirectCast(end_Syntax_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Syntax" statement that begins a syntax block.
-        ''' </summary>
+        ''' <summary>The "Syntax" statement that begins a syntax block.</summary>
         Public  ReadOnly Property Syntax_Statement As Syntax_StatementSyntax
             Get
                 Return GetRedAtZero(_syntax_Statement)
@@ -1297,9 +3371,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(syntax_Statement, Me.End_Syntax_Statement)
         End Function
 
-        ''' <summary>
-        ''' The "End Syntax" statement that ends a syntax block.
-        ''' </summary>
+        ''' <summary>The "End Syntax" statement that ends a syntax block.</summary>
         Public  ReadOnly Property End_Syntax_Statement As EndBlockStatementSyntax
             Get
                 Return GetRed(_end_Syntax_Statement, 1)
@@ -1386,9 +3458,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Kinds_BlockSyntax(kind, errors, annotations, DirectCast(kinds_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Kinds_StatementSyntax), DirectCast(end_Kinds_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Kinds" statement that begins a kinds block.
-        ''' </summary>
+        ''' <summary>The "Kinds" statement that begins a kinds block.</summary>
         Public  ReadOnly Property Kinds_Statement As Kinds_StatementSyntax
             Get
                 Return GetRedAtZero(_kinds_Statement)
@@ -1404,9 +3474,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(kinds_Statement, Me.End_Kinds_Statement)
         End Function
 
-        ''' <summary>
-        ''' The "End Kinds." statement that ends a kinds block.
-        ''' </summary>
+        ''' <summary>The "End Kinds." statement that ends a kinds block.</summary>
         Public  ReadOnly Property End_Kinds_Statement As EndBlockStatementSyntax
             Get
                 Return GetRed(_end_Kinds_Statement, 1)
@@ -1493,9 +3561,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Keywords_BlockSyntax(kind, errors, annotations, DirectCast(keywords_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Keywords_StatementSyntax), DirectCast(end_Keywords_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Keywords" statement that begins a keywords block.
-        ''' </summary>
+        ''' <summary>The "Keywords" statement that begins a keywords block.</summary>
         Public  ReadOnly Property Keywords_Statement As Keywords_StatementSyntax
             Get
                 Return GetRedAtZero(_keywords_Statement)
@@ -1511,9 +3577,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(keywords_Statement, Me.End_Keywords_Statement)
         End Function
 
-        ''' <summary>
-        ''' The "End Keywords" statement that ends a keywords block.
-        ''' </summary>
+        ''' <summary>The "End Keywords" statement that ends a keywords block.</summary>
         Public  ReadOnly Property End_Keywords_Statement As EndBlockStatementSyntax
             Get
                 Return GetRed(_end_Keywords_Statement, 1)
@@ -1600,9 +3664,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Language_BlockSyntax(kind, errors, annotations, DirectCast(language_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Language_StatementSyntax), DirectCast(end_Language_Statement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Language" statement that begins a language block.
-        ''' </summary>
+        ''' <summary>The "Language" statement that begins a language block.</summary>
         Public  ReadOnly Property Language_Statement As Language_StatementSyntax
             Get
                 Return GetRedAtZero(_language_Statement)
@@ -1618,9 +3680,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(language_Statement, Me.End_Language_Statement)
         End Function
 
-        ''' <summary>
-        ''' The "End Language." statement that ends a language block.
-        ''' </summary>
+        ''' <summary>The "End Language." statement that ends a language block.</summary>
         Public  ReadOnly Property End_Language_Statement As EndBlockStatementSyntax
             Get
                 Return GetRed(_end_Language_Statement, 1)
@@ -1710,9 +3770,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Language_StatementSyntax(kind, errors, annotations, language_Keyword, DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Language" keyword.
-        ''' </summary>
+        ''' <summary>The "Language" keyword.</summary>
         Public  ReadOnly Property Language_Keyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Language_StatementSyntax)._language_Keyword, Me.Position, 0)
@@ -1728,9 +3786,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(language_Keyword, Me.Name)
         End Function
 
-        ''' <summary>
-        ''' A (possibly dotted) name denoting the language being declared.
-        ''' </summary>
+        ''' <summary>A (possibly dotted) name denoting the language being declared.</summary>
         Public  ReadOnly Property Name As NameSyntax
             Get
                 Return GetRed(_name, 1)
@@ -1815,9 +3871,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Grammar_StatementSyntax(kind, errors, annotations, grammar_Keyword, DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Language" keyword.
-        ''' </summary>
+        ''' <summary>The "Language" keyword.</summary>
         Public  ReadOnly Property Grammar_Keyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Grammar_StatementSyntax)._grammar_Keyword, Me.Position, 0)
@@ -1833,9 +3887,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(grammar_Keyword, Me.Name)
         End Function
 
-        ''' <summary>
-        ''' A (possibly dotted) name denoting the ... being declared.
-        ''' </summary>
+        ''' <summary>A (possibly dotted) name denoting the ... being declared.</summary>
         Public  ReadOnly Property Name As NameSyntax
             Get
                 Return GetRed(_name, 1)
@@ -1920,9 +3972,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Syntax_StatementSyntax(kind, errors, annotations, syntax_Keyword, DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Syntax" keyword.
-        ''' </summary>
+        ''' <summary>The "Syntax" keyword.</summary>
         Public  ReadOnly Property Syntax_Keyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Syntax_StatementSyntax)._syntax_Keyword, Me.Position, 0)
@@ -1938,9 +3988,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(syntax_Keyword, Me.Name)
         End Function
 
-        ''' <summary>
-        ''' A (possibly dotted) name denoting the ... being declared.
-        ''' </summary>
+        ''' <summary>A (possibly dotted) name denoting the ... being declared.</summary>
         Public  ReadOnly Property Name As NameSyntax
             Get
                 Return GetRed(_name, 1)
@@ -2025,9 +4073,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Kinds_StatementSyntax(kind, errors, annotations, kinds_Keyword, DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Kinds" keyword.
-        ''' </summary>
+        ''' <summary>The "Kinds" keyword.</summary>
         Public  ReadOnly Property Kinds_Keyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Kinds_StatementSyntax)._kinds_Keyword, Me.Position, 0)
@@ -2043,9 +4089,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(kinds_Keyword, Me.Name)
         End Function
 
-        ''' <summary>
-        ''' A (possibly dotted) name denoting the ... being declared.
-        ''' </summary>
+        ''' <summary>A (possibly dotted) name denoting the ... being declared.</summary>
         Public  ReadOnly Property Name As NameSyntax
             Get
                 Return GetRed(_name, 1)
@@ -2130,9 +4174,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Keywords_StatementSyntax(kind, errors, annotations, keywords_Keyword, DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Keywords" keyword.
-        ''' </summary>
+        ''' <summary>The "Keywords" keyword.</summary>
         Public  ReadOnly Property Keywords_Keyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Keywords_StatementSyntax)._keywords_Keyword, Me.Position, 0)
@@ -2148,9 +4190,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(keywords_Keyword, Me.Name)
         End Function
 
-        ''' <summary>
-        ''' A (possibly dotted) name denoting the ... being declared.
-        ''' </summary>
+        ''' <summary>A (possibly dotted) name denoting the ... being declared.</summary>
         Public  ReadOnly Property Name As NameSyntax
             Get
                 Return GetRed(_name, 1)
@@ -2216,9 +4256,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a Namespace statement, its contents and the End Namespace statement.
-    ''' </summary>
+    ''' <summary>Represents a Namespace statement, its contents and the End Namespace statement.</summary>
     Public NotInheritable Class NamespaceBlockSyntax
         Inherits DeclarationStatementSyntax
 
@@ -2236,9 +4274,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NamespaceBlockSyntax(kind, errors, annotations, DirectCast(namespaceStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NamespaceStatementSyntax), if(members IsNot Nothing, members.Green, Nothing), DirectCast(endNamespaceStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The statement that begins the NamespaceBlock.
-        ''' </summary>
+        ''' <summary>The statement that begins the NamespaceBlock.</summary>
         Public  ReadOnly Property NamespaceStatement As NamespaceStatementSyntax
             Get
                 Return GetRedAtZero(_namespaceStatement)
@@ -2254,12 +4290,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(namespaceStatement, Me.Members, Me.EndNamespaceStatement)
         End Function
 
-        ''' <summary>
-        ''' The declarations contained in the namespace statement.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The declarations contained in the namespace statement.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Members As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_members, 1)
@@ -2280,9 +4312,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithMembers(Me.Members.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The End Namespace statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End Namespace statement that ends the block.</summary>
         Public  ReadOnly Property EndNamespaceStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endNamespaceStatement, 2)
@@ -2379,9 +4409,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NamespaceStatementSyntax(kind, errors, annotations, namespaceKeyword, DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Namespace" keyword.
-        ''' </summary>
+        ''' <summary>The "Namespace" keyword.</summary>
         Public  ReadOnly Property NamespaceKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NamespaceStatementSyntax)._namespaceKeyword, Me.Position, 0)
@@ -2397,9 +4425,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(namespaceKeyword, Me.Name)
         End Function
 
-        ''' <summary>
-        ''' A (possibly dotted) name denoting the namespace being declared.
-        ''' </summary>
+        ''' <summary>A (possibly dotted) name denoting the namespace being declared.</summary>
         Public  ReadOnly Property Name As NameSyntax
             Get
                 Return GetRed(_name, 1)
@@ -2482,12 +4508,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        ''' <summary>
-        ''' A list of the Inherits declarations for the type.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of the Inherits declarations for the type.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public ReadOnly Property [Inherits] As SyntaxList(Of InheritsStatementSyntax)
             Get
                 Return Me.GetInheritsCore()
@@ -2513,12 +4535,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddInheritsCore(items)
         End Function
         Friend MustOverride Function AddInheritsCore(ParamArray items As InheritsStatementSyntax()) As TypeBlockSyntax
-        ''' <summary>
-        ''' A list of the Implements declarations for the type.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of the Implements declarations for the type.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public ReadOnly Property [Implements] As SyntaxList(Of ImplementsStatementSyntax)
             Get
                 Return Me.GetImplementsCore()
@@ -2544,12 +4562,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddImplementsCore(items)
         End Function
         Friend MustOverride Function AddImplementsCore(ParamArray items As ImplementsStatementSyntax()) As TypeBlockSyntax
-        ''' <summary>
-        ''' The declarations contained in the type or module.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The declarations contained in the type or module.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public ReadOnly Property Members As SyntaxList(Of StatementSyntax)
             Get
                 Return Me.GetMembersCore()
@@ -2597,9 +4611,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ModuleBlockSyntax(kind, errors, annotations, DirectCast(moduleStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ModuleStatementSyntax), if([inherits] IsNot Nothing, [inherits].Green, Nothing), if([implements] IsNot Nothing, [implements].Green, Nothing), if(members IsNot Nothing, members.Green, Nothing), DirectCast(endModuleStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Module" statement that begins the block.
-        ''' </summary>
+        ''' <summary>The "Module" statement that begins the block.</summary>
         Public  ReadOnly Property ModuleStatement As ModuleStatementSyntax
             Get
                 Return GetRedAtZero(_moduleStatement)
@@ -2615,12 +4627,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(moduleStatement, Me.Inherits, Me.Implements, Me.Members, Me.EndModuleStatement)
         End Function
 
-        ''' <summary>
-        ''' A list of the Inherits declarations for the type.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of the Inherits declarations for the type.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property [Inherits] As SyntaxList(Of InheritsStatementSyntax)
             Get
                 Dim listNode = GetRed(_inherits, 1)
@@ -2653,12 +4661,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddInherits(items)
         End Function
 
-        ''' <summary>
-        ''' A list of the Implements declarations for the type.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of the Implements declarations for the type.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property [Implements] As SyntaxList(Of ImplementsStatementSyntax)
             Get
                 Dim listNode = GetRed(_implements, 2)
@@ -2691,12 +4695,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddImplements(items)
         End Function
 
-        ''' <summary>
-        ''' The declarations contained in the type or module.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The declarations contained in the type or module.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Members As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_members, 3)
@@ -2729,9 +4729,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddMembers(items)
         End Function
 
-        ''' <summary>
-        ''' The "End Module" statement that ends the block.
-        ''' </summary>
+        ''' <summary>The "End Module" statement that ends the block.</summary>
         Public  ReadOnly Property EndModuleStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endModuleStatement, 4)
@@ -2843,9 +4841,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.StructureBlockSyntax(kind, errors, annotations, DirectCast(structureStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.StructureStatementSyntax), if([inherits] IsNot Nothing, [inherits].Green, Nothing), if([implements] IsNot Nothing, [implements].Green, Nothing), if(members IsNot Nothing, members.Green, Nothing), DirectCast(endStructureStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Structure" statement that begins the block.
-        ''' </summary>
+        ''' <summary>The "Structure" statement that begins the block.</summary>
         Public  ReadOnly Property StructureStatement As StructureStatementSyntax
             Get
                 Return GetRedAtZero(_structureStatement)
@@ -2861,12 +4857,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(structureStatement, Me.Inherits, Me.Implements, Me.Members, Me.EndStructureStatement)
         End Function
 
-        ''' <summary>
-        ''' A list of the Inherits declarations for the type.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of the Inherits declarations for the type.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property [Inherits] As SyntaxList(Of InheritsStatementSyntax)
             Get
                 Dim listNode = GetRed(_inherits, 1)
@@ -2899,12 +4891,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddInherits(items)
         End Function
 
-        ''' <summary>
-        ''' A list of the Implements declarations for the type.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of the Implements declarations for the type.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property [Implements] As SyntaxList(Of ImplementsStatementSyntax)
             Get
                 Dim listNode = GetRed(_implements, 2)
@@ -2937,12 +4925,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddImplements(items)
         End Function
 
-        ''' <summary>
-        ''' The declarations contained in the type or module.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The declarations contained in the type or module.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Members As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_members, 3)
@@ -2975,9 +4959,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddMembers(items)
         End Function
 
-        ''' <summary>
-        ''' The "End Structure" statement that ends the block.
-        ''' </summary>
+        ''' <summary>The "End Structure" statement that ends the block.</summary>
         Public  ReadOnly Property EndStructureStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endStructureStatement, 4)
@@ -3089,9 +5071,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterfaceBlockSyntax(kind, errors, annotations, DirectCast(interfaceStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterfaceStatementSyntax), if([inherits] IsNot Nothing, [inherits].Green, Nothing), if([implements] IsNot Nothing, [implements].Green, Nothing), if(members IsNot Nothing, members.Green, Nothing), DirectCast(endInterfaceStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Interface" statement that begins the block.
-        ''' </summary>
+        ''' <summary>The "Interface" statement that begins the block.</summary>
         Public  ReadOnly Property InterfaceStatement As InterfaceStatementSyntax
             Get
                 Return GetRedAtZero(_interfaceStatement)
@@ -3107,12 +5087,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(interfaceStatement, Me.Inherits, Me.Implements, Me.Members, Me.EndInterfaceStatement)
         End Function
 
-        ''' <summary>
-        ''' A list of the Inherits declarations for the type.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of the Inherits declarations for the type.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property [Inherits] As SyntaxList(Of InheritsStatementSyntax)
             Get
                 Dim listNode = GetRed(_inherits, 1)
@@ -3145,12 +5121,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddInherits(items)
         End Function
 
-        ''' <summary>
-        ''' A list of the Implements declarations for the type.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of the Implements declarations for the type.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property [Implements] As SyntaxList(Of ImplementsStatementSyntax)
             Get
                 Dim listNode = GetRed(_implements, 2)
@@ -3183,12 +5155,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddImplements(items)
         End Function
 
-        ''' <summary>
-        ''' The declarations contained in the type or module.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The declarations contained in the type or module.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Members As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_members, 3)
@@ -3221,9 +5189,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddMembers(items)
         End Function
 
-        ''' <summary>
-        ''' The "End Interface" statement that ends the block.
-        ''' </summary>
+        ''' <summary>The "End Interface" statement that ends the block.</summary>
         Public  ReadOnly Property EndInterfaceStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endInterfaceStatement, 4)
@@ -3335,9 +5301,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ClassBlockSyntax(kind, errors, annotations, DirectCast(classStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ClassStatementSyntax), if([inherits] IsNot Nothing, [inherits].Green, Nothing), if([implements] IsNot Nothing, [implements].Green, Nothing), if(members IsNot Nothing, members.Green, Nothing), DirectCast(endClassStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Class" statement that begins the block.
-        ''' </summary>
+        ''' <summary>The "Class" statement that begins the block.</summary>
         Public  ReadOnly Property ClassStatement As ClassStatementSyntax
             Get
                 Return GetRedAtZero(_classStatement)
@@ -3353,12 +5317,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(classStatement, Me.Inherits, Me.Implements, Me.Members, Me.EndClassStatement)
         End Function
 
-        ''' <summary>
-        ''' A list of the Inherits declarations for the type.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of the Inherits declarations for the type.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property [Inherits] As SyntaxList(Of InheritsStatementSyntax)
             Get
                 Dim listNode = GetRed(_inherits, 1)
@@ -3391,12 +5351,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddInherits(items)
         End Function
 
-        ''' <summary>
-        ''' A list of the Implements declarations for the type.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of the Implements declarations for the type.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property [Implements] As SyntaxList(Of ImplementsStatementSyntax)
             Get
                 Dim listNode = GetRed(_implements, 2)
@@ -3429,12 +5385,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddImplements(items)
         End Function
 
-        ''' <summary>
-        ''' The declarations contained in the type or module.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The declarations contained in the type or module.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Members As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_members, 3)
@@ -3467,9 +5419,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddMembers(items)
         End Function
 
-        ''' <summary>
-        ''' The "End Class" statement that ends the block.
-        ''' </summary>
+        ''' <summary>The "End Class" statement that ends the block.</summary>
         Public  ReadOnly Property EndClassStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endClassStatement, 4)
@@ -3582,9 +5532,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EnumBlockSyntax(kind, errors, annotations, DirectCast(enumStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EnumStatementSyntax), if(members IsNot Nothing, members.Green, Nothing), DirectCast(endEnumStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The statement that begins the type or module.
-        ''' </summary>
+        ''' <summary>The statement that begins the type or module.</summary>
         Public  ReadOnly Property EnumStatement As EnumStatementSyntax
             Get
                 Return GetRedAtZero(_enumStatement)
@@ -3600,12 +5548,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(enumStatement, Me.Members, Me.EndEnumStatement)
         End Function
 
-        ''' <summary>
-        ''' The declarations contained in the enumeration.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The declarations contained in the enumeration.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Members As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_members, 1)
@@ -3626,9 +5570,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithMembers(Me.Members.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The End XXX statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End XXX statement that ends the block.</summary>
         Public  ReadOnly Property EndEnumStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endEnumStatement, 2)
@@ -3722,9 +5664,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an Inherits statement in a Class, Structure or Interface.
-    ''' </summary>
+    ''' <summary>Represents an Inherits statement in a Class, Structure or Interface.</summary>
     Public NotInheritable Class InheritsStatementSyntax
         Inherits InheritsOrImplementsStatementSyntax
 
@@ -3740,9 +5680,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InheritsStatementSyntax(kind, errors, annotations, inheritsKeyword, if(types IsNot Nothing, types.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Inherits" keyword.
-        ''' </summary>
+        ''' <summary>The "Inherits" keyword.</summary>
         Public  ReadOnly Property InheritsKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InheritsStatementSyntax)._inheritsKeyword, Me.Position, 0)
@@ -3758,9 +5696,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(inheritsKeyword, Me.Types)
         End Function
 
-        ''' <summary>
-        ''' A list of the types being inherited.
-        ''' </summary>
+        ''' <summary>A list of the types being inherited.</summary>
         Public  ReadOnly Property Types As SeparatedSyntaxList(Of TypeSyntax)
             Get
                 Dim listNode = GetRed(_types, 1)
@@ -3834,9 +5770,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an Implements statement in a Class or Structure.
-    ''' </summary>
+    ''' <summary>Represents an Implements statement in a Class or Structure.</summary>
     Public NotInheritable Class ImplementsStatementSyntax
         Inherits InheritsOrImplementsStatementSyntax
 
@@ -3852,9 +5786,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ImplementsStatementSyntax(kind, errors, annotations, implementsKeyword, if(types IsNot Nothing, types.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Implements" keyword.
-        ''' </summary>
+        ''' <summary>The "Implements" keyword.</summary>
         Public  ReadOnly Property ImplementsKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ImplementsStatementSyntax)._implementsKeyword, Me.Position, 0)
@@ -3870,9 +5802,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(implementsKeyword, Me.Types)
         End Function
 
-        ''' <summary>
-        ''' A list of the types being implemented.
-        ''' </summary>
+        ''' <summary>A list of the types being implemented.</summary>
         Public  ReadOnly Property Types As SeparatedSyntaxList(Of TypeSyntax)
             Get
                 Dim listNode = GetRed(_types, 1)
@@ -3968,9 +5898,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Return Me.GetAttributeListsCore()
@@ -4000,9 +5928,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all the modifier tokens that were present on this declaration. If no
         ''' modifiers were specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Return Me.GetModifiersCore()
@@ -4031,9 +5957,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddModifiersCore(items)
         End Function
         Friend MustOverride Function AddModifiersCore(ParamArray items As SyntaxToken()) As TypeStatementSyntax
-        ''' <summary>
-        ''' The name of the type being declared.
-        ''' </summary>
+        ''' <summary>The name of the type being declared.</summary>
         Public ReadOnly Property Identifier As SyntaxToken
             Get
                 Return Me.GetIdentifierCore()
@@ -4058,9 +5982,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If present, a type parameter list with generic parameters for this type. If no
         ''' generic parameters were present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public ReadOnly Property TypeParameterList As TypeParameterListSyntax
             Get
                 Return Me.GetTypeParameterListCore()
@@ -4110,9 +6032,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -4149,9 +6069,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all the modifier tokens that were present on this declaration. If no
         ''' modifiers were specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ModuleStatementSyntax)._modifiers
@@ -4187,9 +6105,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddModifiers(items)
         End Function
 
-        ''' <summary>
-        ''' The "Module" keyword.
-        ''' </summary>
+        ''' <summary>The "Module" keyword.</summary>
         Public  ReadOnly Property ModuleKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ModuleStatementSyntax)._moduleKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -4205,9 +6121,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.AttributeLists, Me.Modifiers, moduleKeyword, Me.Identifier, Me.TypeParameterList)
         End Function
 
-        ''' <summary>
-        ''' The name of the type being declared.
-        ''' </summary>
+        ''' <summary>The name of the type being declared.</summary>
         Public Shadows ReadOnly Property Identifier As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ModuleStatementSyntax)._identifier, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -4235,9 +6149,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If present, a type parameter list with generic parameters for this type. If no
         ''' generic parameters were present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property TypeParameterList As TypeParameterListSyntax
             Get
                 Return GetRed(_typeParameterList, 4)
@@ -4356,9 +6268,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -4395,9 +6305,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all the modifier tokens that were present on this declaration. If no
         ''' modifiers were specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.StructureStatementSyntax)._modifiers
@@ -4433,9 +6341,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddModifiers(items)
         End Function
 
-        ''' <summary>
-        ''' The "Structure" keyword.
-        ''' </summary>
+        ''' <summary>The "Structure" keyword.</summary>
         Public  ReadOnly Property StructureKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.StructureStatementSyntax)._structureKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -4451,9 +6357,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.AttributeLists, Me.Modifiers, structureKeyword, Me.Identifier, Me.TypeParameterList)
         End Function
 
-        ''' <summary>
-        ''' The name of the type being declared.
-        ''' </summary>
+        ''' <summary>The name of the type being declared.</summary>
         Public Shadows ReadOnly Property Identifier As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.StructureStatementSyntax)._identifier, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -4481,9 +6385,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If present, a type parameter list with generic parameters for this type. If no
         ''' generic parameters were present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property TypeParameterList As TypeParameterListSyntax
             Get
                 Return GetRed(_typeParameterList, 4)
@@ -4602,9 +6504,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -4641,9 +6541,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all the modifier tokens that were present on this declaration. If no
         ''' modifiers were specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterfaceStatementSyntax)._modifiers
@@ -4679,9 +6577,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddModifiers(items)
         End Function
 
-        ''' <summary>
-        ''' The "Interface" keyword.
-        ''' </summary>
+        ''' <summary>The "Interface" keyword.</summary>
         Public  ReadOnly Property InterfaceKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterfaceStatementSyntax)._interfaceKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -4697,9 +6593,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.AttributeLists, Me.Modifiers, interfaceKeyword, Me.Identifier, Me.TypeParameterList)
         End Function
 
-        ''' <summary>
-        ''' The name of the type being declared.
-        ''' </summary>
+        ''' <summary>The name of the type being declared.</summary>
         Public Shadows ReadOnly Property Identifier As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterfaceStatementSyntax)._identifier, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -4727,9 +6621,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If present, a type parameter list with generic parameters for this type. If no
         ''' generic parameters were present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property TypeParameterList As TypeParameterListSyntax
             Get
                 Return GetRed(_typeParameterList, 4)
@@ -4848,9 +6740,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -4887,9 +6777,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all the modifier tokens that were present on this declaration. If no
         ''' modifiers were specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ClassStatementSyntax)._modifiers
@@ -4925,9 +6813,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddModifiers(items)
         End Function
 
-        ''' <summary>
-        ''' The "Class" keyword.
-        ''' </summary>
+        ''' <summary>The "Class" keyword.</summary>
         Public  ReadOnly Property ClassKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ClassStatementSyntax)._classKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -4943,9 +6829,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.AttributeLists, Me.Modifiers, classKeyword, Me.Identifier, Me.TypeParameterList)
         End Function
 
-        ''' <summary>
-        ''' The name of the type being declared.
-        ''' </summary>
+        ''' <summary>The name of the type being declared.</summary>
         Public Shadows ReadOnly Property Identifier As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ClassStatementSyntax)._identifier, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -4973,9 +6857,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If present, a type parameter list with generic parameters for this type. If no
         ''' generic parameters were present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property TypeParameterList As TypeParameterListSyntax
             Get
                 Return GetRed(_typeParameterList, 4)
@@ -5096,9 +6978,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -5123,9 +7003,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all the modifier tokens that were present on this declaration. If no
         ''' modifiers were specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EnumStatementSyntax)._modifiers
@@ -5149,9 +7027,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithModifiers(Me.Modifiers.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The "Enum" keyword.
-        ''' </summary>
+        ''' <summary>The "Enum" keyword.</summary>
         Public  ReadOnly Property EnumKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EnumStatementSyntax)._enumKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -5167,9 +7043,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.AttributeLists, Me.Modifiers, enumKeyword, Me.Identifier, Me.UnderlyingType)
         End Function
 
-        ''' <summary>
-        ''' The name of the enum being declared.
-        ''' </summary>
+        ''' <summary>The name of the enum being declared.</summary>
         Public  ReadOnly Property Identifier As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EnumStatementSyntax)._identifier, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -5189,9 +7063,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' Optional "As XXX" clause describing the underlying type of the enumeration. If
         ''' no As clause was specified, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property UnderlyingType As AsClauseSyntax
             Get
                 Return GetRed(_underlyingType, 4)
@@ -5271,9 +7143,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the type parameter list in a declaration.
-    ''' </summary>
+    ''' <summary>Represents the type parameter list in a declaration.</summary>
     Public NotInheritable Class TypeParameterListSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -5289,9 +7159,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeParameterListSyntax(kind, errors, annotations, openParenToken, ofKeyword, if(parameters IsNot Nothing, parameters.Green, Nothing), closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Public  ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeParameterListSyntax)._openParenToken, Me.Position, 0)
@@ -5307,9 +7175,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(openParenToken, Me.OfKeyword, Me.Parameters, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "Of" keyword.
-        ''' </summary>
+        ''' <summary>The "Of" keyword.</summary>
         Public  ReadOnly Property OfKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeParameterListSyntax)._ofKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -5352,9 +7218,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithParameters(Me.Parameters.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Public  ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeParameterListSyntax)._closeParenToken, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -5427,9 +7291,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a type parameter on a generic type declaration.
-    ''' </summary>
+    ''' <summary>Represents a type parameter on a generic type declaration.</summary>
     Public NotInheritable Class TypeParameterSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -5449,9 +7311,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' Represents the "In" or "Out" variance keyword on a type parameter, if present.
         ''' If no variance modifier was present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property VarianceKeyword As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeParameterSyntax)._varianceKeyword
@@ -5471,9 +7331,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(varianceKeyword, Me.Identifier, Me.TypeParameterConstraintClause)
         End Function
 
-        ''' <summary>
-        ''' The name of the type parameter
-        ''' </summary>
+        ''' <summary>The name of the type parameter</summary>
         Public  ReadOnly Property Identifier As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeParameterSyntax)._identifier, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -5493,9 +7351,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The "As" keyword, if any type constraints were supplied. If no type constraints
         ''' were supplied, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property TypeParameterConstraintClause As TypeParameterConstraintClauseSyntax
             Get
                 Return GetRed(_typeParameterConstraintClause, 2)
@@ -5708,9 +7564,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeParameterMultipleConstraintClauseSyntax(kind, errors, annotations, asKeyword, openBraceToken, if(constraints IsNot Nothing, constraints.Green, Nothing), closeBraceToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "As" keyword.
-        ''' </summary>
+        ''' <summary>The "As" keyword.</summary>
         Public  ReadOnly Property AsKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeParameterMultipleConstraintClauseSyntax)._asKeyword, Me.Position, 0)
@@ -5726,9 +7580,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(asKeyword, Me.OpenBraceToken, Me.Constraints, Me.CloseBraceToken)
         End Function
 
-        ''' <summary>
-        ''' The "{" token.
-        ''' </summary>
+        ''' <summary>The "{" token.</summary>
         Public  ReadOnly Property OpenBraceToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeParameterMultipleConstraintClauseSyntax)._openBraceToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -5771,9 +7623,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithConstraints(Me.Constraints.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The "}" token.
-        ''' </summary>
+        ''' <summary>The "}" token.</summary>
         Public  ReadOnly Property CloseBraceToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeParameterMultipleConstraintClauseSyntax)._closeBraceToken, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -5945,9 +7795,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a type parameter constraint that is a type.
-    ''' </summary>
+    ''' <summary>Represents a type parameter constraint that is a type.</summary>
     Public NotInheritable Class TypeConstraintSyntax
         Inherits ConstraintSyntax
 
@@ -5963,9 +7811,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeConstraintSyntax(kind, errors, annotations, DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The type describing the constraint.
-        ''' </summary>
+        ''' <summary>The type describing the constraint.</summary>
         Public  ReadOnly Property Type As TypeSyntax
             Get
                 Return GetRedAtZero(_type)
@@ -6026,9 +7872,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a name and value in an EnumDeclarationBlock.
-    ''' </summary>
+    ''' <summary>Represents a name and value in an EnumDeclarationBlock.</summary>
     Public NotInheritable Class EnumMemberDeclarationSyntax
         Inherits DeclarationStatementSyntax
 
@@ -6045,9 +7889,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EnumMemberDeclarationSyntax(kind, errors, annotations, if(attributeLists IsNot Nothing, attributeLists.Green, Nothing), identifier, if(initializer IsNot Nothing , DirectCast(initializer.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EqualsValueSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -6083,12 +7925,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.AttributeLists, identifier, Me.Initializer)
         End Function
 
-        ''' <summary>
-        ''' An optional value for the enum member.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>An optional value for the enum member.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Initializer As EqualsValueSyntax
             Get
                 Return GetRed(_initializer, 2)
@@ -6179,12 +8017,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        ''' <summary>
-        ''' The statements contained in the block statement. This might be an empty list.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The statements contained in the block statement. This might be an empty list.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Return Me.GetStatementsCore()
@@ -6232,9 +8066,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.MethodBlockSyntax(kind, errors, annotations, DirectCast(subOrFunctionStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.MethodStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing), DirectCast(endSubOrFunctionStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Sub" or "Function" statement that begins the block.
-        ''' </summary>
+        ''' <summary>The "Sub" or "Function" statement that begins the block.</summary>
         Public  ReadOnly Property SubOrFunctionStatement As MethodStatementSyntax
             Get
                 Return GetRedAtZero(_subOrFunctionStatement)
@@ -6250,12 +8082,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, subOrFunctionStatement, Me.Statements, Me.EndSubOrFunctionStatement)
         End Function
 
-        ''' <summary>
-        ''' The statements contained in the block statement. This might be an empty list.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The statements contained in the block statement. This might be an empty list.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -6288,9 +8116,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddStatements(items)
         End Function
 
-        ''' <summary>
-        ''' The "End Sub" or "End Function" statement that ends the block.
-        ''' </summary>
+        ''' <summary>The "End Sub" or "End Function" statement that ends the block.</summary>
         Public  ReadOnly Property EndSubOrFunctionStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endSubOrFunctionStatement, 2)
@@ -6391,9 +8217,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ConstructorBlockSyntax(kind, errors, annotations, DirectCast(subNewStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SubNewStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing), DirectCast(endSubStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Sub New" statement that begins the block.
-        ''' </summary>
+        ''' <summary>The "Sub New" statement that begins the block.</summary>
         Public  ReadOnly Property SubNewStatement As SubNewStatementSyntax
             Get
                 Return GetRedAtZero(_subNewStatement)
@@ -6409,12 +8233,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(subNewStatement, Me.Statements, Me.EndSubStatement)
         End Function
 
-        ''' <summary>
-        ''' The statements contained in the block statement. This might be an empty list.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The statements contained in the block statement. This might be an empty list.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -6447,9 +8267,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddStatements(items)
         End Function
 
-        ''' <summary>
-        ''' The "End Sub" statement that ends the block declaration.
-        ''' </summary>
+        ''' <summary>The "End Sub" statement that ends the block declaration.</summary>
         Public  ReadOnly Property EndSubStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endSubStatement, 2)
@@ -6547,9 +8365,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OperatorBlockSyntax(kind, errors, annotations, DirectCast(operatorStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OperatorStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing), DirectCast(endOperatorStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Operator" statement that begins the block.
-        ''' </summary>
+        ''' <summary>The "Operator" statement that begins the block.</summary>
         Public  ReadOnly Property OperatorStatement As OperatorStatementSyntax
             Get
                 Return GetRedAtZero(_operatorStatement)
@@ -6565,12 +8381,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(operatorStatement, Me.Statements, Me.EndOperatorStatement)
         End Function
 
-        ''' <summary>
-        ''' The statements contained in the block statement. This might be an empty list.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The statements contained in the block statement. This might be an empty list.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -6603,9 +8415,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddStatements(items)
         End Function
 
-        ''' <summary>
-        ''' The "End Operator" statement that ends the block declaration.
-        ''' </summary>
+        ''' <summary>The "End Operator" statement that ends the block declaration.</summary>
         Public  ReadOnly Property EndOperatorStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endOperatorStatement, 2)
@@ -6723,12 +8533,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, accessorStatement, Me.Statements, Me.EndAccessorStatement)
         End Function
 
-        ''' <summary>
-        ''' The statements contained in the block statement. This might be an empty list.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The statements contained in the block statement. This might be an empty list.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -6866,9 +8672,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PropertyBlockSyntax(kind, errors, annotations, DirectCast(propertyStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PropertyStatementSyntax), if(accessors IsNot Nothing, accessors.Green, Nothing), DirectCast(endPropertyStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The property declaration that begins the block.
-        ''' </summary>
+        ''' <summary>The property declaration that begins the block.</summary>
         Public  ReadOnly Property PropertyStatement As PropertyStatementSyntax
             Get
                 Return GetRedAtZero(_propertyStatement)
@@ -6908,9 +8712,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithAccessors(Me.Accessors.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The End Property statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End Property statement that ends the block.</summary>
         Public  ReadOnly Property EndPropertyStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endPropertyStatement, 2)
@@ -7009,9 +8811,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EventBlockSyntax(kind, errors, annotations, DirectCast(eventStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EventStatementSyntax), if(accessors IsNot Nothing, accessors.Green, Nothing), DirectCast(endEventStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The event declaration that begins the block.
-        ''' </summary>
+        ''' <summary>The event declaration that begins the block.</summary>
         Public  ReadOnly Property EventStatement As EventStatementSyntax
             Get
                 Return GetRedAtZero(_eventStatement)
@@ -7051,9 +8851,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithAccessors(Me.Accessors.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The End Event statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End Event statement that ends the block.</summary>
         Public  ReadOnly Property EndEventStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endEventStatement, 2)
@@ -7153,9 +8951,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Return Me.GetAttributeListsCore()
@@ -7187,9 +8983,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' the modifiers ORed together, which is in many cases easier to use, can be
         ''' obtained with the Modifiers property.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Return Me.GetModifiersCore()
@@ -7222,9 +9016,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The method's parameter list including the parentheses. If no parameter list was
         ''' present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public ReadOnly Property ParameterList As ParameterListSyntax
             Get
                 Return Me.GetParameterListCore()
@@ -7252,9 +9044,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the parameter list in a method declaration.
-    ''' </summary>
+    ''' <summary>Represents the parameter list in a method declaration.</summary>
     Public NotInheritable Class ParameterListSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -7289,12 +9079,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(openParenToken, Me.Parameters, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The list of parameters. If no parameter list was present, Nothing is returned.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The list of parameters. If no parameter list was present, Nothing is returned.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Parameters As SeparatedSyntaxList(Of ParameterSyntax)
             Get
                 Dim listNode = GetRed(_parameters, 1)
@@ -7419,9 +9205,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -7460,9 +9244,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' the modifiers ORed together, which is in many cases easier to use, can be
         ''' obtained with the Modifiers property.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.MethodStatementSyntax)._modifiers
@@ -7498,9 +9280,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddModifiers(items)
         End Function
 
-        ''' <summary>
-        ''' The "Sub" or "Function" keyword that introduces this method declaration.
-        ''' </summary>
+        ''' <summary>The "Sub" or "Function" keyword that introduces this method declaration.</summary>
         Public  ReadOnly Property SubOrFunctionKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.MethodStatementSyntax)._subOrFunctionKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -7516,9 +9296,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.AttributeLists, Me.Modifiers, subOrFunctionKeyword, Me.Identifier, Me.TypeParameterList, Me.ParameterList, Me.AsClause, Me.HandlesClause, Me.ImplementsClause)
         End Function
 
-        ''' <summary>
-        ''' The name of the method being declared.
-        ''' </summary>
+        ''' <summary>The name of the method being declared.</summary>
         Public  ReadOnly Property Identifier As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.MethodStatementSyntax)._identifier, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -7538,9 +9316,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If present, a type parameter list with generic type parameters for this method.
         ''' If no generic type parameters were present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property TypeParameterList As TypeParameterListSyntax
             Get
                 Return GetRed(_typeParameterList, 4)
@@ -7565,9 +9341,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The method's parameter list including the parentheses. If no parameter list was
         ''' present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property ParameterList As ParameterListSyntax
             Get
                 Return GetRed(_parameterList, 5)
@@ -7604,9 +9378,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The "As" clause that describes the return type. If no As clause was present,
         ''' Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AsClause As SimpleAsClauseSyntax
             Get
                 Return GetRed(_asClause, 6)
@@ -7622,12 +9394,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.AttributeLists, Me.Modifiers, Me.SubOrFunctionKeyword, Me.Identifier, Me.TypeParameterList, Me.ParameterList, asClause, Me.HandlesClause, Me.ImplementsClause)
         End Function
 
-        ''' <summary>
-        ''' If present, a Handles clause indicated the events that this method handles.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>If present, a Handles clause indicated the events that this method handles.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property HandlesClause As HandlesClauseSyntax
             Get
                 Return GetRed(_handlesClause, 7)
@@ -7652,9 +9420,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If present, an Implements clause indicated the interface methods that this
         ''' method implements.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property ImplementsClause As ImplementsClauseSyntax
             Get
                 Return GetRed(_implementsClause, 8)
@@ -7793,9 +9559,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -7834,9 +9598,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' the modifiers ORed together, which is in many cases easier to use, can be
         ''' obtained with the Modifiers property.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SubNewStatementSyntax)._modifiers
@@ -7872,9 +9634,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddModifiers(items)
         End Function
 
-        ''' <summary>
-        ''' The "Sub" keyword.
-        ''' </summary>
+        ''' <summary>The "Sub" keyword.</summary>
         Public  ReadOnly Property SubKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SubNewStatementSyntax)._subKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -7890,9 +9650,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.AttributeLists, Me.Modifiers, subKeyword, Me.NewKeyword, Me.ParameterList)
         End Function
 
-        ''' <summary>
-        ''' The "New" keyword in the constructor declaration.
-        ''' </summary>
+        ''' <summary>The "New" keyword in the constructor declaration.</summary>
         Public  ReadOnly Property NewKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SubNewStatementSyntax)._newKeyword, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -7912,9 +9670,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The method's parameter list including the parentheses. If no parameter list was
         ''' present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property ParameterList As ParameterListSyntax
             Get
                 Return GetRed(_parameterList, 4)
@@ -8011,9 +9767,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' A Declare statement that declares an external DLL method.
-    ''' </summary>
+    ''' <summary>A Declare statement that declares an external DLL method.</summary>
     Public NotInheritable Class DeclareStatementSyntax
         Inherits MethodBaseSyntax
 
@@ -8035,9 +9789,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -8076,9 +9828,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' the modifiers ORed together, which is in many cases easier to use, can be
         ''' obtained with the Modifiers property.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclareStatementSyntax)._modifiers
@@ -8114,9 +9864,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddModifiers(items)
         End Function
 
-        ''' <summary>
-        ''' The "Declare" keyword.
-        ''' </summary>
+        ''' <summary>The "Declare" keyword.</summary>
         Public  ReadOnly Property DeclareKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclareStatementSyntax)._declareKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -8136,9 +9884,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If present, the keyword that defines the string translation semantics of the
         ''' external method.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property CharsetKeyword As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclareStatementSyntax)._charsetKeyword
@@ -8158,9 +9904,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.AttributeLists, Me.Modifiers, Me.DeclareKeyword, charsetKeyword, Me.SubOrFunctionKeyword, Me.Identifier, Me.LibKeyword, Me.LibraryName, Me.AliasKeyword, Me.AliasName, Me.ParameterList, Me.AsClause)
         End Function
 
-        ''' <summary>
-        ''' The "Sub" or "Function" keyword.
-        ''' </summary>
+        ''' <summary>The "Sub" or "Function" keyword.</summary>
         Public  ReadOnly Property SubOrFunctionKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclareStatementSyntax)._subOrFunctionKeyword, Me.GetChildPosition(4), Me.GetChildIndex(4))
@@ -8176,9 +9920,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.AttributeLists, Me.Modifiers, Me.DeclareKeyword, Me.CharsetKeyword, subOrFunctionKeyword, Me.Identifier, Me.LibKeyword, Me.LibraryName, Me.AliasKeyword, Me.AliasName, Me.ParameterList, Me.AsClause)
         End Function
 
-        ''' <summary>
-        ''' The name of the method being declared.
-        ''' </summary>
+        ''' <summary>The name of the method being declared.</summary>
         Public  ReadOnly Property Identifier As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclareStatementSyntax)._identifier, Me.GetChildPosition(5), Me.GetChildIndex(5))
@@ -8194,9 +9936,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.AttributeLists, Me.Modifiers, Me.DeclareKeyword, Me.CharsetKeyword, Me.SubOrFunctionKeyword, identifier, Me.LibKeyword, Me.LibraryName, Me.AliasKeyword, Me.AliasName, Me.ParameterList, Me.AsClause)
         End Function
 
-        ''' <summary>
-        ''' The "Lib" keyword.
-        ''' </summary>
+        ''' <summary>The "Lib" keyword.</summary>
         Public  ReadOnly Property LibKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclareStatementSyntax)._libKeyword, Me.GetChildPosition(6), Me.GetChildIndex(6))
@@ -8212,9 +9952,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.AttributeLists, Me.Modifiers, Me.DeclareKeyword, Me.CharsetKeyword, Me.SubOrFunctionKeyword, Me.Identifier, libKeyword, Me.LibraryName, Me.AliasKeyword, Me.AliasName, Me.ParameterList, Me.AsClause)
         End Function
 
-        ''' <summary>
-        ''' The string literal with the library name.
-        ''' </summary>
+        ''' <summary>The string literal with the library name.</summary>
         Public  ReadOnly Property LibraryName As LiteralExpressionSyntax
             Get
                 Return GetRed(_libraryName, 7)
@@ -8230,12 +9968,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.AttributeLists, Me.Modifiers, Me.DeclareKeyword, Me.CharsetKeyword, Me.SubOrFunctionKeyword, Me.Identifier, Me.LibKeyword, libraryName, Me.AliasKeyword, Me.AliasName, Me.ParameterList, Me.AsClause)
         End Function
 
-        ''' <summary>
-        ''' If present, the "Alias" keyword. If not present, returns Nothing.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>If present, the "Alias" keyword. If not present, returns Nothing.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AliasKeyword As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclareStatementSyntax)._aliasKeyword
@@ -8255,12 +9989,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.AttributeLists, Me.Modifiers, Me.DeclareKeyword, Me.CharsetKeyword, Me.SubOrFunctionKeyword, Me.Identifier, Me.LibKeyword, Me.LibraryName, aliasKeyword, Me.AliasName, Me.ParameterList, Me.AsClause)
         End Function
 
-        ''' <summary>
-        ''' The string literal with the alias. If not present, returns Nothing.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The string literal with the alias. If not present, returns Nothing.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AliasName As LiteralExpressionSyntax
             Get
                 Return GetRed(_aliasName, 9)
@@ -8280,9 +10010,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The method's parameter list including the parentheses. If no parameter list was
         ''' present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property ParameterList As ParameterListSyntax
             Get
                 Return GetRed(_parameterList, 10)
@@ -8319,9 +10047,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The "As" clause that describes the return type. If no As clause was present,
         ''' Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AsClause As SimpleAsClauseSyntax
             Get
                 Return GetRed(_asClause, 11)
@@ -8437,9 +10163,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' A statement that declares a delegate type.
-    ''' </summary>
+    ''' <summary>A statement that declares a delegate type.</summary>
     Public NotInheritable Class DelegateStatementSyntax
         Inherits MethodBaseSyntax
 
@@ -8460,9 +10184,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -8501,9 +10223,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' the modifiers ORed together, which is in many cases easier to use, can be
         ''' obtained with the Modifiers property.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DelegateStatementSyntax)._modifiers
@@ -8539,9 +10259,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddModifiers(items)
         End Function
 
-        ''' <summary>
-        ''' The "Delegate" keyword.
-        ''' </summary>
+        ''' <summary>The "Delegate" keyword.</summary>
         Public  ReadOnly Property DelegateKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DelegateStatementSyntax)._delegateKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -8557,9 +10275,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.AttributeLists, Me.Modifiers, delegateKeyword, Me.SubOrFunctionKeyword, Me.Identifier, Me.TypeParameterList, Me.ParameterList, Me.AsClause)
         End Function
 
-        ''' <summary>
-        ''' The "Sub" or "Function" keyword.
-        ''' </summary>
+        ''' <summary>The "Sub" or "Function" keyword.</summary>
         Public  ReadOnly Property SubOrFunctionKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DelegateStatementSyntax)._subOrFunctionKeyword, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -8575,9 +10291,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.AttributeLists, Me.Modifiers, Me.DelegateKeyword, subOrFunctionKeyword, Me.Identifier, Me.TypeParameterList, Me.ParameterList, Me.AsClause)
         End Function
 
-        ''' <summary>
-        ''' The name of the delegate being declared.
-        ''' </summary>
+        ''' <summary>The name of the delegate being declared.</summary>
         Public  ReadOnly Property Identifier As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DelegateStatementSyntax)._identifier, Me.GetChildPosition(4), Me.GetChildIndex(4))
@@ -8597,9 +10311,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If present, a type parameter list with generic type parameters for this
         ''' delegate. If no generic type parameters were present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property TypeParameterList As TypeParameterListSyntax
             Get
                 Return GetRed(_typeParameterList, 5)
@@ -8624,9 +10336,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The method's parameter list including the parentheses. If no parameter list was
         ''' present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property ParameterList As ParameterListSyntax
             Get
                 Return GetRed(_parameterList, 6)
@@ -8663,9 +10373,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The "As" clause that describes the return type. If no As clause was present,
         ''' Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AsClause As SimpleAsClauseSyntax
             Get
                 Return GetRed(_asClause, 7)
@@ -8790,9 +10498,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -8831,9 +10537,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' the modifiers ORed together, which is in many cases easier to use, can be
         ''' obtained with the Modifiers property.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EventStatementSyntax)._modifiers
@@ -8869,12 +10573,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddModifiers(items)
         End Function
 
-        ''' <summary>
-        ''' The optional Custom keyword for custom event declarations.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The optional Custom keyword for custom event declarations.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property CustomKeyword As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EventStatementSyntax)._customKeyword
@@ -8894,9 +10594,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.AttributeLists, Me.Modifiers, customKeyword, Me.EventKeyword, Me.Identifier, Me.ParameterList, Me.AsClause, Me.ImplementsClause)
         End Function
 
-        ''' <summary>
-        ''' The "Event" keyword that introduces this event declaration.
-        ''' </summary>
+        ''' <summary>The "Event" keyword that introduces this event declaration.</summary>
         Public  ReadOnly Property EventKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EventStatementSyntax)._eventKeyword, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -8912,9 +10610,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.AttributeLists, Me.Modifiers, Me.CustomKeyword, eventKeyword, Me.Identifier, Me.ParameterList, Me.AsClause, Me.ImplementsClause)
         End Function
 
-        ''' <summary>
-        ''' The name of the event being declared.
-        ''' </summary>
+        ''' <summary>The name of the event being declared.</summary>
         Public  ReadOnly Property Identifier As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EventStatementSyntax)._identifier, Me.GetChildPosition(4), Me.GetChildIndex(4))
@@ -8934,9 +10630,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The method's parameter list including the parentheses. If no parameter list was
         ''' present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property ParameterList As ParameterListSyntax
             Get
                 Return GetRed(_parameterList, 5)
@@ -8973,9 +10667,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The "As" clause that describes the return type. If no As clause was present,
         ''' Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AsClause As SimpleAsClauseSyntax
             Get
                 Return GetRed(_asClause, 6)
@@ -8995,9 +10687,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If present, an Implements clause indicates the interface methods that this
         ''' method implements.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property ImplementsClause As ImplementsClauseSyntax
             Get
                 Return GetRed(_implementsClause, 7)
@@ -9124,9 +10814,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -9165,9 +10853,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' the modifiers ORed together, which is in many cases easier to use, can be
         ''' obtained with the Modifiers property.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OperatorStatementSyntax)._modifiers
@@ -9203,9 +10889,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddModifiers(items)
         End Function
 
-        ''' <summary>
-        ''' The "Operator" keyword that introduces this operator declaration.
-        ''' </summary>
+        ''' <summary>The "Operator" keyword that introduces this operator declaration.</summary>
         Public  ReadOnly Property OperatorKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OperatorStatementSyntax)._operatorKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -9221,9 +10905,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.AttributeLists, Me.Modifiers, operatorKeyword, Me.OperatorToken, Me.ParameterList, Me.AsClause)
         End Function
 
-        ''' <summary>
-        ''' The operator being defined.
-        ''' </summary>
+        ''' <summary>The operator being defined.</summary>
         Public  ReadOnly Property OperatorToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OperatorStatementSyntax)._operatorToken, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -9243,9 +10925,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The method's parameter list including the parentheses. If no parameter list was
         ''' present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property ParameterList As ParameterListSyntax
             Get
                 Return GetRed(_parameterList, 4)
@@ -9282,9 +10962,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The "As" clause that describes the return type. If no As clause was present,
         ''' Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AsClause As SimpleAsClauseSyntax
             Get
                 Return GetRed(_asClause, 5)
@@ -9398,9 +11076,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -9439,9 +11115,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' the modifiers ORed together, which is in many cases easier to use, can be
         ''' obtained with the Modifiers property.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PropertyStatementSyntax)._modifiers
@@ -9477,9 +11151,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddModifiers(items)
         End Function
 
-        ''' <summary>
-        ''' The "Property" keyword that introduces this property declaration.
-        ''' </summary>
+        ''' <summary>The "Property" keyword that introduces this property declaration.</summary>
         Public  ReadOnly Property PropertyKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PropertyStatementSyntax)._propertyKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -9495,9 +11167,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.AttributeLists, Me.Modifiers, propertyKeyword, Me.Identifier, Me.ParameterList, Me.AsClause, Me.Initializer, Me.ImplementsClause)
         End Function
 
-        ''' <summary>
-        ''' The name of the property being declared.
-        ''' </summary>
+        ''' <summary>The name of the property being declared.</summary>
         Public  ReadOnly Property Identifier As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PropertyStatementSyntax)._identifier, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -9517,9 +11187,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The method's parameter list including the parentheses. If no parameter list was
         ''' present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property ParameterList As ParameterListSyntax
             Get
                 Return GetRed(_parameterList, 4)
@@ -9556,9 +11224,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The "As" clause that describes the return type. If no As clause was present,
         ''' Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AsClause As AsClauseSyntax
             Get
                 Return GetRed(_asClause, 5)
@@ -9578,9 +11244,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If present, an "= initial-value" clause describing the initial value of the
         ''' property.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Initializer As EqualsValueSyntax
             Get
                 Return GetRed(_initializer, 6)
@@ -9600,9 +11264,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If present, an Implements clause indicated the interface methods that this
         ''' method implements.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property ImplementsClause As ImplementsClauseSyntax
             Get
                 Return GetRed(_implementsClause, 7)
@@ -9732,9 +11394,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -9773,9 +11433,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' the modifiers ORed together, which is in many cases easier to use, can be
         ''' obtained with the Modifiers property.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AccessorStatementSyntax)._modifiers
@@ -9834,9 +11492,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The method's parameter list including the parentheses. If no parameter list was
         ''' present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property ParameterList As ParameterListSyntax
             Get
                 Return GetRed(_parameterList, 3)
@@ -9952,9 +11608,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ImplementsClauseSyntax(kind, errors, annotations, implementsKeyword, if(interfaceMembers IsNot Nothing, interfaceMembers.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Implements" keyword.
-        ''' </summary>
+        ''' <summary>The "Implements" keyword.</summary>
         Public  ReadOnly Property ImplementsKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ImplementsClauseSyntax)._implementsKeyword, Me.Position, 0)
@@ -9970,9 +11624,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(implementsKeyword, Me.InterfaceMembers)
         End Function
 
-        ''' <summary>
-        ''' The list of interface members being implemented.
-        ''' </summary>
+        ''' <summary>The list of interface members being implemented.</summary>
         Public  ReadOnly Property InterfaceMembers As SeparatedSyntaxList(Of QualifiedNameSyntax)
             Get
                 Dim listNode = GetRed(_interfaceMembers, 1)
@@ -10066,9 +11718,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.HandlesClauseSyntax(kind, errors, annotations, handlesKeyword, if(events IsNot Nothing, events.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Handles" keyword.
-        ''' </summary>
+        ''' <summary>The "Handles" keyword.</summary>
         Public  ReadOnly Property HandlesKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.HandlesClauseSyntax)._handlesKeyword, Me.Position, 0)
@@ -10084,9 +11734,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(handlesKeyword, Me.Events)
         End Function
 
-        ''' <summary>
-        ''' The list of event members being handled.
-        ''' </summary>
+        ''' <summary>The list of event members being handled.</summary>
         Public  ReadOnly Property Events As SeparatedSyntaxList(Of HandlesClauseItemSyntax)
             Get
                 Dim listNode = GetRed(_events, 1)
@@ -10160,9 +11808,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents container of an event in a Handles clause item.
-    ''' </summary>
+    ''' <summary>Represents container of an event in a Handles clause item.</summary>
     Public MustInherit Class EventContainerSyntax
         Inherits ExpressionSyntax
 
@@ -10254,9 +11900,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents event container that refers to a WithEvents member.
-    ''' </summary>
+    ''' <summary>Represents event container that refers to a WithEvents member.</summary>
     Public NotInheritable Class WithEventsEventContainerSyntax
         Inherits EventContainerSyntax
 
@@ -10332,9 +11976,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents event container that refers to a WithEvents member's property.
-    ''' </summary>
+    ''' <summary>Represents event container that refers to a WithEvents member's property.</summary>
     Public NotInheritable Class WithEventsPropertyEventContainerSyntax
         Inherits EventContainerSyntax
 
@@ -10351,9 +11993,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WithEventsPropertyEventContainerSyntax(kind, errors, annotations, DirectCast(withEventsContainer.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WithEventsEventContainerSyntax), dotToken, DirectCast([property].Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IdentifierNameSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The container of the event.
-        ''' </summary>
+        ''' <summary>The container of the event.</summary>
         Public  ReadOnly Property WithEventsContainer As WithEventsEventContainerSyntax
             Get
                 Return GetRedAtZero(_withEventsContainer)
@@ -10369,9 +12009,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(withEventsContainer, Me.DotToken, Me.Property)
         End Function
 
-        ''' <summary>
-        ''' The "." token.
-        ''' </summary>
+        ''' <summary>The "." token.</summary>
         Public  ReadOnly Property DotToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WithEventsPropertyEventContainerSyntax)._dotToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -10464,9 +12102,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a single handled event in a "Handles ..." clause.
-    ''' </summary>
+    ''' <summary>Represents a single handled event in a "Handles ..." clause.</summary>
     Public NotInheritable Class HandlesClauseItemSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -10503,9 +12139,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(eventContainer, Me.DotToken, Me.EventMember)
         End Function
 
-        ''' <summary>
-        ''' The "." token.
-        ''' </summary>
+        ''' <summary>The "." token.</summary>
         Public  ReadOnly Property DotToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.HandlesClauseItemSyntax)._dotToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -10521,9 +12155,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.EventContainer, dotToken, Me.EventMember)
         End Function
 
-        ''' <summary>
-        ''' The event being handled. This must be a simple identifier.
-        ''' </summary>
+        ''' <summary>The event being handled. This must be a simple identifier.</summary>
         Public  ReadOnly Property EventMember As IdentifierNameSyntax
             Get
                 Return GetRed(_eventMember, 2)
@@ -10621,9 +12253,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -10648,9 +12278,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all the modifier tokens that were present on this declaration. If no
         ''' modifiers were specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IncompleteMemberSyntax)._modifiers
@@ -10678,9 +12306,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The missing identifier token for this incomplete member. Should only be used to
         ''' have a location for error reporting.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property MissingIdentifier As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IncompleteMemberSyntax)._missingIdentifier
@@ -10780,9 +12406,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -10807,9 +12431,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all the modifier tokens that were present on this declaration. If no
         ''' modifiers were specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.FieldDeclarationSyntax)._modifiers
@@ -10969,9 +12591,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The "As" clause that describes the return type, and possibly includes "New",
         ''' "With" or "From". If no As clause was present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AsClause As AsClauseSyntax
             Get
                 Return GetRed(_asClause, 1)
@@ -10991,9 +12611,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If present, an "= initial-value" clause describing the initial value of the
         ''' variable or the value of the constant.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Initializer As EqualsValueSyntax
             Get
                 Return GetRed(_initializer, 2)
@@ -11087,9 +12705,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        ''' <summary>
-        ''' The "As" keyword.
-        ''' </summary>
+        ''' <summary>The "As" keyword.</summary>
         Public ReadOnly Property AsKeyword As SyntaxToken
             Get
                 Return Me.GetAsKeywordCore()
@@ -11133,9 +12749,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SimpleAsClauseSyntax(kind, errors, annotations, asKeyword, if(attributeLists IsNot Nothing, attributeLists.Green, Nothing), DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "As" keyword.
-        ''' </summary>
+        ''' <summary>The "As" keyword.</summary>
         Public Shadows ReadOnly Property AsKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SimpleAsClauseSyntax)._asKeyword, Me.Position, 0)
@@ -11163,9 +12777,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on the type. If no attributes were specified, an
         ''' empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRed(_attributeLists, 1)
@@ -11186,9 +12798,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithAttributeLists(Me.AttributeLists.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The type-name part of the As clause.
-        ''' </summary>
+        ''' <summary>The type-name part of the As clause.</summary>
         Public  ReadOnly Property Type As TypeSyntax
             Get
                 Return GetRed(_type, 2)
@@ -11282,9 +12892,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AsNewClauseSyntax(kind, errors, annotations, asKeyword, DirectCast(newExpression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NewExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "As" keyword.
-        ''' </summary>
+        ''' <summary>The "As" keyword.</summary>
         Public Shadows ReadOnly Property AsKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AsNewClauseSyntax)._asKeyword, Me.Position, 0)
@@ -11308,9 +12916,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(asKeyword, Me.NewExpression)
         End Function
 
-        ''' <summary>
-        ''' The New expression
-        ''' </summary>
+        ''' <summary>The New expression</summary>
         Public  ReadOnly Property NewExpression As NewExpressionSyntax
             Get
                 Return GetRed(_newExpression, 1)
@@ -11393,9 +12999,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "With {...} clause used to initialize a new object's members.
-    ''' </summary>
+    ''' <summary>Represents a "With {...} clause used to initialize a new object's members.</summary>
     Public NotInheritable Class ObjectMemberInitializerSyntax
         Inherits ObjectCreationInitializerSyntax
 
@@ -11411,9 +13015,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ObjectMemberInitializerSyntax(kind, errors, annotations, withKeyword, openBraceToken, if(initializers IsNot Nothing, initializers.Green, Nothing), closeBraceToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "With" keyword.
-        ''' </summary>
+        ''' <summary>The "With" keyword.</summary>
         Public  ReadOnly Property WithKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ObjectMemberInitializerSyntax)._withKeyword, Me.Position, 0)
@@ -11429,9 +13031,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(withKeyword, Me.OpenBraceToken, Me.Initializers, Me.CloseBraceToken)
         End Function
 
-        ''' <summary>
-        ''' The "{" token.
-        ''' </summary>
+        ''' <summary>The "{" token.</summary>
         Public  ReadOnly Property OpenBraceToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ObjectMemberInitializerSyntax)._openBraceToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -11447,9 +13047,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.WithKeyword, openBraceToken, Me.Initializers, Me.CloseBraceToken)
         End Function
 
-        ''' <summary>
-        ''' The comma-separated list of field initializers.
-        ''' </summary>
+        ''' <summary>The comma-separated list of field initializers.</summary>
         Public  ReadOnly Property Initializers As SeparatedSyntaxList(Of FieldInitializerSyntax)
             Get
                 Dim listNode = GetRed(_initializers, 2)
@@ -11473,9 +13071,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithInitializers(Me.Initializers.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The "}" token.
-        ''' </summary>
+        ''' <summary>The "}" token.</summary>
         Public  ReadOnly Property CloseBraceToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ObjectMemberInitializerSyntax)._closeBraceToken, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -11567,9 +13163,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ObjectCollectionInitializerSyntax(kind, errors, annotations, fromKeyword, DirectCast(initializer.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CollectionInitializerSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "From" keyword.
-        ''' </summary>
+        ''' <summary>The "From" keyword.</summary>
         Public  ReadOnly Property FromKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ObjectCollectionInitializerSyntax)._fromKeyword, Me.Position, 0)
@@ -11585,9 +13179,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(fromKeyword, Me.Initializer)
         End Function
 
-        ''' <summary>
-        ''' The initializer including the braces.
-        ''' </summary>
+        ''' <summary>The initializer including the braces.</summary>
         Public  ReadOnly Property Initializer As CollectionInitializerSyntax
             Get
                 Return GetRed(_initializer, 1)
@@ -11673,12 +13265,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        ''' <summary>
-        ''' The optional "Key" keyword.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The optional "Key" keyword.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public ReadOnly Property KeyKeyword As SyntaxToken
             Get
                 Return Me.GetKeyKeywordCore()
@@ -11724,12 +13312,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InferredFieldInitializerSyntax(kind, errors, annotations, keyKeyword, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The optional "Key" keyword.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The optional "Key" keyword.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property KeyKeyword As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InferredFieldInitializerSyntax)._keyKeyword
@@ -11757,9 +13341,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(keyKeyword, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The value being assigned.
-        ''' </summary>
+        ''' <summary>The value being assigned.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 1)
@@ -11846,12 +13428,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NamedFieldInitializerSyntax(kind, errors, annotations, keyKeyword, dotToken, DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IdentifierNameSyntax), equalsToken, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The optional "Key" keyword.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The optional "Key" keyword.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property KeyKeyword As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NamedFieldInitializerSyntax)._keyKeyword
@@ -11879,9 +13457,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(keyKeyword, Me.DotToken, Me.Name, Me.EqualsToken, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The "." token.
-        ''' </summary>
+        ''' <summary>The "." token.</summary>
         Public  ReadOnly Property DotToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NamedFieldInitializerSyntax)._dotToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -11897,9 +13473,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.KeyKeyword, dotToken, Me.Name, Me.EqualsToken, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The name of the field being initialized.
-        ''' </summary>
+        ''' <summary>The name of the field being initialized.</summary>
         Public  ReadOnly Property Name As IdentifierNameSyntax
             Get
                 Return GetRed(_name, 2)
@@ -11914,9 +13488,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.KeyKeyword, Me.DotToken, name, Me.EqualsToken, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The "=" token.
-        ''' </summary>
+        ''' <summary>The "=" token.</summary>
         Public  ReadOnly Property EqualsToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NamedFieldInitializerSyntax)._equalsToken, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -11932,9 +13504,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.KeyKeyword, Me.DotToken, Me.Name, equalsToken, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The value being assigned to the field.
-        ''' </summary>
+        ''' <summary>The value being assigned to the field.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 4)
@@ -12033,9 +13603,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EqualsValueSyntax(kind, errors, annotations, equalsToken, DirectCast(value.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "=" token.
-        ''' </summary>
+        ''' <summary>The "=" token.</summary>
         Public  ReadOnly Property EqualsToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EqualsValueSyntax)._equalsToken, Me.Position, 0)
@@ -12051,9 +13619,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(equalsToken, Me.Value)
         End Function
 
-        ''' <summary>
-        ''' The expression used as the initial value.
-        ''' </summary>
+        ''' <summary>The expression used as the initial value.</summary>
         Public  ReadOnly Property Value As ExpressionSyntax
             Get
                 Return GetRed(_value, 1)
@@ -12119,9 +13685,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represent a parameter to a method, property, constructor, etc.
-    ''' </summary>
+    ''' <summary>Represent a parameter to a method, property, constructor, etc.</summary>
     Public NotInheritable Class ParameterSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -12144,9 +13708,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this parameter. If no attributes were
         ''' specified, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -12171,9 +13733,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of the modifier tokens "ByVal", "ByRef", "Optional" or "ParamArray" that
         ''' modify this parameter.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ParameterSyntax)._modifiers
@@ -12197,9 +13757,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithModifiers(Me.Modifiers.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The name of the parameter, including any "?" or "()" modifiers.
-        ''' </summary>
+        ''' <summary>The name of the parameter, including any "?" or "()" modifiers.</summary>
         Public  ReadOnly Property Identifier As ModifiedIdentifierSyntax
             Get
                 Return GetRed(_identifier, 2)
@@ -12219,9 +13777,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If present, the "As type-name" clause describing the type of the parameter. If
         ''' no As clause is present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AsClause As SimpleAsClauseSyntax
             Get
                 Return GetRed(_asClause, 3)
@@ -12241,9 +13797,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If present, an initializer with the default value of the parameter. If no
         ''' default value is present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property [Default] As EqualsValueSyntax
             Get
                 Return GetRed(_default, 4)
@@ -12351,9 +13905,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ModifiedIdentifierSyntax(kind, errors, annotations, identifier, nullable, if(arrayBounds IsNot Nothing , DirectCast(arrayBounds.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArgumentListSyntax), Nothing) , if(arrayRankSpecifiers IsNot Nothing, arrayRankSpecifiers.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The identifier that names the item being declared.
-        ''' </summary>
+        ''' <summary>The identifier that names the item being declared.</summary>
         Public  ReadOnly Property Identifier As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ModifiedIdentifierSyntax)._identifier, Me.Position, 0)
@@ -12369,12 +13921,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(identifier, Me.Nullable, Me.ArrayBounds, Me.ArrayRankSpecifiers)
         End Function
 
-        ''' <summary>
-        ''' The "?" token that indicates a nullable type.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The "?" token that indicates a nullable type.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Nullable As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ModifiedIdentifierSyntax)._nullable
@@ -12394,12 +13942,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Identifier, nullable, Me.ArrayBounds, Me.ArrayRankSpecifiers)
         End Function
 
-        ''' <summary>
-        ''' The optional array bounds, such as "(4)" or "(0 to 5, 0 To 6)".
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The optional array bounds, such as "(4)" or "(0 to 5, 0 To 6)".</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property ArrayBounds As ArgumentListSyntax
             Get
                 Return GetRed(_arrayBounds, 2)
@@ -12424,9 +13968,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of array modifiers for the type. If no array modifiers were present, an
         ''' empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property ArrayRankSpecifiers As SyntaxList(Of ArrayRankSpecifierSyntax)
             Get
                 Dim listNode = GetRed(_arrayRankSpecifiers, 3)
@@ -12526,9 +14068,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArrayRankSpecifierSyntax(kind, errors, annotations, openParenToken, commaTokens, closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Public  ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArrayRankSpecifierSyntax)._openParenToken, Me.Position, 0)
@@ -12544,12 +14084,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(openParenToken, Me.CommaTokens, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The comma tokens in the array type. There is one less comma than the rank.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The comma tokens in the array type. There is one less comma than the rank.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property CommaTokens As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArrayRankSpecifierSyntax)._commaTokens
@@ -12573,9 +14109,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithCommaTokens(Me.CommaTokens.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Public  ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArrayRankSpecifierSyntax)._closeParenToken, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -12641,9 +14175,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a group of attributes within "&lt;" and "&gt;" brackets.
-    ''' </summary>
+    ''' <summary>Represents a group of attributes within "&lt;" and "&gt;" brackets.</summary>
     Public NotInheritable Class AttributeListSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -12659,9 +14191,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AttributeListSyntax(kind, errors, annotations, lessThanToken, if(attributes IsNot Nothing, attributes.Green, Nothing), greaterThanToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "&lt;" token.
-        ''' </summary>
+        ''' <summary>The "&lt;" token.</summary>
         Public  ReadOnly Property LessThanToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AttributeListSyntax)._lessThanToken, Me.Position, 0)
@@ -12677,12 +14207,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(lessThanToken, Me.Attributes, Me.GreaterThanToken)
         End Function
 
-        ''' <summary>
-        ''' A comma separated list of attribute declarations in this attribute list.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A comma separated list of attribute declarations in this attribute list.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Attributes As SeparatedSyntaxList(Of AttributeSyntax)
             Get
                 Dim listNode = GetRed(_attributes, 1)
@@ -12706,9 +14232,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithAttributes(Me.Attributes.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The "&gt;" token.
-        ''' </summary>
+        ''' <summary>The "&gt;" token.</summary>
         Public  ReadOnly Property GreaterThanToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AttributeListSyntax)._greaterThanToken, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -12778,9 +14302,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a single attribute declaration within an attribute list.
-    ''' </summary>
+    ''' <summary>Represents a single attribute declaration within an attribute list.</summary>
     Public NotInheritable Class AttributeSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -12798,12 +14320,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AttributeSyntax(kind, errors, annotations, if(target IsNot Nothing , DirectCast(target.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AttributeTargetSyntax), Nothing) , DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeSyntax), if(argumentList IsNot Nothing , DirectCast(argumentList.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArgumentListSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' Optional attribute target. Assembly|Module :
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>Optional attribute target. Assembly|Module :</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Target As AttributeTargetSyntax
             Get
                 Return GetRedAtZero(_target)
@@ -12818,9 +14336,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(target, Me.Name, Me.ArgumentList)
         End Function
 
-        ''' <summary>
-        ''' The name of the attribute.
-        ''' </summary>
+        ''' <summary>The name of the attribute.</summary>
         Public  ReadOnly Property Name As TypeSyntax
             Get
                 Return GetRed(_name, 1)
@@ -12839,9 +14355,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The argument list, if present. If no argument list was supplied, Nothing is
         ''' returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property ArgumentList As ArgumentListSyntax
             Get
                 Return GetRed(_argumentList, 2)
@@ -12924,9 +14438,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a single attribute declaration within an attribute list.
-    ''' </summary>
+    ''' <summary>Represents a single attribute declaration within an attribute list.</summary>
     Public NotInheritable Class AttributeTargetSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -13045,12 +14557,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AttributesStatementSyntax(kind, errors, annotations, if(attributeLists IsNot Nothing, attributeLists.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The list of attribute lists.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The list of attribute lists.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -13137,9 +14645,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionStatementSyntax(kind, errors, annotations, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The expression.
-        ''' </summary>
+        ''' <summary>The expression.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRedAtZero(_expression)
@@ -13201,9 +14707,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represent a "? expression" "Print" statement in VB Interactive code.
-    ''' </summary>
+    ''' <summary>Represent a "? expression" "Print" statement in VB Interactive code.</summary>
     Public NotInheritable Class PrintStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -13219,9 +14723,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PrintStatementSyntax(kind, errors, annotations, questionToken, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' "?" token.
-        ''' </summary>
+        ''' <summary>"?" token.</summary>
         Public  ReadOnly Property QuestionToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PrintStatementSyntax)._questionToken, Me.Position, 0)
@@ -13237,9 +14739,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(questionToken, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The expression whose value is being output.
-        ''' </summary>
+        ''' <summary>The expression whose value is being output.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 1)
@@ -13327,9 +14827,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WhileBlockSyntax(kind, errors, annotations, DirectCast(whileStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WhileStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing), DirectCast(endWhileStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The While statement that begins the block.
-        ''' </summary>
+        ''' <summary>The While statement that begins the block.</summary>
         Public  ReadOnly Property WhileStatement As WhileStatementSyntax
             Get
                 Return GetRedAtZero(_whileStatement)
@@ -13345,12 +14843,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(whileStatement, Me.Statements, Me.EndWhileStatement)
         End Function
 
-        ''' <summary>
-        ''' The statements contained in the While...End While. This might be an empty list.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The statements contained in the While...End While. This might be an empty list.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -13371,9 +14865,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithStatements(Me.Statements.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The End While statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End While statement that ends the block.</summary>
         Public  ReadOnly Property EndWhileStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endWhileStatement, 2)
@@ -13472,9 +14964,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.UsingBlockSyntax(kind, errors, annotations, DirectCast(usingStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.UsingStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing), DirectCast(endUsingStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The UsingStatement that begins the Using...End Using block.
-        ''' </summary>
+        ''' <summary>The UsingStatement that begins the Using...End Using block.</summary>
         Public  ReadOnly Property UsingStatement As UsingStatementSyntax
             Get
                 Return GetRedAtZero(_usingStatement)
@@ -13494,9 +14984,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The statements contained in the Using...End Using block. This might be an empty
         ''' list.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -13517,9 +15005,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithStatements(Me.Statements.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The End Using statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End Using statement that ends the block.</summary>
         Public  ReadOnly Property EndUsingStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endUsingStatement, 2)
@@ -13618,9 +15104,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SyncLockBlockSyntax(kind, errors, annotations, DirectCast(syncLockStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SyncLockStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing), DirectCast(endSyncLockStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The SyncLock statement that begins the block.
-        ''' </summary>
+        ''' <summary>The SyncLock statement that begins the block.</summary>
         Public  ReadOnly Property SyncLockStatement As SyncLockStatementSyntax
             Get
                 Return GetRedAtZero(_syncLockStatement)
@@ -13640,9 +15124,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The statements contained in the SyncLock...End SyncLock statement. This might
         ''' be an empty list.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -13663,9 +15145,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithStatements(Me.Statements.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The End SyncLock statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End SyncLock statement that ends the block.</summary>
         Public  ReadOnly Property EndSyncLockStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endSyncLockStatement, 2)
@@ -13764,9 +15244,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WithBlockSyntax(kind, errors, annotations, DirectCast(withStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WithStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing), DirectCast(endWithStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The WithStatement that begins the With...End With block.
-        ''' </summary>
+        ''' <summary>The WithStatement that begins the With...End With block.</summary>
         Public  ReadOnly Property WithStatement As WithStatementSyntax
             Get
                 Return GetRedAtZero(_withStatement)
@@ -13786,9 +15264,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The statements contained in the With...End With block. This might be an empty
         ''' list.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -13809,9 +15285,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithStatements(Me.Statements.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The End With statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End With statement that ends the block.</summary>
         Public  ReadOnly Property EndWithStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endWithStatement, 2)
@@ -13889,9 +15363,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the declaration of one or more local variables or constants.
-    ''' </summary>
+    ''' <summary>Represents the declaration of one or more local variables or constants.</summary>
     Public NotInheritable Class LocalDeclarationStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -14012,9 +15484,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a label statement.
-    ''' </summary>
+    ''' <summary>Represents a label statement.</summary>
     Public NotInheritable Class LabelStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -14048,9 +15518,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(labelToken, Me.ColonToken)
         End Function
 
-        ''' <summary>
-        ''' The ":" token of the label statement.
-        ''' </summary>
+        ''' <summary>The ":" token of the label statement.</summary>
         Public  ReadOnly Property ColonToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.LabelStatementSyntax)._colonToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -14113,9 +15581,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "GoTo" statement.
-    ''' </summary>
+    ''' <summary>Represents a "GoTo" statement.</summary>
     Public NotInheritable Class GoToStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -14131,9 +15597,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GoToStatementSyntax(kind, errors, annotations, goToKeyword, DirectCast(label.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.LabelSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "GoTo" keyword.
-        ''' </summary>
+        ''' <summary>The "GoTo" keyword.</summary>
         Public  ReadOnly Property GoToKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GoToStatementSyntax)._goToKeyword, Me.Position, 0)
@@ -14318,9 +15782,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.StopOrEndStatementSyntax(kind, errors, annotations, stopOrEndKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Stop" or "End" keyword.
-        ''' </summary>
+        ''' <summary>The "Stop" or "End" keyword.</summary>
         Public  ReadOnly Property StopOrEndKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.StopOrEndStatementSyntax)._stopOrEndKeyword, Me.Position, 0)
@@ -14399,9 +15861,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExitStatementSyntax(kind, errors, annotations, exitKeyword, blockKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Exit" keyword.
-        ''' </summary>
+        ''' <summary>The "Exit" keyword.</summary>
         Public  ReadOnly Property ExitKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExitStatementSyntax)._exitKeyword, Me.Position, 0)
@@ -14417,9 +15877,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, exitKeyword, Me.BlockKeyword)
         End Function
 
-        ''' <summary>
-        ''' The keyword describing the block to exit.
-        ''' </summary>
+        ''' <summary>The keyword describing the block to exit.</summary>
         Public  ReadOnly Property BlockKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExitStatementSyntax)._blockKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -14503,9 +15961,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ContinueStatementSyntax(kind, errors, annotations, continueKeyword, blockKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Continue" keyword.
-        ''' </summary>
+        ''' <summary>The "Continue" keyword.</summary>
         Public  ReadOnly Property ContinueKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ContinueStatementSyntax)._continueKeyword, Me.Position, 0)
@@ -14590,9 +16046,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "Return" statement.
-    ''' </summary>
+    ''' <summary>Represents a "Return" statement.</summary>
     Public NotInheritable Class ReturnStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -14608,9 +16062,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ReturnStatementSyntax(kind, errors, annotations, returnKeyword, if(expression IsNot Nothing , DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Return" keyword.
-        ''' </summary>
+        ''' <summary>The "Return" keyword.</summary>
         Public  ReadOnly Property ReturnKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ReturnStatementSyntax)._returnKeyword, Me.Position, 0)
@@ -14626,12 +16078,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(returnKeyword, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The expression being returned, if present.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The expression being returned, if present.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 1)
@@ -14698,9 +16146,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a single-line "If ... Then ... Else ..." statement.
-    ''' </summary>
+    ''' <summary>Represents a single-line "If ... Then ... Else ..." statement.</summary>
     Public NotInheritable Class SingleLineIfStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -14718,9 +16164,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SingleLineIfStatementSyntax(kind, errors, annotations, ifKeyword, DirectCast(condition.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), thenKeyword, if(statements IsNot Nothing, statements.Green, Nothing), if(elseClause IsNot Nothing , DirectCast(elseClause.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SingleLineElseClauseSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "If" keyword.
-        ''' </summary>
+        ''' <summary>The "If" keyword.</summary>
         Public  ReadOnly Property IfKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SingleLineIfStatementSyntax)._ifKeyword, Me.Position, 0)
@@ -14736,9 +16180,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(ifKeyword, Me.Condition, Me.ThenKeyword, Me.Statements, Me.ElseClause)
         End Function
 
-        ''' <summary>
-        ''' The condition expression to be evaluated.
-        ''' </summary>
+        ''' <summary>The condition expression to be evaluated.</summary>
         Public  ReadOnly Property Condition As ExpressionSyntax
             Get
                 Return GetRed(_condition, 1)
@@ -14754,9 +16196,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.IfKeyword, condition, Me.ThenKeyword, Me.Statements, Me.ElseClause)
         End Function
 
-        ''' <summary>
-        ''' The "Then" keyword.
-        ''' </summary>
+        ''' <summary>The "Then" keyword.</summary>
         Public  ReadOnly Property ThenKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SingleLineIfStatementSyntax)._thenKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -14776,9 +16216,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of statements to be executed if the condition expression evaluates as
         ''' true. Multiple statements must be separated by colons.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 3)
@@ -14799,12 +16237,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithStatements(Me.Statements.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' An "Else" clause to be executed if the condition expression evaluates as false.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>An "Else" clause to be executed if the condition expression evaluates as false.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property ElseClause As SingleLineElseClauseSyntax
             Get
                 Return GetRed(_elseClause, 4)
@@ -14893,9 +16327,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Else ..." clause of a single-line "If" statement.
-    ''' </summary>
+    ''' <summary>Represents the "Else ..." clause of a single-line "If" statement.</summary>
     Public NotInheritable Class SingleLineElseClauseSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -14911,9 +16343,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SingleLineElseClauseSyntax(kind, errors, annotations, elseKeyword, if(statements IsNot Nothing, statements.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Else" keyword.
-        ''' </summary>
+        ''' <summary>The "Else" keyword.</summary>
         Public  ReadOnly Property ElseKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SingleLineElseClauseSyntax)._elseKeyword, Me.Position, 0)
@@ -14933,9 +16363,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of statements to be executed. Multiple statements must be separated by
         ''' colons.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -15030,9 +16458,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.MultiLineIfBlockSyntax(kind, errors, annotations, DirectCast(ifStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IfStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing), if(elseIfBlocks IsNot Nothing, elseIfBlocks.Green, Nothing), if(elseBlock IsNot Nothing , DirectCast(elseBlock.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ElseBlockSyntax), Nothing) , DirectCast(endIfStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "If" statement that begins the "If" block.
-        ''' </summary>
+        ''' <summary>The "If" statement that begins the "If" block.</summary>
         Public  ReadOnly Property IfStatement As IfStatementSyntax
             Get
                 Return GetRedAtZero(_ifStatement)
@@ -15052,9 +16478,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of statements to be executed if the condition expression evaluates as
         ''' true.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -15079,9 +16503,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of "ElseIf" blocks to be evaluated, in order, if the condition
         ''' expression of the "If" statement evaluates as false.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property ElseIfBlocks As SyntaxList(Of ElseIfBlockSyntax)
             Get
                 Dim listNode = GetRed(_elseIfBlocks, 2)
@@ -15106,9 +16528,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' An "Else" block to be executed if the condition expression of the "If"
         ''' statement and all "ElseIf" blocks evaluate as false.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property ElseBlock As ElseBlockSyntax
             Get
                 Return GetRed(_elseBlock, 3)
@@ -15129,9 +16549,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithElseBlock(_child.AddStatements(items))
         End Function
 
-        ''' <summary>
-        ''' Then "End If" statement.
-        ''' </summary>
+        ''' <summary>Then "End If" statement.</summary>
         Public  ReadOnly Property EndIfStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endIfStatement, 4)
@@ -15223,9 +16641,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "If ... Then" statement that begins a multi-line "If" block.
-    ''' </summary>
+    ''' <summary>Represents the "If ... Then" statement that begins a multi-line "If" block.</summary>
     Public NotInheritable Class IfStatementSyntax
         Inherits StatementSyntax
 
@@ -15241,9 +16657,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IfStatementSyntax(kind, errors, annotations, ifKeyword, DirectCast(condition.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), thenKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "If" keyword.
-        ''' </summary>
+        ''' <summary>The "If" keyword.</summary>
         Public  ReadOnly Property IfKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IfStatementSyntax)._ifKeyword, Me.Position, 0)
@@ -15259,9 +16673,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(ifKeyword, Me.Condition, Me.ThenKeyword)
         End Function
 
-        ''' <summary>
-        ''' The condition expression to be evaluated.
-        ''' </summary>
+        ''' <summary>The condition expression to be evaluated.</summary>
         Public  ReadOnly Property Condition As ExpressionSyntax
             Get
                 Return GetRed(_condition, 1)
@@ -15277,12 +16689,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.IfKeyword, condition, Me.ThenKeyword)
         End Function
 
-        ''' <summary>
-        ''' The "Then" keyword.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The "Then" keyword.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property ThenKeyword As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IfStatementSyntax)._thenKeyword
@@ -15356,9 +16764,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an "ElseIf ... Then ..." block.
-    ''' </summary>
+    ''' <summary>Represents an "ElseIf ... Then ..." block.</summary>
     Public NotInheritable Class ElseIfBlockSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -15375,9 +16781,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ElseIfBlockSyntax(kind, errors, annotations, DirectCast(elseIfStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ElseIfStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "ElseIf ... Then" statement the begins the "ElseIf" block.
-        ''' </summary>
+        ''' <summary>The "ElseIf ... Then" statement the begins the "ElseIf" block.</summary>
         Public  ReadOnly Property ElseIfStatement As ElseIfStatementSyntax
             Get
                 Return GetRedAtZero(_elseIfStatement)
@@ -15397,9 +16801,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of statements to be executed if the condition expression of the "ElseIf"
         ''' statement evaluates as true.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -15475,9 +16877,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "ElseIf ... Then" statement that begins an "ElseIf" block.
-    ''' </summary>
+    ''' <summary>Represents the "ElseIf ... Then" statement that begins an "ElseIf" block.</summary>
     Public NotInheritable Class ElseIfStatementSyntax
         Inherits StatementSyntax
 
@@ -15493,9 +16893,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ElseIfStatementSyntax(kind, errors, annotations, elseIfKeyword, DirectCast(condition.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), thenKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "ElseIf" keyword.
-        ''' </summary>
+        ''' <summary>The "ElseIf" keyword.</summary>
         Public  ReadOnly Property ElseIfKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ElseIfStatementSyntax)._elseIfKeyword, Me.Position, 0)
@@ -15511,9 +16909,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(elseIfKeyword, Me.Condition, Me.ThenKeyword)
         End Function
 
-        ''' <summary>
-        ''' The condition expression to be evaluated.
-        ''' </summary>
+        ''' <summary>The condition expression to be evaluated.</summary>
         Public  ReadOnly Property Condition As ExpressionSyntax
             Get
                 Return GetRed(_condition, 1)
@@ -15529,12 +16925,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.ElseIfKeyword, condition, Me.ThenKeyword)
         End Function
 
-        ''' <summary>
-        ''' The "Then" keyword.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The "Then" keyword.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property ThenKeyword As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ElseIfStatementSyntax)._thenKeyword
@@ -15608,9 +17000,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an "Else ..." block.
-    ''' </summary>
+    ''' <summary>Represents an "Else ..." block.</summary>
     Public NotInheritable Class ElseBlockSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -15627,9 +17017,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ElseBlockSyntax(kind, errors, annotations, DirectCast(elseStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ElseStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Else" statement that begins the "Else" block.
-        ''' </summary>
+        ''' <summary>The "Else" statement that begins the "Else" block.</summary>
         Public  ReadOnly Property ElseStatement As ElseStatementSyntax
             Get
                 Return GetRedAtZero(_elseStatement)
@@ -15645,12 +17033,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(elseStatement, Me.Statements)
         End Function
 
-        ''' <summary>
-        ''' A list of statements to be executed.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of statements to be executed.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -15726,9 +17110,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Else" statement that begins an "Else" block.
-    ''' </summary>
+    ''' <summary>Represents the "Else" statement that begins an "Else" block.</summary>
     Public NotInheritable Class ElseStatementSyntax
         Inherits StatementSyntax
 
@@ -15743,9 +17125,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ElseStatementSyntax(kind, errors, annotations, elseKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Else" keyword.
-        ''' </summary>
+        ''' <summary>The "Else" keyword.</summary>
         Public  ReadOnly Property ElseKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ElseStatementSyntax)._elseKeyword, Me.Position, 0)
@@ -15803,9 +17183,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "Try ... Catch ... Finally ... End Try" block.
-    ''' </summary>
+    ''' <summary>Represents a "Try ... Catch ... Finally ... End Try" block.</summary>
     Public NotInheritable Class TryBlockSyntax
         Inherits ExecutableStatementSyntax
 
@@ -15825,9 +17203,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TryBlockSyntax(kind, errors, annotations, DirectCast(tryStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TryStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing), if(catchBlocks IsNot Nothing, catchBlocks.Green, Nothing), if(finallyBlock IsNot Nothing , DirectCast(finallyBlock.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.FinallyBlockSyntax), Nothing) , DirectCast(endTryStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Try" statement that begins the "Try" block.
-        ''' </summary>
+        ''' <summary>The "Try" statement that begins the "Try" block.</summary>
         Public  ReadOnly Property TryStatement As TryStatementSyntax
             Get
                 Return GetRedAtZero(_tryStatement)
@@ -15843,12 +17219,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(tryStatement, Me.Statements, Me.CatchBlocks, Me.FinallyBlock, Me.EndTryStatement)
         End Function
 
-        ''' <summary>
-        ''' A list of statements to be executed.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of statements to be executed.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -15873,9 +17245,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of "Catch" blocks which may be executed if an exception is thrown while
         ''' executing the statements in the "Try" block.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property CatchBlocks As SyntaxList(Of CatchBlockSyntax)
             Get
                 Dim listNode = GetRed(_catchBlocks, 2)
@@ -15896,12 +17266,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithCatchBlocks(Me.CatchBlocks.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' A "Finally" block to be executed before execution leaves the "Try" block.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>A "Finally" block to be executed before execution leaves the "Try" block.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property FinallyBlock As FinallyBlockSyntax
             Get
                 Return GetRed(_finallyBlock, 3)
@@ -15922,9 +17288,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithFinallyBlock(_child.AddStatements(items))
         End Function
 
-        ''' <summary>
-        ''' The "End Try" statement.
-        ''' </summary>
+        ''' <summary>The "End Try" statement.</summary>
         Public  ReadOnly Property EndTryStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endTryStatement, 4)
@@ -16016,9 +17380,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Try" statement that begins a "Try" block.
-    ''' </summary>
+    ''' <summary>Represents the "Try" statement that begins a "Try" block.</summary>
     Public NotInheritable Class TryStatementSyntax
         Inherits StatementSyntax
 
@@ -16033,9 +17395,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TryStatementSyntax(kind, errors, annotations, tryKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Try" keyword.
-        ''' </summary>
+        ''' <summary>The "Try" keyword.</summary>
         Public  ReadOnly Property TryKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TryStatementSyntax)._tryKeyword, Me.Position, 0)
@@ -16093,9 +17453,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "Catch ..." block.
-    ''' </summary>
+    ''' <summary>Represents a "Catch ..." block.</summary>
     Public NotInheritable Class CatchBlockSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -16112,9 +17470,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CatchBlockSyntax(kind, errors, annotations, DirectCast(catchStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CatchStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Catch" statement that begins the "Catch" block.
-        ''' </summary>
+        ''' <summary>The "Catch" statement that begins the "Catch" block.</summary>
         Public  ReadOnly Property CatchStatement As CatchStatementSyntax
             Get
                 Return GetRedAtZero(_catchStatement)
@@ -16134,9 +17490,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of statements to be executed if an exception is caught by the "Catch"
         ''' block.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -16212,9 +17566,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Catch ... When ..." statement that begins a "Catch" block.
-    ''' </summary>
+    ''' <summary>Represents the "Catch ... When ..." statement that begins a "Catch" block.</summary>
     Public NotInheritable Class CatchStatementSyntax
         Inherits StatementSyntax
 
@@ -16232,9 +17584,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CatchStatementSyntax(kind, errors, annotations, catchKeyword, if(identifierName IsNot Nothing , DirectCast(identifierName.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IdentifierNameSyntax), Nothing) , if(asClause IsNot Nothing , DirectCast(asClause.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SimpleAsClauseSyntax), Nothing) , if(whenClause IsNot Nothing , DirectCast(whenClause.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CatchFilterClauseSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Catch" keyword.
-        ''' </summary>
+        ''' <summary>The "Catch" keyword.</summary>
         Public  ReadOnly Property CatchKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CatchStatementSyntax)._catchKeyword, Me.Position, 0)
@@ -16254,9 +17604,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' An identifier declaring a new variable or naming an existing variable to store
         ''' the exception caught by the "Catch" statement.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property IdentifierName As IdentifierNameSyntax
             Get
                 Return GetRed(_identifierName, 1)
@@ -16272,12 +17620,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.CatchKeyword, identifierName, Me.AsClause, Me.WhenClause)
         End Function
 
-        ''' <summary>
-        ''' A simple "As" clause specifying the type of exception to catch.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>A simple "As" clause specifying the type of exception to catch.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AsClause As SimpleAsClauseSyntax
             Get
                 Return GetRed(_asClause, 2)
@@ -16293,12 +17637,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.CatchKeyword, Me.IdentifierName, asClause, Me.WhenClause)
         End Function
 
-        ''' <summary>
-        ''' A "When" clause to filter exceptions before catching.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>A "When" clause to filter exceptions before catching.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property WhenClause As CatchFilterClauseSyntax
             Get
                 Return GetRed(_whenClause, 3)
@@ -16379,9 +17719,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "When ..." clause of a "Catch" statement.
-    ''' </summary>
+    ''' <summary>Represents the "When ..." clause of a "Catch" statement.</summary>
     Public NotInheritable Class CatchFilterClauseSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -16397,9 +17735,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CatchFilterClauseSyntax(kind, errors, annotations, whenKeyword, DirectCast(filter.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "When" keyword.
-        ''' </summary>
+        ''' <summary>The "When" keyword.</summary>
         Public  ReadOnly Property WhenKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CatchFilterClauseSyntax)._whenKeyword, Me.Position, 0)
@@ -16415,9 +17751,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(whenKeyword, Me.Filter)
         End Function
 
-        ''' <summary>
-        ''' The filter expression to be evaluated.
-        ''' </summary>
+        ''' <summary>The filter expression to be evaluated.</summary>
         Public  ReadOnly Property Filter As ExpressionSyntax
             Get
                 Return GetRed(_filter, 1)
@@ -16483,9 +17817,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "Finally ..." block of a "Try" block.
-    ''' </summary>
+    ''' <summary>Represents a "Finally ..." block of a "Try" block.</summary>
     Public NotInheritable Class FinallyBlockSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -16502,9 +17834,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.FinallyBlockSyntax(kind, errors, annotations, DirectCast(finallyStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.FinallyStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Finally" statement that begins the "Finally" block.
-        ''' </summary>
+        ''' <summary>The "Finally" statement that begins the "Finally" block.</summary>
         Public  ReadOnly Property FinallyStatement As FinallyStatementSyntax
             Get
                 Return GetRedAtZero(_finallyStatement)
@@ -16520,12 +17850,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(finallyStatement, Me.Statements)
         End Function
 
-        ''' <summary>
-        ''' A list of statements to be executed.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of statements to be executed.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -16601,9 +17927,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Finally" statement that begins a "Finally" block.
-    ''' </summary>
+    ''' <summary>Represents the "Finally" statement that begins a "Finally" block.</summary>
     Public NotInheritable Class FinallyStatementSyntax
         Inherits StatementSyntax
 
@@ -16618,9 +17942,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.FinallyStatementSyntax(kind, errors, annotations, finallyKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Finally" keyword.
-        ''' </summary>
+        ''' <summary>The "Finally" keyword.</summary>
         Public  ReadOnly Property FinallyKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.FinallyStatementSyntax)._finallyKeyword, Me.Position, 0)
@@ -16678,9 +18000,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Error" statement.
-    ''' </summary>
+    ''' <summary>Represents the "Error" statement.</summary>
     Public NotInheritable Class ErrorStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -16696,9 +18016,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ErrorStatementSyntax(kind, errors, annotations, errorKeyword, DirectCast(errorNumber.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Error" keyword.
-        ''' </summary>
+        ''' <summary>The "Error" keyword.</summary>
         Public  ReadOnly Property ErrorKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ErrorStatementSyntax)._errorKeyword, Me.Position, 0)
@@ -16714,9 +18032,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(errorKeyword, Me.ErrorNumber)
         End Function
 
-        ''' <summary>
-        ''' The expression that represents the error number.
-        ''' </summary>
+        ''' <summary>The expression that represents the error number.</summary>
         Public  ReadOnly Property ErrorNumber As ExpressionSyntax
             Get
                 Return GetRed(_errorNumber, 1)
@@ -16783,9 +18099,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an OnError Goto statement.
-    ''' </summary>
+    ''' <summary>Represents an OnError Goto statement.</summary>
     Public NotInheritable Class OnErrorGoToStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -16801,9 +18115,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OnErrorGoToStatementSyntax(kind, errors, annotations, onKeyword, errorKeyword, goToKeyword, minus, DirectCast(label.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.LabelSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "On" keyword
-        ''' </summary>
+        ''' <summary>The "On" keyword</summary>
         Public  ReadOnly Property OnKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OnErrorGoToStatementSyntax)._onKeyword, Me.Position, 0)
@@ -16819,9 +18131,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, onKeyword, Me.ErrorKeyword, Me.GoToKeyword, Me.Minus, Me.Label)
         End Function
 
-        ''' <summary>
-        ''' The "Error" keyword.
-        ''' </summary>
+        ''' <summary>The "Error" keyword.</summary>
         Public  ReadOnly Property ErrorKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OnErrorGoToStatementSyntax)._errorKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -16837,9 +18147,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.OnKeyword, errorKeyword, Me.GoToKeyword, Me.Minus, Me.Label)
         End Function
 
-        ''' <summary>
-        ''' The "GoTo" keyword
-        ''' </summary>
+        ''' <summary>The "GoTo" keyword</summary>
         Public  ReadOnly Property GoToKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OnErrorGoToStatementSyntax)._goToKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -16855,12 +18163,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.OnKeyword, Me.ErrorKeyword, goToKeyword, Me.Minus, Me.Label)
         End Function
 
-        ''' <summary>
-        ''' An optional minus for On Error Goto -1
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>An optional minus for On Error Goto -1</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Minus As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OnErrorGoToStatementSyntax)._minus
@@ -16960,9 +18264,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an OnError Resume Next statement.
-    ''' </summary>
+    ''' <summary>Represents an OnError Resume Next statement.</summary>
     Public NotInheritable Class OnErrorResumeNextStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -16977,9 +18279,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OnErrorResumeNextStatementSyntax(kind, errors, annotations, onKeyword, errorKeyword, resumeKeyword, nextKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "On" keyword
-        ''' </summary>
+        ''' <summary>The "On" keyword</summary>
         Public  ReadOnly Property OnKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OnErrorResumeNextStatementSyntax)._onKeyword, Me.Position, 0)
@@ -16995,9 +18295,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(onKeyword, Me.ErrorKeyword, Me.ResumeKeyword, Me.NextKeyword)
         End Function
 
-        ''' <summary>
-        ''' The "Error" keyword.
-        ''' </summary>
+        ''' <summary>The "Error" keyword.</summary>
         Public  ReadOnly Property ErrorKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OnErrorResumeNextStatementSyntax)._errorKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -17013,9 +18311,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.OnKeyword, errorKeyword, Me.ResumeKeyword, Me.NextKeyword)
         End Function
 
-        ''' <summary>
-        ''' The "Resume" keyword.
-        ''' </summary>
+        ''' <summary>The "Resume" keyword.</summary>
         Public  ReadOnly Property ResumeKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OnErrorResumeNextStatementSyntax)._resumeKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -17031,9 +18327,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.OnKeyword, Me.ErrorKeyword, resumeKeyword, Me.NextKeyword)
         End Function
 
-        ''' <summary>
-        ''' The "Next"
-        ''' </summary>
+        ''' <summary>The "Next"</summary>
         Public  ReadOnly Property NextKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OnErrorResumeNextStatementSyntax)._nextKeyword, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -17121,9 +18415,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ResumeStatementSyntax(kind, errors, annotations, resumeKeyword, if(label IsNot Nothing , DirectCast(label.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.LabelSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Resume" keyword.
-        ''' </summary>
+        ''' <summary>The "Resume" keyword.</summary>
         Public  ReadOnly Property ResumeKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ResumeStatementSyntax)._resumeKeyword, Me.Position, 0)
@@ -17144,9 +18436,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' Nothing. If Kind=ResumeNext, wraps the keyword "Next", If Kind=ResumeLabel,
         ''' wraps an Identifier or IntegerLiteralToken with the label or line number.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Label As LabelSyntax
             Get
                 Return GetRed(_label, 1)
@@ -17236,9 +18526,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectBlockSyntax(kind, errors, annotations, DirectCast(selectStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectStatementSyntax), if(caseBlocks IsNot Nothing, caseBlocks.Green, Nothing), DirectCast(endSelectStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The Select Case statement that begins the block.
-        ''' </summary>
+        ''' <summary>The Select Case statement that begins the block.</summary>
         Public  ReadOnly Property SelectStatement As SelectStatementSyntax
             Get
                 Return GetRedAtZero(_selectStatement)
@@ -17254,12 +18542,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(selectStatement, Me.CaseBlocks, Me.EndSelectStatement)
         End Function
 
-        ''' <summary>
-        ''' A list of the contained Case blocks.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of the contained Case blocks.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property CaseBlocks As SyntaxList(Of CaseBlockSyntax)
             Get
                 Dim listNode = GetRed(_caseBlocks, 1)
@@ -17280,9 +18564,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithCaseBlocks(Me.CaseBlocks.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The End Select statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End Select statement that ends the block.</summary>
         Public  ReadOnly Property EndSelectStatement As EndBlockStatementSyntax
             Get
                 Return GetRed(_endSelectStatement, 2)
@@ -17379,9 +18661,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectStatementSyntax(kind, errors, annotations, selectKeyword, caseKeyword, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Select" keyword.
-        ''' </summary>
+        ''' <summary>The "Select" keyword.</summary>
         Public  ReadOnly Property SelectKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectStatementSyntax)._selectKeyword, Me.Position, 0)
@@ -17397,12 +18677,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(selectKeyword, Me.CaseKeyword, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The "Case" keyword, if present.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The "Case" keyword, if present.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property CaseKeyword As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectStatementSyntax)._caseKeyword
@@ -17422,9 +18698,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.SelectKeyword, caseKeyword, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The value that branching is based on.
-        ''' </summary>
+        ''' <summary>The value that branching is based on.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 2)
@@ -17494,9 +18768,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a case statement and its subsequent block.
-    ''' </summary>
+    ''' <summary>Represents a case statement and its subsequent block.</summary>
     Public NotInheritable Class CaseBlockSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -17513,9 +18785,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CaseBlockSyntax(kind, errors, annotations, DirectCast(caseStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CaseStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The statement that begins the case block.
-        ''' </summary>
+        ''' <summary>The statement that begins the case block.</summary>
         Public  ReadOnly Property CaseStatement As CaseStatementSyntax
             Get
                 Return GetRedAtZero(_caseStatement)
@@ -17536,12 +18806,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithCaseStatement(_child.AddCases(items))
         End Function
 
-        ''' <summary>
-        ''' The statements contained in the case block. This might be an empty list.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The statements contained in the case block. This might be an empty list.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -17640,9 +18906,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CaseStatementSyntax(kind, errors, annotations, caseKeyword, if(cases IsNot Nothing, cases.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Case" keyword
-        ''' </summary>
+        ''' <summary>The "Case" keyword</summary>
         Public  ReadOnly Property CaseKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CaseStatementSyntax)._caseKeyword, Me.Position, 0)
@@ -17754,9 +19018,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' The "Else" part in a Case Else statement.
-    ''' </summary>
+    ''' <summary>The "Else" part in a Case Else statement.</summary>
     Public NotInheritable Class ElseCaseClauseSyntax
         Inherits CaseClauseSyntax
 
@@ -17771,9 +19033,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ElseCaseClauseSyntax(kind, errors, annotations, elseKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Else" keyword.
-        ''' </summary>
+        ''' <summary>The "Else" keyword.</summary>
         Public  ReadOnly Property ElseKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ElseCaseClauseSyntax)._elseKeyword, Me.Position, 0)
@@ -17831,9 +19091,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a single value in a Case.
-    ''' </summary>
+    ''' <summary>Represents a single value in a Case.</summary>
     Public NotInheritable Class SimpleCaseClauseSyntax
         Inherits CaseClauseSyntax
 
@@ -17849,9 +19107,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SimpleCaseClauseSyntax(kind, errors, annotations, DirectCast(value.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The expression that denotes the value being tested against.
-        ''' </summary>
+        ''' <summary>The expression that denotes the value being tested against.</summary>
         Public  ReadOnly Property Value As ExpressionSyntax
             Get
                 Return GetRedAtZero(_value)
@@ -17912,9 +19168,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a range "expression To expression" in a Case.
-    ''' </summary>
+    ''' <summary>Represents a range "expression To expression" in a Case.</summary>
     Public NotInheritable Class RangeCaseClauseSyntax
         Inherits CaseClauseSyntax
 
@@ -17931,9 +19185,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.RangeCaseClauseSyntax(kind, errors, annotations, DirectCast(lowerBound.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), toKeyword, DirectCast(upperBound.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The lower bound of the range.
-        ''' </summary>
+        ''' <summary>The lower bound of the range.</summary>
         Public  ReadOnly Property LowerBound As ExpressionSyntax
             Get
                 Return GetRedAtZero(_lowerBound)
@@ -17949,9 +19201,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(lowerBound, Me.ToKeyword, Me.UpperBound)
         End Function
 
-        ''' <summary>
-        ''' The "To" keyword
-        ''' </summary>
+        ''' <summary>The "To" keyword</summary>
         Public  ReadOnly Property ToKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.RangeCaseClauseSyntax)._toKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -17967,9 +19217,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.LowerBound, toKeyword, Me.UpperBound)
         End Function
 
-        ''' <summary>
-        ''' The upper bound of the range.
-        ''' </summary>
+        ''' <summary>The upper bound of the range.</summary>
         Public  ReadOnly Property UpperBound As ExpressionSyntax
             Get
                 Return GetRed(_upperBound, 2)
@@ -18043,9 +19291,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-    ''' </summary>
+    ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
     Public NotInheritable Class RelationalCaseClauseSyntax
         Inherits CaseClauseSyntax
 
@@ -18061,12 +19307,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.RelationalCaseClauseSyntax(kind, errors, annotations, isKeyword, operatorToken, DirectCast(value.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Is" keyword, if present.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The "Is" keyword, if present.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property IsKeyword As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.RelationalCaseClauseSyntax)._isKeyword
@@ -18105,9 +19347,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.IsKeyword, operatorToken, Me.Value)
         End Function
 
-        ''' <summary>
-        ''' The expression that denotes the value being tested against.
-        ''' </summary>
+        ''' <summary>The expression that denotes the value being tested against.</summary>
         Public  ReadOnly Property Value As ExpressionSyntax
             Get
                 Return GetRed(_value, 2)
@@ -18198,9 +19438,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SyncLockStatementSyntax(kind, errors, annotations, syncLockKeyword, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "SyncLock" keyword.
-        ''' </summary>
+        ''' <summary>The "SyncLock" keyword.</summary>
         Public  ReadOnly Property SyncLockKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SyncLockStatementSyntax)._syncLockKeyword, Me.Position, 0)
@@ -18216,9 +19454,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(syncLockKeyword, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The expression being synchronized on.
-        ''' </summary>
+        ''' <summary>The expression being synchronized on.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 1)
@@ -18306,9 +19542,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DoLoopBlockSyntax(kind, errors, annotations, DirectCast(doStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DoStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing), DirectCast(loopStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.LoopStatementSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The Do statement that begins the block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins the block.</summary>
         Public  ReadOnly Property DoStatement As DoStatementSyntax
             Get
                 Return GetRedAtZero(_doStatement)
@@ -18324,12 +19558,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, doStatement, Me.Statements, Me.LoopStatement)
         End Function
 
-        ''' <summary>
-        ''' The statements contained in the block statement. This might be an empty list.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The statements contained in the block statement. This might be an empty list.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -18350,9 +19580,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithStatements(Me.Statements.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The Loop statement that ends the block.
-        ''' </summary>
+        ''' <summary>The Loop statement that ends the block.</summary>
         Public  ReadOnly Property LoopStatement As LoopStatementSyntax
             Get
                 Return GetRed(_loopStatement, 2)
@@ -18433,9 +19661,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' The Do statement that begins a Do-Loop block.
-    ''' </summary>
+    ''' <summary>The Do statement that begins a Do-Loop block.</summary>
     Public NotInheritable Class DoStatementSyntax
         Inherits StatementSyntax
 
@@ -18451,9 +19677,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DoStatementSyntax(kind, errors, annotations, doKeyword, if(whileOrUntilClause IsNot Nothing , DirectCast(whileOrUntilClause.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WhileOrUntilClauseSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Do" keyword.
-        ''' </summary>
+        ''' <summary>The "Do" keyword.</summary>
         Public  ReadOnly Property DoKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DoStatementSyntax)._doKeyword, Me.Position, 0)
@@ -18473,9 +19697,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The "While expression" or "Until expression" clause of the Do statement, if
         ''' present.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property WhileOrUntilClause As WhileOrUntilClauseSyntax
             Get
                 Return GetRed(_whileOrUntilClause, 1)
@@ -18545,9 +19767,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' The Loop statement that begins a Do-Loop block.
-    ''' </summary>
+    ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
     Public NotInheritable Class LoopStatementSyntax
         Inherits StatementSyntax
 
@@ -18563,9 +19783,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.LoopStatementSyntax(kind, errors, annotations, loopKeyword, if(whileOrUntilClause IsNot Nothing , DirectCast(whileOrUntilClause.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WhileOrUntilClauseSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Loop" keyword.
-        ''' </summary>
+        ''' <summary>The "Loop" keyword.</summary>
         Public  ReadOnly Property LoopKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.LoopStatementSyntax)._loopKeyword, Me.Position, 0)
@@ -18585,9 +19803,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The "While expression" or "Until expression" clause of the Loop statement, if
         ''' present.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property WhileOrUntilClause As WhileOrUntilClauseSyntax
             Get
                 Return GetRed(_whileOrUntilClause, 1)
@@ -18677,9 +19893,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WhileOrUntilClauseSyntax(kind, errors, annotations, whileOrUntilKeyword, DirectCast(condition.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "While" or "Until" keyword.
-        ''' </summary>
+        ''' <summary>The "While" or "Until" keyword.</summary>
         Public  ReadOnly Property WhileOrUntilKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WhileOrUntilClauseSyntax)._whileOrUntilKeyword, Me.Position, 0)
@@ -18695,9 +19909,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, whileOrUntilKeyword, Me.Condition)
         End Function
 
-        ''' <summary>
-        ''' The boolean expression after the While or Until.
-        ''' </summary>
+        ''' <summary>The boolean expression after the While or Until.</summary>
         Public  ReadOnly Property Condition As ExpressionSyntax
             Get
                 Return GetRed(_condition, 1)
@@ -18786,9 +19998,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WhileStatementSyntax(kind, errors, annotations, whileKeyword, DirectCast(condition.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "While" keyword.
-        ''' </summary>
+        ''' <summary>The "While" keyword.</summary>
         Public  ReadOnly Property WhileKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WhileStatementSyntax)._whileKeyword, Me.Position, 0)
@@ -18804,9 +20014,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(whileKeyword, Me.Condition)
         End Function
 
-        ''' <summary>
-        ''' The boolean expression that controls the While loop.
-        ''' </summary>
+        ''' <summary>The boolean expression that controls the While loop.</summary>
         Public  ReadOnly Property Condition As ExpressionSyntax
             Get
                 Return GetRed(_condition, 1)
@@ -18873,9 +20081,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a For or For Each block.
-    ''' </summary>
+    ''' <summary>Represents a For or For Each block.</summary>
     Public MustInherit Class ForOrForEachBlockSyntax
         Inherits ExecutableStatementSyntax
 
@@ -18892,9 +20098,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The statements contained in the For or For Each loop. This might be an empty
         ''' list.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Return Me.GetStatementsCore()
@@ -18924,9 +20128,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The Next statement that ends the block. If two For or For Each statements are
         ''' ended by a single Next statement, the inner For will not have a Next statement.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public ReadOnly Property NextStatement As NextStatementSyntax
             Get
                 Return Me.GetNextStatementCore()
@@ -18974,9 +20176,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ForBlockSyntax(kind, errors, annotations, DirectCast(forStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ForStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing), if(nextStatement IsNot Nothing , DirectCast(nextStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NextStatementSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The For statement that begins the block.
-        ''' </summary>
+        ''' <summary>The For statement that begins the block.</summary>
         Public  ReadOnly Property ForStatement As ForStatementSyntax
             Get
                 Return GetRedAtZero(_forStatement)
@@ -18996,9 +20196,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The statements contained in the For or For Each loop. This might be an empty
         ''' list.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -19035,9 +20233,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The Next statement that ends the block. If two For or For Each statements are
         ''' ended by a single Next statement, the inner For will not have a Next statement.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property NextStatement As NextStatementSyntax
             Get
                 Return GetRed(_nextStatement, 2)
@@ -19152,9 +20348,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ForEachBlockSyntax(kind, errors, annotations, DirectCast(forEachStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ForEachStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing), if(nextStatement IsNot Nothing , DirectCast(nextStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NextStatementSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The For Each statement that begins the block.
-        ''' </summary>
+        ''' <summary>The For Each statement that begins the block.</summary>
         Public  ReadOnly Property ForEachStatement As ForEachStatementSyntax
             Get
                 Return GetRedAtZero(_forEachStatement)
@@ -19174,9 +20368,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The statements contained in the For or For Each loop. This might be an empty
         ''' list.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -19213,9 +20405,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The Next statement that ends the block. If two For or For Each statements are
         ''' ended by a single Next statement, the inner For will not have a Next statement.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property NextStatement As NextStatementSyntax
             Get
                 Return GetRed(_nextStatement, 2)
@@ -19310,9 +20500,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a For or For Each statement.
-    ''' </summary>
+    ''' <summary>Represents a For or For Each statement.</summary>
     Public MustInherit Class ForOrForEachStatementSyntax
         Inherits StatementSyntax
 
@@ -19324,9 +20512,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        ''' <summary>
-        ''' The "For" keyword.
-        ''' </summary>
+        ''' <summary>The "For" keyword.</summary>
         Public ReadOnly Property ForKeyword As SyntaxToken
             Get
                 Return Me.GetForKeywordCore()
@@ -19400,9 +20586,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ForStatementSyntax(kind, errors, annotations, forKeyword, DirectCast(controlVariable.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.VisualBasicSyntaxNode), equalsToken, DirectCast(fromValue.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), toKeyword, DirectCast(toValue.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), if(stepClause IsNot Nothing , DirectCast(stepClause.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ForStepClauseSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "For" keyword.
-        ''' </summary>
+        ''' <summary>The "For" keyword.</summary>
         Public Shadows ReadOnly Property ForKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ForStatementSyntax)._forKeyword, Me.Position, 0)
@@ -19455,9 +20639,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.ForKeyword, controlVariable, Me.EqualsToken, Me.FromValue, Me.ToKeyword, Me.ToValue, Me.StepClause)
         End Function
 
-        ''' <summary>
-        ''' The "=" token.
-        ''' </summary>
+        ''' <summary>The "=" token.</summary>
         Public  ReadOnly Property EqualsToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ForStatementSyntax)._equalsToken, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -19473,9 +20655,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.ForKeyword, Me.ControlVariable, equalsToken, Me.FromValue, Me.ToKeyword, Me.ToValue, Me.StepClause)
         End Function
 
-        ''' <summary>
-        ''' The expression denoting the initial value of the iteration.
-        ''' </summary>
+        ''' <summary>The expression denoting the initial value of the iteration.</summary>
         Public  ReadOnly Property FromValue As ExpressionSyntax
             Get
                 Return GetRed(_fromValue, 3)
@@ -19491,9 +20671,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.ForKeyword, Me.ControlVariable, Me.EqualsToken, fromValue, Me.ToKeyword, Me.ToValue, Me.StepClause)
         End Function
 
-        ''' <summary>
-        ''' The "To" keyword.
-        ''' </summary>
+        ''' <summary>The "To" keyword.</summary>
         Public  ReadOnly Property ToKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ForStatementSyntax)._toKeyword, Me.GetChildPosition(4), Me.GetChildIndex(4))
@@ -19509,9 +20687,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.ForKeyword, Me.ControlVariable, Me.EqualsToken, Me.FromValue, toKeyword, Me.ToValue, Me.StepClause)
         End Function
 
-        ''' <summary>
-        ''' The expression denoting the final value of the iteration.
-        ''' </summary>
+        ''' <summary>The expression denoting the final value of the iteration.</summary>
         Public  ReadOnly Property ToValue As ExpressionSyntax
             Get
                 Return GetRed(_toValue, 5)
@@ -19527,12 +20703,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.ForKeyword, Me.ControlVariable, Me.EqualsToken, Me.FromValue, Me.ToKeyword, toValue, Me.StepClause)
         End Function
 
-        ''' <summary>
-        ''' The optional Step clause.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The optional Step clause.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property StepClause As ForStepClauseSyntax
             Get
                 Return GetRed(_stepClause, 6)
@@ -19626,9 +20798,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' The Step clause in a For Statement.
-    ''' </summary>
+    ''' <summary>The Step clause in a For Statement.</summary>
     Public NotInheritable Class ForStepClauseSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -19644,9 +20814,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ForStepClauseSyntax(kind, errors, annotations, stepKeyword, DirectCast(stepValue.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Step" keyword.
-        ''' </summary>
+        ''' <summary>The "Step" keyword.</summary>
         Public  ReadOnly Property StepKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ForStepClauseSyntax)._stepKeyword, Me.Position, 0)
@@ -19662,9 +20830,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(stepKeyword, Me.StepValue)
         End Function
 
-        ''' <summary>
-        ''' The expression denoting the step increment.
-        ''' </summary>
+        ''' <summary>The expression denoting the step increment.</summary>
         Public  ReadOnly Property StepValue As ExpressionSyntax
             Get
                 Return GetRed(_stepValue, 1)
@@ -19755,9 +20921,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ForEachStatementSyntax(kind, errors, annotations, forKeyword, eachKeyword, DirectCast(controlVariable.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.VisualBasicSyntaxNode), inKeyword, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "For" keyword.
-        ''' </summary>
+        ''' <summary>The "For" keyword.</summary>
         Public Shadows ReadOnly Property ForKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ForEachStatementSyntax)._forKeyword, Me.Position, 0)
@@ -19781,9 +20945,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(forKeyword, Me.EachKeyword, Me.ControlVariable, Me.InKeyword, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The "Each" keyword.
-        ''' </summary>
+        ''' <summary>The "Each" keyword.</summary>
         Public  ReadOnly Property EachKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ForEachStatementSyntax)._eachKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -19828,9 +20990,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.ForKeyword, Me.EachKeyword, controlVariable, Me.InKeyword, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The "In" keyword.
-        ''' </summary>
+        ''' <summary>The "In" keyword.</summary>
         Public  ReadOnly Property InKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ForEachStatementSyntax)._inKeyword, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -19846,9 +21006,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.ForKeyword, Me.EachKeyword, Me.ControlVariable, inKeyword, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The expression denoting the collection to iterate over.
-        ''' </summary>
+        ''' <summary>The expression denoting the collection to iterate over.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 4)
@@ -19949,9 +21107,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NextStatementSyntax(kind, errors, annotations, nextKeyword, if(controlVariables IsNot Nothing, controlVariables.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Next" keyword.
-        ''' </summary>
+        ''' <summary>The "Next" keyword.</summary>
         Public  ReadOnly Property NextKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NextStatementSyntax)._nextKeyword, Me.Position, 0)
@@ -19967,12 +21123,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(nextKeyword, Me.ControlVariables)
         End Function
 
-        ''' <summary>
-        ''' The variables in the Next statement, if present
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The variables in the Next statement, if present</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property ControlVariables As SeparatedSyntaxList(Of ExpressionSyntax)
             Get
                 Dim listNode = GetRed(_controlVariables, 1)
@@ -20068,9 +21220,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.UsingStatementSyntax(kind, errors, annotations, usingKeyword, if(expression IsNot Nothing , DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), Nothing) , if(variables IsNot Nothing, variables.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Using" keyword.
-        ''' </summary>
+        ''' <summary>The "Using" keyword.</summary>
         Public  ReadOnly Property UsingKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.UsingStatementSyntax)._usingKeyword, Me.Position, 0)
@@ -20090,9 +21240,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If the Using statement is of a form that does not declare a new variable, this
         ''' is the expression used in the using. Otherwise, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 1)
@@ -20112,9 +21260,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' If the Using statement is of a form that declares one or more new variables,
         ''' this is the list of variable declarations. Otherwise, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Variables As SeparatedSyntaxList(Of VariableDeclaratorSyntax)
             Get
                 Dim listNode = GetRed(_variables, 2)
@@ -20196,9 +21342,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a Throw statement.
-    ''' </summary>
+    ''' <summary>Represents a Throw statement.</summary>
     Public NotInheritable Class ThrowStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -20214,9 +21358,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ThrowStatementSyntax(kind, errors, annotations, throwKeyword, if(expression IsNot Nothing , DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Throw" keyword
-        ''' </summary>
+        ''' <summary>The "Throw" keyword</summary>
         Public  ReadOnly Property ThrowKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ThrowStatementSyntax)._throwKeyword, Me.Position, 0)
@@ -20232,12 +21374,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(throwKeyword, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The expression denoting the value being thrown.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The expression denoting the value being thrown.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 1)
@@ -20324,9 +21462,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AssignmentStatementSyntax(kind, errors, annotations, DirectCast(left.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), operatorToken, DirectCast(right.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The target (left hand side) of the assignment.
-        ''' </summary>
+        ''' <summary>The target (left hand side) of the assignment.</summary>
         Public  ReadOnly Property Left As ExpressionSyntax
             Get
                 Return GetRedAtZero(_left)
@@ -20360,9 +21496,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.Left, operatorToken, Me.Right)
         End Function
 
-        ''' <summary>
-        ''' The source (right hand side) of the assignment.
-        ''' </summary>
+        ''' <summary>The source (right hand side) of the assignment.</summary>
         Public  ReadOnly Property Right As ExpressionSyntax
             Get
                 Return GetRed(_right, 2)
@@ -20438,9 +21572,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a left-hand side of a MidAssignment statement.
-    ''' </summary>
+    ''' <summary>Represents a left-hand side of a MidAssignment statement.</summary>
     Public NotInheritable Class MidExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -20456,9 +21588,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.MidExpressionSyntax(kind, errors, annotations, mid, DirectCast(argumentList.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArgumentListSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Mid" possibly followed by a type character.
-        ''' </summary>
+        ''' <summary>The "Mid" possibly followed by a type character.</summary>
         Public  ReadOnly Property Mid As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.MidExpressionSyntax)._mid, Me.Position, 0)
@@ -20473,9 +21603,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(mid, Me.ArgumentList)
         End Function
 
-        ''' <summary>
-        ''' The argument list.
-        ''' </summary>
+        ''' <summary>The argument list.</summary>
         Public  ReadOnly Property ArgumentList As ArgumentListSyntax
             Get
                 Return GetRed(_argumentList, 1)
@@ -20547,9 +21675,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represent a call statement (also known as a invocation statement).
-    ''' </summary>
+    ''' <summary>Represent a call statement (also known as a invocation statement).</summary>
     Public NotInheritable Class CallStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -20565,9 +21691,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CallStatementSyntax(kind, errors, annotations, callKeyword, DirectCast(invocation.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Call" keyword.
-        ''' </summary>
+        ''' <summary>The "Call" keyword.</summary>
         Public  ReadOnly Property CallKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CallStatementSyntax)._callKeyword, Me.Position, 0)
@@ -20673,9 +21797,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AddRemoveHandlerStatementSyntax(kind, errors, annotations, addHandlerOrRemoveHandlerKeyword, DirectCast(eventExpression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), commaToken, DirectCast(delegateExpression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "AddHandler" or "RemoveHandler" keyword.
-        ''' </summary>
+        ''' <summary>The "AddHandler" or "RemoveHandler" keyword.</summary>
         Public  ReadOnly Property AddHandlerOrRemoveHandlerKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AddRemoveHandlerStatementSyntax)._addHandlerOrRemoveHandlerKeyword, Me.Position, 0)
@@ -20691,9 +21813,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, addHandlerOrRemoveHandlerKeyword, Me.EventExpression, Me.CommaToken, Me.DelegateExpression)
         End Function
 
-        ''' <summary>
-        ''' The event being accessed.
-        ''' </summary>
+        ''' <summary>The event being accessed.</summary>
         Public  ReadOnly Property EventExpression As ExpressionSyntax
             Get
                 Return GetRed(_eventExpression, 1)
@@ -20709,9 +21829,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.AddHandlerOrRemoveHandlerKeyword, eventExpression, Me.CommaToken, Me.DelegateExpression)
         End Function
 
-        ''' <summary>
-        ''' The "," token.
-        ''' </summary>
+        ''' <summary>The "," token.</summary>
         Public  ReadOnly Property CommaToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AddRemoveHandlerStatementSyntax)._commaToken, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -20727,9 +21845,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.AddHandlerOrRemoveHandlerKeyword, Me.EventExpression, commaToken, Me.DelegateExpression)
         End Function
 
-        ''' <summary>
-        ''' The delegate being added or removed.
-        ''' </summary>
+        ''' <summary>The delegate being added or removed.</summary>
         Public  ReadOnly Property DelegateExpression As ExpressionSyntax
             Get
                 Return GetRed(_delegateExpression, 3)
@@ -20809,9 +21925,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represent a RaiseEvent statement.
-    ''' </summary>
+    ''' <summary>Represent a RaiseEvent statement.</summary>
     Public NotInheritable Class RaiseEventStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -20828,9 +21942,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.RaiseEventStatementSyntax(kind, errors, annotations, raiseEventKeyword, DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IdentifierNameSyntax), if(argumentList IsNot Nothing , DirectCast(argumentList.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArgumentListSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "RaiseEvent" keyword
-        ''' </summary>
+        ''' <summary>The "RaiseEvent" keyword</summary>
         Public  ReadOnly Property RaiseEventKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.RaiseEventStatementSyntax)._raiseEventKeyword, Me.Position, 0)
@@ -20846,9 +21958,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(raiseEventKeyword, Me.Name, Me.ArgumentList)
         End Function
 
-        ''' <summary>
-        ''' The name of the event being raised.
-        ''' </summary>
+        ''' <summary>The name of the event being raised.</summary>
         Public  ReadOnly Property Name As IdentifierNameSyntax
             Get
                 Return GetRed(_name, 1)
@@ -20863,12 +21973,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.RaiseEventKeyword, name, Me.ArgumentList)
         End Function
 
-        ''' <summary>
-        ''' The argument list, if present.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The argument list, if present.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property ArgumentList As ArgumentListSyntax
             Get
                 Return GetRed(_argumentList, 2)
@@ -20967,9 +22073,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WithStatementSyntax(kind, errors, annotations, withKeyword, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "With" keyword.
-        ''' </summary>
+        ''' <summary>The "With" keyword.</summary>
         Public  ReadOnly Property WithKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WithStatementSyntax)._withKeyword, Me.Position, 0)
@@ -20985,9 +22089,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(withKeyword, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The expression that is the operand of the With statement.
-        ''' </summary>
+        ''' <summary>The expression that is the operand of the With statement.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 1)
@@ -21054,9 +22156,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a ReDim statement.
-    ''' </summary>
+    ''' <summary>Represents a ReDim statement.</summary>
     Public NotInheritable Class ReDimStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -21072,9 +22172,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ReDimStatementSyntax(kind, errors, annotations, reDimKeyword, preserveKeyword, if(clauses IsNot Nothing, clauses.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "ReDim" keyword.
-        ''' </summary>
+        ''' <summary>The "ReDim" keyword.</summary>
         Public  ReadOnly Property ReDimKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ReDimStatementSyntax)._reDimKeyword, Me.Position, 0)
@@ -21094,9 +22192,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' Returns Nothing if Kind=ReDim, returns the "Preserve" keyword if
         ''' Kind=RedimPreserve.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property PreserveKeyword As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ReDimStatementSyntax)._preserveKeyword
@@ -21116,9 +22212,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.ReDimKeyword, preserveKeyword, Me.Clauses)
         End Function
 
-        ''' <summary>
-        ''' The list of ReDim clauses.
-        ''' </summary>
+        ''' <summary>The list of ReDim clauses.</summary>
         Public  ReadOnly Property Clauses As SeparatedSyntaxList(Of RedimClauseSyntax)
             Get
                 Dim listNode = GetRed(_clauses, 2)
@@ -21199,9 +22293,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a ReDim statement clause.
-    ''' </summary>
+    ''' <summary>Represents a ReDim statement clause.</summary>
     Public NotInheritable Class RedimClauseSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -21218,9 +22310,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.RedimClauseSyntax(kind, errors, annotations, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), DirectCast(arrayBounds.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArgumentListSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The target of the ReDim statement.
-        ''' </summary>
+        ''' <summary>The target of the ReDim statement.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRedAtZero(_expression)
@@ -21236,9 +22326,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(expression, Me.ArrayBounds)
         End Function
 
-        ''' <summary>
-        ''' The ArraySizeInitializationModifier.
-        ''' </summary>
+        ''' <summary>The ArraySizeInitializationModifier.</summary>
         Public  ReadOnly Property ArrayBounds As ArgumentListSyntax
             Get
                 Return GetRed(_arrayBounds, 1)
@@ -21314,9 +22402,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an "Erase" statement.
-    ''' </summary>
+    ''' <summary>Represents an "Erase" statement.</summary>
     Public NotInheritable Class EraseStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -21332,9 +22418,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EraseStatementSyntax(kind, errors, annotations, eraseKeyword, if(expressions IsNot Nothing, expressions.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Erase" keyword.
-        ''' </summary>
+        ''' <summary>The "Erase" keyword.</summary>
         Public  ReadOnly Property EraseKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EraseStatementSyntax)._eraseKeyword, Me.Position, 0)
@@ -21350,9 +22434,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(eraseKeyword, Me.Expressions)
         End Function
 
-        ''' <summary>
-        ''' A list of expressions denoting the arrays to erase.
-        ''' </summary>
+        ''' <summary>A list of expressions denoting the arrays to erase.</summary>
         Public  ReadOnly Property Expressions As SeparatedSyntaxList(Of ExpressionSyntax)
             Get
                 Dim listNode = GetRed(_expressions, 1)
@@ -21427,9 +22509,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' An abstract base class for all node classes that define expressions.
-    ''' </summary>
+    ''' <summary>An abstract base class for all node classes that define expressions.</summary>
     Public MustInherit Class ExpressionSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -21533,9 +22613,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a parenthesized expression.
-    ''' </summary>
+    ''' <summary>Represents a parenthesized expression.</summary>
     Public NotInheritable Class ParenthesizedExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -21551,9 +22629,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ParenthesizedExpressionSyntax(kind, errors, annotations, openParenToken, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "(" token
-        ''' </summary>
+        ''' <summary>The "(" token</summary>
         Public  ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ParenthesizedExpressionSyntax)._openParenToken, Me.Position, 0)
@@ -21569,9 +22645,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(openParenToken, Me.Expression, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The expression inside the parentheses.
-        ''' </summary>
+        ''' <summary>The expression inside the parentheses.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 1)
@@ -21587,9 +22661,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.OpenParenToken, expression, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The ")" token
-        ''' </summary>
+        ''' <summary>The ")" token</summary>
         Public  ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ParenthesizedExpressionSyntax)._closeParenToken, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -21659,9 +22731,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a tuple literal expression.
-    ''' </summary>
+    ''' <summary>Represents a tuple literal expression.</summary>
     Public NotInheritable Class TupleExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -21677,9 +22747,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TupleExpressionSyntax(kind, errors, annotations, openParenToken, if(arguments IsNot Nothing, arguments.Green, Nothing), closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "(" token
-        ''' </summary>
+        ''' <summary>The "(" token</summary>
         Public  ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TupleExpressionSyntax)._openParenToken, Me.Position, 0)
@@ -21695,9 +22763,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(openParenToken, Me.Arguments, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The list of tuple arguments.
-        ''' </summary>
+        ''' <summary>The list of tuple arguments.</summary>
         Public  ReadOnly Property Arguments As SeparatedSyntaxList(Of SimpleArgumentSyntax)
             Get
                 Dim listNode = GetRed(_arguments, 1)
@@ -21721,9 +22787,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithArguments(Me.Arguments.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The ")" token
-        ''' </summary>
+        ''' <summary>The ")" token</summary>
         Public  ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TupleExpressionSyntax)._closeParenToken, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -21793,9 +22857,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a tuple type expression.
-    ''' </summary>
+    ''' <summary>Represents a tuple type expression.</summary>
     Public NotInheritable Class TupleTypeSyntax
         Inherits TypeSyntax
 
@@ -21811,9 +22873,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TupleTypeSyntax(kind, errors, annotations, openParenToken, if(elements IsNot Nothing, elements.Green, Nothing), closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "(" token
-        ''' </summary>
+        ''' <summary>The "(" token</summary>
         Public  ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TupleTypeSyntax)._openParenToken, Me.Position, 0)
@@ -21829,9 +22889,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(openParenToken, Me.Elements, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The list of tuple elements.
-        ''' </summary>
+        ''' <summary>The list of tuple elements.</summary>
         Public  ReadOnly Property Elements As SeparatedSyntaxList(Of TupleElementSyntax)
             Get
                 Dim listNode = GetRed(_elements, 1)
@@ -21855,9 +22913,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithElements(Me.Elements.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The ")" token
-        ''' </summary>
+        ''' <summary>The ")" token</summary>
         Public  ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TupleTypeSyntax)._closeParenToken, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -21927,9 +22983,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a single declaration of a tuple element.
-    ''' </summary>
+    ''' <summary>Represents a single declaration of a tuple element.</summary>
     Public MustInherit Class TupleElementSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -21942,9 +22996,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a single declaration of a tuple element supplying only the type.
-    ''' </summary>
+    ''' <summary>Represents a single declaration of a tuple element supplying only the type.</summary>
     Public NotInheritable Class TypedTupleElementSyntax
         Inherits TupleElementSyntax
 
@@ -21960,9 +23012,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypedTupleElementSyntax(kind, errors, annotations, DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The type-name part of the tuple element syntax.
-        ''' </summary>
+        ''' <summary>The type-name part of the tuple element syntax.</summary>
         Public  ReadOnly Property Type As TypeSyntax
             Get
                 Return GetRedAtZero(_type)
@@ -22042,9 +23092,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NamedTupleElementSyntax(kind, errors, annotations, identifier, if(asClause IsNot Nothing , DirectCast(asClause.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SimpleAsClauseSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The name of the element.
-        ''' </summary>
+        ''' <summary>The name of the element.</summary>
         Public  ReadOnly Property Identifier As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NamedTupleElementSyntax)._identifier, Me.Position, 0)
@@ -22060,12 +23108,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(identifier, Me.AsClause)
         End Function
 
-        ''' <summary>
-        ''' A simple "As" clause specifying the type of the tuple element.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>A simple "As" clause specifying the type of the tuple element.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AsClause As SimpleAsClauseSyntax
             Get
                 Return GetRed(_asClause, 1)
@@ -22146,9 +23190,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Me", "MyClass" or "MyBase" keyword.
-        ''' </summary>
+        ''' <summary>The "Me", "MyClass" or "MyBase" keyword.</summary>
         Public ReadOnly Property Keyword As SyntaxToken
             Get
                 Return Me.GetKeywordCore()
@@ -22171,9 +23213,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Identifies the special instance "Me"
-    ''' </summary>
+    ''' <summary>Identifies the special instance "Me"</summary>
     Public NotInheritable Class MeExpressionSyntax
         Inherits InstanceExpressionSyntax
 
@@ -22188,9 +23228,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.MeExpressionSyntax(kind, errors, annotations, keyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Me", "MyClass" or "MyBase" keyword.
-        ''' </summary>
+        ''' <summary>The "Me", "MyClass" or "MyBase" keyword.</summary>
         Public Shadows ReadOnly Property Keyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.MeExpressionSyntax)._keyword, Me.Position, 0)
@@ -22256,9 +23294,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Identifies the special instance "MyBase"
-    ''' </summary>
+    ''' <summary>Identifies the special instance "MyBase"</summary>
     Public NotInheritable Class MyBaseExpressionSyntax
         Inherits InstanceExpressionSyntax
 
@@ -22273,9 +23309,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.MyBaseExpressionSyntax(kind, errors, annotations, keyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Me", "MyClass" or "MyBase" keyword.
-        ''' </summary>
+        ''' <summary>The "Me", "MyClass" or "MyBase" keyword.</summary>
         Public Shadows ReadOnly Property Keyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.MyBaseExpressionSyntax)._keyword, Me.Position, 0)
@@ -22341,9 +23375,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Identifies the special instance "MyClass"
-    ''' </summary>
+    ''' <summary>Identifies the special instance "MyClass"</summary>
     Public NotInheritable Class MyClassExpressionSyntax
         Inherits InstanceExpressionSyntax
 
@@ -22358,9 +23390,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.MyClassExpressionSyntax(kind, errors, annotations, keyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Me", "MyClass" or "MyBase" keyword.
-        ''' </summary>
+        ''' <summary>The "Me", "MyClass" or "MyBase" keyword.</summary>
         Public Shadows ReadOnly Property Keyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.MyClassExpressionSyntax)._keyword, Me.Position, 0)
@@ -22426,9 +23456,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a GetType expression.
-    ''' </summary>
+    ''' <summary>Represents a GetType expression.</summary>
     Public NotInheritable Class GetTypeExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -22444,9 +23472,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GetTypeExpressionSyntax(kind, errors, annotations, getTypeKeyword, openParenToken, DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeSyntax), closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "GetType" keyword.
-        ''' </summary>
+        ''' <summary>The "GetType" keyword.</summary>
         Public  ReadOnly Property GetTypeKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GetTypeExpressionSyntax)._getTypeKeyword, Me.Position, 0)
@@ -22462,9 +23488,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(getTypeKeyword, Me.OpenParenToken, Me.Type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Public  ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GetTypeExpressionSyntax)._openParenToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -22480,9 +23504,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.GetTypeKeyword, openParenToken, Me.Type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The type to get the Type object for. This can be an open generic type.
-        ''' </summary>
+        ''' <summary>The type to get the Type object for. This can be an open generic type.</summary>
         Public  ReadOnly Property Type As TypeSyntax
             Get
                 Return GetRed(_type, 2)
@@ -22497,9 +23519,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.GetTypeKeyword, Me.OpenParenToken, type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Public  ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GetTypeExpressionSyntax)._closeParenToken, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -22572,9 +23592,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a TypeOf...Is or IsNot expression.
-    ''' </summary>
+    ''' <summary>Represents a TypeOf...Is or IsNot expression.</summary>
     Public NotInheritable Class TypeOfExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -22591,9 +23609,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfExpressionSyntax(kind, errors, annotations, typeOfKeyword, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), operatorToken, DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "TypeOf" keyword.
-        ''' </summary>
+        ''' <summary>The "TypeOf" keyword.</summary>
         Public  ReadOnly Property TypeOfKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfExpressionSyntax)._typeOfKeyword, Me.Position, 0)
@@ -22609,9 +23625,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, typeOfKeyword, Me.Expression, Me.OperatorToken, Me.Type)
         End Function
 
-        ''' <summary>
-        ''' The expression being tested.
-        ''' </summary>
+        ''' <summary>The expression being tested.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 1)
@@ -22627,9 +23641,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.TypeOfKeyword, expression, Me.OperatorToken, Me.Type)
         End Function
 
-        ''' <summary>
-        ''' The "Is" or "IsNot" keyword.
-        ''' </summary>
+        ''' <summary>The "Is" or "IsNot" keyword.</summary>
         Public  ReadOnly Property OperatorToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfExpressionSyntax)._operatorToken, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -22645,9 +23657,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.TypeOfKeyword, Me.Expression, operatorToken, Me.Type)
         End Function
 
-        ''' <summary>
-        ''' The name of the type being tested against.
-        ''' </summary>
+        ''' <summary>The name of the type being tested against.</summary>
         Public  ReadOnly Property Type As TypeSyntax
             Get
                 Return GetRed(_type, 3)
@@ -22726,9 +23736,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a GetXmlNamespace expression.
-    ''' </summary>
+    ''' <summary>Represents a GetXmlNamespace expression.</summary>
     Public NotInheritable Class GetXmlNamespaceExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -22744,9 +23752,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GetXmlNamespaceExpressionSyntax(kind, errors, annotations, getXmlNamespaceKeyword, openParenToken, if(name IsNot Nothing , DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.XmlPrefixNameSyntax), Nothing) , closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "GetXmlNamespace" keyword.
-        ''' </summary>
+        ''' <summary>The "GetXmlNamespace" keyword.</summary>
         Public  ReadOnly Property GetXmlNamespaceKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GetXmlNamespaceExpressionSyntax)._getXmlNamespaceKeyword, Me.Position, 0)
@@ -22762,9 +23768,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(getXmlNamespaceKeyword, Me.OpenParenToken, Me.Name, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Public  ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GetXmlNamespaceExpressionSyntax)._openParenToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -22780,12 +23784,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.GetXmlNamespaceKeyword, openParenToken, Me.Name, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The Xml namespace name being referenced.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The Xml namespace name being referenced.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Name As XmlPrefixNameSyntax
             Get
                 Return GetRed(_name, 2)
@@ -22800,9 +23800,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.GetXmlNamespaceKeyword, Me.OpenParenToken, name, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Public  ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GetXmlNamespaceExpressionSyntax)._closeParenToken, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -22895,12 +23893,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.MemberAccessExpressionSyntax(kind, errors, annotations, if(expression IsNot Nothing , DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), Nothing) , operatorToken, DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SimpleNameSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The expression on the left-hand-side of the "." or "!" token.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The expression on the left-hand-side of the "." or "!" token.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRedAtZero(_expression)
@@ -22916,9 +23910,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, expression, Me.OperatorToken, Me.Name)
         End Function
 
-        ''' <summary>
-        ''' The "." or "!" token.
-        ''' </summary>
+        ''' <summary>The "." or "!" token.</summary>
         Public  ReadOnly Property OperatorToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.MemberAccessExpressionSyntax)._operatorToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -22934,9 +23926,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.Expression, operatorToken, Me.Name)
         End Function
 
-        ''' <summary>
-        ''' The identifier after the "." or "!" token.
-        ''' </summary>
+        ''' <summary>The identifier after the "." or "!" token.</summary>
         Public  ReadOnly Property Name As SimpleNameSyntax
             Get
                 Return GetRed(_name, 2)
@@ -23033,12 +24023,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.XmlMemberAccessExpressionSyntax(kind, errors, annotations, if(base IsNot Nothing , DirectCast(base.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), Nothing) , token1, token2, token3, DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.XmlNodeSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The expression on the left-hand-side of the ".", ".@" or "..." .
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The expression on the left-hand-side of the ".", ".@" or "..." .</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Base As ExpressionSyntax
             Get
                 Return GetRedAtZero(_base)
@@ -23053,9 +24039,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, base, Me.Token1, Me.Token2, Me.Token3, Me.Name)
         End Function
 
-        ''' <summary>
-        ''' The initial dot "." part of the separator.
-        ''' </summary>
+        ''' <summary>The initial dot "." part of the separator.</summary>
         Public  ReadOnly Property Token1 As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.XmlMemberAccessExpressionSyntax)._token1, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -23070,12 +24054,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.Base, token1, Me.Token2, Me.Token3, Me.Name)
         End Function
 
-        ''' <summary>
-        ''' The "@" part of .@ or the second "." of "...".
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The "@" part of .@ or the second "." of "...".</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Token2 As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.XmlMemberAccessExpressionSyntax)._token2
@@ -23094,12 +24074,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.Base, Me.Token1, token2, Me.Token3, Me.Name)
         End Function
 
-        ''' <summary>
-        ''' The third "." in a "..." separator.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The third "." in a "..." separator.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Token3 As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.XmlMemberAccessExpressionSyntax)._token3
@@ -23118,9 +24094,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.Base, Me.Token1, Me.Token2, token3, Me.Name)
         End Function
 
-        ''' <summary>
-        ''' The identifier after the ".", ".@" or "..."
-        ''' </summary>
+        ''' <summary>The identifier after the ".", ".@" or "..."</summary>
         Public  ReadOnly Property Name As XmlNodeSyntax
             Get
                 Return GetRed(_name, 4)
@@ -23223,12 +24197,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InvocationExpressionSyntax(kind, errors, annotations, if(expression IsNot Nothing , DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), Nothing) , if(argumentList IsNot Nothing , DirectCast(argumentList.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArgumentListSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The target of the call or index expression.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The target of the call or index expression.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRedAtZero(_expression)
@@ -23244,12 +24214,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(expression, Me.ArgumentList)
         End Function
 
-        ''' <summary>
-        ''' The argument list.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The argument list.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property ArgumentList As ArgumentListSyntax
             Get
                 Return GetRed(_argumentList, 1)
@@ -23325,9 +24291,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Base class for object, array and anonymous object creation expressions
-    ''' </summary>
+    ''' <summary>Base class for object, array and anonymous object creation expressions</summary>
     Partial Public MustInherit Class NewExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -23339,9 +24303,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        ''' <summary>
-        ''' The "New" keyword.
-        ''' </summary>
+        ''' <summary>The "New" keyword.</summary>
         Public ReadOnly Property NewKeyword As SyntaxToken
             Get
                 Return Me.GetNewKeywordCore()
@@ -23366,9 +24328,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on the type. If no attributes were specified, an
         ''' empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Return Me.GetAttributeListsCore()
@@ -23417,9 +24377,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ObjectCreationExpressionSyntax(kind, errors, annotations, newKeyword, if(attributeLists IsNot Nothing, attributeLists.Green, Nothing), DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeSyntax), if(argumentList IsNot Nothing , DirectCast(argumentList.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArgumentListSyntax), Nothing) , if(initializer IsNot Nothing , DirectCast(initializer.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ObjectCreationInitializerSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "New" keyword.
-        ''' </summary>
+        ''' <summary>The "New" keyword.</summary>
         Public Shadows ReadOnly Property NewKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ObjectCreationExpressionSyntax)._newKeyword, Me.Position, 0)
@@ -23447,9 +24405,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on the type. If no attributes were specified, an
         ''' empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRed(_attributeLists, 1)
@@ -23482,9 +24438,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddAttributeLists(items)
         End Function
 
-        ''' <summary>
-        ''' The type of the object being initialized.
-        ''' </summary>
+        ''' <summary>The type of the object being initialized.</summary>
         Public  ReadOnly Property Type As TypeSyntax
             Get
                 Return GetRed(_type, 2)
@@ -23503,9 +24457,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The argument list, if present. If no argument list was supplied, Nothing is
         ''' returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property ArgumentList As ArgumentListSyntax
             Get
                 Return GetRed(_argumentList, 3)
@@ -23526,12 +24478,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithArgumentList(_child.AddArguments(items))
         End Function
 
-        ''' <summary>
-        ''' An optional From or With clause to initialize the new object.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>An optional From or With clause to initialize the new object.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Initializer As ObjectCreationInitializerSyntax
             Get
                 Return GetRed(_initializer, 4)
@@ -23619,9 +24567,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a New expression that create an object of anonymous type.
-    ''' </summary>
+    ''' <summary>Represents a New expression that create an object of anonymous type.</summary>
     Public NotInheritable Class AnonymousObjectCreationExpressionSyntax
         Inherits NewExpressionSyntax
 
@@ -23637,9 +24583,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AnonymousObjectCreationExpressionSyntax(kind, errors, annotations, newKeyword, if(attributeLists IsNot Nothing, attributeLists.Green, Nothing), DirectCast(initializer.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ObjectMemberInitializerSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "New" keyword.
-        ''' </summary>
+        ''' <summary>The "New" keyword.</summary>
         Public Shadows ReadOnly Property NewKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AnonymousObjectCreationExpressionSyntax)._newKeyword, Me.Position, 0)
@@ -23667,9 +24611,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on the type. If no attributes were specified, an
         ''' empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRed(_attributeLists, 1)
@@ -23702,9 +24644,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddAttributeLists(items)
         End Function
 
-        ''' <summary>
-        ''' The With clause to initialize the new object.
-        ''' </summary>
+        ''' <summary>The With clause to initialize the new object.</summary>
         Public  ReadOnly Property Initializer As ObjectMemberInitializerSyntax
             Get
                 Return GetRed(_initializer, 2)
@@ -23783,9 +24723,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an expression that creates a new array.
-    ''' </summary>
+    ''' <summary>Represents an expression that creates a new array.</summary>
     Public NotInheritable Class ArrayCreationExpressionSyntax
         Inherits NewExpressionSyntax
 
@@ -23804,9 +24742,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArrayCreationExpressionSyntax(kind, errors, annotations, newKeyword, if(attributeLists IsNot Nothing, attributeLists.Green, Nothing), DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeSyntax), if(arrayBounds IsNot Nothing , DirectCast(arrayBounds.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArgumentListSyntax), Nothing) , if(rankSpecifiers IsNot Nothing, rankSpecifiers.Green, Nothing), DirectCast(initializer.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CollectionInitializerSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "New" keyword.
-        ''' </summary>
+        ''' <summary>The "New" keyword.</summary>
         Public Shadows ReadOnly Property NewKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArrayCreationExpressionSyntax)._newKeyword, Me.Position, 0)
@@ -23834,9 +24770,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on the type. If no attributes were specified, an
         ''' empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRed(_attributeLists, 1)
@@ -23869,9 +24803,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddAttributeLists(items)
         End Function
 
-        ''' <summary>
-        ''' The element type of the array being created.
-        ''' </summary>
+        ''' <summary>The element type of the array being created.</summary>
         Public  ReadOnly Property Type As TypeSyntax
             Get
                 Return GetRed(_type, 2)
@@ -23886,12 +24818,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.NewKeyword, Me.AttributeLists, type, Me.ArrayBounds, Me.RankSpecifiers, Me.Initializer)
         End Function
 
-        ''' <summary>
-        ''' The optional array bounds, such as "(4)" or "(0 to 5, 0 To 6)".
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The optional array bounds, such as "(4)" or "(0 to 5, 0 To 6)".</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property ArrayBounds As ArgumentListSyntax
             Get
                 Return GetRed(_arrayBounds, 3)
@@ -23916,9 +24844,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of array modifiers such as "()" or "(,)". If no array modifiers were
         ''' present, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property RankSpecifiers As SyntaxList(Of ArrayRankSpecifierSyntax)
             Get
                 Dim listNode = GetRed(_rankSpecifiers, 4)
@@ -23939,9 +24865,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithRankSpecifiers(Me.RankSpecifiers.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The initializer including the braces.
-        ''' </summary>
+        ''' <summary>The initializer including the braces.</summary>
         Public  ReadOnly Property Initializer As CollectionInitializerSyntax
             Get
                 Return GetRed(_initializer, 5)
@@ -24060,9 +24984,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CollectionInitializerSyntax(kind, errors, annotations, openBraceToken, if(initializers IsNot Nothing, initializers.Green, Nothing), closeBraceToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "{" token.
-        ''' </summary>
+        ''' <summary>The "{" token.</summary>
         Public  ReadOnly Property OpenBraceToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CollectionInitializerSyntax)._openBraceToken, Me.Position, 0)
@@ -24078,12 +25000,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(openBraceToken, Me.Initializers, Me.CloseBraceToken)
         End Function
 
-        ''' <summary>
-        ''' The list of initializers between the braces.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The list of initializers between the braces.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Initializers As SeparatedSyntaxList(Of ExpressionSyntax)
             Get
                 Dim listNode = GetRed(_initializers, 1)
@@ -24107,9 +25025,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithInitializers(Me.Initializers.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The "}" token.
-        ''' </summary>
+        ''' <summary>The "}" token.</summary>
         Public  ReadOnly Property CloseBraceToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CollectionInitializerSyntax)._closeBraceToken, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -24195,9 +25111,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        ''' <summary>
-        ''' The "CType", "DirectCast" or "TryCast" keyword.
-        ''' </summary>
+        ''' <summary>The "CType", "DirectCast" or "TryCast" keyword.</summary>
         Public ReadOnly Property Keyword As SyntaxToken
             Get
                 Return Me.GetKeywordCore()
@@ -24218,9 +25132,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         End Function
         Friend MustOverride Function WithKeywordCore(keyword As SyntaxToken) As CastExpressionSyntax
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Public ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 Return Me.GetOpenParenTokenCore()
@@ -24241,9 +25153,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         End Function
         Friend MustOverride Function WithOpenParenTokenCore(openParenToken As SyntaxToken) As CastExpressionSyntax
 
-        ''' <summary>
-        ''' The expression being cast.
-        ''' </summary>
+        ''' <summary>The expression being cast.</summary>
         Public ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return Me.GetExpressionCore()
@@ -24264,9 +25174,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         End Function
         Friend MustOverride Function WithExpressionCore(expression As ExpressionSyntax) As CastExpressionSyntax
 
-        ''' <summary>
-        ''' The "," token.
-        ''' </summary>
+        ''' <summary>The "," token.</summary>
         Public ReadOnly Property CommaToken As SyntaxToken
             Get
                 Return Me.GetCommaTokenCore()
@@ -24287,9 +25195,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         End Function
         Friend MustOverride Function WithCommaTokenCore(commaToken As SyntaxToken) As CastExpressionSyntax
 
-        ''' <summary>
-        ''' The type the expression is being cast to.
-        ''' </summary>
+        ''' <summary>The type the expression is being cast to.</summary>
         Public ReadOnly Property Type As TypeSyntax
             Get
                 Return Me.GetTypeCore()
@@ -24309,9 +25215,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         End Function
         Friend MustOverride Function WithTypeCore(type As TypeSyntax) As CastExpressionSyntax
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Public ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 Return Me.GetCloseParenTokenCore()
@@ -24348,9 +25252,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CTypeExpressionSyntax(kind, errors, annotations, keyword, openParenToken, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), commaToken, DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeSyntax), closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "CType", "DirectCast" or "TryCast" keyword.
-        ''' </summary>
+        ''' <summary>The "CType", "DirectCast" or "TryCast" keyword.</summary>
         Public Shadows ReadOnly Property Keyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CTypeExpressionSyntax)._keyword, Me.Position, 0)
@@ -24374,9 +25276,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(keyword, Me.OpenParenToken, Me.Expression, Me.CommaToken, Me.Type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Public Shadows ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CTypeExpressionSyntax)._openParenToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -24400,9 +25300,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Keyword, openParenToken, Me.Expression, Me.CommaToken, Me.Type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The expression being cast.
-        ''' </summary>
+        ''' <summary>The expression being cast.</summary>
         Public Shadows ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 2)
@@ -24426,9 +25324,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Keyword, Me.OpenParenToken, expression, Me.CommaToken, Me.Type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "," token.
-        ''' </summary>
+        ''' <summary>The "," token.</summary>
         Public Shadows ReadOnly Property CommaToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CTypeExpressionSyntax)._commaToken, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -24452,9 +25348,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Keyword, Me.OpenParenToken, Me.Expression, commaToken, Me.Type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The type the expression is being cast to.
-        ''' </summary>
+        ''' <summary>The type the expression is being cast to.</summary>
         Public Shadows ReadOnly Property Type As TypeSyntax
             Get
                 Return GetRed(_type, 4)
@@ -24477,9 +25371,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Keyword, Me.OpenParenToken, Me.Expression, Me.CommaToken, type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Public Shadows ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CTypeExpressionSyntax)._closeParenToken, Me.GetChildPosition(5), Me.GetChildIndex(5))
@@ -24584,9 +25476,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DirectCastExpressionSyntax(kind, errors, annotations, keyword, openParenToken, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), commaToken, DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeSyntax), closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "CType", "DirectCast" or "TryCast" keyword.
-        ''' </summary>
+        ''' <summary>The "CType", "DirectCast" or "TryCast" keyword.</summary>
         Public Shadows ReadOnly Property Keyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DirectCastExpressionSyntax)._keyword, Me.Position, 0)
@@ -24610,9 +25500,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(keyword, Me.OpenParenToken, Me.Expression, Me.CommaToken, Me.Type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Public Shadows ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DirectCastExpressionSyntax)._openParenToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -24636,9 +25524,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Keyword, openParenToken, Me.Expression, Me.CommaToken, Me.Type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The expression being cast.
-        ''' </summary>
+        ''' <summary>The expression being cast.</summary>
         Public Shadows ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 2)
@@ -24662,9 +25548,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Keyword, Me.OpenParenToken, expression, Me.CommaToken, Me.Type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "," token.
-        ''' </summary>
+        ''' <summary>The "," token.</summary>
         Public Shadows ReadOnly Property CommaToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DirectCastExpressionSyntax)._commaToken, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -24688,9 +25572,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Keyword, Me.OpenParenToken, Me.Expression, commaToken, Me.Type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The type the expression is being cast to.
-        ''' </summary>
+        ''' <summary>The type the expression is being cast to.</summary>
         Public Shadows ReadOnly Property Type As TypeSyntax
             Get
                 Return GetRed(_type, 4)
@@ -24713,9 +25595,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Keyword, Me.OpenParenToken, Me.Expression, Me.CommaToken, type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Public Shadows ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DirectCastExpressionSyntax)._closeParenToken, Me.GetChildPosition(5), Me.GetChildIndex(5))
@@ -24820,9 +25700,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TryCastExpressionSyntax(kind, errors, annotations, keyword, openParenToken, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), commaToken, DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeSyntax), closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "CType", "DirectCast" or "TryCast" keyword.
-        ''' </summary>
+        ''' <summary>The "CType", "DirectCast" or "TryCast" keyword.</summary>
         Public Shadows ReadOnly Property Keyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TryCastExpressionSyntax)._keyword, Me.Position, 0)
@@ -24846,9 +25724,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(keyword, Me.OpenParenToken, Me.Expression, Me.CommaToken, Me.Type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Public Shadows ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TryCastExpressionSyntax)._openParenToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -24872,9 +25748,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Keyword, openParenToken, Me.Expression, Me.CommaToken, Me.Type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The expression being cast.
-        ''' </summary>
+        ''' <summary>The expression being cast.</summary>
         Public Shadows ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 2)
@@ -24898,9 +25772,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Keyword, Me.OpenParenToken, expression, Me.CommaToken, Me.Type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "," token.
-        ''' </summary>
+        ''' <summary>The "," token.</summary>
         Public Shadows ReadOnly Property CommaToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TryCastExpressionSyntax)._commaToken, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -24924,9 +25796,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Keyword, Me.OpenParenToken, Me.Expression, commaToken, Me.Type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The type the expression is being cast to.
-        ''' </summary>
+        ''' <summary>The type the expression is being cast to.</summary>
         Public Shadows ReadOnly Property Type As TypeSyntax
             Get
                 Return GetRed(_type, 4)
@@ -24949,9 +25819,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Keyword, Me.OpenParenToken, Me.Expression, Me.CommaToken, type, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Public Shadows ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TryCastExpressionSyntax)._closeParenToken, Me.GetChildPosition(5), Me.GetChildIndex(5))
@@ -25061,9 +25929,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PredefinedCastExpressionSyntax(kind, errors, annotations, keyword, openParenToken, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The keyword that was used in the cast operation.
-        ''' </summary>
+        ''' <summary>The keyword that was used in the cast operation.</summary>
         Public  ReadOnly Property Keyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PredefinedCastExpressionSyntax)._keyword, Me.Position, 0)
@@ -25079,9 +25945,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(keyword, Me.OpenParenToken, Me.Expression, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Public  ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PredefinedCastExpressionSyntax)._openParenToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -25097,9 +25961,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Keyword, openParenToken, Me.Expression, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The expression being cast.
-        ''' </summary>
+        ''' <summary>The expression being cast.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 2)
@@ -25115,9 +25977,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Keyword, Me.OpenParenToken, expression, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Public  ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PredefinedCastExpressionSyntax)._closeParenToken, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -25211,9 +26071,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.BinaryExpressionSyntax(kind, errors, annotations, DirectCast(left.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), operatorToken, DirectCast(right.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The left operand.
-        ''' </summary>
+        ''' <summary>The left operand.</summary>
         Public  ReadOnly Property Left As ExpressionSyntax
             Get
                 Return GetRedAtZero(_left)
@@ -25243,9 +26101,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.Left, operatorToken, Me.Right)
         End Function
 
-        ''' <summary>
-        ''' The right operand.
-        ''' </summary>
+        ''' <summary>The right operand.</summary>
         Public  ReadOnly Property Right As ExpressionSyntax
             Get
                 Return GetRed(_right, 2)
@@ -25321,9 +26177,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-    ''' </summary>
+    ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
     Public NotInheritable Class UnaryExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -25339,9 +26193,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.UnaryExpressionSyntax(kind, errors, annotations, operatorToken, DirectCast(operand.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The token that is the operator.
-        ''' </summary>
+        ''' <summary>The token that is the operator.</summary>
         Public  ReadOnly Property OperatorToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.UnaryExpressionSyntax)._operatorToken, Me.Position, 0)
@@ -25357,9 +26209,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, operatorToken, Me.Operand)
         End Function
 
-        ''' <summary>
-        ''' The expression being operated on.
-        ''' </summary>
+        ''' <summary>The expression being operated on.</summary>
         Public  ReadOnly Property Operand As ExpressionSyntax
             Get
                 Return GetRed(_operand, 1)
@@ -25449,9 +26299,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.BinaryConditionalExpressionSyntax(kind, errors, annotations, ifKeyword, openParenToken, DirectCast(firstExpression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), commaToken, DirectCast(secondExpression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "If" keyword
-        ''' </summary>
+        ''' <summary>The "If" keyword</summary>
         Public  ReadOnly Property IfKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.BinaryConditionalExpressionSyntax)._ifKeyword, Me.Position, 0)
@@ -25467,9 +26315,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(ifKeyword, Me.OpenParenToken, Me.FirstExpression, Me.CommaToken, Me.SecondExpression, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "(" token
-        ''' </summary>
+        ''' <summary>The "(" token</summary>
         Public  ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.BinaryConditionalExpressionSyntax)._openParenToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -25485,9 +26331,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.IfKeyword, openParenToken, Me.FirstExpression, Me.CommaToken, Me.SecondExpression, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The first expression inside the parentheses.
-        ''' </summary>
+        ''' <summary>The first expression inside the parentheses.</summary>
         Public  ReadOnly Property FirstExpression As ExpressionSyntax
             Get
                 Return GetRed(_firstExpression, 2)
@@ -25503,9 +26347,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.IfKeyword, Me.OpenParenToken, firstExpression, Me.CommaToken, Me.SecondExpression, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "," token.
-        ''' </summary>
+        ''' <summary>The "," token.</summary>
         Public  ReadOnly Property CommaToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.BinaryConditionalExpressionSyntax)._commaToken, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -25521,9 +26363,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.IfKeyword, Me.OpenParenToken, Me.FirstExpression, commaToken, Me.SecondExpression, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The second expression inside the parentheses.
-        ''' </summary>
+        ''' <summary>The second expression inside the parentheses.</summary>
         Public  ReadOnly Property SecondExpression As ExpressionSyntax
             Get
                 Return GetRed(_secondExpression, 4)
@@ -25539,9 +26379,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.IfKeyword, Me.OpenParenToken, Me.FirstExpression, Me.CommaToken, secondExpression, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The ")" token
-        ''' </summary>
+        ''' <summary>The ")" token</summary>
         Public  ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.BinaryConditionalExpressionSyntax)._closeParenToken, Me.GetChildPosition(5), Me.GetChildIndex(5))
@@ -25645,9 +26483,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TernaryConditionalExpressionSyntax(kind, errors, annotations, ifKeyword, openParenToken, DirectCast(condition.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), firstCommaToken, DirectCast(whenTrue.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), secondCommaToken, DirectCast(whenFalse.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "If" keyword
-        ''' </summary>
+        ''' <summary>The "If" keyword</summary>
         Public  ReadOnly Property IfKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TernaryConditionalExpressionSyntax)._ifKeyword, Me.Position, 0)
@@ -25663,9 +26499,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(ifKeyword, Me.OpenParenToken, Me.Condition, Me.FirstCommaToken, Me.WhenTrue, Me.SecondCommaToken, Me.WhenFalse, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "(" token
-        ''' </summary>
+        ''' <summary>The "(" token</summary>
         Public  ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TernaryConditionalExpressionSyntax)._openParenToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -25681,9 +26515,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.IfKeyword, openParenToken, Me.Condition, Me.FirstCommaToken, Me.WhenTrue, Me.SecondCommaToken, Me.WhenFalse, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The first expression inside the parentheses.
-        ''' </summary>
+        ''' <summary>The first expression inside the parentheses.</summary>
         Public  ReadOnly Property Condition As ExpressionSyntax
             Get
                 Return GetRed(_condition, 2)
@@ -25699,9 +26531,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.IfKeyword, Me.OpenParenToken, condition, Me.FirstCommaToken, Me.WhenTrue, Me.SecondCommaToken, Me.WhenFalse, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "," token.
-        ''' </summary>
+        ''' <summary>The "," token.</summary>
         Public  ReadOnly Property FirstCommaToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TernaryConditionalExpressionSyntax)._firstCommaToken, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -25717,9 +26547,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.IfKeyword, Me.OpenParenToken, Me.Condition, firstCommaToken, Me.WhenTrue, Me.SecondCommaToken, Me.WhenFalse, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The second expression inside the parentheses.
-        ''' </summary>
+        ''' <summary>The second expression inside the parentheses.</summary>
         Public  ReadOnly Property WhenTrue As ExpressionSyntax
             Get
                 Return GetRed(_whenTrue, 4)
@@ -25735,9 +26563,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.IfKeyword, Me.OpenParenToken, Me.Condition, Me.FirstCommaToken, whenTrue, Me.SecondCommaToken, Me.WhenFalse, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "," token.
-        ''' </summary>
+        ''' <summary>The "," token.</summary>
         Public  ReadOnly Property SecondCommaToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TernaryConditionalExpressionSyntax)._secondCommaToken, Me.GetChildPosition(5), Me.GetChildIndex(5))
@@ -25753,9 +26579,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.IfKeyword, Me.OpenParenToken, Me.Condition, Me.FirstCommaToken, Me.WhenTrue, secondCommaToken, Me.WhenFalse, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The second expression inside the parentheses.
-        ''' </summary>
+        ''' <summary>The second expression inside the parentheses.</summary>
         Public  ReadOnly Property WhenFalse As ExpressionSyntax
             Get
                 Return GetRed(_whenFalse, 6)
@@ -25771,9 +26595,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.IfKeyword, Me.OpenParenToken, Me.Condition, Me.FirstCommaToken, Me.WhenTrue, Me.SecondCommaToken, whenFalse, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The ")" token
-        ''' </summary>
+        ''' <summary>The ")" token</summary>
         Public  ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TernaryConditionalExpressionSyntax)._closeParenToken, Me.GetChildPosition(7), Me.GetChildIndex(7))
@@ -25866,9 +26688,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a lambda expression, either single line or multi-line.
-    ''' </summary>
+    ''' <summary>Represents a lambda expression, either single line or multi-line.</summary>
     Public MustInherit Class LambdaExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -25906,9 +26726,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a single line lambda expression.
-    ''' </summary>
+    ''' <summary>Represents a single line lambda expression.</summary>
     Public NotInheritable Class SingleLineLambdaExpressionSyntax
         Inherits LambdaExpressionSyntax
 
@@ -26027,9 +26845,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a multi-line lambda expression.
-    ''' </summary>
+    ''' <summary>Represents a multi-line lambda expression.</summary>
     Public NotInheritable Class MultiLineLambdaExpressionSyntax
         Inherits LambdaExpressionSyntax
 
@@ -26078,9 +26894,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' StatementBody (multi-line lambda), Statement (single-line Sub lambda) or
         ''' Expression (single-line Function). This might be an empty list.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
@@ -26185,9 +26999,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the header part of a lambda expression
-    ''' </summary>
+    ''' <summary>Represents the header part of a lambda expression</summary>
     Public NotInheritable Class LambdaHeaderSyntax
         Inherits MethodBaseSyntax
 
@@ -26207,9 +27019,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AttributeLists As SyntaxList(Of AttributeListSyntax)
             Get
                 Dim listNode = GetRedAtZero(_attributeLists)
@@ -26248,9 +27058,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' the modifiers ORed together, which is in many cases easier to use, can be
         ''' obtained with the Modifiers property.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property Modifiers As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.LambdaHeaderSyntax)._modifiers
@@ -26286,9 +27094,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddModifiers(items)
         End Function
 
-        ''' <summary>
-        ''' The "Sub" or "Function" keyword that introduces this lambda expression.
-        ''' </summary>
+        ''' <summary>The "Sub" or "Function" keyword that introduces this lambda expression.</summary>
         Public  ReadOnly Property SubOrFunctionKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.LambdaHeaderSyntax)._subOrFunctionKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -26308,9 +27114,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The method's parameter list including the parentheses. If no parameter list was
         ''' present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public Shadows ReadOnly Property ParameterList As ParameterListSyntax
             Get
                 Return GetRed(_parameterList, 3)
@@ -26347,9 +27151,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The "As" clause that describes the return type. If no As clause was present,
         ''' Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AsClause As SimpleAsClauseSyntax
             Get
                 Return GetRed(_asClause, 4)
@@ -26436,9 +27238,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a parenthesized argument list.
-    ''' </summary>
+    ''' <summary>Represents a parenthesized argument list.</summary>
     Public NotInheritable Class ArgumentListSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -26454,9 +27254,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArgumentListSyntax(kind, errors, annotations, openParenToken, if(arguments IsNot Nothing, arguments.Green, Nothing), closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Public  ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArgumentListSyntax)._openParenToken, Me.Position, 0)
@@ -26476,9 +27274,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The list of arguments. This may be empty. Omitted argument are represented by
         ''' an OmittedArgumentSyntax node.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Arguments As SeparatedSyntaxList(Of ArgumentSyntax)
             Get
                 Dim listNode = GetRed(_arguments, 1)
@@ -26502,9 +27298,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithArguments(Me.Arguments.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Public  ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArgumentListSyntax)._closeParenToken, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -26608,9 +27402,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OmittedArgumentSyntax(kind, errors, annotations, empty), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' An empty token because all non terminals must have a token.
-        ''' </summary>
+        ''' <summary>An empty token because all non terminals must have a token.</summary>
         Public  ReadOnly Property Empty As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OmittedArgumentSyntax)._empty, Me.Position, 0)
@@ -26687,12 +27479,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SimpleArgumentSyntax(kind, errors, annotations, if(nameColonEquals IsNot Nothing , DirectCast(nameColonEquals.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameColonEqualsSyntax), Nothing) , DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The optional name and ":=" prefix of a named argument.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The optional name and ":=" prefix of a named argument.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property NameColonEquals As NameColonEqualsSyntax
             Get
                 Return GetRedAtZero(_nameColonEquals)
@@ -26708,9 +27496,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(nameColonEquals, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The expression that is the argument.
-        ''' </summary>
+        ''' <summary>The expression that is the argument.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 1)
@@ -26781,9 +27567,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an identifier name followed by a ":=" token in a named argument.
-    ''' </summary>
+    ''' <summary>Represents an identifier name followed by a ":=" token in a named argument.</summary>
     Public NotInheritable Class NameColonEqualsSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -26799,9 +27583,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameColonEqualsSyntax(kind, errors, annotations, DirectCast(name.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IdentifierNameSyntax), colonEqualsToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The name used to identify the named argument.
-        ''' </summary>
+        ''' <summary>The name used to identify the named argument.</summary>
         Public  ReadOnly Property Name As IdentifierNameSyntax
             Get
                 Return GetRedAtZero(_name)
@@ -26816,9 +27598,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(name, Me.ColonEqualsToken)
         End Function
 
-        ''' <summary>
-        ''' The ":=" token.
-        ''' </summary>
+        ''' <summary>The ":=" token.</summary>
         Public  ReadOnly Property ColonEqualsToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameColonEqualsSyntax)._colonEqualsToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -26905,9 +27685,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.RangeArgumentSyntax(kind, errors, annotations, DirectCast(lowerBound.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), toKeyword, DirectCast(upperBound.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The lower bound of the range. This is typically the integer constant zero.
-        ''' </summary>
+        ''' <summary>The lower bound of the range. This is typically the integer constant zero.</summary>
         Public  ReadOnly Property LowerBound As ExpressionSyntax
             Get
                 Return GetRedAtZero(_lowerBound)
@@ -26923,9 +27701,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(lowerBound, Me.ToKeyword, Me.UpperBound)
         End Function
 
-        ''' <summary>
-        ''' The "To" keyword.
-        ''' </summary>
+        ''' <summary>The "To" keyword.</summary>
         Public  ReadOnly Property ToKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.RangeArgumentSyntax)._toKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -26941,9 +27717,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.LowerBound, toKeyword, Me.UpperBound)
         End Function
 
-        ''' <summary>
-        ''' The upper bound of the range.
-        ''' </summary>
+        ''' <summary>The upper bound of the range.</summary>
         Public  ReadOnly Property UpperBound As ExpressionSyntax
             Get
                 Return GetRed(_upperBound, 2)
@@ -27107,9 +27881,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' This is a base class for all query operators.
-    ''' </summary>
+    ''' <summary>This is a base class for all query operators.</summary>
     Public MustInherit Class QueryClauseSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -27143,9 +27915,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CollectionRangeVariableSyntax(kind, errors, annotations, DirectCast(identifier.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ModifiedIdentifierSyntax), if(asClause IsNot Nothing , DirectCast(asClause.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SimpleAsClauseSyntax), Nothing) , inKeyword, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The name of the range variable being defined.
-        ''' </summary>
+        ''' <summary>The name of the range variable being defined.</summary>
         Public  ReadOnly Property Identifier As ModifiedIdentifierSyntax
             Get
                 Return GetRedAtZero(_identifier)
@@ -27161,12 +27931,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(identifier, Me.AsClause, Me.InKeyword, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' Describes the type of the variable being defined.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>Describes the type of the variable being defined.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AsClause As SimpleAsClauseSyntax
             Get
                 Return GetRed(_asClause, 1)
@@ -27182,9 +27948,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Identifier, asClause, Me.InKeyword, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The "In" keyword.
-        ''' </summary>
+        ''' <summary>The "In" keyword.</summary>
         Public  ReadOnly Property InKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CollectionRangeVariableSyntax)._inKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -27200,9 +27964,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Identifier, Me.AsClause, inKeyword, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The expression that serves as the source of items for the range variable.
-        ''' </summary>
+        ''' <summary>The expression that serves as the source of items for the range variable.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 3)
@@ -27307,9 +28069,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The optional name and type of the expression range variable. If omitted, the
         ''' name of the expression range variable is inferred from the expression.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property NameEquals As VariableNameEqualsSyntax
             Get
                 Return GetRedAtZero(_nameEquals)
@@ -27325,9 +28085,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(nameEquals, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The expression used to initialize the expression variable.
-        ''' </summary>
+        ''' <summary>The expression used to initialize the expression variable.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 1)
@@ -27424,9 +28182,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' name of the expression range variable is inferred from the aggregation
         ''' expression.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property NameEquals As VariableNameEqualsSyntax
             Get
                 Return GetRedAtZero(_nameEquals)
@@ -27516,9 +28272,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the name and optional type of an expression range variable.
-    ''' </summary>
+    ''' <summary>Represents the name and optional type of an expression range variable.</summary>
     Public NotInheritable Class VariableNameEqualsSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -27535,9 +28289,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.VariableNameEqualsSyntax(kind, errors, annotations, DirectCast(identifier.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ModifiedIdentifierSyntax), if(asClause IsNot Nothing , DirectCast(asClause.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SimpleAsClauseSyntax), Nothing) , equalsToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The name of the variable being defined.
-        ''' </summary>
+        ''' <summary>The name of the variable being defined.</summary>
         Public  ReadOnly Property Identifier As ModifiedIdentifierSyntax
             Get
                 Return GetRedAtZero(_identifier)
@@ -27553,12 +28305,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(identifier, Me.AsClause, Me.EqualsToken)
         End Function
 
-        ''' <summary>
-        ''' Describes the type of the variable being defined.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>Describes the type of the variable being defined.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AsClause As SimpleAsClauseSyntax
             Get
                 Return GetRed(_asClause, 1)
@@ -27574,9 +28322,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Identifier, asClause, Me.EqualsToken)
         End Function
 
-        ''' <summary>
-        ''' The "=" token.
-        ''' </summary>
+        ''' <summary>The "=" token.</summary>
         Public  ReadOnly Property EqualsToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.VariableNameEqualsSyntax)._equalsToken, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -27685,9 +28431,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.FunctionAggregationSyntax(kind, errors, annotations, functionName, openParenToken, if(argument IsNot Nothing , DirectCast(argument.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), Nothing) , closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The name of the aggregation function.
-        ''' </summary>
+        ''' <summary>The name of the aggregation function.</summary>
         Public  ReadOnly Property FunctionName As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.FunctionAggregationSyntax)._functionName, Me.Position, 0)
@@ -27703,12 +28447,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(functionName, Me.OpenParenToken, Me.Argument, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "(" token if present.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The "(" token if present.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.FunctionAggregationSyntax)._openParenToken
@@ -27728,12 +28468,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.FunctionName, openParenToken, Me.Argument, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The argument to the aggregation function.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The argument to the aggregation function.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Argument As ExpressionSyntax
             Get
                 Return GetRed(_argument, 2)
@@ -27749,12 +28485,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.FunctionName, Me.OpenParenToken, argument, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The ")" token, if present.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The ")" token, if present.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.FunctionAggregationSyntax)._closeParenToken
@@ -27850,9 +28582,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GroupAggregationSyntax(kind, errors, annotations, groupKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Group" keyword.
-        ''' </summary>
+        ''' <summary>The "Group" keyword.</summary>
         Public  ReadOnly Property GroupKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GroupAggregationSyntax)._groupKeyword, Me.Position, 0)
@@ -27930,9 +28660,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.FromClauseSyntax(kind, errors, annotations, fromKeyword, if(variables IsNot Nothing, variables.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "From" keyword.
-        ''' </summary>
+        ''' <summary>The "From" keyword.</summary>
         Public  ReadOnly Property FromKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.FromClauseSyntax)._fromKeyword, Me.Position, 0)
@@ -27948,9 +28676,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(fromKeyword, Me.Variables)
         End Function
 
-        ''' <summary>
-        ''' The list of collection variables declared by this From operator.
-        ''' </summary>
+        ''' <summary>The list of collection variables declared by this From operator.</summary>
         Public  ReadOnly Property Variables As SeparatedSyntaxList(Of CollectionRangeVariableSyntax)
             Get
                 Dim listNode = GetRed(_variables, 1)
@@ -28025,9 +28751,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "Let" query operator.
-    ''' </summary>
+    ''' <summary>Represents a "Let" query operator.</summary>
     Public NotInheritable Class LetClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -28043,9 +28767,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.LetClauseSyntax(kind, errors, annotations, letKeyword, if(variables IsNot Nothing, variables.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Let" keyword.
-        ''' </summary>
+        ''' <summary>The "Let" keyword.</summary>
         Public  ReadOnly Property LetKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.LetClauseSyntax)._letKeyword, Me.Position, 0)
@@ -28061,9 +28783,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(letKeyword, Me.Variables)
         End Function
 
-        ''' <summary>
-        ''' The list of expression range variable being defined by the Let operator.
-        ''' </summary>
+        ''' <summary>The list of expression range variable being defined by the Let operator.</summary>
         Public  ReadOnly Property Variables As SeparatedSyntaxList(Of ExpressionRangeVariableSyntax)
             Get
                 Dim listNode = GetRed(_variables, 1)
@@ -28138,9 +28858,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an Aggregate query operator.
-    ''' </summary>
+    ''' <summary>Represents an Aggregate query operator.</summary>
     Public NotInheritable Class AggregateClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -28158,9 +28876,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AggregateClauseSyntax(kind, errors, annotations, aggregateKeyword, if(variables IsNot Nothing, variables.Green, Nothing), if(additionalQueryOperators IsNot Nothing, additionalQueryOperators.Green, Nothing), intoKeyword, if(aggregationVariables IsNot Nothing, aggregationVariables.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Aggregate" keyword.
-        ''' </summary>
+        ''' <summary>The "Aggregate" keyword.</summary>
         Public  ReadOnly Property AggregateKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AggregateClauseSyntax)._aggregateKeyword, Me.Position, 0)
@@ -28176,9 +28892,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(aggregateKeyword, Me.Variables, Me.AdditionalQueryOperators, Me.IntoKeyword, Me.AggregationVariables)
         End Function
 
-        ''' <summary>
-        ''' The list of collection range variables declared by this Aggregate operator.
-        ''' </summary>
+        ''' <summary>The list of collection range variables declared by this Aggregate operator.</summary>
         Public  ReadOnly Property Variables As SeparatedSyntaxList(Of CollectionRangeVariableSyntax)
             Get
                 Dim listNode = GetRed(_variables, 1)
@@ -28202,12 +28916,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithVariables(Me.Variables.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' A list of additional query operators. It may be empty.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of additional query operators. It may be empty.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property AdditionalQueryOperators As SyntaxList(Of QueryClauseSyntax)
             Get
                 Dim listNode = GetRed(_additionalQueryOperators, 2)
@@ -28228,9 +28938,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithAdditionalQueryOperators(Me.AdditionalQueryOperators.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The "Into" keyword.
-        ''' </summary>
+        ''' <summary>The "Into" keyword.</summary>
         Public  ReadOnly Property IntoKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AggregateClauseSyntax)._intoKeyword, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -28246,9 +28954,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.AggregateKeyword, Me.Variables, Me.AdditionalQueryOperators, intoKeyword, Me.AggregationVariables)
         End Function
 
-        ''' <summary>
-        ''' The list of new variables being defined by the aggregation.
-        ''' </summary>
+        ''' <summary>The list of new variables being defined by the aggregation.</summary>
         Public  ReadOnly Property AggregationVariables As SeparatedSyntaxList(Of AggregationRangeVariableSyntax)
             Get
                 Dim listNode = GetRed(_aggregationVariables, 4)
@@ -28340,9 +29046,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Distinct" query operator.
-    ''' </summary>
+    ''' <summary>Represents the "Distinct" query operator.</summary>
     Public NotInheritable Class DistinctClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -28357,9 +29061,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DistinctClauseSyntax(kind, errors, annotations, distinctKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Distinct" keyword.
-        ''' </summary>
+        ''' <summary>The "Distinct" keyword.</summary>
         Public  ReadOnly Property DistinctKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DistinctClauseSyntax)._distinctKeyword, Me.Position, 0)
@@ -28417,9 +29119,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "Where" query operator.
-    ''' </summary>
+    ''' <summary>Represents a "Where" query operator.</summary>
     Public NotInheritable Class WhereClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -28435,9 +29135,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WhereClauseSyntax(kind, errors, annotations, whereKeyword, DirectCast(condition.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Where" keyword.
-        ''' </summary>
+        ''' <summary>The "Where" keyword.</summary>
         Public  ReadOnly Property WhereKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.WhereClauseSyntax)._whereKeyword, Me.Position, 0)
@@ -28453,9 +29151,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(whereKeyword, Me.Condition)
         End Function
 
-        ''' <summary>
-        ''' The boolean expression used for filtering.
-        ''' </summary>
+        ''' <summary>The boolean expression used for filtering.</summary>
         Public  ReadOnly Property Condition As ExpressionSyntax
             Get
                 Return GetRed(_condition, 1)
@@ -28541,9 +29237,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PartitionWhileClauseSyntax(kind, errors, annotations, skipOrTakeKeyword, whileKeyword, DirectCast(condition.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Skip" or "Take" keyword.
-        ''' </summary>
+        ''' <summary>The "Skip" or "Take" keyword.</summary>
         Public  ReadOnly Property SkipOrTakeKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PartitionWhileClauseSyntax)._skipOrTakeKeyword, Me.Position, 0)
@@ -28559,9 +29253,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, skipOrTakeKeyword, Me.WhileKeyword, Me.Condition)
         End Function
 
-        ''' <summary>
-        ''' The "While" keyword.
-        ''' </summary>
+        ''' <summary>The "While" keyword.</summary>
         Public  ReadOnly Property WhileKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PartitionWhileClauseSyntax)._whileKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -28577,9 +29269,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.SkipOrTakeKeyword, whileKeyword, Me.Condition)
         End Function
 
-        ''' <summary>
-        ''' The boolean expression used for partitioning.
-        ''' </summary>
+        ''' <summary>The boolean expression used for partitioning.</summary>
         Public  ReadOnly Property Condition As ExpressionSyntax
             Get
                 Return GetRed(_condition, 2)
@@ -28652,9 +29342,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "Skip" or "Take" query operator. The Kind property tells which.
-    ''' </summary>
+    ''' <summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary>
     Public NotInheritable Class PartitionClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -28670,9 +29358,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PartitionClauseSyntax(kind, errors, annotations, skipOrTakeKeyword, DirectCast(count.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Skip" or "Take" keyword.
-        ''' </summary>
+        ''' <summary>The "Skip" or "Take" keyword.</summary>
         Public  ReadOnly Property SkipOrTakeKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PartitionClauseSyntax)._skipOrTakeKeyword, Me.Position, 0)
@@ -28688,9 +29374,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, skipOrTakeKeyword, Me.Count)
         End Function
 
-        ''' <summary>
-        ''' Represents the expression with the number of items to take or skip.
-        ''' </summary>
+        ''' <summary>Represents the expression with the number of items to take or skip.</summary>
         Public  ReadOnly Property Count As ExpressionSyntax
             Get
                 Return GetRed(_count, 1)
@@ -28759,9 +29443,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Group By" query operator.
-    ''' </summary>
+    ''' <summary>Represents the "Group By" query operator.</summary>
     Public NotInheritable Class GroupByClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -28779,9 +29461,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GroupByClauseSyntax(kind, errors, annotations, groupKeyword, if(items IsNot Nothing, items.Green, Nothing), byKeyword, if(keys IsNot Nothing, keys.Green, Nothing), intoKeyword, if(aggregationVariables IsNot Nothing, aggregationVariables.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Group" keyword.
-        ''' </summary>
+        ''' <summary>The "Group" keyword.</summary>
         Public  ReadOnly Property GroupKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GroupByClauseSyntax)._groupKeyword, Me.Position, 0)
@@ -28801,9 +29481,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The optional list of variables being grouped; the contents of the Group clause.
         ''' If none were specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Items As SeparatedSyntaxList(Of ExpressionRangeVariableSyntax)
             Get
                 Dim listNode = GetRed(_items, 1)
@@ -28826,9 +29504,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithItems(Me.Items.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The "By" keyword.
-        ''' </summary>
+        ''' <summary>The "By" keyword.</summary>
         Public  ReadOnly Property ByKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GroupByClauseSyntax)._byKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -28844,9 +29520,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.GroupKeyword, Me.Items, byKeyword, Me.Keys, Me.IntoKeyword, Me.AggregationVariables)
         End Function
 
-        ''' <summary>
-        ''' The key values being used for grouping.
-        ''' </summary>
+        ''' <summary>The key values being used for grouping.</summary>
         Public  ReadOnly Property Keys As SeparatedSyntaxList(Of ExpressionRangeVariableSyntax)
             Get
                 Dim listNode = GetRed(_keys, 3)
@@ -28884,9 +29558,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.GroupKeyword, Me.Items, Me.ByKeyword, Me.Keys, intoKeyword, Me.AggregationVariables)
         End Function
 
-        ''' <summary>
-        ''' The list of new variables that calculate aggregations.
-        ''' </summary>
+        ''' <summary>The list of new variables that calculate aggregations.</summary>
         Public  ReadOnly Property AggregationVariables As SeparatedSyntaxList(Of AggregationRangeVariableSyntax)
             Get
                 Dim listNode = GetRed(_aggregationVariables, 5)
@@ -28981,9 +29653,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a Join or a Group Join query operator.
-    ''' </summary>
+    ''' <summary>Represents a Join or a Group Join query operator.</summary>
     Public MustInherit Class JoinClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -28997,9 +29667,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Join" keyword.
-        ''' </summary>
+        ''' <summary>The "Join" keyword.</summary>
         Public ReadOnly Property JoinKeyword As SyntaxToken
             Get
                 Return Me.GetJoinKeywordCore()
@@ -29020,9 +29688,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         End Function
         Friend MustOverride Function WithJoinKeywordCore(joinKeyword As SyntaxToken) As JoinClauseSyntax
 
-        ''' <summary>
-        ''' Defines the collection range variables being joined to.
-        ''' </summary>
+        ''' <summary>Defines the collection range variables being joined to.</summary>
         Public Overridable ReadOnly Property JoinedVariables As SeparatedSyntaxList(Of CollectionRangeVariableSyntax)
             Get
                 Dim listNode = GetRed(_joinedVariables, 1)
@@ -29047,12 +29713,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddJoinedVariablesCore(items)
         End Function
         Friend MustOverride Function AddJoinedVariablesCore(ParamArray items As CollectionRangeVariableSyntax()) As JoinClauseSyntax
-        ''' <summary>
-        ''' An additional Join or Group Join query operator.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>An additional Join or Group Join query operator.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public ReadOnly Property AdditionalJoins As SyntaxList(Of JoinClauseSyntax)
             Get
                 Return Me.GetAdditionalJoinsCore()
@@ -29078,9 +29740,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddAdditionalJoinsCore(items)
         End Function
         Friend MustOverride Function AddAdditionalJoinsCore(ParamArray items As JoinClauseSyntax()) As JoinClauseSyntax
-        ''' <summary>
-        ''' The "On" keyword.
-        ''' </summary>
+        ''' <summary>The "On" keyword.</summary>
         Public ReadOnly Property OnKeyword As SyntaxToken
             Get
                 Return Me.GetOnKeywordCore()
@@ -29131,9 +29791,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         Friend MustOverride Function AddJoinConditionsCore(ParamArray items As JoinConditionSyntax()) As JoinClauseSyntax
     End Class
 
-    ''' <summary>
-    ''' Represents the "expression Equals expression" condition in a Join.
-    ''' </summary>
+    ''' <summary>Represents the "expression Equals expression" condition in a Join.</summary>
     Public NotInheritable Class JoinConditionSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -29150,9 +29808,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.JoinConditionSyntax(kind, errors, annotations, DirectCast(left.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), equalsKeyword, DirectCast(right.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The left expression in the Join condition.
-        ''' </summary>
+        ''' <summary>The left expression in the Join condition.</summary>
         Public  ReadOnly Property Left As ExpressionSyntax
             Get
                 Return GetRedAtZero(_left)
@@ -29167,9 +29823,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(left, Me.EqualsKeyword, Me.Right)
         End Function
 
-        ''' <summary>
-        ''' The "Equals" keyword.
-        ''' </summary>
+        ''' <summary>The "Equals" keyword.</summary>
         Public  ReadOnly Property EqualsKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.JoinConditionSyntax)._equalsKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -29185,9 +29839,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Left, equalsKeyword, Me.Right)
         End Function
 
-        ''' <summary>
-        ''' The right expression in the Join condition.
-        ''' </summary>
+        ''' <summary>The right expression in the Join condition.</summary>
         Public  ReadOnly Property Right As ExpressionSyntax
             Get
                 Return GetRed(_right, 2)
@@ -29260,9 +29912,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a Join query operator.
-    ''' </summary>
+    ''' <summary>Represents a Join query operator.</summary>
     Public NotInheritable Class SimpleJoinClauseSyntax
         Inherits JoinClauseSyntax
 
@@ -29277,9 +29927,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SimpleJoinClauseSyntax(kind, errors, annotations, joinKeyword, if(joinedVariables IsNot Nothing, joinedVariables.Green, Nothing), if(additionalJoins IsNot Nothing, additionalJoins.Green, Nothing), onKeyword, if(joinConditions IsNot Nothing, joinConditions.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Join" keyword.
-        ''' </summary>
+        ''' <summary>The "Join" keyword.</summary>
         Public Shadows ReadOnly Property JoinKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SimpleJoinClauseSyntax)._joinKeyword, Me.Position, 0)
@@ -29303,9 +29951,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(joinKeyword, Me.JoinedVariables, Me.AdditionalJoins, Me.OnKeyword, Me.JoinConditions)
         End Function
 
-        ''' <summary>
-        ''' Defines the collection range variables being joined to.
-        ''' </summary>
+        ''' <summary>Defines the collection range variables being joined to.</summary>
         Public Overrides ReadOnly Property JoinedVariables As SeparatedSyntaxList(Of CollectionRangeVariableSyntax)
             Get
                 Dim listNode = GetRed(_joinedVariables, 1)
@@ -29337,12 +29983,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddJoinedVariables(items)
         End Function
 
-        ''' <summary>
-        ''' An additional Join or Group Join query operator.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>An additional Join or Group Join query operator.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AdditionalJoins As SyntaxList(Of JoinClauseSyntax)
             Get
                 Dim listNode = GetRed(_additionalJoins, 2)
@@ -29375,9 +30017,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddAdditionalJoins(items)
         End Function
 
-        ''' <summary>
-        ''' The "On" keyword.
-        ''' </summary>
+        ''' <summary>The "On" keyword.</summary>
         Public Shadows ReadOnly Property OnKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SimpleJoinClauseSyntax)._onKeyword, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -29504,9 +30144,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Group Join" query operator.
-    ''' </summary>
+    ''' <summary>Represents the "Group Join" query operator.</summary>
     Public NotInheritable Class GroupJoinClauseSyntax
         Inherits JoinClauseSyntax
 
@@ -29522,9 +30160,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GroupJoinClauseSyntax(kind, errors, annotations, groupKeyword, joinKeyword, if(joinedVariables IsNot Nothing, joinedVariables.Green, Nothing), if(additionalJoins IsNot Nothing, additionalJoins.Green, Nothing), onKeyword, if(joinConditions IsNot Nothing, joinConditions.Green, Nothing), intoKeyword, if(aggregationVariables IsNot Nothing, aggregationVariables.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Group" keyword.
-        ''' </summary>
+        ''' <summary>The "Group" keyword.</summary>
         Public  ReadOnly Property GroupKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GroupJoinClauseSyntax)._groupKeyword, Me.Position, 0)
@@ -29540,9 +30176,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(groupKeyword, Me.JoinKeyword, Me.JoinedVariables, Me.AdditionalJoins, Me.OnKeyword, Me.JoinConditions, Me.IntoKeyword, Me.AggregationVariables)
         End Function
 
-        ''' <summary>
-        ''' The "Join" keyword.
-        ''' </summary>
+        ''' <summary>The "Join" keyword.</summary>
         Public Shadows ReadOnly Property JoinKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GroupJoinClauseSyntax)._joinKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -29566,9 +30200,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.GroupKeyword, joinKeyword, Me.JoinedVariables, Me.AdditionalJoins, Me.OnKeyword, Me.JoinConditions, Me.IntoKeyword, Me.AggregationVariables)
         End Function
 
-        ''' <summary>
-        ''' Defines the collection range variables being joined to.
-        ''' </summary>
+        ''' <summary>Defines the collection range variables being joined to.</summary>
         Public Overrides ReadOnly Property JoinedVariables As SeparatedSyntaxList(Of CollectionRangeVariableSyntax)
             Get
                 Dim listNode = GetRed(_joinedVariables, 2)
@@ -29600,12 +30232,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddJoinedVariables(items)
         End Function
 
-        ''' <summary>
-        ''' An additional Join or Group Join query operator.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>An additional Join or Group Join query operator.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public Shadows ReadOnly Property AdditionalJoins As SyntaxList(Of JoinClauseSyntax)
             Get
                 Dim listNode = GetRed(_additionalJoins, 3)
@@ -29638,9 +30266,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddAdditionalJoins(items)
         End Function
 
-        ''' <summary>
-        ''' The "On" keyword.
-        ''' </summary>
+        ''' <summary>The "On" keyword.</summary>
         Public Shadows ReadOnly Property OnKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GroupJoinClauseSyntax)._onKeyword, Me.GetChildPosition(4), Me.GetChildIndex(4))
@@ -29699,9 +30325,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return AddJoinConditions(items)
         End Function
 
-        ''' <summary>
-        ''' The "Into" keyword.
-        ''' </summary>
+        ''' <summary>The "Into" keyword.</summary>
         Public  ReadOnly Property IntoKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GroupJoinClauseSyntax)._intoKeyword, Me.GetChildPosition(6), Me.GetChildIndex(6))
@@ -29717,9 +30341,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.GroupKeyword, Me.JoinKeyword, Me.JoinedVariables, Me.AdditionalJoins, Me.OnKeyword, Me.JoinConditions, intoKeyword, Me.AggregationVariables)
         End Function
 
-        ''' <summary>
-        ''' The list of new variables that calculate aggregations.
-        ''' </summary>
+        ''' <summary>The list of new variables that calculate aggregations.</summary>
         Public  ReadOnly Property AggregationVariables As SeparatedSyntaxList(Of AggregationRangeVariableSyntax)
             Get
                 Dim listNode = GetRed(_aggregationVariables, 7)
@@ -29824,9 +30446,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Order By" query operator.
-    ''' </summary>
+    ''' <summary>Represents the "Order By" query operator.</summary>
     Public NotInheritable Class OrderByClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -29842,9 +30462,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OrderByClauseSyntax(kind, errors, annotations, orderKeyword, byKeyword, if(orderings IsNot Nothing, orderings.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Order" keyword
-        ''' </summary>
+        ''' <summary>The "Order" keyword</summary>
         Public  ReadOnly Property OrderKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OrderByClauseSyntax)._orderKeyword, Me.Position, 0)
@@ -29860,9 +30478,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(orderKeyword, Me.ByKeyword, Me.Orderings)
         End Function
 
-        ''' <summary>
-        ''' The "By" keyword.
-        ''' </summary>
+        ''' <summary>The "By" keyword.</summary>
         Public  ReadOnly Property ByKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OrderByClauseSyntax)._byKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -29878,9 +30494,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.OrderKeyword, byKeyword, Me.Orderings)
         End Function
 
-        ''' <summary>
-        ''' The list of OrderExpression's to sort by.
-        ''' </summary>
+        ''' <summary>The list of OrderExpression's to sort by.</summary>
         Public  ReadOnly Property Orderings As SeparatedSyntaxList(Of OrderingSyntax)
             Get
                 Dim listNode = GetRed(_orderings, 2)
@@ -29977,9 +30591,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OrderingSyntax(kind, errors, annotations, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), ascendingOrDescendingKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The expression to sort by.
-        ''' </summary>
+        ''' <summary>The expression to sort by.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRedAtZero(_expression)
@@ -29999,9 +30611,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The "Ascending" or "Descending" keyword, if present. To determine whether to
         ''' sort in ascending or descending order, checking the Kind property is easier.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AscendingOrDescendingKeyword As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.OrderingSyntax)._ascendingOrDescendingKeyword
@@ -30075,9 +30685,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Select" query operator.
-    ''' </summary>
+    ''' <summary>Represents the "Select" query operator.</summary>
     Public NotInheritable Class SelectClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -30093,9 +30701,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectClauseSyntax(kind, errors, annotations, selectKeyword, if(variables IsNot Nothing, variables.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Select" keyword.
-        ''' </summary>
+        ''' <summary>The "Select" keyword.</summary>
         Public  ReadOnly Property SelectKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectClauseSyntax)._selectKeyword, Me.Position, 0)
@@ -30205,9 +30811,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an XML Document literal expression.
-    ''' </summary>
+    ''' <summary>Represents an XML Document literal expression.</summary>
     Public NotInheritable Class XmlDocumentSyntax
         Inherits XmlNodeSyntax
 
@@ -30241,9 +30845,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(declaration, Me.PrecedingMisc, Me.Root, Me.FollowingMisc)
         End Function
 
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property PrecedingMisc As SyntaxList(Of XmlNodeSyntax)
             Get
                 Dim listNode = GetRed(_precedingMisc, 1)
@@ -30278,9 +30880,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Declaration, Me.PrecedingMisc, root, Me.FollowingMisc)
         End Function
 
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property FollowingMisc As SyntaxList(Of XmlNodeSyntax)
             Get
                 Dim listNode = GetRed(_followingMisc, 3)
@@ -30370,9 +30970,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the XML declaration prologue in an XML literal expression.
-    ''' </summary>
+    ''' <summary>Represents the XML declaration prologue in an XML literal expression.</summary>
     Public NotInheritable Class XmlDeclarationSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -30435,9 +31033,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.LessThanQuestionToken, Me.XmlKeyword, version, Me.Encoding, Me.Standalone, Me.QuestionGreaterThanToken)
         End Function
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Encoding As XmlDeclarationOptionSyntax
             Get
                 Return GetRed(_encoding, 3)
@@ -30453,9 +31049,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.LessThanQuestionToken, Me.XmlKeyword, Me.Version, encoding, Me.Standalone, Me.QuestionGreaterThanToken)
         End Function
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Standalone As XmlDeclarationOptionSyntax
             Get
                 Return GetRed(_standalone, 4)
@@ -30672,9 +31266,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an XML element with content in an XML literal expression.
-    ''' </summary>
+    ''' <summary>Represents an XML element with content in an XML literal expression.</summary>
     Public NotInheritable Class XmlElementSyntax
         Inherits XmlNodeSyntax
 
@@ -30707,9 +31299,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(startTag, Me.Content, Me.EndTag)
         End Function
 
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Content As SyntaxList(Of XmlNodeSyntax)
             Get
                 Dim listNode = GetRed(_content, 1)
@@ -30806,9 +31396,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents Xml text.
-    ''' </summary>
+    ''' <summary>Represents Xml text.</summary>
     Public NotInheritable Class XmlTextSyntax
         Inherits XmlNodeSyntax
 
@@ -30892,9 +31480,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the start tag of an XML element of the form &lt;element&gt;.
-    ''' </summary>
+    ''' <summary>Represents the start tag of an XML element of the form &lt;element&gt;.</summary>
     Public NotInheritable Class XmlElementStartTagSyntax
         Inherits XmlNodeSyntax
 
@@ -30940,9 +31526,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.LessThanToken, name, Me.Attributes, Me.GreaterThanToken)
         End Function
 
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Attributes As SyntaxList(Of XmlNodeSyntax)
             Get
                 Dim listNode = GetRed(_attributes, 2)
@@ -31039,9 +31623,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the end tag of an XML element of the form &lt;/element&gt;.
-    ''' </summary>
+    ''' <summary>Represents the end tag of an XML element of the form &lt;/element&gt;.</summary>
     Public NotInheritable Class XmlElementEndTagSyntax
         Inherits XmlNodeSyntax
 
@@ -31072,9 +31654,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(lessThanSlashToken, Me.Name, Me.GreaterThanToken)
         End Function
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Name As XmlNameSyntax
             Get
                 Return GetRed(_name, 1)
@@ -31158,9 +31738,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an empty XML element of the form &lt;element /&gt;
-    ''' </summary>
+    ''' <summary>Represents an empty XML element of the form &lt;element /&gt;</summary>
     Public NotInheritable Class XmlEmptyElementSyntax
         Inherits XmlNodeSyntax
 
@@ -31206,9 +31784,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.LessThanToken, name, Me.Attributes, Me.SlashGreaterThanToken)
         End Function
 
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Attributes As SyntaxList(Of XmlNodeSyntax)
             Get
                 Dim listNode = GetRed(_attributes, 2)
@@ -31305,9 +31881,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an XML attribute in an XML literal expression.
-    ''' </summary>
+    ''' <summary>Represents an XML attribute in an XML literal expression.</summary>
     Public NotInheritable Class XmlAttributeSyntax
         Inherits BaseXmlAttributeSyntax
 
@@ -31425,9 +31999,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an XML attribute in an XML literal expression.
-    ''' </summary>
+    ''' <summary>Represents an XML attribute in an XML literal expression.</summary>
     Public MustInherit Class BaseXmlAttributeSyntax
         Inherits XmlNodeSyntax
 
@@ -31473,9 +32045,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(startQuoteToken, Me.TextTokens, Me.EndQuoteToken)
         End Function
 
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property TextTokens As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.XmlStringSyntax)._textTokens
@@ -31564,9 +32134,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an XML name of the form 'name' appearing in GetXmlNamespace().
-    ''' </summary>
+    ''' <summary>Represents an XML name of the form 'name' appearing in GetXmlNamespace().</summary>
     Public NotInheritable Class XmlPrefixNameSyntax
         Inherits XmlNodeSyntax
 
@@ -31657,9 +32225,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.XmlNameSyntax(kind, errors, annotations, if(prefix IsNot Nothing , DirectCast(prefix.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.XmlPrefixSyntax), Nothing) , localName), Nothing, 0)
         End Sub
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Prefix As XmlPrefixSyntax
             Get
                 Return GetRedAtZero(_prefix)
@@ -31858,9 +32424,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an XML namespace prefix of the form 'prefix:' as in xml:ns="".
-    ''' </summary>
+    ''' <summary>Represents an XML namespace prefix of the form 'prefix:' as in xml:ns="".</summary>
     Public NotInheritable Class XmlPrefixSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -32210,9 +32774,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an XML CDATA section in an XML literal expression.
-    ''' </summary>
+    ''' <summary>Represents an XML CDATA section in an XML literal expression.</summary>
     Public NotInheritable Class XmlCDataSectionSyntax
         Inherits XmlNodeSyntax
 
@@ -32485,9 +33047,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ArrayTypeSyntax(kind, errors, annotations, DirectCast(elementType.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeSyntax), if(rankSpecifiers IsNot Nothing, rankSpecifiers.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The type of the elements of the array.
-        ''' </summary>
+        ''' <summary>The type of the elements of the array.</summary>
         Public  ReadOnly Property ElementType As TypeSyntax
             Get
                 Return GetRedAtZero(_elementType)
@@ -32503,9 +33063,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(elementType, Me.RankSpecifiers)
         End Function
 
-        ''' <summary>
-        ''' Represents the list of "()" or "(,,)" modifiers on the array type.
-        ''' </summary>
+        ''' <summary>Represents the list of "()" or "(,,)" modifiers on the array type.</summary>
         Public  ReadOnly Property RankSpecifiers As SyntaxList(Of ArrayRankSpecifierSyntax)
             Get
                 Dim listNode = GetRed(_rankSpecifiers, 1)
@@ -32581,9 +33139,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' A type name that represents a nullable type, such as "Integer?".
-    ''' </summary>
+    ''' <summary>A type name that represents a nullable type, such as "Integer?".</summary>
     Public NotInheritable Class NullableTypeSyntax
         Inherits TypeSyntax
 
@@ -32618,9 +33174,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(elementType, Me.QuestionMarkToken)
         End Function
 
-        ''' <summary>
-        ''' The "?" token.
-        ''' </summary>
+        ''' <summary>The "?" token.</summary>
         Public  ReadOnly Property QuestionMarkToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NullableTypeSyntax)._questionMarkToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -32705,9 +33259,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PredefinedTypeSyntax(kind, errors, annotations, keyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The keyword that was used to describe the built-in type.
-        ''' </summary>
+        ''' <summary>The keyword that was used to describe the built-in type.</summary>
         Public  ReadOnly Property Keyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.PredefinedTypeSyntax)._keyword, Me.Position, 0)
@@ -32781,9 +33333,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Abstract node class that represents a name, possibly include generic arguments.
-    ''' </summary>
+    ''' <summary>Abstract node class that represents a name, possibly include generic arguments.</summary>
     Public MustInherit Class SimpleNameSyntax
         Inherits NameSyntax
 
@@ -32794,9 +33344,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        ''' <summary>
-        ''' The identifier in the name.
-        ''' </summary>
+        ''' <summary>The identifier in the name.</summary>
         Public ReadOnly Property Identifier As SyntaxToken
             Get
                 Return Me.GetIdentifierCore()
@@ -32837,9 +33385,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IdentifierNameSyntax(kind, errors, annotations, identifier), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The identifier in the name.
-        ''' </summary>
+        ''' <summary>The identifier in the name.</summary>
         Public Shadows ReadOnly Property Identifier As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IdentifierNameSyntax)._identifier, Me.Position, 0)
@@ -32924,9 +33470,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GenericNameSyntax(kind, errors, annotations, identifier, DirectCast(typeArgumentList.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeArgumentListSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The identifier in the name.
-        ''' </summary>
+        ''' <summary>The identifier in the name.</summary>
         Public Shadows ReadOnly Property Identifier As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GenericNameSyntax)._identifier, Me.Position, 0)
@@ -32950,9 +33494,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(identifier, Me.TypeArgumentList)
         End Function
 
-        ''' <summary>
-        ''' The generic argument list.
-        ''' </summary>
+        ''' <summary>The generic argument list.</summary>
         Public  ReadOnly Property TypeArgumentList As TypeArgumentListSyntax
             Get
                 Return GetRed(_typeArgumentList, 1)
@@ -33024,9 +33566,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a qualified type name, for example X.Y or X(Of Z).Y.
-    ''' </summary>
+    ''' <summary>Represents a qualified type name, for example X.Y or X(Of Z).Y.</summary>
     Public NotInheritable Class QualifiedNameSyntax
         Inherits NameSyntax
 
@@ -33061,9 +33601,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(left, Me.DotToken, Me.Right)
         End Function
 
-        ''' <summary>
-        ''' The "." token that separates the names.
-        ''' </summary>
+        ''' <summary>The "." token that separates the names.</summary>
         Public  ReadOnly Property DotToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.QualifiedNameSyntax)._dotToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -33155,9 +33693,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a name in the global namespace.
-    ''' </summary>
+    ''' <summary>Represents a name in the global namespace.</summary>
     Public NotInheritable Class GlobalNameSyntax
         Inherits NameSyntax
 
@@ -33172,9 +33708,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GlobalNameSyntax(kind, errors, annotations, globalKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Global" keyword.
-        ''' </summary>
+        ''' <summary>The "Global" keyword.</summary>
         Public  ReadOnly Property GlobalKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.GlobalNameSyntax)._globalKeyword, Me.Position, 0)
@@ -33232,9 +33766,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a parenthesized list of generic type arguments.
-    ''' </summary>
+    ''' <summary>Represents a parenthesized list of generic type arguments.</summary>
     Public NotInheritable Class TypeArgumentListSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -33250,9 +33782,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeArgumentListSyntax(kind, errors, annotations, openParenToken, ofKeyword, if(arguments IsNot Nothing, arguments.Green, Nothing), closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Public  ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeArgumentListSyntax)._openParenToken, Me.Position, 0)
@@ -33268,9 +33798,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(openParenToken, Me.OfKeyword, Me.Arguments, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "Of" keyword.
-        ''' </summary>
+        ''' <summary>The "Of" keyword.</summary>
         Public  ReadOnly Property OfKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeArgumentListSyntax)._ofKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -33286,9 +33814,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.OpenParenToken, ofKeyword, Me.Arguments, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' A list of all the type arguments.
-        ''' </summary>
+        ''' <summary>A list of all the type arguments.</summary>
         Public  ReadOnly Property Arguments As SeparatedSyntaxList(Of TypeSyntax)
             Get
                 Dim listNode = GetRed(_arguments, 2)
@@ -33312,9 +33838,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithArguments(Me.Arguments.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Public  ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeArgumentListSyntax)._closeParenToken, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -33422,9 +33946,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(name, Me.Signature, Me.AsClause)
         End Function
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Signature As CrefSignatureSyntax
             Get
                 Return GetRed(_signature, 1)
@@ -33445,9 +33967,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithSignature(_child.AddArgumentTypes(items))
         End Function
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AsClause As SimpleAsClauseSyntax
             Get
                 Return GetRed(_asClause, 2)
@@ -33666,9 +34186,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CrefSignaturePartSyntax(kind, errors, annotations, modifier, if(type IsNot Nothing , DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeSyntax), Nothing) ), Nothing, 0)
         End Sub
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Modifier As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CrefSignaturePartSyntax)._modifier
@@ -33688,9 +34206,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(modifier, Me.Type)
         End Function
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Type As TypeSyntax
             Get
                 Return GetRed(_type, 1)
@@ -33964,9 +34480,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represent a Yield statement.
-    ''' </summary>
+    ''' <summary>Represent a Yield statement.</summary>
     Public NotInheritable Class YieldStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -33982,9 +34496,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.YieldStatementSyntax(kind, errors, annotations, yieldKeyword, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Yield" keyword.
-        ''' </summary>
+        ''' <summary>The "Yield" keyword.</summary>
         Public  ReadOnly Property YieldKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.YieldStatementSyntax)._yieldKeyword, Me.Position, 0)
@@ -34000,9 +34512,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(yieldKeyword, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The expression whose value is being yielded.
-        ''' </summary>
+        ''' <summary>The expression whose value is being yielded.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 1)
@@ -34069,9 +34579,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an Await expression.
-    ''' </summary>
+    ''' <summary>Represents an Await expression.</summary>
     Public NotInheritable Class AwaitExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -34087,9 +34595,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AwaitExpressionSyntax(kind, errors, annotations, awaitKeyword, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "Await" keyword.
-        ''' </summary>
+        ''' <summary>The "Await" keyword.</summary>
         Public  ReadOnly Property AwaitKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.AwaitExpressionSyntax)._awaitKeyword, Me.Position, 0)
@@ -34105,9 +34611,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(awaitKeyword, Me.Expression)
         End Function
 
-        ''' <summary>
-        ''' The expression being awaited.
-        ''' </summary>
+        ''' <summary>The expression being awaited.</summary>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRed(_expression, 1)
@@ -34174,9 +34678,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Abstract class that represent structured trivia.
-    ''' </summary>
+    ''' <summary>Abstract class that represent structured trivia.</summary>
     Public MustInherit Class StructuredTriviaSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -34201,12 +34703,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SkippedTokensTriviaSyntax(kind, errors, annotations, tokens), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The list of tokens that were skipped by the parser.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The list of tokens that were skipped by the parser.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Tokens As SyntaxTokenList
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SkippedTokensTriviaSyntax)._tokens
@@ -34290,9 +34788,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DocumentationCommentTriviaSyntax(kind, errors, annotations, if(content IsNot Nothing, content.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Public  ReadOnly Property Content As SyntaxList(Of XmlNodeSyntax)
             Get
                 Dim listNode = GetRedAtZero(_content)
@@ -34677,9 +35173,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' ExpressionSyntax node representing the object conditionally accessed.
-    ''' </summary>
+    ''' <summary>ExpressionSyntax node representing the object conditionally accessed.</summary>
     Public NotInheritable Class ConditionalAccessExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -34696,12 +35190,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ConditionalAccessExpressionSyntax(kind, errors, annotations, if(expression IsNot Nothing , DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), Nothing) , questionMarkToken, DirectCast(whenNotNull.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The expression on the left-hand-side of the "?".
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The expression on the left-hand-side of the "?".</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property Expression As ExpressionSyntax
             Get
                 Return GetRedAtZero(_expression)
@@ -34717,9 +35207,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(expression, Me.QuestionMarkToken, Me.WhenNotNull)
         End Function
 
-        ''' <summary>
-        ''' "?" token.
-        ''' </summary>
+        ''' <summary>"?" token.</summary>
         Public  ReadOnly Property QuestionMarkToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ConditionalAccessExpressionSyntax)._questionMarkToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -34812,9 +35300,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a NameOf expression.
-    ''' </summary>
+    ''' <summary>Represents a NameOf expression.</summary>
     Public NotInheritable Class NameOfExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -34830,9 +35316,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameOfExpressionSyntax(kind, errors, annotations, nameOfKeyword, openParenToken, DirectCast(argument.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "NameOf" keyword.
-        ''' </summary>
+        ''' <summary>The "NameOf" keyword.</summary>
         Public  ReadOnly Property NameOfKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameOfExpressionSyntax)._nameOfKeyword, Me.Position, 0)
@@ -34848,9 +35332,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(nameOfKeyword, Me.OpenParenToken, Me.Argument, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Public  ReadOnly Property OpenParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameOfExpressionSyntax)._openParenToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -34866,9 +35348,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.NameOfKeyword, openParenToken, Me.Argument, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The argument.
-        ''' </summary>
+        ''' <summary>The argument.</summary>
         Public  ReadOnly Property Argument As ExpressionSyntax
             Get
                 Return GetRed(_argument, 2)
@@ -34884,9 +35364,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.NameOfKeyword, Me.OpenParenToken, argument, Me.CloseParenToken)
         End Function
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Public  ReadOnly Property CloseParenToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameOfExpressionSyntax)._closeParenToken, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -34959,9 +35437,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an interpolated string expression.
-    ''' </summary>
+    ''' <summary>Represents an interpolated string expression.</summary>
     Public NotInheritable Class InterpolatedStringExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -34977,9 +35453,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterpolatedStringExpressionSyntax(kind, errors, annotations, dollarSignDoubleQuoteToken, if(contents IsNot Nothing, contents.Green, Nothing), doubleQuoteToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The opening '$"', '$“', or '$”' token.
-        ''' </summary>
+        ''' <summary>The opening '$"', '$“', or '$”' token.</summary>
         Public  ReadOnly Property DollarSignDoubleQuoteToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterpolatedStringExpressionSyntax)._dollarSignDoubleQuoteToken, Me.Position, 0)
@@ -34995,9 +35469,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(dollarSignDoubleQuoteToken, Me.Contents, Me.DoubleQuoteToken)
         End Function
 
-        ''' <summary>
-        ''' The contents of the interpolated string.
-        ''' </summary>
+        ''' <summary>The contents of the interpolated string.</summary>
         Public  ReadOnly Property Contents As SyntaxList(Of InterpolatedStringContentSyntax)
             Get
                 Dim listNode = GetRed(_contents, 1)
@@ -35018,9 +35490,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Return Me.WithContents(Me.Contents.AddRange(items))
         End Function
 
-        ''' <summary>
-        ''' The closing '"', '”', or '“' token.
-        ''' </summary>
+        ''' <summary>The closing '"', '”', or '“' token.</summary>
         Public  ReadOnly Property DoubleQuoteToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterpolatedStringExpressionSyntax)._doubleQuoteToken, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -35090,9 +35560,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents either text content or an interpolation.
-    ''' </summary>
+    ''' <summary>Represents either text content or an interpolation.</summary>
     Public MustInherit Class InterpolatedStringContentSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -35105,9 +35573,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents literal text content in an interpolated string.
-    ''' </summary>
+    ''' <summary>Represents literal text content in an interpolated string.</summary>
     Public NotInheritable Class InterpolatedStringTextSyntax
         Inherits InterpolatedStringContentSyntax
 
@@ -35122,9 +35588,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterpolatedStringTextSyntax(kind, errors, annotations, textToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The text token.
-        ''' </summary>
+        ''' <summary>The text token.</summary>
         Public  ReadOnly Property TextToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterpolatedStringTextSyntax)._textToken, Me.Position, 0)
@@ -35203,9 +35667,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterpolationSyntax(kind, errors, annotations, openBraceToken, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), if(alignmentClause IsNot Nothing , DirectCast(alignmentClause.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterpolationAlignmentClauseSyntax), Nothing) , if(formatClause IsNot Nothing , DirectCast(formatClause.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterpolationFormatClauseSyntax), Nothing) , closeBraceToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The opening curly brace '{' token.
-        ''' </summary>
+        ''' <summary>The opening curly brace '{' token.</summary>
         Public  ReadOnly Property OpenBraceToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterpolationSyntax)._openBraceToken, Me.Position, 0)
@@ -35240,12 +35702,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.OpenBraceToken, expression, Me.AlignmentClause, Me.FormatClause, Me.CloseBraceToken)
         End Function
 
-        ''' <summary>
-        ''' Optional. The alignment clause ',alignment' of the embedded expression.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>Optional. The alignment clause ',alignment' of the embedded expression.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property AlignmentClause As InterpolationAlignmentClauseSyntax
             Get
                 Return GetRed(_alignmentClause, 2)
@@ -35261,12 +35719,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.OpenBraceToken, Me.Expression, alignmentClause, Me.FormatClause, Me.CloseBraceToken)
         End Function
 
-        ''' <summary>
-        ''' Optional. The format string clause ':formatString' of the embedded expression.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>Optional. The format string clause ':formatString' of the embedded expression.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property FormatClause As InterpolationFormatClauseSyntax
             Get
                 Return GetRed(_formatClause, 3)
@@ -35282,9 +35736,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.OpenBraceToken, Me.Expression, Me.AlignmentClause, formatClause, Me.CloseBraceToken)
         End Function
 
-        ''' <summary>
-        ''' The closing curly brace '}' token of the embedded expression.
-        ''' </summary>
+        ''' <summary>The closing curly brace '}' token of the embedded expression.</summary>
         Public  ReadOnly Property CloseBraceToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterpolationSyntax)._closeBraceToken, Me.GetChildPosition(4), Me.GetChildIndex(4))
@@ -35387,9 +35839,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterpolationAlignmentClauseSyntax(kind, errors, annotations, commaToken, DirectCast(value.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The comma ',' token.
-        ''' </summary>
+        ''' <summary>The comma ',' token.</summary>
         Public  ReadOnly Property CommaToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterpolationAlignmentClauseSyntax)._commaToken, Me.Position, 0)
@@ -35405,9 +35855,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(commaToken, Me.Value)
         End Function
 
-        ''' <summary>
-        ''' An expression representing the alignment of the interpolated expression.
-        ''' </summary>
+        ''' <summary>An expression representing the alignment of the interpolated expression.</summary>
         Public  ReadOnly Property Value As ExpressionSyntax
             Get
                 Return GetRed(_value, 1)
@@ -35491,9 +35939,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterpolationFormatClauseSyntax(kind, errors, annotations, colonToken, formatStringToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The ':' token.
-        ''' </summary>
+        ''' <summary>The ':' token.</summary>
         Public  ReadOnly Property ColonToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterpolationFormatClauseSyntax)._colonToken, Me.Position, 0)
@@ -35509,9 +35955,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(colonToken, Me.FormatStringToken)
         End Function
 
-        ''' <summary>
-        ''' The format string.
-        ''' </summary>
+        ''' <summary>The format string.</summary>
         Public  ReadOnly Property FormatStringToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.InterpolationFormatClauseSyntax)._formatStringToken, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -35588,9 +36032,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        ''' <summary>
-        ''' The "#" token in a preprocessor directive.
-        ''' </summary>
+        ''' <summary>The "#" token in a preprocessor directive.</summary>
         Public ReadOnly Property HashToken As SyntaxToken
             Get
                 Return Me.GetHashTokenCore()
@@ -35613,9 +36055,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a #Const pre-processing constant declaration appearing in source.
-    ''' </summary>
+    ''' <summary>Represents a #Const pre-processing constant declaration appearing in source.</summary>
     Public NotInheritable Class ConstDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -35631,9 +36071,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ConstDirectiveTriviaSyntax(kind, errors, annotations, hashToken, constKeyword, name, equalsToken, DirectCast(value.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "#" token in a preprocessor directive.
-        ''' </summary>
+        ''' <summary>The "#" token in a preprocessor directive.</summary>
         Public Shadows ReadOnly Property HashToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ConstDirectiveTriviaSyntax)._hashToken, Me.Position, 0)
@@ -35657,9 +36095,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(hashToken, Me.ConstKeyword, Me.Name, Me.EqualsToken, Me.Value)
         End Function
 
-        ''' <summary>
-        ''' The "Const" keyword.
-        ''' </summary>
+        ''' <summary>The "Const" keyword.</summary>
         Public  ReadOnly Property ConstKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ConstDirectiveTriviaSyntax)._constKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -35675,9 +36111,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.HashToken, constKeyword, Me.Name, Me.EqualsToken, Me.Value)
         End Function
 
-        ''' <summary>
-        ''' The name of the pre-processing constant being defined.
-        ''' </summary>
+        ''' <summary>The name of the pre-processing constant being defined.</summary>
         Public  ReadOnly Property Name As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ConstDirectiveTriviaSyntax)._name, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -35692,9 +36126,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.HashToken, Me.ConstKeyword, name, Me.EqualsToken, Me.Value)
         End Function
 
-        ''' <summary>
-        ''' The "=" token.
-        ''' </summary>
+        ''' <summary>The "=" token.</summary>
         Public  ReadOnly Property EqualsToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ConstDirectiveTriviaSyntax)._equalsToken, Me.GetChildPosition(3), Me.GetChildIndex(3))
@@ -35807,9 +36239,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IfDirectiveTriviaSyntax(kind, errors, annotations, hashToken, elseKeyword, ifOrElseIfKeyword, DirectCast(condition.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), thenKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "#" token in a preprocessor directive.
-        ''' </summary>
+        ''' <summary>The "#" token in a preprocessor directive.</summary>
         Public Shadows ReadOnly Property HashToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IfDirectiveTriviaSyntax)._hashToken, Me.Position, 0)
@@ -35833,9 +36263,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, hashToken, Me.ElseKeyword, Me.IfOrElseIfKeyword, Me.Condition, Me.ThenKeyword)
         End Function
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property ElseKeyword As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IfDirectiveTriviaSyntax)._elseKeyword
@@ -35885,9 +36313,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.Kind, Me.HashToken, Me.ElseKeyword, Me.IfOrElseIfKeyword, condition, Me.ThenKeyword)
         End Function
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Public  ReadOnly Property ThenKeyword As SyntaxToken
             Get
                 Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IfDirectiveTriviaSyntax)._thenKeyword
@@ -35970,9 +36396,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an #Else pre-processing directive appearing in source.
-    ''' </summary>
+    ''' <summary>Represents an #Else pre-processing directive appearing in source.</summary>
     Public NotInheritable Class ElseDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -35987,9 +36411,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ElseDirectiveTriviaSyntax(kind, errors, annotations, hashToken, elseKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "#" token in a preprocessor directive.
-        ''' </summary>
+        ''' <summary>The "#" token in a preprocessor directive.</summary>
         Public Shadows ReadOnly Property HashToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ElseDirectiveTriviaSyntax)._hashToken, Me.Position, 0)
@@ -36075,9 +36497,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an #End If pre-processing directive appearing in source.
-    ''' </summary>
+    ''' <summary>Represents an #End If pre-processing directive appearing in source.</summary>
     Public NotInheritable Class EndIfDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -36092,9 +36512,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndIfDirectiveTriviaSyntax(kind, errors, annotations, hashToken, endKeyword, ifKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "#" token in a preprocessor directive.
-        ''' </summary>
+        ''' <summary>The "#" token in a preprocessor directive.</summary>
         Public Shadows ReadOnly Property HashToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndIfDirectiveTriviaSyntax)._hashToken, Me.Position, 0)
@@ -36198,9 +36616,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the beginning of a #Region directive appearing in source.
-    ''' </summary>
+    ''' <summary>Represents the beginning of a #Region directive appearing in source.</summary>
     Public NotInheritable Class RegionDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -36215,9 +36631,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.RegionDirectiveTriviaSyntax(kind, errors, annotations, hashToken, regionKeyword, name), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "#" token in a preprocessor directive.
-        ''' </summary>
+        ''' <summary>The "#" token in a preprocessor directive.</summary>
         Public Shadows ReadOnly Property HashToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.RegionDirectiveTriviaSyntax)._hashToken, Me.Position, 0)
@@ -36241,9 +36655,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(hashToken, Me.RegionKeyword, Me.Name)
         End Function
 
-        ''' <summary>
-        ''' The "Region" keyword.
-        ''' </summary>
+        ''' <summary>The "Region" keyword.</summary>
         Public  ReadOnly Property RegionKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.RegionDirectiveTriviaSyntax)._regionKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -36259,9 +36671,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.HashToken, regionKeyword, Me.Name)
         End Function
 
-        ''' <summary>
-        ''' The label of the code region being defined.
-        ''' </summary>
+        ''' <summary>The label of the code region being defined.</summary>
         Public  ReadOnly Property Name As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.RegionDirectiveTriviaSyntax)._name, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -36326,9 +36736,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an #End Region directive appearing in source.
-    ''' </summary>
+    ''' <summary>Represents an #End Region directive appearing in source.</summary>
     Public NotInheritable Class EndRegionDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -36343,9 +36751,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndRegionDirectiveTriviaSyntax(kind, errors, annotations, hashToken, endKeyword, regionKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "#" token in a preprocessor directive.
-        ''' </summary>
+        ''' <summary>The "#" token in a preprocessor directive.</summary>
         Public Shadows ReadOnly Property HashToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndRegionDirectiveTriviaSyntax)._hashToken, Me.Position, 0)
@@ -36369,9 +36775,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(hashToken, Me.EndKeyword, Me.RegionKeyword)
         End Function
 
-        ''' <summary>
-        ''' The "End" keyword.
-        ''' </summary>
+        ''' <summary>The "End" keyword.</summary>
         Public  ReadOnly Property EndKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndRegionDirectiveTriviaSyntax)._endKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
@@ -36387,9 +36791,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             return Update(Me.HashToken, endKeyword, Me.RegionKeyword)
         End Function
 
-        ''' <summary>
-        ''' The "Region" keyword.
-        ''' </summary>
+        ''' <summary>The "Region" keyword.</summary>
         Public  ReadOnly Property RegionKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndRegionDirectiveTriviaSyntax)._regionKeyword, Me.GetChildPosition(2), Me.GetChildIndex(2))
@@ -36473,9 +36875,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExternalSourceDirectiveTriviaSyntax(kind, errors, annotations, hashToken, externalSourceKeyword, openParenToken, externalSource, commaToken, lineStart, closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "#" token in a preprocessor directive.
-        ''' </summary>
+        ''' <summary>The "#" token in a preprocessor directive.</summary>
         Public Shadows ReadOnly Property HashToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExternalSourceDirectiveTriviaSyntax)._hashToken, Me.Position, 0)
@@ -36651,9 +37051,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an #End ExternalSource pre-processing directive appearing in source.
-    ''' </summary>
+    ''' <summary>Represents an #End ExternalSource pre-processing directive appearing in source.</summary>
     Public NotInheritable Class EndExternalSourceDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -36668,9 +37066,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndExternalSourceDirectiveTriviaSyntax(kind, errors, annotations, hashToken, endKeyword, externalSourceKeyword), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "#" token in a preprocessor directive.
-        ''' </summary>
+        ''' <summary>The "#" token in a preprocessor directive.</summary>
         Public Shadows ReadOnly Property HashToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndExternalSourceDirectiveTriviaSyntax)._hashToken, Me.Position, 0)
@@ -36774,9 +37170,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an #ExternalChecksum pre-processing directive appearing in source.
-    ''' </summary>
+    ''' <summary>Represents an #ExternalChecksum pre-processing directive appearing in source.</summary>
     Public NotInheritable Class ExternalChecksumDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -36791,9 +37185,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExternalChecksumDirectiveTriviaSyntax(kind, errors, annotations, hashToken, externalChecksumKeyword, openParenToken, externalSource, firstCommaToken, guid, secondCommaToken, checksum, closeParenToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "#" token in a preprocessor directive.
-        ''' </summary>
+        ''' <summary>The "#" token in a preprocessor directive.</summary>
         Public Shadows ReadOnly Property HashToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExternalChecksumDirectiveTriviaSyntax)._hashToken, Me.Position, 0)
@@ -37004,9 +37396,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents #Enable Warning pre-processing directive appearing in source.
-    ''' </summary>
+    ''' <summary>Represents #Enable Warning pre-processing directive appearing in source.</summary>
     Public NotInheritable Class EnableWarningDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -37022,9 +37412,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EnableWarningDirectiveTriviaSyntax(kind, errors, annotations, hashToken, enableKeyword, warningKeyword, if(errorCodes IsNot Nothing, errorCodes.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "#" token in a preprocessor directive.
-        ''' </summary>
+        ''' <summary>The "#" token in a preprocessor directive.</summary>
         Public Shadows ReadOnly Property HashToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EnableWarningDirectiveTriviaSyntax)._hashToken, Me.Position, 0)
@@ -37158,9 +37546,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents #Disable Warning pre-processing directive appearing in source.
-    ''' </summary>
+    ''' <summary>Represents #Disable Warning pre-processing directive appearing in source.</summary>
     Public NotInheritable Class DisableWarningDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -37176,9 +37562,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DisableWarningDirectiveTriviaSyntax(kind, errors, annotations, hashToken, disableKeyword, warningKeyword, if(errorCodes IsNot Nothing, errorCodes.Green, Nothing)), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "#" token in a preprocessor directive.
-        ''' </summary>
+        ''' <summary>The "#" token in a preprocessor directive.</summary>
         Public Shadows ReadOnly Property HashToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DisableWarningDirectiveTriviaSyntax)._hashToken, Me.Position, 0)
@@ -37312,9 +37696,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an #r directive appearing in scripts.
-    ''' </summary>
+    ''' <summary>Represents an #r directive appearing in scripts.</summary>
     Public NotInheritable Class ReferenceDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -37329,9 +37711,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ReferenceDirectiveTriviaSyntax(kind, errors, annotations, hashToken, referenceKeyword, file), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "#" token in a preprocessor directive.
-        ''' </summary>
+        ''' <summary>The "#" token in a preprocessor directive.</summary>
         Public Shadows ReadOnly Property HashToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ReferenceDirectiveTriviaSyntax)._hashToken, Me.Position, 0)
@@ -37454,9 +37834,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.BadDirectiveTriviaSyntax(kind, errors, annotations, hashToken), Nothing, 0)
         End Sub
 
-        ''' <summary>
-        ''' The "#" token in a preprocessor directive.
-        ''' </summary>
+        ''' <summary>The "#" token in a preprocessor directive.</summary>
         Public Shadows ReadOnly Property HashToken As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.BadDirectiveTriviaSyntax)._hashToken, Me.Position, 0)
@@ -37468,58 +37846,4 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         End Function
 
         Friend Overrides Function WithHashTokenCore(hashToken As SyntaxToken) As DirectiveTriviaSyntax
-            Return WithHashToken(hashToken)
-        End Function
-
-        ''' <summary>
-        ''' Returns a copy of this with the HashToken property changed to the specified
-        ''' value. Returns this instance if the specified value is the same as the current
-        ''' value.
-        ''' </summary>
-        Public Shadows Function WithHashToken(hashToken as SyntaxToken) As BadDirectiveTriviaSyntax
-            return Update(hashToken)
-        End Function
-
-        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
-            If i = 0 Then
-                Return Nothing
-            Else
-                Return Nothing
-            End If
-        End Function
-
-        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
-                Return Nothing
-        End Function
-
-        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
-            Return visitor.VisitBadDirectiveTrivia(Me)
-        End Function
-
-        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
-            visitor.VisitBadDirectiveTrivia(Me)
-        End Sub
-
-
-        ''' <summary>
-        ''' Returns a copy of this with the specified changes. Returns this instance if
-        ''' there are no actual changes.
-        ''' </summary>
-        ''' <param name="hashToken">
-        ''' The value for the HashToken property.
-        ''' </param>
-        Public Function Update(hashToken As SyntaxToken) As BadDirectiveTriviaSyntax
-            If hashToken <> Me.HashToken Then
-                Dim newNode = SyntaxFactory.BadDirectiveTrivia(hashToken)
-                Dim annotations = Me.GetAnnotations()
-                If annotations IsNot Nothing AndAlso annotations.Length > 0
-                    return newNode.WithAnnotations(annotations)
-                End If
-                Return newNode
-            End If
-            Return Me
-        End Function
-
-    End Class
-
-End Namespace
+  

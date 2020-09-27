@@ -5918,9 +5918,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -5972,17 +5970,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndIfStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndIfStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.IfKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6007,17 +6001,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndUsingStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndUsingStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.UsingKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6042,17 +6032,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndWithStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndWithStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.WithKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6077,17 +6063,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndSelectStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndSelectStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.SelectKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6112,17 +6094,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndStructureStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndStructureStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.StructureKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6147,17 +6125,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndEnumStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndEnumStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.EnumKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6182,17 +6156,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndInterfaceStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndInterfaceStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.InterfaceKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6217,17 +6187,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndClassStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndClassStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ClassKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6252,17 +6218,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndModuleStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndModuleStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ModuleKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6287,17 +6249,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndNamespaceStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndNamespaceStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.NamespaceKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6322,17 +6280,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndSubStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndSubStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.SubKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6357,17 +6311,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndFunctionStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndFunctionStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.FunctionKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6392,17 +6342,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndGetStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndGetStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.GetKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6427,17 +6373,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndSetStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndSetStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.SetKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6462,17 +6404,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndPropertyStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndPropertyStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.PropertyKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6497,17 +6435,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndOperatorStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndOperatorStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.OperatorKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6532,17 +6466,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndEventStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndEventStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.EventKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6567,17 +6497,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndAddHandlerStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndAddHandlerStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.AddHandlerKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6602,17 +6528,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndRemoveHandlerStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndRemoveHandlerStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.RemoveHandlerKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6637,17 +6559,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndRaiseEventStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndRaiseEventStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.RaiseEventKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6672,17 +6590,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndWhileStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndWhileStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.WhileKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6707,17 +6621,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndTryStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndTryStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.TryKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6742,17 +6652,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndSyncLockStatement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndSyncLockStatement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.SyncLockKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6777,17 +6683,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndLanguage_Statement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndLanguage_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.Language_Keyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6812,17 +6714,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndGrammar_Statement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndGrammar_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.Grammar_Keyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6847,17 +6745,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndSyntax_Statement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndSyntax_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.Syntax_Keyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6882,17 +6776,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndKeywords_Statement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndKeywords_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.Keywords_Keyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -6917,17 +6807,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         Public Shared Function EndKinds_Statement() As EndBlockStatementSyntax
             Return SyntaxFactory.EndKinds_Statement(SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.Kinds_Keyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' EndBlockStatementSyntax. One of EndIfStatement, EndUsingStatement,
@@ -7027,9 +6913,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Select
         End Function
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' EndBlockStatementSyntax. One of EndIfStatement, EndUsingStatement,
@@ -7053,9 +6937,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an entire source file of VB code.
-        ''' </summary>
+        ''' <summary>Represents an entire source file of VB code.</summary>
         ''' <param name="options">
         ''' Represents the list of Option statements at the beginning of a source file.
         ''' </param>
@@ -7085,9 +6967,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an entire source file of VB code.
-        ''' </summary>
+        ''' <summary>Represents an entire source file of VB code.</summary>
         ''' <param name="options">
         ''' Represents the list of Option statements at the beginning of a source file.
         ''' </param>
@@ -7108,17 +6988,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an entire source file of VB code.
-        ''' </summary>
+        ''' <summary>Represents an entire source file of VB code.</summary>
         Public Shared Function CompilationUnit() As CompilationUnitSyntax
             Return SyntaxFactory.CompilationUnit(Nothing, Nothing, Nothing, Nothing, SyntaxFactory.Token(SyntaxKind.EndOfFileToken))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Option statement, such as "Option Strict On".
-        ''' </summary>
+        ''' <summary>Represents an Option statement, such as "Option Strict On".</summary>
         ''' <param name="optionKeyword">
         ''' The "Option" keyword.
         ''' </param>
@@ -7148,9 +7024,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Option statement, such as "Option Strict On".
-        ''' </summary>
+        ''' <summary>Represents an Option statement, such as "Option Strict On".</summary>
         ''' <param name="nameKeyword">
         ''' The keyword that identifies the option being set: Explicit, Strict, Compare or
         ''' Infer.
@@ -7164,9 +7038,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Option statement, such as "Option Strict On".
-        ''' </summary>
+        ''' <summary>Represents an Option statement, such as "Option Strict On".</summary>
         ''' <param name="nameKeyword">
         ''' The keyword that identifies the option being set: Explicit, Strict, Compare or
         ''' Infer.
@@ -7176,9 +7048,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Imports statement, which has one or more imports clauses.
-        ''' </summary>
+        ''' <summary>Represents an Imports statement, which has one or more imports clauses.</summary>
         ''' <param name="importsKeyword">
         ''' The "Imports" keyword.
         ''' </param>
@@ -7196,9 +7066,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Imports statement, which has one or more imports clauses.
-        ''' </summary>
+        ''' <summary>Represents an Imports statement, which has one or more imports clauses.</summary>
         ''' <param name="importsClauses">
         ''' A list of one or more import clauses. Each clause is either an alias, namespace
         ''' or XML namespace import.
@@ -7208,9 +7076,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Imports statement, which has one or more imports clauses.
-        ''' </summary>
+        ''' <summary>Represents an Imports statement, which has one or more imports clauses.</summary>
         Public Shared Function ImportsStatement() As ImportsStatementSyntax
             Return SyntaxFactory.ImportsStatement(SyntaxFactory.Token(SyntaxKind.ImportsKeyword), Nothing)
         End Function
@@ -7256,9 +7122,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an alias identifier followed by an "=" token in an Imports clause.
-        ''' </summary>
+        ''' <summary>Represents an alias identifier followed by an "=" token in an Imports clause.</summary>
         ''' <param name="identifier">
         ''' The identifier being introduced.
         ''' </param>
@@ -7280,9 +7144,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an alias identifier followed by an "=" token in an Imports clause.
-        ''' </summary>
+        ''' <summary>Represents an alias identifier followed by an "=" token in an Imports clause.</summary>
         ''' <param name="identifier">
         ''' The identifier being introduced.
         ''' </param>
@@ -7291,9 +7153,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an alias identifier followed by an "=" token in an Imports clause.
-        ''' </summary>
+        ''' <summary>Represents an alias identifier followed by an "=" token in an Imports clause.</summary>
         ''' <param name="identifier">
         ''' The identifier being introduced.
         ''' </param>
@@ -7302,9 +7162,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Defines a XML namespace for XML expressions.
-        ''' </summary>
+        ''' <summary>Defines a XML namespace for XML expressions.</summary>
         ''' <param name="xmlNamespace">
         ''' Identifies the XML namespace alias and URI.
         ''' </param>
@@ -7331,9 +7189,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Defines a XML namespace for XML expressions.
-        ''' </summary>
+        ''' <summary>Defines a XML namespace for XML expressions.</summary>
         ''' <param name="xmlNamespace">
         ''' Identifies the XML namespace alias and URI.
         ''' </param>
@@ -7742,9 +7598,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Namespace statement, its contents and the End Namespace statement.
-        ''' </summary>
+        ''' <summary>Represents a Namespace statement, its contents and the End Namespace statement.</summary>
         ''' <param name="namespaceStatement">
         ''' The statement that begins the NamespaceBlock.
         ''' </param>
@@ -7775,9 +7629,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Namespace statement, its contents and the End Namespace statement.
-        ''' </summary>
+        ''' <summary>Represents a Namespace statement, its contents and the End Namespace statement.</summary>
         ''' <param name="namespaceStatement">
         ''' The statement that begins the NamespaceBlock.
         ''' </param>
@@ -7789,9 +7641,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Namespace statement, its contents and the End Namespace statement.
-        ''' </summary>
+        ''' <summary>Represents a Namespace statement, its contents and the End Namespace statement.</summary>
         ''' <param name="namespaceStatement">
         ''' The statement that begins the NamespaceBlock.
         ''' </param>
@@ -8198,9 +8048,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Inherits statement in a Class, Structure or Interface.
-        ''' </summary>
+        ''' <summary>Represents an Inherits statement in a Class, Structure or Interface.</summary>
         ''' <param name="inheritsKeyword">
         ''' The "Inherits" keyword.
         ''' </param>
@@ -8217,9 +8065,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Inherits statement in a Class, Structure or Interface.
-        ''' </summary>
+        ''' <summary>Represents an Inherits statement in a Class, Structure or Interface.</summary>
         ''' <param name="types">
         ''' A list of the types being inherited.
         ''' </param>
@@ -8228,9 +8074,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Inherits statement in a Class, Structure or Interface.
-        ''' </summary>
+        ''' <summary>Represents an Inherits statement in a Class, Structure or Interface.</summary>
         ''' <param name="types">
         ''' A list of the types being inherited.
         ''' </param>
@@ -8239,9 +8083,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Implements statement in a Class or Structure.
-        ''' </summary>
+        ''' <summary>Represents an Implements statement in a Class or Structure.</summary>
         ''' <param name="implementsKeyword">
         ''' The "Implements" keyword.
         ''' </param>
@@ -8258,9 +8100,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Implements statement in a Class or Structure.
-        ''' </summary>
+        ''' <summary>Represents an Implements statement in a Class or Structure.</summary>
         ''' <param name="types">
         ''' A list of the types being implemented.
         ''' </param>
@@ -8269,9 +8109,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Implements statement in a Class or Structure.
-        ''' </summary>
+        ''' <summary>Represents an Implements statement in a Class or Structure.</summary>
         ''' <param name="types">
         ''' A list of the types being implemented.
         ''' </param>
@@ -8705,9 +8543,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the type parameter list in a declaration.
-        ''' </summary>
+        ''' <summary>Represents the type parameter list in a declaration.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token.
         ''' </param>
@@ -8741,9 +8577,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the type parameter list in a declaration.
-        ''' </summary>
+        ''' <summary>Represents the type parameter list in a declaration.</summary>
         ''' <param name="parameters">
         ''' A list of the type parameters. There must be at least one type parameter in the
         ''' list.
@@ -8753,9 +8587,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the type parameter list in a declaration.
-        ''' </summary>
+        ''' <summary>Represents the type parameter list in a declaration.</summary>
         ''' <param name="parameters">
         ''' A list of the type parameters. There must be at least one type parameter in the
         ''' list.
@@ -8765,9 +8597,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a type parameter on a generic type declaration.
-        ''' </summary>
+        ''' <summary>Represents a type parameter on a generic type declaration.</summary>
         ''' <param name="varianceKeyword">
         ''' Represents the "In" or "Out" variance keyword on a type parameter, if present.
         ''' If no variance modifier was present, Nothing is returned.
@@ -8789,9 +8619,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a type parameter on a generic type declaration.
-        ''' </summary>
+        ''' <summary>Represents a type parameter on a generic type declaration.</summary>
         ''' <param name="identifier">
         ''' The name of the type parameter
         ''' </param>
@@ -8800,9 +8628,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a type parameter on a generic type declaration.
-        ''' </summary>
+        ''' <summary>Represents a type parameter on a generic type declaration.</summary>
         ''' <param name="identifier">
         ''' The name of the type parameter
         ''' </param>
@@ -9012,9 +8838,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a type parameter constraint that is a type.
-        ''' </summary>
+        ''' <summary>Represents a type parameter constraint that is a type.</summary>
         ''' <param name="type">
         ''' The type describing the constraint.
         ''' </param>
@@ -9040,9 +8864,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a name and value in an EnumDeclarationBlock.
-        ''' </summary>
+        ''' <summary>Represents a name and value in an EnumDeclarationBlock.</summary>
         ''' <param name="initializer">
         ''' An optional value for the enum member.
         ''' </param>
@@ -9056,17 +8878,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a name and value in an EnumDeclarationBlock.
-        ''' </summary>
+        ''' <summary>Represents a name and value in an EnumDeclarationBlock.</summary>
         Public Shared Function EnumMemberDeclaration(identifier As SyntaxToken) As EnumMemberDeclarationSyntax
             Return SyntaxFactory.EnumMemberDeclaration(Nothing, identifier, Nothing)
         End Function
 
 
-        ''' <summary>
-        ''' Represents a name and value in an EnumDeclarationBlock.
-        ''' </summary>
+        ''' <summary>Represents a name and value in an EnumDeclarationBlock.</summary>
         Public Shared Function EnumMemberDeclaration(identifier As String) As EnumMemberDeclarationSyntax
             Return SyntaxFactory.EnumMemberDeclaration(Nothing, SyntaxFactory.Identifier(identifier), Nothing)
         End Function
@@ -9940,9 +9758,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the parameter list in a method declaration.
-        ''' </summary>
+        ''' <summary>Represents the parameter list in a method declaration.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token that introduces the parameter list. If no parameter list was
         ''' present, Nothing is returned.
@@ -9969,9 +9785,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the parameter list in a method declaration.
-        ''' </summary>
+        ''' <summary>Represents the parameter list in a method declaration.</summary>
         ''' <param name="parameters">
         ''' The list of parameters. If no parameter list was present, Nothing is returned.
         ''' </param>
@@ -9980,9 +9794,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the parameter list in a method declaration.
-        ''' </summary>
+        ''' <summary>Represents the parameter list in a method declaration.</summary>
         Public Shared Function ParameterList() As ParameterListSyntax
             Return SyntaxFactory.ParameterList(SyntaxFactory.Token(SyntaxKind.OpenParenToken), Nothing, SyntaxFactory.Token(SyntaxKind.CloseParenToken))
         End Function
@@ -10430,9 +10242,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -10516,9 +10326,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -10555,9 +10363,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="identifier">
         ''' The name of the method being declared.
         ''' </param>
@@ -10569,9 +10375,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="identifier">
         ''' The name of the method being declared.
         ''' </param>
@@ -10583,9 +10387,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -10668,9 +10470,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -10707,9 +10507,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="identifier">
         ''' The name of the method being declared.
         ''' </param>
@@ -10721,9 +10519,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="identifier">
         ''' The name of the method being declared.
         ''' </param>
@@ -10735,9 +10531,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' DeclareStatementSyntax. One of DeclareSubStatement, DeclareFunctionStatement.
@@ -10835,9 +10629,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Select
         End Function
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' DeclareStatementSyntax. One of DeclareSubStatement, DeclareFunctionStatement.
@@ -10881,9 +10673,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' DeclareStatementSyntax. One of DeclareSubStatement, DeclareFunctionStatement.
@@ -10902,9 +10692,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' DeclareStatementSyntax. One of DeclareSubStatement, DeclareFunctionStatement.
@@ -10923,9 +10711,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -10978,9 +10764,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -11011,9 +10795,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="identifier">
         ''' The name of the delegate being declared.
         ''' </param>
@@ -11022,9 +10804,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="identifier">
         ''' The name of the delegate being declared.
         ''' </param>
@@ -11033,9 +10813,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -11087,9 +10865,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -11120,9 +10896,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="identifier">
         ''' The name of the delegate being declared.
         ''' </param>
@@ -11131,9 +10905,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="identifier">
         ''' The name of the delegate being declared.
         ''' </param>
@@ -11142,9 +10914,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' DelegateStatementSyntax. One of DelegateSubStatement,
@@ -11212,9 +10982,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Select
         End Function
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' DelegateStatementSyntax. One of DelegateSubStatement,
@@ -11253,9 +11021,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' DelegateStatementSyntax. One of DelegateSubStatement,
@@ -11272,9 +11038,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' DelegateStatementSyntax. One of DelegateSubStatement,
@@ -12178,9 +11942,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents event container that refers to a WithEvents member.
-        ''' </summary>
+        ''' <summary>Represents event container that refers to a WithEvents member.</summary>
         ''' <param name="identifier">
         ''' The container of the event. It is a simple identifier that refers to a
         ''' WithEvents member of the containing type.
@@ -12195,9 +11957,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents event container that refers to a WithEvents member.
-        ''' </summary>
+        ''' <summary>Represents event container that refers to a WithEvents member.</summary>
         ''' <param name="identifier">
         ''' The container of the event. It is a simple identifier that refers to a
         ''' WithEvents member of the containing type.
@@ -12207,9 +11967,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents event container that refers to a WithEvents member's property.
-        ''' </summary>
+        ''' <summary>Represents event container that refers to a WithEvents member's property.</summary>
         ''' <param name="withEventsContainer">
         ''' The container of the event.
         ''' </param>
@@ -12246,9 +12004,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents event container that refers to a WithEvents member's property.
-        ''' </summary>
+        ''' <summary>Represents event container that refers to a WithEvents member's property.</summary>
         ''' <param name="withEventsContainer">
         ''' The container of the event.
         ''' </param>
@@ -12261,9 +12017,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single handled event in a "Handles ..." clause.
-        ''' </summary>
+        ''' <summary>Represents a single handled event in a "Handles ..." clause.</summary>
         ''' <param name="eventContainer">
         ''' The container of the event. This can either be a simple identifier (identifying
         ''' a members of the containing type) or one of the special keywords "Me", "MyBase"
@@ -12302,9 +12056,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single handled event in a "Handles ..." clause.
-        ''' </summary>
+        ''' <summary>Represents a single handled event in a "Handles ..." clause.</summary>
         ''' <param name="eventContainer">
         ''' The container of the event. This can either be a simple identifier (identifying
         ''' a members of the containing type) or one of the special keywords "Me", "MyBase"
@@ -12568,9 +12320,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "With {...} clause used to initialize a new object's members.
-        ''' </summary>
+        ''' <summary>Represents a "With {...} clause used to initialize a new object's members.</summary>
         ''' <param name="withKeyword">
         ''' The "With" keyword.
         ''' </param>
@@ -12603,9 +12353,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "With {...} clause used to initialize a new object's members.
-        ''' </summary>
+        ''' <summary>Represents a "With {...} clause used to initialize a new object's members.</summary>
         ''' <param name="initializers">
         ''' The comma-separated list of field initializers.
         ''' </param>
@@ -12614,9 +12362,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "With {...} clause used to initialize a new object's members.
-        ''' </summary>
+        ''' <summary>Represents a "With {...} clause used to initialize a new object's members.</summary>
         ''' <param name="initializers">
         ''' The comma-separated list of field initializers.
         ''' </param>
@@ -13015,9 +12761,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represent a parameter to a method, property, constructor, etc.
-        ''' </summary>
+        ''' <summary>Represent a parameter to a method, property, constructor, etc.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this parameter. If no attributes were
         ''' specified, Nothing is returned.
@@ -13050,9 +12794,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represent a parameter to a method, property, constructor, etc.
-        ''' </summary>
+        ''' <summary>Represent a parameter to a method, property, constructor, etc.</summary>
         ''' <param name="identifier">
         ''' The name of the parameter, including any "?" or "()" modifiers.
         ''' </param>
@@ -13164,9 +12906,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a group of attributes within "&lt;" and "&gt;" brackets.
-        ''' </summary>
+        ''' <summary>Represents a group of attributes within "&lt;" and "&gt;" brackets.</summary>
         ''' <param name="lessThanToken">
         ''' The "&lt;" token.
         ''' </param>
@@ -13191,9 +12931,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a group of attributes within "&lt;" and "&gt;" brackets.
-        ''' </summary>
+        ''' <summary>Represents a group of attributes within "&lt;" and "&gt;" brackets.</summary>
         ''' <param name="attributes">
         ''' A comma separated list of attribute declarations in this attribute list.
         ''' </param>
@@ -13202,17 +12940,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a group of attributes within "&lt;" and "&gt;" brackets.
-        ''' </summary>
+        ''' <summary>Represents a group of attributes within "&lt;" and "&gt;" brackets.</summary>
         Public Shared Function AttributeList() As AttributeListSyntax
             Return SyntaxFactory.AttributeList(SyntaxFactory.Token(SyntaxKind.LessThanToken), Nothing, SyntaxFactory.Token(SyntaxKind.GreaterThanToken))
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single attribute declaration within an attribute list.
-        ''' </summary>
+        ''' <summary>Represents a single attribute declaration within an attribute list.</summary>
         ''' <param name="target">
         ''' Optional attribute target. Assembly|Module :
         ''' </param>
@@ -13243,9 +12977,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single attribute declaration within an attribute list.
-        ''' </summary>
+        ''' <summary>Represents a single attribute declaration within an attribute list.</summary>
         ''' <param name="name">
         ''' The name of the attribute.
         ''' </param>
@@ -13254,9 +12986,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single attribute declaration within an attribute list.
-        ''' </summary>
+        ''' <summary>Represents a single attribute declaration within an attribute list.</summary>
         ''' <param name="attributeModifier">
         ''' The "Assembly" or "Module" attribute modifier, is present. If no attribute
         ''' modifier is present, Nothing is returned.
@@ -13281,9 +13011,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single attribute declaration within an attribute list.
-        ''' </summary>
+        ''' <summary>Represents a single attribute declaration within an attribute list.</summary>
         ''' <param name="attributeModifier">
         ''' The "Assembly" or "Module" attribute modifier, is present. If no attribute
         ''' modifier is present, Nothing is returned.
@@ -13439,9 +13167,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represent a "? expression" "Print" statement in VB Interactive code.
-        ''' </summary>
+        ''' <summary>Represent a "? expression" "Print" statement in VB Interactive code.</summary>
         ''' <param name="questionToken">
         ''' "?" token.
         ''' </param>
@@ -13570,9 +13296,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represent a "? expression" "Print" statement in VB Interactive code.
-        ''' </summary>
+        ''' <summary>Represent a "? expression" "Print" statement in VB Interactive code.</summary>
         ''' <param name="expression">
         ''' The expression whose value is being output.
         ''' </param>
@@ -13831,9 +13555,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the declaration of one or more local variables or constants.
-        ''' </summary>
+        ''' <summary>Represents the declaration of one or more local variables or constants.</summary>
         ''' <param name="modifiers">
         ''' The modifier token (Static, Dim or Const) that introduces this local variable
         ''' declaration.
@@ -13847,9 +13569,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a label statement.
-        ''' </summary>
+        ''' <summary>Represents a label statement.</summary>
         ''' <param name="labelToken">
         ''' The name of the label. If the label is a line number, returns an IntegerLiteral
         ''' that is the line number, otherwise, returns an Identifier.
@@ -13873,9 +13593,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a label statement.
-        ''' </summary>
+        ''' <summary>Represents a label statement.</summary>
         ''' <param name="labelToken">
         ''' The name of the label. If the label is a line number, returns an IntegerLiteral
         ''' that is the line number, otherwise, returns an Identifier.
@@ -13885,9 +13603,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a label statement.
-        ''' </summary>
+        ''' <summary>Represents a label statement.</summary>
         ''' <param name="labelToken">
         ''' The name of the label. If the label is a line number, returns an IntegerLiteral
         ''' that is the line number, otherwise, returns an Identifier.
@@ -13897,9 +13613,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "GoTo" statement.
-        ''' </summary>
+        ''' <summary>Represents a "GoTo" statement.</summary>
         ''' <param name="goToKeyword">
         ''' The "GoTo" keyword.
         ''' </param>
@@ -13927,9 +13641,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "GoTo" statement.
-        ''' </summary>
+        ''' <summary>Represents a "GoTo" statement.</summary>
         ''' <param name="label">
         ''' The name of the label. If the label is a line number, wraps an IntegerLiteral
         ''' that is the line number, otherwise, wraps an Identifier.
@@ -14696,9 +14408,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Return" statement.
-        ''' </summary>
+        ''' <summary>Represents a "Return" statement.</summary>
         ''' <param name="returnKeyword">
         ''' The "Return" keyword.
         ''' </param>
@@ -14715,9 +14425,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Return" statement.
-        ''' </summary>
+        ''' <summary>Represents a "Return" statement.</summary>
         ''' <param name="expression">
         ''' The expression being returned, if present.
         ''' </param>
@@ -14726,17 +14434,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Return" statement.
-        ''' </summary>
+        ''' <summary>Represents a "Return" statement.</summary>
         Public Shared Function ReturnStatement() As ReturnStatementSyntax
             Return SyntaxFactory.ReturnStatement(SyntaxFactory.Token(SyntaxKind.ReturnKeyword), Nothing)
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single-line "If ... Then ... Else ..." statement.
-        ''' </summary>
+        ''' <summary>Represents a single-line "If ... Then ... Else ..." statement.</summary>
         ''' <param name="ifKeyword">
         ''' The "If" keyword.
         ''' </param>
@@ -14880,9 +14584,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single-line "If ... Then ... Else ..." statement.
-        ''' </summary>
+        ''' <summary>Represents a single-line "If ... Then ... Else ..." statement.</summary>
         ''' <param name="condition">
         ''' The condition expression to be evaluated.
         ''' </param>
@@ -14898,9 +14600,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single-line "If ... Then ... Else ..." statement.
-        ''' </summary>
+        ''' <summary>Represents a single-line "If ... Then ... Else ..." statement.</summary>
         ''' <param name="condition">
         ''' The condition expression to be evaluated.
         ''' </param>
@@ -14909,9 +14609,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Else ..." clause of a single-line "If" statement.
-        ''' </summary>
+        ''' <summary>Represents the "Else ..." clause of a single-line "If" statement.</summary>
         ''' <param name="elseKeyword">
         ''' The "Else" keyword.
         ''' </param>
@@ -14929,9 +14627,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Else ..." clause of a single-line "If" statement.
-        ''' </summary>
+        ''' <summary>Represents the "Else ..." clause of a single-line "If" statement.</summary>
         ''' <param name="statements">
         ''' A list of statements to be executed. Multiple statements must be separated by
         ''' colons.
@@ -14941,9 +14637,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Else ..." clause of a single-line "If" statement.
-        ''' </summary>
+        ''' <summary>Represents the "Else ..." clause of a single-line "If" statement.</summary>
         Public Shared Function SingleLineElseClause() As SingleLineElseClauseSyntax
             Return SyntaxFactory.SingleLineElseClause(SyntaxFactory.Token(SyntaxKind.ElseKeyword), Nothing)
         End Function
@@ -15028,9 +14722,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "If ... Then" statement that begins a multi-line "If" block.
-        ''' </summary>
+        ''' <summary>Represents the "If ... Then" statement that begins a multi-line "If" block.</summary>
         ''' <param name="ifKeyword">
         ''' The "If" keyword.
         ''' </param>
@@ -15162,9 +14854,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "If ... Then" statement that begins a multi-line "If" block.
-        ''' </summary>
+        ''' <summary>Represents the "If ... Then" statement that begins a multi-line "If" block.</summary>
         ''' <param name="condition">
         ''' The condition expression to be evaluated.
         ''' </param>
@@ -15173,9 +14863,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "ElseIf ... Then ..." block.
-        ''' </summary>
+        ''' <summary>Represents an "ElseIf ... Then ..." block.</summary>
         ''' <param name="elseIfStatement">
         ''' The "ElseIf ... Then" statement the begins the "ElseIf" block.
         ''' </param>
@@ -15196,9 +14884,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "ElseIf ... Then ..." block.
-        ''' </summary>
+        ''' <summary>Represents an "ElseIf ... Then ..." block.</summary>
         ''' <param name="elseIfStatement">
         ''' The "ElseIf ... Then" statement the begins the "ElseIf" block.
         ''' </param>
@@ -15207,9 +14893,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "ElseIf ... Then" statement that begins an "ElseIf" block.
-        ''' </summary>
+        ''' <summary>Represents the "ElseIf ... Then" statement that begins an "ElseIf" block.</summary>
         ''' <param name="elseIfKeyword">
         ''' The "ElseIf" keyword.
         ''' </param>
@@ -15341,9 +15025,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "ElseIf ... Then" statement that begins an "ElseIf" block.
-        ''' </summary>
+        ''' <summary>Represents the "ElseIf ... Then" statement that begins an "ElseIf" block.</summary>
         ''' <param name="condition">
         ''' The condition expression to be evaluated.
         ''' </param>
@@ -15352,9 +15034,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "Else ..." block.
-        ''' </summary>
+        ''' <summary>Represents an "Else ..." block.</summary>
         ''' <param name="elseStatement">
         ''' The "Else" statement that begins the "Else" block.
         ''' </param>
@@ -15374,9 +15054,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "Else ..." block.
-        ''' </summary>
+        ''' <summary>Represents an "Else ..." block.</summary>
         ''' <param name="statements">
         ''' A list of statements to be executed.
         ''' </param>
@@ -15385,17 +15063,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "Else ..." block.
-        ''' </summary>
+        ''' <summary>Represents an "Else ..." block.</summary>
         Public Shared Function ElseBlock() As ElseBlockSyntax
             Return SyntaxFactory.ElseBlock(SyntaxFactory.ElseStatement(), Nothing)
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Else" statement that begins an "Else" block.
-        ''' </summary>
+        ''' <summary>Represents the "Else" statement that begins an "Else" block.</summary>
         ''' <param name="elseKeyword">
         ''' The "Else" keyword.
         ''' </param>
@@ -15409,17 +15083,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Else" statement that begins an "Else" block.
-        ''' </summary>
+        ''' <summary>Represents the "Else" statement that begins an "Else" block.</summary>
         Public Shared Function ElseStatement() As ElseStatementSyntax
             Return SyntaxFactory.ElseStatement(SyntaxFactory.Token(SyntaxKind.ElseKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Try ... Catch ... Finally ... End Try" block.
-        ''' </summary>
+        ''' <summary>Represents a "Try ... Catch ... Finally ... End Try" block.</summary>
         ''' <param name="tryStatement">
         ''' The "Try" statement that begins the "Try" block.
         ''' </param>
@@ -15457,9 +15127,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Try ... Catch ... Finally ... End Try" block.
-        ''' </summary>
+        ''' <summary>Represents a "Try ... Catch ... Finally ... End Try" block.</summary>
         ''' <param name="statements">
         ''' A list of statements to be executed.
         ''' </param>
@@ -15475,17 +15143,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Try ... Catch ... Finally ... End Try" block.
-        ''' </summary>
+        ''' <summary>Represents a "Try ... Catch ... Finally ... End Try" block.</summary>
         Public Shared Function TryBlock() As TryBlockSyntax
             Return SyntaxFactory.TryBlock(SyntaxFactory.TryStatement(), Nothing, Nothing, Nothing, SyntaxFactory.EndTryStatement())
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Try" statement that begins a "Try" block.
-        ''' </summary>
+        ''' <summary>Represents the "Try" statement that begins a "Try" block.</summary>
         ''' <param name="tryKeyword">
         ''' The "Try" keyword.
         ''' </param>
@@ -15499,17 +15163,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Try" statement that begins a "Try" block.
-        ''' </summary>
+        ''' <summary>Represents the "Try" statement that begins a "Try" block.</summary>
         Public Shared Function TryStatement() As TryStatementSyntax
             Return SyntaxFactory.TryStatement(SyntaxFactory.Token(SyntaxKind.TryKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Catch ..." block.
-        ''' </summary>
+        ''' <summary>Represents a "Catch ..." block.</summary>
         ''' <param name="catchStatement">
         ''' The "Catch" statement that begins the "Catch" block.
         ''' </param>
@@ -15530,9 +15190,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Catch ..." block.
-        ''' </summary>
+        ''' <summary>Represents a "Catch ..." block.</summary>
         ''' <param name="catchStatement">
         ''' The "Catch" statement that begins the "Catch" block.
         ''' </param>
@@ -15541,9 +15199,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Catch ... When ..." statement that begins a "Catch" block.
-        ''' </summary>
+        ''' <summary>Represents the "Catch ... When ..." statement that begins a "Catch" block.</summary>
         ''' <param name="catchKeyword">
         ''' The "Catch" keyword.
         ''' </param>
@@ -15567,9 +15223,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Catch ... When ..." statement that begins a "Catch" block.
-        ''' </summary>
+        ''' <summary>Represents the "Catch ... When ..." statement that begins a "Catch" block.</summary>
         ''' <param name="identifierName">
         ''' An identifier declaring a new variable or naming an existing variable to store
         ''' the exception caught by the "Catch" statement.
@@ -15585,17 +15239,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Catch ... When ..." statement that begins a "Catch" block.
-        ''' </summary>
+        ''' <summary>Represents the "Catch ... When ..." statement that begins a "Catch" block.</summary>
         Public Shared Function CatchStatement() As CatchStatementSyntax
             Return SyntaxFactory.CatchStatement(SyntaxFactory.Token(SyntaxKind.CatchKeyword), Nothing, Nothing, Nothing)
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "When ..." clause of a "Catch" statement.
-        ''' </summary>
+        ''' <summary>Represents the "When ..." clause of a "Catch" statement.</summary>
         ''' <param name="whenKeyword">
         ''' The "When" keyword.
         ''' </param>
@@ -15724,9 +15374,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "When ..." clause of a "Catch" statement.
-        ''' </summary>
+        ''' <summary>Represents the "When ..." clause of a "Catch" statement.</summary>
         ''' <param name="filter">
         ''' The filter expression to be evaluated.
         ''' </param>
@@ -15735,9 +15383,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Finally ..." block of a "Try" block.
-        ''' </summary>
+        ''' <summary>Represents a "Finally ..." block of a "Try" block.</summary>
         ''' <param name="finallyStatement">
         ''' The "Finally" statement that begins the "Finally" block.
         ''' </param>
@@ -15757,9 +15403,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Finally ..." block of a "Try" block.
-        ''' </summary>
+        ''' <summary>Represents a "Finally ..." block of a "Try" block.</summary>
         ''' <param name="statements">
         ''' A list of statements to be executed.
         ''' </param>
@@ -15768,17 +15412,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Finally ..." block of a "Try" block.
-        ''' </summary>
+        ''' <summary>Represents a "Finally ..." block of a "Try" block.</summary>
         Public Shared Function FinallyBlock() As FinallyBlockSyntax
             Return SyntaxFactory.FinallyBlock(SyntaxFactory.FinallyStatement(), Nothing)
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Finally" statement that begins a "Finally" block.
-        ''' </summary>
+        ''' <summary>Represents the "Finally" statement that begins a "Finally" block.</summary>
         ''' <param name="finallyKeyword">
         ''' The "Finally" keyword.
         ''' </param>
@@ -15792,17 +15432,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Finally" statement that begins a "Finally" block.
-        ''' </summary>
+        ''' <summary>Represents the "Finally" statement that begins a "Finally" block.</summary>
         Public Shared Function FinallyStatement() As FinallyStatementSyntax
             Return SyntaxFactory.FinallyStatement(SyntaxFactory.Token(SyntaxKind.FinallyKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Error" statement.
-        ''' </summary>
+        ''' <summary>Represents the "Error" statement.</summary>
         ''' <param name="errorKeyword">
         ''' The "Error" keyword.
         ''' </param>
@@ -15931,9 +15567,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Error" statement.
-        ''' </summary>
+        ''' <summary>Represents the "Error" statement.</summary>
         ''' <param name="errorNumber">
         ''' The expression that represents the error number.
         ''' </param>
@@ -15942,9 +15576,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Goto statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Goto statement.</summary>
         ''' <param name="onKeyword">
         ''' The "On" keyword
         ''' </param>
@@ -15991,9 +15623,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Goto statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Goto statement.</summary>
         ''' <param name="label">
         ''' The name of the label. If the label is a line number, 0 or -1, wraps an
         ''' IntegerLiteralToken that is the line number, otherwise, wraps an Identifier.
@@ -16003,9 +15633,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Goto statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Goto statement.</summary>
         ''' <param name="onKeyword">
         ''' The "On" keyword
         ''' </param>
@@ -16052,9 +15680,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Goto statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Goto statement.</summary>
         ''' <param name="label">
         ''' The name of the label. If the label is a line number, 0 or -1, wraps an
         ''' IntegerLiteralToken that is the line number, otherwise, wraps an Identifier.
@@ -16064,9 +15690,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Goto statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Goto statement.</summary>
         ''' <param name="onKeyword">
         ''' The "On" keyword
         ''' </param>
@@ -16113,9 +15737,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Goto statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Goto statement.</summary>
         ''' <param name="label">
         ''' The name of the label. If the label is a line number, 0 or -1, wraps an
         ''' IntegerLiteralToken that is the line number, otherwise, wraps an Identifier.
@@ -16125,9 +15747,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Goto statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Goto statement.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' OnErrorGoToStatementSyntax. One of OnErrorGoToZeroStatement,
@@ -16182,9 +15802,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Goto statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Goto statement.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' OnErrorGoToStatementSyntax. One of OnErrorGoToZeroStatement,
@@ -16199,9 +15817,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Resume Next statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Resume Next statement.</summary>
         ''' <param name="onKeyword">
         ''' The "On" keyword
         ''' </param>
@@ -16239,9 +15855,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Resume Next statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Resume Next statement.</summary>
         Public Shared Function OnErrorResumeNextStatement() As OnErrorResumeNextStatementSyntax
             Return SyntaxFactory.OnErrorResumeNextStatement(SyntaxFactory.Token(SyntaxKind.OnKeyword), SyntaxFactory.Token(SyntaxKind.ErrorKeyword), SyntaxFactory.Token(SyntaxKind.ResumeKeyword), SyntaxFactory.Token(SyntaxKind.NextKeyword))
         End Function
@@ -16653,9 +16267,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a case statement and its subsequent block.
-        ''' </summary>
+        ''' <summary>Represents a case statement and its subsequent block.</summary>
         ''' <param name="caseStatement">
         ''' The statement that begins the case block.
         ''' </param>
@@ -16676,9 +16288,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a case statement and its subsequent block.
-        ''' </summary>
+        ''' <summary>Represents a case statement and its subsequent block.</summary>
         ''' <param name="caseStatement">
         ''' The statement that begins the case block.
         ''' </param>
@@ -16687,9 +16297,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a case statement and its subsequent block.
-        ''' </summary>
+        ''' <summary>Represents a case statement and its subsequent block.</summary>
         ''' <param name="caseStatement">
         ''' The statement that begins the case block.
         ''' </param>
@@ -16710,9 +16318,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a case statement and its subsequent block.
-        ''' </summary>
+        ''' <summary>Represents a case statement and its subsequent block.</summary>
         ''' <param name="caseStatement">
         ''' The statement that begins the case block.
         ''' </param>
@@ -16721,9 +16327,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a case statement and its subsequent block.
-        ''' </summary>
+        ''' <summary>Represents a case statement and its subsequent block.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of CaseBlockSyntax. One
         ''' of CaseBlock, CaseElseBlock.
@@ -16751,9 +16355,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a case statement and its subsequent block.
-        ''' </summary>
+        ''' <summary>Represents a case statement and its subsequent block.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of CaseBlockSyntax. One
         ''' of CaseBlock, CaseElseBlock.
@@ -16931,9 +16533,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The "Else" part in a Case Else statement.
-        ''' </summary>
+        ''' <summary>The "Else" part in a Case Else statement.</summary>
         ''' <param name="elseKeyword">
         ''' The "Else" keyword.
         ''' </param>
@@ -16947,17 +16547,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The "Else" part in a Case Else statement.
-        ''' </summary>
+        ''' <summary>The "Else" part in a Case Else statement.</summary>
         Public Shared Function ElseCaseClause() As ElseCaseClauseSyntax
             Return SyntaxFactory.ElseCaseClause(SyntaxFactory.Token(SyntaxKind.ElseKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single value in a Case.
-        ''' </summary>
+        ''' <summary>Represents a single value in a Case.</summary>
         ''' <param name="value">
         ''' The expression that denotes the value being tested against.
         ''' </param>
@@ -17078,9 +16674,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a range "expression To expression" in a Case.
-        ''' </summary>
+        ''' <summary>Represents a range "expression To expression" in a Case.</summary>
         ''' <param name="lowerBound">
         ''' The lower bound of the range.
         ''' </param>
@@ -17324,9 +16918,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a range "expression To expression" in a Case.
-        ''' </summary>
+        ''' <summary>Represents a range "expression To expression" in a Case.</summary>
         ''' <param name="lowerBound">
         ''' The lower bound of the range.
         ''' </param>
@@ -17338,9 +16930,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -17478,9 +17068,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="value">
         ''' The expression that denotes the value being tested against.
         ''' </param>
@@ -17489,9 +17077,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -17624,9 +17210,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="value">
         ''' The expression that denotes the value being tested against.
         ''' </param>
@@ -17635,9 +17219,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -17770,9 +17352,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="value">
         ''' The expression that denotes the value being tested against.
         ''' </param>
@@ -17781,9 +17361,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -17916,9 +17494,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="value">
         ''' The expression that denotes the value being tested against.
         ''' </param>
@@ -17927,9 +17503,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -18062,9 +17636,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="value">
         ''' The expression that denotes the value being tested against.
         ''' </param>
@@ -18073,9 +17645,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -18208,9 +17778,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="value">
         ''' The expression that denotes the value being tested against.
         ''' </param>
@@ -18219,9 +17787,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' RelationalCaseClauseSyntax. One of CaseEqualsClause, CaseNotEqualsClause,
@@ -18379,9 +17945,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Select
         End Function
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' RelationalCaseClauseSyntax. One of CaseEqualsClause, CaseNotEqualsClause,
@@ -18883,9 +18447,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="doKeyword">
         ''' The "Do" keyword.
         ''' </param>
@@ -18903,9 +18465,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="whileOrUntilClause">
         ''' The "While expression" or "Until expression" clause of the Do statement, if
         ''' present.
@@ -18915,17 +18475,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         Public Shared Function SimpleDoStatement() As DoStatementSyntax
             Return SyntaxFactory.SimpleDoStatement(SyntaxFactory.Token(SyntaxKind.DoKeyword), Nothing)
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="doKeyword">
         ''' The "Do" keyword.
         ''' </param>
@@ -18943,9 +18499,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="whileOrUntilClause">
         ''' The "While expression" or "Until expression" clause of the Do statement, if
         ''' present.
@@ -18955,17 +18509,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         Public Shared Function DoWhileStatement() As DoStatementSyntax
             Return SyntaxFactory.DoWhileStatement(SyntaxFactory.Token(SyntaxKind.DoKeyword), Nothing)
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="doKeyword">
         ''' The "Do" keyword.
         ''' </param>
@@ -18983,9 +18533,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="whileOrUntilClause">
         ''' The "While expression" or "Until expression" clause of the Do statement, if
         ''' present.
@@ -18995,17 +18543,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         Public Shared Function DoUntilStatement() As DoStatementSyntax
             Return SyntaxFactory.DoUntilStatement(SyntaxFactory.Token(SyntaxKind.DoKeyword), Nothing)
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of DoStatementSyntax.
         ''' One of SimpleDoStatement, DoWhileStatement, DoUntilStatement.
@@ -19040,9 +18584,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Select
         End Function
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of DoStatementSyntax.
         ''' One of SimpleDoStatement, DoWhileStatement, DoUntilStatement.
@@ -19056,9 +18598,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of DoStatementSyntax.
         ''' One of SimpleDoStatement, DoWhileStatement, DoUntilStatement.
@@ -19068,9 +18608,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="loopKeyword">
         ''' The "Loop" keyword.
         ''' </param>
@@ -19088,9 +18626,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="whileOrUntilClause">
         ''' The "While expression" or "Until expression" clause of the Loop statement, if
         ''' present.
@@ -19100,17 +18636,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         Public Shared Function SimpleLoopStatement() As LoopStatementSyntax
             Return SyntaxFactory.SimpleLoopStatement(SyntaxFactory.Token(SyntaxKind.LoopKeyword), Nothing)
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="loopKeyword">
         ''' The "Loop" keyword.
         ''' </param>
@@ -19128,9 +18660,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="whileOrUntilClause">
         ''' The "While expression" or "Until expression" clause of the Loop statement, if
         ''' present.
@@ -19140,17 +18670,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         Public Shared Function LoopWhileStatement() As LoopStatementSyntax
             Return SyntaxFactory.LoopWhileStatement(SyntaxFactory.Token(SyntaxKind.LoopKeyword), Nothing)
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="loopKeyword">
         ''' The "Loop" keyword.
         ''' </param>
@@ -19168,9 +18694,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="whileOrUntilClause">
         ''' The "While expression" or "Until expression" clause of the Loop statement, if
         ''' present.
@@ -19180,17 +18704,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         Public Shared Function LoopUntilStatement() As LoopStatementSyntax
             Return SyntaxFactory.LoopUntilStatement(SyntaxFactory.Token(SyntaxKind.LoopKeyword), Nothing)
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of LoopStatementSyntax.
         ''' One of SimpleLoopStatement, LoopWhileStatement, LoopUntilStatement.
@@ -19225,9 +18745,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Select
         End Function
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of LoopStatementSyntax.
         ''' One of SimpleLoopStatement, LoopWhileStatement, LoopUntilStatement.
@@ -19241,9 +18759,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of LoopStatementSyntax.
         ''' One of SimpleLoopStatement, LoopWhileStatement, LoopUntilStatement.
@@ -20363,9 +19879,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Step clause in a For Statement.
-        ''' </summary>
+        ''' <summary>The Step clause in a For Statement.</summary>
         ''' <param name="stepKeyword">
         ''' The "Step" keyword.
         ''' </param>
@@ -20494,9 +20008,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' The Step clause in a For Statement.
-        ''' </summary>
+        ''' <summary>The Step clause in a For Statement.</summary>
         ''' <param name="stepValue">
         ''' The expression denoting the step increment.
         ''' </param>
@@ -20901,9 +20413,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Throw statement.
-        ''' </summary>
+        ''' <summary>Represents a Throw statement.</summary>
         ''' <param name="throwKeyword">
         ''' The "Throw" keyword
         ''' </param>
@@ -20920,9 +20430,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Throw statement.
-        ''' </summary>
+        ''' <summary>Represents a Throw statement.</summary>
         ''' <param name="expression">
         ''' The expression denoting the value being thrown.
         ''' </param>
@@ -20931,9 +20439,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Throw statement.
-        ''' </summary>
+        ''' <summary>Represents a Throw statement.</summary>
         Public Shared Function ThrowStatement() As ThrowStatementSyntax
             Return SyntaxFactory.ThrowStatement(SyntaxFactory.Token(SyntaxKind.ThrowKeyword), Nothing)
         End Function
@@ -24127,9 +23633,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Select
         End Function
 
-        ''' <summary>
-        ''' Represents a left-hand side of a MidAssignment statement.
-        ''' </summary>
+        ''' <summary>Represents a left-hand side of a MidAssignment statement.</summary>
         ''' <param name="mid">
         ''' The "Mid" possibly followed by a type character.
         ''' </param>
@@ -24154,9 +23658,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a left-hand side of a MidAssignment statement.
-        ''' </summary>
+        ''' <summary>Represents a left-hand side of a MidAssignment statement.</summary>
         ''' <param name="mid">
         ''' The "Mid" possibly followed by a type character.
         ''' </param>
@@ -24168,9 +23670,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represent a call statement (also known as a invocation statement).
-        ''' </summary>
+        ''' <summary>Represent a call statement (also known as a invocation statement).</summary>
         ''' <param name="callKeyword">
         ''' The "Call" keyword.
         ''' </param>
@@ -24197,9 +23697,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represent a call statement (also known as a invocation statement).
-        ''' </summary>
+        ''' <summary>Represent a call statement (also known as a invocation statement).</summary>
         ''' <param name="invocation">
         ''' The expression denoting the call. This could be an Invocation or a MemberAccess
         ''' (in the case where no parentheses were supplied.)
@@ -25044,9 +24542,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represent a RaiseEvent statement.
-        ''' </summary>
+        ''' <summary>Represent a RaiseEvent statement.</summary>
         ''' <param name="raiseEventKeyword">
         ''' The "RaiseEvent" keyword
         ''' </param>
@@ -25074,9 +24570,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represent a RaiseEvent statement.
-        ''' </summary>
+        ''' <summary>Represent a RaiseEvent statement.</summary>
         ''' <param name="name">
         ''' The name of the event being raised.
         ''' </param>
@@ -25088,9 +24582,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represent a RaiseEvent statement.
-        ''' </summary>
+        ''' <summary>Represent a RaiseEvent statement.</summary>
         ''' <param name="name">
         ''' The name of the event being raised.
         ''' </param>
@@ -25245,9 +24737,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a ReDim statement.
-        ''' </summary>
+        ''' <summary>Represents a ReDim statement.</summary>
         ''' <param name="reDimKeyword">
         ''' The "ReDim" keyword.
         ''' </param>
@@ -25268,9 +24758,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a ReDim statement.
-        ''' </summary>
+        ''' <summary>Represents a ReDim statement.</summary>
         ''' <param name="clauses">
         ''' The list of ReDim clauses.
         ''' </param>
@@ -25279,9 +24767,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a ReDim statement.
-        ''' </summary>
+        ''' <summary>Represents a ReDim statement.</summary>
         ''' <param name="clauses">
         ''' The list of ReDim clauses.
         ''' </param>
@@ -25290,9 +24776,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a ReDim statement.
-        ''' </summary>
+        ''' <summary>Represents a ReDim statement.</summary>
         ''' <param name="reDimKeyword">
         ''' The "ReDim" keyword.
         ''' </param>
@@ -25313,9 +24797,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a ReDim statement.
-        ''' </summary>
+        ''' <summary>Represents a ReDim statement.</summary>
         ''' <param name="clauses">
         ''' The list of ReDim clauses.
         ''' </param>
@@ -25324,9 +24806,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a ReDim statement.
-        ''' </summary>
+        ''' <summary>Represents a ReDim statement.</summary>
         ''' <param name="clauses">
         ''' The list of ReDim clauses.
         ''' </param>
@@ -25335,9 +24815,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a ReDim statement.
-        ''' </summary>
+        ''' <summary>Represents a ReDim statement.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' ReDimStatementSyntax. One of ReDimStatement, ReDimPreserveStatement.
@@ -25365,9 +24843,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a ReDim statement.
-        ''' </summary>
+        ''' <summary>Represents a ReDim statement.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' ReDimStatementSyntax. One of ReDimStatement, ReDimPreserveStatement.
@@ -25380,9 +24856,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a ReDim statement.
-        ''' </summary>
+        ''' <summary>Represents a ReDim statement.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' ReDimStatementSyntax. One of ReDimStatement, ReDimPreserveStatement.
@@ -25395,9 +24869,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a ReDim statement clause.
-        ''' </summary>
+        ''' <summary>Represents a ReDim statement clause.</summary>
         ''' <param name="expression">
         ''' The target of the ReDim statement.
         ''' </param>
@@ -25529,9 +25001,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "Erase" statement.
-        ''' </summary>
+        ''' <summary>Represents an "Erase" statement.</summary>
         ''' <param name="eraseKeyword">
         ''' The "Erase" keyword.
         ''' </param>
@@ -25548,9 +25018,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "Erase" statement.
-        ''' </summary>
+        ''' <summary>Represents an "Erase" statement.</summary>
         ''' <param name="expressions">
         ''' A list of expressions denoting the arrays to erase.
         ''' </param>
@@ -25559,9 +25027,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "Erase" statement.
-        ''' </summary>
+        ''' <summary>Represents an "Erase" statement.</summary>
         ''' <param name="expressions">
         ''' A list of expressions denoting the arrays to erase.
         ''' </param>
@@ -25867,9 +25333,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a parenthesized expression.
-        ''' </summary>
+        ''' <summary>Represents a parenthesized expression.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token
         ''' </param>
@@ -26006,9 +25470,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a parenthesized expression.
-        ''' </summary>
+        ''' <summary>Represents a parenthesized expression.</summary>
         ''' <param name="expression">
         ''' The expression inside the parentheses.
         ''' </param>
@@ -26017,9 +25479,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a tuple literal expression.
-        ''' </summary>
+        ''' <summary>Represents a tuple literal expression.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token
         ''' </param>
@@ -26044,9 +25504,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a tuple literal expression.
-        ''' </summary>
+        ''' <summary>Represents a tuple literal expression.</summary>
         ''' <param name="arguments">
         ''' The list of tuple arguments.
         ''' </param>
@@ -26055,9 +25513,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a tuple literal expression.
-        ''' </summary>
+        ''' <summary>Represents a tuple literal expression.</summary>
         ''' <param name="arguments">
         ''' The list of tuple arguments.
         ''' </param>
@@ -26066,9 +25522,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a tuple type expression.
-        ''' </summary>
+        ''' <summary>Represents a tuple type expression.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token
         ''' </param>
@@ -26093,9 +25547,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a tuple type expression.
-        ''' </summary>
+        ''' <summary>Represents a tuple type expression.</summary>
         ''' <param name="elements">
         ''' The list of tuple elements.
         ''' </param>
@@ -26104,9 +25556,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a tuple type expression.
-        ''' </summary>
+        ''' <summary>Represents a tuple type expression.</summary>
         ''' <param name="elements">
         ''' The list of tuple elements.
         ''' </param>
@@ -26115,9 +25565,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single declaration of a tuple element supplying only the type.
-        ''' </summary>
+        ''' <summary>Represents a single declaration of a tuple element supplying only the type.</summary>
         ''' <param name="type">
         ''' The type-name part of the tuple element syntax.
         ''' </param>
@@ -26187,9 +25635,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Identifies the special instance "Me"
-        ''' </summary>
+        ''' <summary>Identifies the special instance "Me"</summary>
         ''' <param name="keyword">
         ''' The "Me", "MyClass" or "MyBase" keyword.
         ''' </param>
@@ -26205,17 +25651,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Identifies the special instance "Me"
-        ''' </summary>
+        ''' <summary>Identifies the special instance "Me"</summary>
         Public Shared Function MeExpression() As MeExpressionSyntax
             Return SyntaxFactory.MeExpression(SyntaxFactory.Token(SyntaxKind.MeKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Identifies the special instance "MyBase"
-        ''' </summary>
+        ''' <summary>Identifies the special instance "MyBase"</summary>
         ''' <param name="keyword">
         ''' The "Me", "MyClass" or "MyBase" keyword.
         ''' </param>
@@ -26229,17 +25671,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Identifies the special instance "MyBase"
-        ''' </summary>
+        ''' <summary>Identifies the special instance "MyBase"</summary>
         Public Shared Function MyBaseExpression() As MyBaseExpressionSyntax
             Return SyntaxFactory.MyBaseExpression(SyntaxFactory.Token(SyntaxKind.MyBaseKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Identifies the special instance "MyClass"
-        ''' </summary>
+        ''' <summary>Identifies the special instance "MyClass"</summary>
         ''' <param name="keyword">
         ''' The "Me", "MyClass" or "MyBase" keyword.
         ''' </param>
@@ -26253,17 +25691,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Identifies the special instance "MyClass"
-        ''' </summary>
+        ''' <summary>Identifies the special instance "MyClass"</summary>
         Public Shared Function MyClassExpression() As MyClassExpressionSyntax
             Return SyntaxFactory.MyClassExpression(SyntaxFactory.Token(SyntaxKind.MyClassKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents a GetType expression.
-        ''' </summary>
+        ''' <summary>Represents a GetType expression.</summary>
         ''' <param name="getTypeKeyword">
         ''' The "GetType" keyword.
         ''' </param>
@@ -26313,9 +25747,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a GetType expression.
-        ''' </summary>
+        ''' <summary>Represents a GetType expression.</summary>
         ''' <param name="type">
         ''' The type to get the Type object for. This can be an open generic type.
         ''' </param>
@@ -26324,9 +25756,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
+        ''' <summary>Represents a TypeOf...Is or IsNot expression.</summary>
         ''' <param name="typeOfKeyword">
         ''' The "TypeOf" keyword.
         ''' </param>
@@ -26484,9 +25914,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
+        ''' <summary>Represents a TypeOf...Is or IsNot expression.</summary>
         ''' <param name="expression">
         ''' The expression being tested.
         ''' </param>
@@ -26498,9 +25926,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
+        ''' <summary>Represents a TypeOf...Is or IsNot expression.</summary>
         ''' <param name="typeOfKeyword">
         ''' The "TypeOf" keyword.
         ''' </param>
@@ -26657,9 +26083,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
+        ''' <summary>Represents a TypeOf...Is or IsNot expression.</summary>
         ''' <param name="expression">
         ''' The expression being tested.
         ''' </param>
@@ -26671,9 +26095,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
+        ''' <summary>Represents a TypeOf...Is or IsNot expression.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' TypeOfExpressionSyntax. One of TypeOfIsExpression, TypeOfIsNotExpression.
@@ -26845,9 +26267,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Select
         End Function
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
+        ''' <summary>Represents a TypeOf...Is or IsNot expression.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' TypeOfExpressionSyntax. One of TypeOfIsExpression, TypeOfIsNotExpression.
@@ -26866,9 +26286,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a GetXmlNamespace expression.
-        ''' </summary>
+        ''' <summary>Represents a GetXmlNamespace expression.</summary>
         ''' <param name="getXmlNamespaceKeyword">
         ''' The "GetXmlNamespace" keyword.
         ''' </param>
@@ -26901,9 +26319,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a GetXmlNamespace expression.
-        ''' </summary>
+        ''' <summary>Represents a GetXmlNamespace expression.</summary>
         Public Shared Function GetXmlNamespaceExpression() As GetXmlNamespaceExpressionSyntax
             Return SyntaxFactory.GetXmlNamespaceExpression(SyntaxFactory.Token(SyntaxKind.GetXmlNamespaceKeyword), SyntaxFactory.Token(SyntaxKind.OpenParenToken), Nothing, SyntaxFactory.Token(SyntaxKind.CloseParenToken))
         End Function
@@ -27506,9 +26922,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a New expression that create an object of anonymous type.
-        ''' </summary>
+        ''' <summary>Represents a New expression that create an object of anonymous type.</summary>
         ''' <param name="newKeyword">
         ''' The "New" keyword.
         ''' </param>
@@ -27537,9 +26951,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a New expression that create an object of anonymous type.
-        ''' </summary>
+        ''' <summary>Represents a New expression that create an object of anonymous type.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on the type. If no attributes were specified, an
         ''' empty list is returned.
@@ -27552,9 +26964,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a New expression that create an object of anonymous type.
-        ''' </summary>
+        ''' <summary>Represents a New expression that create an object of anonymous type.</summary>
         ''' <param name="initializer">
         ''' The With clause to initialize the new object.
         ''' </param>
@@ -27563,9 +26973,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an expression that creates a new array.
-        ''' </summary>
+        ''' <summary>Represents an expression that creates a new array.</summary>
         ''' <param name="newKeyword">
         ''' The "New" keyword.
         ''' </param>
@@ -27620,9 +27028,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an expression that creates a new array.
-        ''' </summary>
+        ''' <summary>Represents an expression that creates a new array.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on the type. If no attributes were specified, an
         ''' empty list is returned.
@@ -27641,9 +27047,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an expression that creates a new array.
-        ''' </summary>
+        ''' <summary>Represents an expression that creates a new array.</summary>
         ''' <param name="type">
         ''' The element type of the array being created.
         ''' </param>
@@ -35031,9 +34435,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Select
         End Function
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="operatorToken">
         ''' The token that is the operator.
         ''' </param>
@@ -35165,9 +34567,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="operand">
         ''' The expression being operated on.
         ''' </param>
@@ -35176,9 +34576,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="operatorToken">
         ''' The token that is the operator.
         ''' </param>
@@ -35307,9 +34705,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="operand">
         ''' The expression being operated on.
         ''' </param>
@@ -35318,9 +34714,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="operatorToken">
         ''' The token that is the operator.
         ''' </param>
@@ -35449,9 +34843,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="operand">
         ''' The expression being operated on.
         ''' </param>
@@ -35460,9 +34852,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="operatorToken">
         ''' The token that is the operator.
         ''' </param>
@@ -35591,9 +34981,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="operand">
         ''' The expression being operated on.
         ''' </param>
@@ -35602,9 +34990,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' UnaryExpressionSyntax. One of UnaryPlusExpression, UnaryMinusExpression,
@@ -36451,9 +35837,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a single line lambda expression.</summary>
         ''' <param name="subOrFunctionHeader">
         ''' The header part of the lambda that includes the "Sub" or "Function" keyword,
         ''' the argument list and return type.
@@ -36760,9 +36144,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a single line lambda expression.</summary>
         ''' <param name="subOrFunctionHeader">
         ''' The header part of the lambda that includes the "Sub" or "Function" keyword,
         ''' the argument list and return type.
@@ -37069,9 +36451,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a single line lambda expression.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' SingleLineLambdaExpressionSyntax. One of SingleLineFunctionLambdaExpression,
@@ -37386,9 +36766,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a multi-line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a multi-line lambda expression.</summary>
         ''' <param name="subOrFunctionHeader">
         ''' The header part of the lambda that includes the "Sub" or "Function" keyword,
         ''' the argument list and return type.
@@ -37425,9 +36803,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a multi-line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a multi-line lambda expression.</summary>
         ''' <param name="subOrFunctionHeader">
         ''' The header part of the lambda that includes the "Sub" or "Function" keyword,
         ''' the argument list and return type.
@@ -37441,9 +36817,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a multi-line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a multi-line lambda expression.</summary>
         ''' <param name="subOrFunctionHeader">
         ''' The header part of the lambda that includes the "Sub" or "Function" keyword,
         ''' the argument list and return type.
@@ -37480,9 +36854,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a multi-line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a multi-line lambda expression.</summary>
         ''' <param name="subOrFunctionHeader">
         ''' The header part of the lambda that includes the "Sub" or "Function" keyword,
         ''' the argument list and return type.
@@ -37496,9 +36868,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a multi-line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a multi-line lambda expression.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' MultiLineLambdaExpressionSyntax. One of MultiLineFunctionLambdaExpression,
@@ -37543,9 +36913,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a multi-line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a multi-line lambda expression.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' MultiLineLambdaExpressionSyntax. One of MultiLineFunctionLambdaExpression,
@@ -37564,9 +36932,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the header part of a lambda expression
-        ''' </summary>
+        ''' <summary>Represents the header part of a lambda expression</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -37599,9 +36965,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the header part of a lambda expression
-        ''' </summary>
+        ''' <summary>Represents the header part of a lambda expression</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -37625,17 +36989,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the header part of a lambda expression
-        ''' </summary>
+        ''' <summary>Represents the header part of a lambda expression</summary>
         Public Shared Function SubLambdaHeader() As LambdaHeaderSyntax
             Return SyntaxFactory.SubLambdaHeader(Nothing, Nothing, SyntaxFactory.Token(SyntaxKind.SubKeyword), Nothing, Nothing)
         End Function
 
 
-        ''' <summary>
-        ''' Represents the header part of a lambda expression
-        ''' </summary>
+        ''' <summary>Represents the header part of a lambda expression</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -37667,9 +37027,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the header part of a lambda expression
-        ''' </summary>
+        ''' <summary>Represents the header part of a lambda expression</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -37693,17 +37051,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the header part of a lambda expression
-        ''' </summary>
+        ''' <summary>Represents the header part of a lambda expression</summary>
         Public Shared Function FunctionLambdaHeader() As LambdaHeaderSyntax
             Return SyntaxFactory.FunctionLambdaHeader(Nothing, Nothing, SyntaxFactory.Token(SyntaxKind.FunctionKeyword), Nothing, Nothing)
         End Function
 
 
-        ''' <summary>
-        ''' Represents the header part of a lambda expression
-        ''' </summary>
+        ''' <summary>Represents the header part of a lambda expression</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of LambdaHeaderSyntax.
         ''' One of SubLambdaHeader, FunctionLambdaHeader.
@@ -37750,9 +37104,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Select
         End Function
 
-        ''' <summary>
-        ''' Represents the header part of a lambda expression
-        ''' </summary>
+        ''' <summary>Represents the header part of a lambda expression</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of LambdaHeaderSyntax.
         ''' One of SubLambdaHeader, FunctionLambdaHeader.
@@ -37765,9 +37117,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a parenthesized argument list.
-        ''' </summary>
+        ''' <summary>Represents a parenthesized argument list.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token.
         ''' </param>
@@ -37793,9 +37143,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a parenthesized argument list.
-        ''' </summary>
+        ''' <summary>Represents a parenthesized argument list.</summary>
         ''' <param name="arguments">
         ''' The list of arguments. This may be empty. Omitted argument are represented by
         ''' an OmittedArgumentSyntax node.
@@ -37805,9 +37153,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a parenthesized argument list.
-        ''' </summary>
+        ''' <summary>Represents a parenthesized argument list.</summary>
         Public Shared Function ArgumentList() As ArgumentListSyntax
             Return SyntaxFactory.ArgumentList(SyntaxFactory.Token(SyntaxKind.OpenParenToken), Nothing, SyntaxFactory.Token(SyntaxKind.CloseParenToken))
         End Function
@@ -37978,9 +37324,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an identifier name followed by a ":=" token in a named argument.
-        ''' </summary>
+        ''' <summary>Represents an identifier name followed by a ":=" token in a named argument.</summary>
         ''' <param name="name">
         ''' The name used to identify the named argument.
         ''' </param>
@@ -38005,9 +37349,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an identifier name followed by a ":=" token in a named argument.
-        ''' </summary>
+        ''' <summary>Represents an identifier name followed by a ":=" token in a named argument.</summary>
         ''' <param name="name">
         ''' The name used to identify the named argument.
         ''' </param>
@@ -38667,9 +38009,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the name and optional type of an expression range variable.
-        ''' </summary>
+        ''' <summary>Represents the name and optional type of an expression range variable.</summary>
         ''' <param name="identifier">
         ''' The name of the variable being defined.
         ''' </param>
@@ -38697,9 +38037,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the name and optional type of an expression range variable.
-        ''' </summary>
+        ''' <summary>Represents the name and optional type of an expression range variable.</summary>
         ''' <param name="identifier">
         ''' The name of the variable being defined.
         ''' </param>
@@ -38711,9 +38049,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the name and optional type of an expression range variable.
-        ''' </summary>
+        ''' <summary>Represents the name and optional type of an expression range variable.</summary>
         ''' <param name="identifier">
         ''' The name of the variable being defined.
         ''' </param>
@@ -38862,9 +38198,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Let" query operator.
-        ''' </summary>
+        ''' <summary>Represents a "Let" query operator.</summary>
         ''' <param name="letKeyword">
         ''' The "Let" keyword.
         ''' </param>
@@ -38881,9 +38215,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Let" query operator.
-        ''' </summary>
+        ''' <summary>Represents a "Let" query operator.</summary>
         ''' <param name="variables">
         ''' The list of expression range variable being defined by the Let operator.
         ''' </param>
@@ -38892,9 +38224,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Let" query operator.
-        ''' </summary>
+        ''' <summary>Represents a "Let" query operator.</summary>
         ''' <param name="variables">
         ''' The list of expression range variable being defined by the Let operator.
         ''' </param>
@@ -38903,9 +38233,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Aggregate query operator.
-        ''' </summary>
+        ''' <summary>Represents an Aggregate query operator.</summary>
         ''' <param name="aggregateKeyword">
         ''' The "Aggregate" keyword.
         ''' </param>
@@ -38936,9 +38264,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Aggregate query operator.
-        ''' </summary>
+        ''' <summary>Represents an Aggregate query operator.</summary>
         ''' <param name="variables">
         ''' The list of collection range variables declared by this Aggregate operator.
         ''' </param>
@@ -38953,9 +38279,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Aggregate query operator.
-        ''' </summary>
+        ''' <summary>Represents an Aggregate query operator.</summary>
         ''' <param name="variables">
         ''' The list of collection range variables declared by this Aggregate operator.
         ''' </param>
@@ -38967,9 +38291,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Distinct" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Distinct" query operator.</summary>
         ''' <param name="distinctKeyword">
         ''' The "Distinct" keyword.
         ''' </param>
@@ -38983,17 +38305,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Distinct" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Distinct" query operator.</summary>
         Public Shared Function DistinctClause() As DistinctClauseSyntax
             Return SyntaxFactory.DistinctClause(SyntaxFactory.Token(SyntaxKind.DistinctKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Where" query operator.
-        ''' </summary>
+        ''' <summary>Represents a "Where" query operator.</summary>
         ''' <param name="whereKeyword">
         ''' The "Where" keyword.
         ''' </param>
@@ -39122,9 +38440,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Where" query operator.
-        ''' </summary>
+        ''' <summary>Represents a "Where" query operator.</summary>
         ''' <param name="condition">
         ''' The boolean expression used for filtering.
         ''' </param>
@@ -39612,9 +38928,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Skip" or "Take" query operator. The Kind property tells which.
-        ''' </summary>
+        ''' <summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary>
         ''' <param name="skipOrTakeKeyword">
         ''' The "Skip" or "Take" keyword.
         ''' </param>
@@ -39744,9 +39058,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Skip" or "Take" query operator. The Kind property tells which.
-        ''' </summary>
+        ''' <summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary>
         ''' <param name="count">
         ''' Represents the expression with the number of items to take or skip.
         ''' </param>
@@ -39755,9 +39067,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Skip" or "Take" query operator. The Kind property tells which.
-        ''' </summary>
+        ''' <summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary>
         ''' <param name="skipOrTakeKeyword">
         ''' The "Skip" or "Take" keyword.
         ''' </param>
@@ -39886,9 +39196,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Skip" or "Take" query operator. The Kind property tells which.
-        ''' </summary>
+        ''' <summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary>
         ''' <param name="count">
         ''' Represents the expression with the number of items to take or skip.
         ''' </param>
@@ -39897,9 +39205,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Skip" or "Take" query operator. The Kind property tells which.
-        ''' </summary>
+        ''' <summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' PartitionClauseSyntax. One of SkipClause, TakeClause.
@@ -40043,9 +39349,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Select
         End Function
 
-        ''' <summary>
-        ''' Represents the "Group By" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Group By" query operator.</summary>
         ''' <param name="groupKeyword">
         ''' The "Group" keyword.
         ''' </param>
@@ -40082,9 +39386,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Group By" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Group By" query operator.</summary>
         ''' <param name="items">
         ''' The optional list of variables being grouped; the contents of the Group clause.
         ''' If none were specified, an empty list is returned.
@@ -40100,9 +39402,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Group By" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Group By" query operator.</summary>
         ''' <param name="keys">
         ''' The key values being used for grouping.
         ''' </param>
@@ -40114,9 +39414,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "expression Equals expression" condition in a Join.
-        ''' </summary>
+        ''' <summary>Represents the "expression Equals expression" condition in a Join.</summary>
         ''' <param name="left">
         ''' The left expression in the Join condition.
         ''' </param>
@@ -40360,9 +39658,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "expression Equals expression" condition in a Join.
-        ''' </summary>
+        ''' <summary>Represents the "expression Equals expression" condition in a Join.</summary>
         ''' <param name="left">
         ''' The left expression in the Join condition.
         ''' </param>
@@ -40374,9 +39670,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Join query operator.
-        ''' </summary>
+        ''' <summary>Represents a Join query operator.</summary>
         ''' <param name="joinKeyword">
         ''' The "Join" keyword.
         ''' </param>
@@ -40408,9 +39702,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Join query operator.
-        ''' </summary>
+        ''' <summary>Represents a Join query operator.</summary>
         ''' <param name="joinedVariables">
         ''' Defines the collection range variables being joined to.
         ''' </param>
@@ -40426,9 +39718,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Join query operator.
-        ''' </summary>
+        ''' <summary>Represents a Join query operator.</summary>
         ''' <param name="joinedVariables">
         ''' Defines the collection range variables being joined to.
         ''' </param>
@@ -40441,9 +39731,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Group Join" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Group Join" query operator.</summary>
         ''' <param name="groupKeyword">
         ''' The "Group" keyword.
         ''' </param>
@@ -40494,9 +39782,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Group Join" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Group Join" query operator.</summary>
         ''' <param name="joinedVariables">
         ''' Defines the collection range variables being joined to.
         ''' </param>
@@ -40515,9 +39801,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Group Join" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Group Join" query operator.</summary>
         ''' <param name="joinedVariables">
         ''' Defines the collection range variables being joined to.
         ''' </param>
@@ -40533,9 +39817,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Order By" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Order By" query operator.</summary>
         ''' <param name="orderKeyword">
         ''' The "Order" keyword
         ''' </param>
@@ -40560,9 +39842,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Order By" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Order By" query operator.</summary>
         ''' <param name="orderings">
         ''' The list of OrderExpression's to sort by.
         ''' </param>
@@ -40571,9 +39851,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Order By" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Order By" query operator.</summary>
         ''' <param name="orderings">
         ''' The list of OrderExpression's to sort by.
         ''' </param>
@@ -41023,9 +40301,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Select" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Select" query operator.</summary>
         ''' <param name="selectKeyword">
         ''' The "Select" keyword.
         ''' </param>
@@ -41043,9 +40319,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Select" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Select" query operator.</summary>
         ''' <param name="variables">
         ''' The list of expression range variables being defined by the Select query
         ''' operator.
@@ -41055,9 +40329,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Select" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Select" query operator.</summary>
         ''' <param name="variables">
         ''' The list of expression range variables being defined by the Select query
         ''' operator.
@@ -41067,9 +40339,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML Document literal expression.
-        ''' </summary>
+        ''' <summary>Represents an XML Document literal expression.</summary>
         Public Shared Function XmlDocument(declaration As XmlDeclarationSyntax, precedingMisc As SyntaxList(of XmlNodeSyntax), root As XmlNodeSyntax, followingMisc As SyntaxList(of XmlNodeSyntax)) As XmlDocumentSyntax
             if declaration Is Nothing Then
                 Throw New ArgumentNullException(NameOf(declaration))
@@ -41093,17 +40363,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML Document literal expression.
-        ''' </summary>
+        ''' <summary>Represents an XML Document literal expression.</summary>
         Public Shared Function XmlDocument(declaration As XmlDeclarationSyntax, root As XmlNodeSyntax) As XmlDocumentSyntax
             Return SyntaxFactory.XmlDocument(declaration, Nothing, root, Nothing)
         End Function
 
 
-        ''' <summary>
-        ''' Represents the XML declaration prologue in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents the XML declaration prologue in an XML literal expression.</summary>
         Public Shared Function XmlDeclaration(lessThanQuestionToken As SyntaxToken, xmlKeyword As SyntaxToken, version As XmlDeclarationOptionSyntax, encoding As XmlDeclarationOptionSyntax, standalone As XmlDeclarationOptionSyntax, questionGreaterThanToken As SyntaxToken) As XmlDeclarationSyntax
             Select Case lessThanQuestionToken.Kind()
                 Case SyntaxKind.LessThanQuestionToken
@@ -41132,17 +40398,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the XML declaration prologue in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents the XML declaration prologue in an XML literal expression.</summary>
         Public Shared Function XmlDeclaration(version As XmlDeclarationOptionSyntax, encoding As XmlDeclarationOptionSyntax, standalone As XmlDeclarationOptionSyntax) As XmlDeclarationSyntax
             Return SyntaxFactory.XmlDeclaration(SyntaxFactory.Token(SyntaxKind.LessThanQuestionToken), SyntaxFactory.Token(SyntaxKind.XmlKeyword), version, encoding, standalone, SyntaxFactory.Token(SyntaxKind.QuestionGreaterThanToken))
         End Function
 
 
-        ''' <summary>
-        ''' Represents the XML declaration prologue in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents the XML declaration prologue in an XML literal expression.</summary>
         Public Shared Function XmlDeclaration(version As XmlDeclarationOptionSyntax) As XmlDeclarationSyntax
             Return SyntaxFactory.XmlDeclaration(SyntaxFactory.Token(SyntaxKind.LessThanQuestionToken), SyntaxFactory.Token(SyntaxKind.XmlKeyword), version, Nothing, Nothing, SyntaxFactory.Token(SyntaxKind.QuestionGreaterThanToken))
         End Function
@@ -41184,9 +40446,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML element with content in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents an XML element with content in an XML literal expression.</summary>
         Public Shared Function XmlElement(startTag As XmlElementStartTagSyntax, content As SyntaxList(of XmlNodeSyntax), endTag As XmlElementEndTagSyntax) As XmlElementSyntax
             if startTag Is Nothing Then
                 Throw New ArgumentNullException(NameOf(startTag))
@@ -41208,17 +40468,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML element with content in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents an XML element with content in an XML literal expression.</summary>
         Public Shared Function XmlElement(startTag As XmlElementStartTagSyntax, endTag As XmlElementEndTagSyntax) As XmlElementSyntax
             Return SyntaxFactory.XmlElement(startTag, Nothing, endTag)
         End Function
 
 
-        ''' <summary>
-        ''' Represents Xml text.
-        ''' </summary>
+        ''' <summary>Represents Xml text.</summary>
         ''' <param name="textTokens">
         ''' A list of all the text tokens in the Xml text. This list always contains at
         ''' least one token.
@@ -41228,17 +40484,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents Xml text.
-        ''' </summary>
+        ''' <summary>Represents Xml text.</summary>
         Public Shared Function XmlText() As XmlTextSyntax
             Return SyntaxFactory.XmlText(SyntaxTokenList.Create(SyntaxFactory.Token(SyntaxKind.XmlTextLiteralToken)))
         End Function
 
 
-        ''' <summary>
-        ''' Represents the start tag of an XML element of the form &lt;element&gt;.
-        ''' </summary>
+        ''' <summary>Represents the start tag of an XML element of the form &lt;element&gt;.</summary>
         Public Shared Function XmlElementStartTag(lessThanToken As SyntaxToken, name As XmlNodeSyntax, attributes As SyntaxList(of XmlNodeSyntax), greaterThanToken As SyntaxToken) As XmlElementStartTagSyntax
             Select Case lessThanToken.Kind()
                 Case SyntaxKind.LessThanToken
@@ -41263,25 +40515,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the start tag of an XML element of the form &lt;element&gt;.
-        ''' </summary>
+        ''' <summary>Represents the start tag of an XML element of the form &lt;element&gt;.</summary>
         Public Shared Function XmlElementStartTag(name As XmlNodeSyntax, attributes As SyntaxList(of XmlNodeSyntax)) As XmlElementStartTagSyntax
             Return SyntaxFactory.XmlElementStartTag(SyntaxFactory.Token(SyntaxKind.LessThanToken), name, attributes, SyntaxFactory.Token(SyntaxKind.GreaterThanToken))
         End Function
 
 
-        ''' <summary>
-        ''' Represents the start tag of an XML element of the form &lt;element&gt;.
-        ''' </summary>
+        ''' <summary>Represents the start tag of an XML element of the form &lt;element&gt;.</summary>
         Public Shared Function XmlElementStartTag(name As XmlNodeSyntax) As XmlElementStartTagSyntax
             Return SyntaxFactory.XmlElementStartTag(SyntaxFactory.Token(SyntaxKind.LessThanToken), name, Nothing, SyntaxFactory.Token(SyntaxKind.GreaterThanToken))
         End Function
 
 
-        ''' <summary>
-        ''' Represents the end tag of an XML element of the form &lt;/element&gt;.
-        ''' </summary>
+        ''' <summary>Represents the end tag of an XML element of the form &lt;/element&gt;.</summary>
         Public Shared Function XmlElementEndTag(lessThanSlashToken As SyntaxToken, name As XmlNameSyntax, greaterThanToken As SyntaxToken) As XmlElementEndTagSyntax
             Select Case lessThanSlashToken.Kind()
                 Case SyntaxKind.LessThanSlashToken
@@ -41297,25 +40543,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the end tag of an XML element of the form &lt;/element&gt;.
-        ''' </summary>
+        ''' <summary>Represents the end tag of an XML element of the form &lt;/element&gt;.</summary>
         Public Shared Function XmlElementEndTag(name As XmlNameSyntax) As XmlElementEndTagSyntax
             Return SyntaxFactory.XmlElementEndTag(SyntaxFactory.Token(SyntaxKind.LessThanSlashToken), name, SyntaxFactory.Token(SyntaxKind.GreaterThanToken))
         End Function
 
 
-        ''' <summary>
-        ''' Represents the end tag of an XML element of the form &lt;/element&gt;.
-        ''' </summary>
+        ''' <summary>Represents the end tag of an XML element of the form &lt;/element&gt;.</summary>
         Public Shared Function XmlElementEndTag() As XmlElementEndTagSyntax
             Return SyntaxFactory.XmlElementEndTag(SyntaxFactory.Token(SyntaxKind.LessThanSlashToken), Nothing, SyntaxFactory.Token(SyntaxKind.GreaterThanToken))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an empty XML element of the form &lt;element /&gt;
-        ''' </summary>
+        ''' <summary>Represents an empty XML element of the form &lt;element /&gt;</summary>
         Public Shared Function XmlEmptyElement(lessThanToken As SyntaxToken, name As XmlNodeSyntax, attributes As SyntaxList(of XmlNodeSyntax), slashGreaterThanToken As SyntaxToken) As XmlEmptyElementSyntax
             Select Case lessThanToken.Kind()
                 Case SyntaxKind.LessThanToken
@@ -41340,25 +40580,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an empty XML element of the form &lt;element /&gt;
-        ''' </summary>
+        ''' <summary>Represents an empty XML element of the form &lt;element /&gt;</summary>
         Public Shared Function XmlEmptyElement(name As XmlNodeSyntax, attributes As SyntaxList(of XmlNodeSyntax)) As XmlEmptyElementSyntax
             Return SyntaxFactory.XmlEmptyElement(SyntaxFactory.Token(SyntaxKind.LessThanToken), name, attributes, SyntaxFactory.Token(SyntaxKind.SlashGreaterThanToken))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an empty XML element of the form &lt;element /&gt;
-        ''' </summary>
+        ''' <summary>Represents an empty XML element of the form &lt;element /&gt;</summary>
         Public Shared Function XmlEmptyElement(name As XmlNodeSyntax) As XmlEmptyElementSyntax
             Return SyntaxFactory.XmlEmptyElement(SyntaxFactory.Token(SyntaxKind.LessThanToken), name, Nothing, SyntaxFactory.Token(SyntaxKind.SlashGreaterThanToken))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML attribute in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents an XML attribute in an XML literal expression.</summary>
         Public Shared Function XmlAttribute(name As XmlNodeSyntax, equalsToken As SyntaxToken, value As XmlNodeSyntax) As XmlAttributeSyntax
             if name Is Nothing Then
                 Throw New ArgumentNullException(NameOf(name))
@@ -41387,9 +40621,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML attribute in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents an XML attribute in an XML literal expression.</summary>
         Public Shared Function XmlAttribute(name As XmlNodeSyntax, value As XmlNodeSyntax) As XmlAttributeSyntax
             Return SyntaxFactory.XmlAttribute(name, SyntaxFactory.Token(SyntaxKind.EqualsToken), value)
         End Function
@@ -41425,9 +40657,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML name of the form 'name' appearing in GetXmlNamespace().
-        ''' </summary>
+        ''' <summary>Represents an XML name of the form 'name' appearing in GetXmlNamespace().</summary>
         Public Shared Function XmlPrefixName(name As SyntaxToken) As XmlPrefixNameSyntax
             Select Case name.Kind()
                 Case SyntaxKind.XmlNameToken
@@ -41438,9 +40668,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML name of the form 'name' appearing in GetXmlNamespace().
-        ''' </summary>
+        ''' <summary>Represents an XML name of the form 'name' appearing in GetXmlNamespace().</summary>
         Public Shared Function XmlPrefixName() As XmlPrefixNameSyntax
             Return SyntaxFactory.XmlPrefixName(SyntaxFactory.Token(SyntaxKind.XmlNameToken))
         End Function
@@ -41509,9 +40737,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML namespace prefix of the form 'prefix:' as in xml:ns="".
-        ''' </summary>
+        ''' <summary>Represents an XML namespace prefix of the form 'prefix:' as in xml:ns="".</summary>
         Public Shared Function XmlPrefix(name As SyntaxToken, colonToken As SyntaxToken) As XmlPrefixSyntax
             Select Case name.Kind()
                 Case SyntaxKind.XmlNameToken
@@ -41527,9 +40753,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML namespace prefix of the form 'prefix:' as in xml:ns="".
-        ''' </summary>
+        ''' <summary>Represents an XML namespace prefix of the form 'prefix:' as in xml:ns="".</summary>
         Public Shared Function XmlPrefix() As XmlPrefixSyntax
             Return SyntaxFactory.XmlPrefix(SyntaxFactory.Token(SyntaxKind.XmlNameToken), SyntaxFactory.Token(SyntaxKind.ColonToken))
         End Function
@@ -41596,9 +40820,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML CDATA section in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents an XML CDATA section in an XML literal expression.</summary>
         Public Shared Function XmlCDataSection(beginCDataToken As SyntaxToken, textTokens As SyntaxTokenList, endCDataToken As SyntaxToken) As XmlCDataSectionSyntax
             Select Case beginCDataToken.Kind()
                 Case SyntaxKind.BeginCDataToken
@@ -41614,9 +40836,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML CDATA section in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents an XML CDATA section in an XML literal expression.</summary>
         Public Shared Function XmlCDataSection() As XmlCDataSectionSyntax
             Return SyntaxFactory.XmlCDataSection(SyntaxFactory.Token(SyntaxKind.BeginCDataToken), SyntaxTokenList.Create(SyntaxFactory.Token(SyntaxKind.XmlTextLiteralToken)), SyntaxFactory.Token(SyntaxKind.EndCDataToken))
         End Function
@@ -41805,9 +41025,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A type name that represents a nullable type, such as "Integer?".
-        ''' </summary>
+        ''' <summary>A type name that represents a nullable type, such as "Integer?".</summary>
         ''' <param name="elementType">
         ''' The kind of type that is this type is a nullable of. Cannot be an array type or
         ''' a nullable type.
@@ -41840,9 +41058,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' A type name that represents a nullable type, such as "Integer?".
-        ''' </summary>
+        ''' <summary>A type name that represents a nullable type, such as "Integer?".</summary>
         ''' <param name="elementType">
         ''' The kind of type that is this type is a nullable of. Cannot be an array type or
         ''' a nullable type.
@@ -41956,9 +41172,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a qualified type name, for example X.Y or X(Of Z).Y.
-        ''' </summary>
+        ''' <summary>Represents a qualified type name, for example X.Y or X(Of Z).Y.</summary>
         ''' <param name="left">
         ''' The part of the name that appears to the left of the dot. This can itself be
         ''' any name.
@@ -42002,9 +41216,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a qualified type name, for example X.Y or X(Of Z).Y.
-        ''' </summary>
+        ''' <summary>Represents a qualified type name, for example X.Y or X(Of Z).Y.</summary>
         ''' <param name="left">
         ''' The part of the name that appears to the left of the dot. This can itself be
         ''' any name.
@@ -42018,9 +41230,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a name in the global namespace.
-        ''' </summary>
+        ''' <summary>Represents a name in the global namespace.</summary>
         ''' <param name="globalKeyword">
         ''' The "Global" keyword.
         ''' </param>
@@ -42034,17 +41244,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a name in the global namespace.
-        ''' </summary>
+        ''' <summary>Represents a name in the global namespace.</summary>
         Public Shared Function GlobalName() As GlobalNameSyntax
             Return SyntaxFactory.GlobalName(SyntaxFactory.Token(SyntaxKind.GlobalKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents a parenthesized list of generic type arguments.
-        ''' </summary>
+        ''' <summary>Represents a parenthesized list of generic type arguments.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token.
         ''' </param>
@@ -42077,9 +41283,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a parenthesized list of generic type arguments.
-        ''' </summary>
+        ''' <summary>Represents a parenthesized list of generic type arguments.</summary>
         ''' <param name="arguments">
         ''' A list of all the type arguments.
         ''' </param>
@@ -42088,9 +41292,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a parenthesized list of generic type arguments.
-        ''' </summary>
+        ''' <summary>Represents a parenthesized list of generic type arguments.</summary>
         ''' <param name="arguments">
         ''' A list of all the type arguments.
         ''' </param>
@@ -42260,9 +41462,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represent a Yield statement.
-        ''' </summary>
+        ''' <summary>Represent a Yield statement.</summary>
         ''' <param name="yieldKeyword">
         ''' The "Yield" keyword.
         ''' </param>
@@ -42391,9 +41591,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represent a Yield statement.
-        ''' </summary>
+        ''' <summary>Represent a Yield statement.</summary>
         ''' <param name="expression">
         ''' The expression whose value is being yielded.
         ''' </param>
@@ -42402,9 +41600,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Await expression.
-        ''' </summary>
+        ''' <summary>Represents an Await expression.</summary>
         ''' <param name="awaitKeyword">
         ''' The "Await" keyword.
         ''' </param>
@@ -42533,9 +41729,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Await expression.
-        ''' </summary>
+        ''' <summary>Represents an Await expression.</summary>
         ''' <param name="expression">
         ''' The expression being awaited.
         ''' </param>
@@ -42544,9 +41738,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Xml NCName per Namespaces in XML 1.0
-        ''' </summary>
+        ''' <summary>Represents an Xml NCName per Namespaces in XML 1.0</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -42558,9 +41750,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Xml NCName per Namespaces in XML 1.0
-        ''' </summary>
+        ''' <summary>Represents an Xml NCName per Namespaces in XML 1.0</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -42698,9 +41888,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents literal character data in interpolated string expression.
-        ''' </summary>
+        ''' <summary>Represents literal character data in interpolated string expression.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -42712,9 +41900,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents literal character data in interpolated string expression.
-        ''' </summary>
+        ''' <summary>Represents literal character data in interpolated string expression.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -42723,9 +41909,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Decimal literal token.
-        ''' </summary>
+        ''' <summary>Represents a Decimal literal token.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -42737,9 +41921,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Decimal literal token.
-        ''' </summary>
+        ''' <summary>Represents a Decimal literal token.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -42748,9 +41930,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Date literal token.
-        ''' </summary>
+        ''' <summary>Represents a Date literal token.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -42762,9 +41942,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Date literal token.
-        ''' </summary>
+        ''' <summary>Represents a Date literal token.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -42773,9 +41951,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a string literal token.
-        ''' </summary>
+        ''' <summary>Represents a string literal token.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -42787,9 +41963,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a string literal token.
-        ''' </summary>
+        ''' <summary>Represents a string literal token.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -42798,9 +41972,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a string literal token.
-        ''' </summary>
+        ''' <summary>Represents a string literal token.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -42812,9 +41984,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a string literal token.
-        ''' </summary>
+        ''' <summary>Represents a string literal token.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -42968,9 +42138,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' ExpressionSyntax node representing the object conditionally accessed.
-        ''' </summary>
+        ''' <summary>ExpressionSyntax node representing the object conditionally accessed.</summary>
         ''' <param name="expression">
         ''' The expression on the left-hand-side of the "?".
         ''' </param>
@@ -43005,9 +42173,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' ExpressionSyntax node representing the object conditionally accessed.
-        ''' </summary>
+        ''' <summary>ExpressionSyntax node representing the object conditionally accessed.</summary>
         ''' <param name="expression">
         ''' The expression on the left-hand-side of the "?".
         ''' </param>
@@ -43020,9 +42186,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' ExpressionSyntax node representing the object conditionally accessed.
-        ''' </summary>
+        ''' <summary>ExpressionSyntax node representing the object conditionally accessed.</summary>
         ''' <param name="whenNotNull">
         ''' ExpressionSyntax node representing the access expression to be executed when
         ''' the object is not null."
@@ -43032,9 +42196,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a NameOf expression.
-        ''' </summary>
+        ''' <summary>Represents a NameOf expression.</summary>
         ''' <param name="nameOfKeyword">
         ''' The "NameOf" keyword.
         ''' </param>
@@ -43179,9 +42341,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a NameOf expression.
-        ''' </summary>
+        ''' <summary>Represents a NameOf expression.</summary>
         ''' <param name="argument">
         ''' The argument.
         ''' </param>
@@ -43190,9 +42350,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an interpolated string expression.
-        ''' </summary>
+        ''' <summary>Represents an interpolated string expression.</summary>
         ''' <param name="dollarSignDoubleQuoteToken">
         ''' The opening '$"', '$“', or '$”' token.
         ''' </param>
@@ -43217,9 +42375,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an interpolated string expression.
-        ''' </summary>
+        ''' <summary>Represents an interpolated string expression.</summary>
         ''' <param name="contents">
         ''' The contents of the interpolated string.
         ''' </param>
@@ -43228,9 +42384,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an interpolated string expression.
-        ''' </summary>
+        ''' <summary>Represents an interpolated string expression.</summary>
         ''' <param name="contents">
         ''' The contents of the interpolated string.
         ''' </param>
@@ -43239,9 +42393,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents literal text content in an interpolated string.
-        ''' </summary>
+        ''' <summary>Represents literal text content in an interpolated string.</summary>
         ''' <param name="textToken">
         ''' The text token.
         ''' </param>
@@ -43255,9 +42407,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents literal text content in an interpolated string.
-        ''' </summary>
+        ''' <summary>Represents literal text content in an interpolated string.</summary>
         Public Shared Function InterpolatedStringText() As InterpolatedStringTextSyntax
             Return SyntaxFactory.InterpolatedStringText(SyntaxFactory.Token(SyntaxKind.InterpolatedStringTextToken))
         End Function
@@ -43770,9 +42920,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a #Const pre-processing constant declaration appearing in source.
-        ''' </summary>
+        ''' <summary>Represents a #Const pre-processing constant declaration appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -43926,9 +43074,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a #Const pre-processing constant declaration appearing in source.
-        ''' </summary>
+        ''' <summary>Represents a #Const pre-processing constant declaration appearing in source.</summary>
         ''' <param name="name">
         ''' The name of the pre-processing constant being defined.
         ''' </param>
@@ -43941,9 +43087,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents a #Const pre-processing constant declaration appearing in source.
-        ''' </summary>
+        ''' <summary>Represents a #Const pre-processing constant declaration appearing in source.</summary>
         ''' <param name="name">
         ''' The name of the pre-processing constant being defined.
         ''' </param>
@@ -44399,9 +43543,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #Else pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #Else pre-processing directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -44420,17 +43562,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #Else pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #Else pre-processing directive appearing in source.</summary>
         Public Shared Function ElseDirectiveTrivia() As ElseDirectiveTriviaSyntax
             Return SyntaxFactory.ElseDirectiveTrivia(SyntaxFactory.Token(SyntaxKind.HashToken), SyntaxFactory.Token(SyntaxKind.ElseKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #End If pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #End If pre-processing directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -44454,17 +43592,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #End If pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #End If pre-processing directive appearing in source.</summary>
         Public Shared Function EndIfDirectiveTrivia() As EndIfDirectiveTriviaSyntax
             Return SyntaxFactory.EndIfDirectiveTrivia(SyntaxFactory.Token(SyntaxKind.HashToken), SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.IfKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents the beginning of a #Region directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents the beginning of a #Region directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -44494,17 +43628,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents the beginning of a #Region directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents the beginning of a #Region directive appearing in source.</summary>
         Public Shared Function RegionDirectiveTrivia() As RegionDirectiveTriviaSyntax
             Return SyntaxFactory.RegionDirectiveTrivia(SyntaxFactory.Token(SyntaxKind.HashToken), SyntaxFactory.Token(SyntaxKind.RegionKeyword), SyntaxFactory.Token(SyntaxKind.StringLiteralToken))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #End Region directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #End Region directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -44534,9 +43664,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #End Region directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #End Region directive appearing in source.</summary>
         Public Shared Function EndRegionDirectiveTrivia() As EndRegionDirectiveTriviaSyntax
             Return SyntaxFactory.EndRegionDirectiveTrivia(SyntaxFactory.Token(SyntaxKind.HashToken), SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.RegionKeyword))
         End Function
@@ -44598,9 +43726,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #End ExternalSource pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #End ExternalSource pre-processing directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -44624,17 +43750,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #End ExternalSource pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #End ExternalSource pre-processing directive appearing in source.</summary>
         Public Shared Function EndExternalSourceDirectiveTrivia() As EndExternalSourceDirectiveTriviaSyntax
             Return SyntaxFactory.EndExternalSourceDirectiveTrivia(SyntaxFactory.Token(SyntaxKind.HashToken), SyntaxFactory.Token(SyntaxKind.EndKeyword), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #ExternalChecksum pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #ExternalChecksum pre-processing directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -44688,17 +43810,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #ExternalChecksum pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #ExternalChecksum pre-processing directive appearing in source.</summary>
         Public Shared Function ExternalChecksumDirectiveTrivia() As ExternalChecksumDirectiveTriviaSyntax
             Return SyntaxFactory.ExternalChecksumDirectiveTrivia(SyntaxFactory.Token(SyntaxKind.HashToken), SyntaxFactory.Token(SyntaxKind.ExternalChecksumKeyword), SyntaxFactory.Token(SyntaxKind.OpenParenToken), SyntaxFactory.Token(SyntaxKind.StringLiteralToken), SyntaxFactory.Token(SyntaxKind.CommaToken), SyntaxFactory.Token(SyntaxKind.StringLiteralToken), SyntaxFactory.Token(SyntaxKind.CommaToken), SyntaxFactory.Token(SyntaxKind.StringLiteralToken), SyntaxFactory.Token(SyntaxKind.CloseParenToken))
         End Function
 
 
-        ''' <summary>
-        ''' Represents #Enable Warning pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents #Enable Warning pre-processing directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -44722,25 +43840,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents #Enable Warning pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents #Enable Warning pre-processing directive appearing in source.</summary>
         Public Shared Function EnableWarningDirectiveTrivia(errorCodes As SeparatedSyntaxList(Of IdentifierNameSyntax)) As EnableWarningDirectiveTriviaSyntax
             Return SyntaxFactory.EnableWarningDirectiveTrivia(SyntaxFactory.Token(SyntaxKind.HashToken), SyntaxFactory.Token(SyntaxKind.EnableKeyword), SyntaxFactory.Token(SyntaxKind.WarningKeyword), errorCodes)
         End Function
 
 
-        ''' <summary>
-        ''' Represents #Enable Warning pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents #Enable Warning pre-processing directive appearing in source.</summary>
         Public Shared Function EnableWarningDirectiveTrivia(ParamArray errorCodes As IdentifierNameSyntax()) As EnableWarningDirectiveTriviaSyntax
             Return SyntaxFactory.EnableWarningDirectiveTrivia(SyntaxFactory.Token(SyntaxKind.HashToken), SyntaxFactory.Token(SyntaxKind.EnableKeyword), SyntaxFactory.Token(SyntaxKind.WarningKeyword), SyntaxFactory.SeparatedList(Of IdentifierNameSyntax)().AddRange(errorCodes))
         End Function
 
 
-        ''' <summary>
-        ''' Represents #Disable Warning pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents #Disable Warning pre-processing directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -44764,25 +43876,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents #Disable Warning pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents #Disable Warning pre-processing directive appearing in source.</summary>
         Public Shared Function DisableWarningDirectiveTrivia(errorCodes As SeparatedSyntaxList(Of IdentifierNameSyntax)) As DisableWarningDirectiveTriviaSyntax
             Return SyntaxFactory.DisableWarningDirectiveTrivia(SyntaxFactory.Token(SyntaxKind.HashToken), SyntaxFactory.Token(SyntaxKind.DisableKeyword), SyntaxFactory.Token(SyntaxKind.WarningKeyword), errorCodes)
         End Function
 
 
-        ''' <summary>
-        ''' Represents #Disable Warning pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents #Disable Warning pre-processing directive appearing in source.</summary>
         Public Shared Function DisableWarningDirectiveTrivia(ParamArray errorCodes As IdentifierNameSyntax()) As DisableWarningDirectiveTriviaSyntax
             Return SyntaxFactory.DisableWarningDirectiveTrivia(SyntaxFactory.Token(SyntaxKind.HashToken), SyntaxFactory.Token(SyntaxKind.DisableKeyword), SyntaxFactory.Token(SyntaxKind.WarningKeyword), SyntaxFactory.SeparatedList(Of IdentifierNameSyntax)().AddRange(errorCodes))
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #r directive appearing in scripts.
-        ''' </summary>
+        ''' <summary>Represents an #r directive appearing in scripts.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -44806,9 +43912,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #r directive appearing in scripts.
-        ''' </summary>
+        ''' <summary>Represents an #r directive appearing in scripts.</summary>
         Public Shared Function ReferenceDirectiveTrivia() As ReferenceDirectiveTriviaSyntax
             Return SyntaxFactory.ReferenceDirectiveTrivia(SyntaxFactory.Token(SyntaxKind.HashToken), SyntaxFactory.Token(SyntaxKind.ReferenceKeyword), SyntaxFactory.Token(SyntaxKind.StringLiteralToken))
         End Function
@@ -46659,90 +45763,4 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Case SyntaxKind.LessThanEqualsToken
             Return "<="
         Case SyntaxKind.LessThanGreaterThanToken
-            Return "<>"
-        Case SyntaxKind.EqualsToken
-            Return "="
-        Case SyntaxKind.GreaterThanToken
-            Return ">"
-        Case SyntaxKind.GreaterThanEqualsToken
-            Return ">="
-        Case SyntaxKind.BackslashToken
-            Return "\"
-        Case SyntaxKind.CaretToken
-            Return "^"
-        Case SyntaxKind.ColonEqualsToken
-            Return ":="
-        Case SyntaxKind.AmpersandEqualsToken
-            Return "&="
-        Case SyntaxKind.AsteriskEqualsToken
-            Return "*="
-        Case SyntaxKind.PlusEqualsToken
-            Return "+="
-        Case SyntaxKind.MinusEqualsToken
-            Return "-="
-        Case SyntaxKind.SlashEqualsToken
-            Return "/="
-        Case SyntaxKind.BackslashEqualsToken
-            Return "\="
-        Case SyntaxKind.CaretEqualsToken
-            Return "^="
-        Case SyntaxKind.LessThanLessThanToken
-            Return "<<"
-        Case SyntaxKind.GreaterThanGreaterThanToken
-            Return ">>"
-        Case SyntaxKind.LessThanLessThanEqualsToken
-            Return "<<="
-        Case SyntaxKind.GreaterThanGreaterThanEqualsToken
-            Return ">>="
-        Case SyntaxKind.QuestionToken
-            Return "?"
-        Case SyntaxKind.DoubleQuoteToken
-            Return """"
-        Case SyntaxKind.DollarSignDoubleQuoteToken
-            Return "$"""
-        Case SyntaxKind.StatementTerminatorToken
-            Return vbCrLf
-        Case SyntaxKind.SlashGreaterThanToken
-            Return "/>"
-        Case SyntaxKind.LessThanSlashToken
-            Return "</"
-        Case SyntaxKind.LessThanExclamationMinusMinusToken
-            Return "<!--"
-        Case SyntaxKind.MinusMinusGreaterThanToken
-            Return "-->"
-        Case SyntaxKind.LessThanQuestionToken
-            Return "<?"
-        Case SyntaxKind.QuestionGreaterThanToken
-            Return "?>"
-        Case SyntaxKind.LessThanPercentEqualsToken
-            Return "<%="
-        Case SyntaxKind.PercentGreaterThanToken
-            Return "%>"
-        Case SyntaxKind.BeginCDataToken
-            Return "<![CDATA["
-        Case SyntaxKind.EndCDataToken
-            Return "]]>"
-        Case SyntaxKind.ColonTrivia
-            Return ":"
-        Case SyntaxKind.LineContinuationTrivia
-            Return "_
-"
-        Case SyntaxKind.DocumentationCommentExteriorTrivia
-            Return "'''"
-            Case Else
-                 Return String.Empty
-            End Select
-        End Function
-    End Class
-
-    Public Module GeneratedExtensionSyntaxFacts
-        ''' <summary>
-        ''' Return keyword or punctuation text based on SyntaxKind
-        ''' </summary>
-        <Extension()>
-        Public Function GetText(kind As SyntaxKind) As String
-            Return SyntaxFacts.GetText(kind)
-        End Function
-    End Module
-
-End Namespace
+            Ret

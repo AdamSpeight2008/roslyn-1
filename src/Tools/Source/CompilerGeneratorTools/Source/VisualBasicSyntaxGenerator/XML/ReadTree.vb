@@ -57,10 +57,8 @@ Public Module ReadTree
         Next
 
         For Each en In defs.<enumeration>
-            If tree.Enumerations.ContainsKey(en.@name) Then
+            If tree.Enumerations.TryAdd(en.@name, New ParseEnumeration(en, tree)) = false Then
                 tree.ReportError(en, "enumeration with name ""{0}"" already defined", en.@name)
-            Else
-                tree.Enumerations.Add(en.@name, New ParseEnumeration(en, tree))
             End If
         Next
 

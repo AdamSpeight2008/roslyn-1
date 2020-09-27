@@ -10,9 +10,7 @@ Imports Roslyn.Utilities
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
-    ''' <summary>
-    ''' The base class for all nodes in the VB syntax tree.
-    ''' </summary>
+    ''' <summary>The base class for all nodes in the VB syntax tree.</summary>
     Partial Friend MustInherit Class VisualBasicSyntaxNode
 
 
@@ -51,9 +49,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' The base class for all nodes that represent executable statements.
-    ''' </summary>
+    ''' <summary>The base class for all nodes that represent executable statements.</summary>
     Friend MustInherit Class ExecutableStatementSyntax
         Inherits StatementSyntax
 
@@ -166,9 +162,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.EmptyStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' An empty token because all non terminals must have a token.
-        ''' </summary>
+        ''' <summary>An empty token because all non terminals must have a token.</summary>
         Friend  ReadOnly Property Empty As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._empty
@@ -199,9 +193,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an "End XXX" statement, where XXX is a single keyword.
-    ''' </summary>
+    ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
     Friend NotInheritable Class EndBlockStatementSyntax
         Inherits DeclarationStatementSyntax
 
@@ -273,9 +265,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.EndBlockStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "End" keyword
-        ''' </summary>
+        ''' <summary>The "End" keyword</summary>
         Friend  ReadOnly Property EndKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._endKeyword
@@ -321,9 +311,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an entire source file of VB code.
-    ''' </summary>
+    ''' <summary>Represents an entire source file of VB code.</summary>
     Partial Friend NotInheritable Class CompilationUnitSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -458,24 +446,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.CompilationUnitSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' Represents the list of Option statements at the beginning of a source file.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>Represents the list of Option statements at the beginning of a source file.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Options As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of OptionStatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of OptionStatementSyntax)(Me._options)
             End Get
         End Property
 
-        ''' <summary>
-        ''' Represents the list of Imports statements at the beginning of a source file.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>Represents the list of Imports statements at the beginning of a source file.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property [Imports] As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of ImportsStatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of ImportsStatementSyntax)(Me._imports)
@@ -486,9 +466,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' Represents the list of AttributeStatements at the beginning of a source file
         ''' that contain the Assembly and Module attributes.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Attributes As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributesStatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributesStatementSyntax)(Me._attributes)
@@ -500,9 +478,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' top-level type and namespace declarations in the file. May also contain
         ''' Statements that are not valid
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Members As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._members)
@@ -552,9 +528,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an Option statement, such as "Option Strict On".
-    ''' </summary>
+    ''' <summary>Represents an Option statement, such as "Option Strict On".</summary>
     Friend NotInheritable Class OptionStatementSyntax
         Inherits DeclarationStatementSyntax
 
@@ -645,9 +619,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.OptionStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Option" keyword.
-        ''' </summary>
+        ''' <summary>The "Option" keyword.</summary>
         Friend  ReadOnly Property OptionKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._optionKeyword
@@ -668,9 +640,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The keyword that identifiers the value being set for the option: On, Off, Text
         ''' or Binary.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ValueKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._valueKeyword
@@ -706,9 +676,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an Imports statement, which has one or more imports clauses.
-    ''' </summary>
+    ''' <summary>Represents an Imports statement, which has one or more imports clauses.</summary>
     Friend NotInheritable Class ImportsStatementSyntax
         Inherits DeclarationStatementSyntax
 
@@ -786,9 +754,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ImportsStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Imports" keyword.
-        ''' </summary>
+        ''' <summary>The "Imports" keyword.</summary>
         Friend  ReadOnly Property ImportsKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._importsKeyword
@@ -799,9 +765,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of one or more import clauses. Each clause is either an alias, namespace
         ''' or XML namespace import.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property ImportsClauses As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ImportsClauseSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ImportsClauseSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of ImportsClauseSyntax)(Me._importsClauses))
@@ -835,9 +799,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' The base class for the possible clauses of an Imports statement.
-    ''' </summary>
+    ''' <summary>The base class for the possible clauses of an Imports statement.</summary>
     Friend MustInherit Class ImportsClauseSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -942,21 +904,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.SimpleImportsClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' An optional alias for the namespace or type being imported.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>An optional alias for the namespace or type being imported.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property [Alias] As InternalSyntax.ImportAliasClauseSyntax
             Get
                 Return Me._alias
             End Get
         End Property
 
-        ''' <summary>
-        ''' The namespace or type being imported.
-        ''' </summary>
+        ''' <summary>The namespace or type being imported.</summary>
         Friend  ReadOnly Property Name As InternalSyntax.NameSyntax
             Get
                 Return Me._name
@@ -990,9 +946,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an alias identifier followed by an "=" token in an Imports clause.
-    ''' </summary>
+    ''' <summary>Represents an alias identifier followed by an "=" token in an Imports clause.</summary>
     Friend NotInheritable Class ImportAliasClauseSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -1064,18 +1018,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ImportAliasClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The identifier being introduced.
-        ''' </summary>
+        ''' <summary>The identifier being introduced.</summary>
         Friend  ReadOnly Property Identifier As InternalSyntax.IdentifierTokenSyntax
             Get
                 Return Me._identifier
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "=" token.
-        ''' </summary>
+        ''' <summary>The "=" token.</summary>
         Friend  ReadOnly Property EqualsToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._equalsToken
@@ -1109,9 +1059,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Defines a XML namespace for XML expressions.
-    ''' </summary>
+    ''' <summary>Defines a XML namespace for XML expressions.</summary>
     Friend NotInheritable Class XmlNamespaceImportsClauseSyntax
         Inherits ImportsClauseSyntax
 
@@ -1202,9 +1150,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' Identifies the XML namespace alias and URI.
-        ''' </summary>
+        ''' <summary>Identifies the XML namespace alias and URI.</summary>
         Friend  ReadOnly Property XmlNamespace As InternalSyntax.XmlAttributeSyntax
             Get
                 Return Me._xmlNamespace
@@ -1317,18 +1263,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_BlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Grammar" statement that begins a grammar block.
-        ''' </summary>
+        ''' <summary>The "Grammar" statement that begins a grammar block.</summary>
         Friend  ReadOnly Property Grammar_Statement As InternalSyntax.Grammar_StatementSyntax
             Get
                 Return Me._grammar_Statement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "End Grammar" statement that ends a grammar block.
-        ''' </summary>
+        ''' <summary>The "End Grammar" statement that ends a grammar block.</summary>
         Friend  ReadOnly Property End_Grammar_Statement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._end_Grammar_Statement
@@ -1433,18 +1375,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_BlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Syntax" statement that begins a syntax block.
-        ''' </summary>
+        ''' <summary>The "Syntax" statement that begins a syntax block.</summary>
         Friend  ReadOnly Property Syntax_Statement As InternalSyntax.Syntax_StatementSyntax
             Get
                 Return Me._syntax_Statement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "End Syntax" statement that ends a syntax block.
-        ''' </summary>
+        ''' <summary>The "End Syntax" statement that ends a syntax block.</summary>
         Friend  ReadOnly Property End_Syntax_Statement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._end_Syntax_Statement
@@ -1549,18 +1487,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_BlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Kinds" statement that begins a kinds block.
-        ''' </summary>
+        ''' <summary>The "Kinds" statement that begins a kinds block.</summary>
         Friend  ReadOnly Property Kinds_Statement As InternalSyntax.Kinds_StatementSyntax
             Get
                 Return Me._kinds_Statement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "End Kinds." statement that ends a kinds block.
-        ''' </summary>
+        ''' <summary>The "End Kinds." statement that ends a kinds block.</summary>
         Friend  ReadOnly Property End_Kinds_Statement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._end_Kinds_Statement
@@ -1665,18 +1599,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_BlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Keywords" statement that begins a keywords block.
-        ''' </summary>
+        ''' <summary>The "Keywords" statement that begins a keywords block.</summary>
         Friend  ReadOnly Property Keywords_Statement As InternalSyntax.Keywords_StatementSyntax
             Get
                 Return Me._keywords_Statement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "End Keywords" statement that ends a keywords block.
-        ''' </summary>
+        ''' <summary>The "End Keywords" statement that ends a keywords block.</summary>
         Friend  ReadOnly Property End_Keywords_Statement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._end_Keywords_Statement
@@ -1781,18 +1711,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_BlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Language" statement that begins a language block.
-        ''' </summary>
+        ''' <summary>The "Language" statement that begins a language block.</summary>
         Friend  ReadOnly Property Language_Statement As InternalSyntax.Language_StatementSyntax
             Get
                 Return Me._language_Statement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "End Language." statement that ends a language block.
-        ''' </summary>
+        ''' <summary>The "End Language." statement that ends a language block.</summary>
         Friend  ReadOnly Property End_Language_Statement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._end_Language_Statement
@@ -1901,18 +1827,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Language_StatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Language" keyword.
-        ''' </summary>
+        ''' <summary>The "Language" keyword.</summary>
         Friend  ReadOnly Property Language_Keyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._language_Keyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' A (possibly dotted) name denoting the language being declared.
-        ''' </summary>
+        ''' <summary>A (possibly dotted) name denoting the language being declared.</summary>
         Friend  ReadOnly Property Name As InternalSyntax.NameSyntax
             Get
                 Return Me._name
@@ -2021,18 +1943,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Grammar_StatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Language" keyword.
-        ''' </summary>
+        ''' <summary>The "Language" keyword.</summary>
         Friend  ReadOnly Property Grammar_Keyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._grammar_Keyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' A (possibly dotted) name denoting the ... being declared.
-        ''' </summary>
+        ''' <summary>A (possibly dotted) name denoting the ... being declared.</summary>
         Friend  ReadOnly Property Name As InternalSyntax.NameSyntax
             Get
                 Return Me._name
@@ -2141,18 +2059,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Syntax_StatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Syntax" keyword.
-        ''' </summary>
+        ''' <summary>The "Syntax" keyword.</summary>
         Friend  ReadOnly Property Syntax_Keyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._syntax_Keyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' A (possibly dotted) name denoting the ... being declared.
-        ''' </summary>
+        ''' <summary>A (possibly dotted) name denoting the ... being declared.</summary>
         Friend  ReadOnly Property Name As InternalSyntax.NameSyntax
             Get
                 Return Me._name
@@ -2261,18 +2175,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Kinds_StatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Kinds" keyword.
-        ''' </summary>
+        ''' <summary>The "Kinds" keyword.</summary>
         Friend  ReadOnly Property Kinds_Keyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._kinds_Keyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' A (possibly dotted) name denoting the ... being declared.
-        ''' </summary>
+        ''' <summary>A (possibly dotted) name denoting the ... being declared.</summary>
         Friend  ReadOnly Property Name As InternalSyntax.NameSyntax
             Get
                 Return Me._name
@@ -2381,18 +2291,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.Keywords_StatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Keywords" keyword.
-        ''' </summary>
+        ''' <summary>The "Keywords" keyword.</summary>
         Friend  ReadOnly Property Keywords_Keyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._keywords_Keyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' A (possibly dotted) name denoting the ... being declared.
-        ''' </summary>
+        ''' <summary>A (possibly dotted) name denoting the ... being declared.</summary>
         Friend  ReadOnly Property Name As InternalSyntax.NameSyntax
             Get
                 Return Me._name
@@ -2426,9 +2332,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a Namespace statement, its contents and the End Namespace statement.
-    ''' </summary>
+    ''' <summary>Represents a Namespace statement, its contents and the End Namespace statement.</summary>
     Friend NotInheritable Class NamespaceBlockSyntax
         Inherits DeclarationStatementSyntax
 
@@ -2519,30 +2423,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.NamespaceBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The statement that begins the NamespaceBlock.
-        ''' </summary>
+        ''' <summary>The statement that begins the NamespaceBlock.</summary>
         Friend  ReadOnly Property NamespaceStatement As InternalSyntax.NamespaceStatementSyntax
             Get
                 Return Me._namespaceStatement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The declarations contained in the namespace statement.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The declarations contained in the namespace statement.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Members As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._members)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The End Namespace statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End Namespace statement that ends the block.</summary>
         Friend  ReadOnly Property EndNamespaceStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endNamespaceStatement
@@ -2653,18 +2549,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.NamespaceStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Namespace" keyword.
-        ''' </summary>
+        ''' <summary>The "Namespace" keyword.</summary>
         Friend  ReadOnly Property NamespaceKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._namespaceKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' A (possibly dotted) name denoting the namespace being declared.
-        ''' </summary>
+        ''' <summary>A (possibly dotted) name denoting the namespace being declared.</summary>
         Friend  ReadOnly Property Name As InternalSyntax.NameSyntax
             Get
                 Return Me._name
@@ -2790,36 +2682,24 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           writer.WriteValue(Me._members)
         End Sub
 
-        ''' <summary>
-        ''' A list of the Inherits declarations for the type.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of the Inherits declarations for the type.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property [Inherits] As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of InheritsStatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of InheritsStatementSyntax)(Me._inherits)
             End Get
         End Property
 
-        ''' <summary>
-        ''' A list of the Implements declarations for the type.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of the Implements declarations for the type.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property [Implements] As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of ImplementsStatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of ImplementsStatementSyntax)(Me._implements)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The declarations contained in the type or module.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The declarations contained in the type or module.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Members As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._members)
@@ -2903,18 +2783,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ModuleBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Module" statement that begins the block.
-        ''' </summary>
+        ''' <summary>The "Module" statement that begins the block.</summary>
         Friend  ReadOnly Property ModuleStatement As InternalSyntax.ModuleStatementSyntax
             Get
                 Return Me._moduleStatement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "End Module" statement that ends the block.
-        ''' </summary>
+        ''' <summary>The "End Module" statement that ends the block.</summary>
         Friend  ReadOnly Property EndModuleStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endModuleStatement
@@ -3029,18 +2905,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.StructureBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Structure" statement that begins the block.
-        ''' </summary>
+        ''' <summary>The "Structure" statement that begins the block.</summary>
         Friend  ReadOnly Property StructureStatement As InternalSyntax.StructureStatementSyntax
             Get
                 Return Me._structureStatement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "End Structure" statement that ends the block.
-        ''' </summary>
+        ''' <summary>The "End Structure" statement that ends the block.</summary>
         Friend  ReadOnly Property EndStructureStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endStructureStatement
@@ -3155,18 +3027,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.InterfaceBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Interface" statement that begins the block.
-        ''' </summary>
+        ''' <summary>The "Interface" statement that begins the block.</summary>
         Friend  ReadOnly Property InterfaceStatement As InternalSyntax.InterfaceStatementSyntax
             Get
                 Return Me._interfaceStatement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "End Interface" statement that ends the block.
-        ''' </summary>
+        ''' <summary>The "End Interface" statement that ends the block.</summary>
         Friend  ReadOnly Property EndInterfaceStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endInterfaceStatement
@@ -3281,18 +3149,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ClassBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Class" statement that begins the block.
-        ''' </summary>
+        ''' <summary>The "Class" statement that begins the block.</summary>
         Friend  ReadOnly Property ClassStatement As InternalSyntax.ClassStatementSyntax
             Get
                 Return Me._classStatement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "End Class" statement that ends the block.
-        ''' </summary>
+        ''' <summary>The "End Class" statement that ends the block.</summary>
         Friend  ReadOnly Property EndClassStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endClassStatement
@@ -3426,30 +3290,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.EnumBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The statement that begins the type or module.
-        ''' </summary>
+        ''' <summary>The statement that begins the type or module.</summary>
         Friend  ReadOnly Property EnumStatement As InternalSyntax.EnumStatementSyntax
             Get
                 Return Me._enumStatement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The declarations contained in the enumeration.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The declarations contained in the enumeration.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Members As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._members)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The End XXX statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End XXX statement that ends the block.</summary>
         Friend  ReadOnly Property EndEnumStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endEnumStatement
@@ -3512,9 +3368,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an Inherits statement in a Class, Structure or Interface.
-    ''' </summary>
+    ''' <summary>Represents an Inherits statement in a Class, Structure or Interface.</summary>
     Friend NotInheritable Class InheritsStatementSyntax
         Inherits InheritsOrImplementsStatementSyntax
 
@@ -3592,18 +3446,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.InheritsStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Inherits" keyword.
-        ''' </summary>
+        ''' <summary>The "Inherits" keyword.</summary>
         Friend  ReadOnly Property InheritsKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._inheritsKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' A list of the types being inherited.
-        ''' </summary>
+        ''' <summary>A list of the types being inherited.</summary>
         Friend  ReadOnly Property Types As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of TypeSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of TypeSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of TypeSyntax)(Me._types))
@@ -3637,9 +3487,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an Implements statement in a Class or Structure.
-    ''' </summary>
+    ''' <summary>Represents an Implements statement in a Class or Structure.</summary>
     Friend NotInheritable Class ImplementsStatementSyntax
         Inherits InheritsOrImplementsStatementSyntax
 
@@ -3717,18 +3565,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ImplementsStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Implements" keyword.
-        ''' </summary>
+        ''' <summary>The "Implements" keyword.</summary>
         Friend  ReadOnly Property ImplementsKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._implementsKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' A list of the types being implemented.
-        ''' </summary>
+        ''' <summary>A list of the types being implemented.</summary>
         Friend  ReadOnly Property Types As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of TypeSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of TypeSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of TypeSyntax)(Me._types))
@@ -3873,9 +3717,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property AttributeLists As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)(Me._attributeLists)
@@ -3886,18 +3728,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of all the modifier tokens that were present on this declaration. If no
         ''' modifiers were specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Modifiers As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of KeywordSyntax)
             Get
                 Return New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)(Me._modifiers)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The name of the type being declared.
-        ''' </summary>
+        ''' <summary>The name of the type being declared.</summary>
         Friend  ReadOnly Property Identifier As InternalSyntax.IdentifierTokenSyntax
             Get
                 Return Me._identifier
@@ -3908,9 +3746,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' If present, a type parameter list with generic parameters for this type. If no
         ''' generic parameters were present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property TypeParameterList As InternalSyntax.TypeParameterListSyntax
             Get
                 Return Me._typeParameterList
@@ -3981,9 +3817,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ModuleStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Module" keyword.
-        ''' </summary>
+        ''' <summary>The "Module" keyword.</summary>
         Friend  ReadOnly Property ModuleKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._moduleKeyword
@@ -4085,9 +3919,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.StructureStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Structure" keyword.
-        ''' </summary>
+        ''' <summary>The "Structure" keyword.</summary>
         Friend  ReadOnly Property StructureKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._structureKeyword
@@ -4189,9 +4021,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.InterfaceStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Interface" keyword.
-        ''' </summary>
+        ''' <summary>The "Interface" keyword.</summary>
         Friend  ReadOnly Property InterfaceKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._interfaceKeyword
@@ -4293,9 +4123,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ClassStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Class" keyword.
-        ''' </summary>
+        ''' <summary>The "Class" keyword.</summary>
         Friend  ReadOnly Property ClassKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._classKeyword
@@ -4471,9 +4299,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property AttributeLists As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)(Me._attributeLists)
@@ -4484,27 +4310,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of all the modifier tokens that were present on this declaration. If no
         ''' modifiers were specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Modifiers As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of KeywordSyntax)
             Get
                 Return New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)(Me._modifiers)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Enum" keyword.
-        ''' </summary>
+        ''' <summary>The "Enum" keyword.</summary>
         Friend  ReadOnly Property EnumKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._enumKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The name of the enum being declared.
-        ''' </summary>
+        ''' <summary>The name of the enum being declared.</summary>
         Friend  ReadOnly Property Identifier As InternalSyntax.IdentifierTokenSyntax
             Get
                 Return Me._identifier
@@ -4515,9 +4335,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' Optional "As XXX" clause describing the underlying type of the enumeration. If
         ''' no As clause was specified, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property UnderlyingType As InternalSyntax.AsClauseSyntax
             Get
                 Return Me._underlyingType
@@ -4557,9 +4375,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the type parameter list in a declaration.
-    ''' </summary>
+    ''' <summary>Represents the type parameter list in a declaration.</summary>
     Friend NotInheritable Class TypeParameterListSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -4663,18 +4479,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeParameterListSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Friend  ReadOnly Property OpenParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openParenToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Of" keyword.
-        ''' </summary>
+        ''' <summary>The "Of" keyword.</summary>
         Friend  ReadOnly Property OfKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._ofKeyword
@@ -4691,9 +4503,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Friend  ReadOnly Property CloseParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeParenToken
@@ -4731,9 +4541,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a type parameter on a generic type declaration.
-    ''' </summary>
+    ''' <summary>Represents a type parameter on a generic type declaration.</summary>
     Friend NotInheritable Class TypeParameterSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -4834,18 +4642,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' Represents the "In" or "Out" variance keyword on a type parameter, if present.
         ''' If no variance modifier was present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property VarianceKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._varianceKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The name of the type parameter
-        ''' </summary>
+        ''' <summary>The name of the type parameter</summary>
         Friend  ReadOnly Property Identifier As InternalSyntax.IdentifierTokenSyntax
             Get
                 Return Me._identifier
@@ -4856,9 +4660,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "As" keyword, if any type constraints were supplied. If no type constraints
         ''' were supplied, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property TypeParameterConstraintClause As InternalSyntax.TypeParameterConstraintClauseSyntax
             Get
                 Return Me._typeParameterConstraintClause
@@ -5150,18 +4952,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeParameterMultipleConstraintClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "As" keyword.
-        ''' </summary>
+        ''' <summary>The "As" keyword.</summary>
         Friend  ReadOnly Property AsKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._asKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "{" token.
-        ''' </summary>
+        ''' <summary>The "{" token.</summary>
         Friend  ReadOnly Property OpenBraceToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openBraceToken
@@ -5178,9 +4976,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "}" token.
-        ''' </summary>
+        ''' <summary>The "}" token.</summary>
         Friend  ReadOnly Property CloseBraceToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeBraceToken
@@ -5342,9 +5138,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a type parameter constraint that is a type.
-    ''' </summary>
+    ''' <summary>Represents a type parameter constraint that is a type.</summary>
     Friend NotInheritable Class TypeConstraintSyntax
         Inherits ConstraintSyntax
 
@@ -5403,9 +5197,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeConstraintSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The type describing the constraint.
-        ''' </summary>
+        ''' <summary>The type describing the constraint.</summary>
         Friend  ReadOnly Property Type As InternalSyntax.TypeSyntax
             Get
                 Return Me._type
@@ -5436,9 +5228,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a name and value in an EnumDeclarationBlock.
-    ''' </summary>
+    ''' <summary>Represents a name and value in an EnumDeclarationBlock.</summary>
     Friend NotInheritable Class EnumMemberDeclarationSyntax
         Inherits DeclarationStatementSyntax
 
@@ -5535,9 +5325,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.EnumMemberDeclarationSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property AttributeLists As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)(Me._attributeLists)
@@ -5550,12 +5338,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' An optional value for the enum member.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>An optional value for the enum member.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Initializer As InternalSyntax.EqualsValueSyntax
             Get
                 Return Me._initializer
@@ -5647,12 +5431,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           writer.WriteValue(Me._statements)
         End Sub
 
-        ''' <summary>
-        ''' The statements contained in the block statement. This might be an empty list.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The statements contained in the block statement. This might be an empty list.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
@@ -5736,18 +5516,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.MethodBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Sub" or "Function" statement that begins the block.
-        ''' </summary>
+        ''' <summary>The "Sub" or "Function" statement that begins the block.</summary>
         Friend  ReadOnly Property SubOrFunctionStatement As InternalSyntax.MethodStatementSyntax
             Get
                 Return Me._subOrFunctionStatement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "End Sub" or "End Function" statement that ends the block.
-        ''' </summary>
+        ''' <summary>The "End Sub" or "End Function" statement that ends the block.</summary>
         Friend  ReadOnly Property EndSubOrFunctionStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endSubOrFunctionStatement
@@ -5858,18 +5634,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstructorBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Sub New" statement that begins the block.
-        ''' </summary>
+        ''' <summary>The "Sub New" statement that begins the block.</summary>
         Friend  ReadOnly Property SubNewStatement As InternalSyntax.SubNewStatementSyntax
             Get
                 Return Me._subNewStatement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "End Sub" statement that ends the block declaration.
-        ''' </summary>
+        ''' <summary>The "End Sub" statement that ends the block declaration.</summary>
         Friend  ReadOnly Property EndSubStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endSubStatement
@@ -5980,18 +5752,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.OperatorBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Operator" statement that begins the block.
-        ''' </summary>
+        ''' <summary>The "Operator" statement that begins the block.</summary>
         Friend  ReadOnly Property OperatorStatement As InternalSyntax.OperatorStatementSyntax
             Get
                 Return Me._operatorStatement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "End Operator" statement that ends the block declaration.
-        ''' </summary>
+        ''' <summary>The "End Operator" statement that ends the block declaration.</summary>
         Friend  ReadOnly Property EndOperatorStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endOperatorStatement
@@ -6246,9 +6014,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.PropertyBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The property declaration that begins the block.
-        ''' </summary>
+        ''' <summary>The property declaration that begins the block.</summary>
         Friend  ReadOnly Property PropertyStatement As InternalSyntax.PropertyStatementSyntax
             Get
                 Return Me._propertyStatement
@@ -6265,9 +6031,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' The End Property statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End Property statement that ends the block.</summary>
         Friend  ReadOnly Property EndPropertyStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endPropertyStatement
@@ -6397,9 +6161,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.EventBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The event declaration that begins the block.
-        ''' </summary>
+        ''' <summary>The event declaration that begins the block.</summary>
         Friend  ReadOnly Property EventStatement As InternalSyntax.EventStatementSyntax
             Get
                 Return Me._eventStatement
@@ -6416,9 +6178,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' The End Event statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End Event statement that ends the block.</summary>
         Friend  ReadOnly Property EndEventStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endEventStatement
@@ -6552,9 +6312,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property AttributeLists As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)(Me._attributeLists)
@@ -6567,9 +6325,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' the modifiers ORed together, which is in many cases easier to use, can be
         ''' obtained with the Modifiers property.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Modifiers As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of KeywordSyntax)
             Get
                 Return New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)(Me._modifiers)
@@ -6580,9 +6336,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The method's parameter list including the parentheses. If no parameter list was
         ''' present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ParameterList As InternalSyntax.ParameterListSyntax
             Get
                 Return Me._parameterList
@@ -6591,9 +6345,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the parameter list in a method declaration.
-    ''' </summary>
+    ''' <summary>Represents the parameter list in a method declaration.</summary>
     Friend NotInheritable Class ParameterListSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -6694,12 +6446,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' The list of parameters. If no parameter list was present, Nothing is returned.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The list of parameters. If no parameter list was present, Nothing is returned.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Parameters As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ParameterSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ParameterSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of ParameterSyntax)(Me._parameters))
@@ -6898,18 +6646,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.MethodStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Sub" or "Function" keyword that introduces this method declaration.
-        ''' </summary>
+        ''' <summary>The "Sub" or "Function" keyword that introduces this method declaration.</summary>
         Friend  ReadOnly Property SubOrFunctionKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._subOrFunctionKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The name of the method being declared.
-        ''' </summary>
+        ''' <summary>The name of the method being declared.</summary>
         Friend  ReadOnly Property Identifier As InternalSyntax.IdentifierTokenSyntax
             Get
                 Return Me._identifier
@@ -6920,9 +6664,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' If present, a type parameter list with generic type parameters for this method.
         ''' If no generic type parameters were present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property TypeParameterList As InternalSyntax.TypeParameterListSyntax
             Get
                 Return Me._typeParameterList
@@ -6933,21 +6675,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "As" clause that describes the return type. If no As clause was present,
         ''' Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AsClause As InternalSyntax.SimpleAsClauseSyntax
             Get
                 Return Me._asClause
             End Get
         End Property
 
-        ''' <summary>
-        ''' If present, a Handles clause indicated the events that this method handles.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>If present, a Handles clause indicated the events that this method handles.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property HandlesClause As InternalSyntax.HandlesClauseSyntax
             Get
                 Return Me._handlesClause
@@ -6958,9 +6694,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' If present, an Implements clause indicated the interface methods that this
         ''' method implements.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ImplementsClause As InternalSyntax.ImplementsClauseSyntax
             Get
                 Return Me._implementsClause
@@ -7084,18 +6818,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.SubNewStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Sub" keyword.
-        ''' </summary>
+        ''' <summary>The "Sub" keyword.</summary>
         Friend  ReadOnly Property SubKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._subKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "New" keyword in the constructor declaration.
-        ''' </summary>
+        ''' <summary>The "New" keyword in the constructor declaration.</summary>
         Friend  ReadOnly Property NewKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._newKeyword
@@ -7135,9 +6865,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' A Declare statement that declares an external DLL method.
-    ''' </summary>
+    ''' <summary>A Declare statement that declares an external DLL method.</summary>
     Friend NotInheritable Class DeclareStatementSyntax
         Inherits MethodBaseSyntax
 
@@ -7324,9 +7052,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.DeclareStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Declare" keyword.
-        ''' </summary>
+        ''' <summary>The "Declare" keyword.</summary>
         Friend  ReadOnly Property DeclareKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._declareKeyword
@@ -7337,69 +7063,51 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' If present, the keyword that defines the string translation semantics of the
         ''' external method.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property CharsetKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._charsetKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Sub" or "Function" keyword.
-        ''' </summary>
+        ''' <summary>The "Sub" or "Function" keyword.</summary>
         Friend  ReadOnly Property SubOrFunctionKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._subOrFunctionKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The name of the method being declared.
-        ''' </summary>
+        ''' <summary>The name of the method being declared.</summary>
         Friend  ReadOnly Property Identifier As InternalSyntax.IdentifierTokenSyntax
             Get
                 Return Me._identifier
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Lib" keyword.
-        ''' </summary>
+        ''' <summary>The "Lib" keyword.</summary>
         Friend  ReadOnly Property LibKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._libKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The string literal with the library name.
-        ''' </summary>
+        ''' <summary>The string literal with the library name.</summary>
         Friend  ReadOnly Property LibraryName As InternalSyntax.LiteralExpressionSyntax
             Get
                 Return Me._libraryName
             End Get
         End Property
 
-        ''' <summary>
-        ''' If present, the "Alias" keyword. If not present, returns Nothing.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>If present, the "Alias" keyword. If not present, returns Nothing.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AliasKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._aliasKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The string literal with the alias. If not present, returns Nothing.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The string literal with the alias. If not present, returns Nothing.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AliasName As InternalSyntax.LiteralExpressionSyntax
             Get
                 Return Me._aliasName
@@ -7410,9 +7118,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "As" clause that describes the return type. If no As clause was present,
         ''' Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AsClause As InternalSyntax.SimpleAsClauseSyntax
             Get
                 Return Me._asClause
@@ -7466,9 +7172,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' A statement that declares a delegate type.
-    ''' </summary>
+    ''' <summary>A statement that declares a delegate type.</summary>
     Friend NotInheritable Class DelegateStatementSyntax
         Inherits MethodBaseSyntax
 
@@ -7591,27 +7295,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.DelegateStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Delegate" keyword.
-        ''' </summary>
+        ''' <summary>The "Delegate" keyword.</summary>
         Friend  ReadOnly Property DelegateKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._delegateKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Sub" or "Function" keyword.
-        ''' </summary>
+        ''' <summary>The "Sub" or "Function" keyword.</summary>
         Friend  ReadOnly Property SubOrFunctionKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._subOrFunctionKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The name of the delegate being declared.
-        ''' </summary>
+        ''' <summary>The name of the delegate being declared.</summary>
         Friend  ReadOnly Property Identifier As InternalSyntax.IdentifierTokenSyntax
             Get
                 Return Me._identifier
@@ -7622,9 +7320,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' If present, a type parameter list with generic type parameters for this
         ''' delegate. If no generic type parameters were present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property TypeParameterList As InternalSyntax.TypeParameterListSyntax
             Get
                 Return Me._typeParameterList
@@ -7635,9 +7331,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "As" clause that describes the return type. If no As clause was present,
         ''' Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AsClause As InternalSyntax.SimpleAsClauseSyntax
             Get
                 Return Me._asClause
@@ -7816,30 +7510,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.EventStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The optional Custom keyword for custom event declarations.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The optional Custom keyword for custom event declarations.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property CustomKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._customKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Event" keyword that introduces this event declaration.
-        ''' </summary>
+        ''' <summary>The "Event" keyword that introduces this event declaration.</summary>
         Friend  ReadOnly Property EventKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._eventKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The name of the event being declared.
-        ''' </summary>
+        ''' <summary>The name of the event being declared.</summary>
         Friend  ReadOnly Property Identifier As InternalSyntax.IdentifierTokenSyntax
             Get
                 Return Me._identifier
@@ -7850,9 +7536,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "As" clause that describes the return type. If no As clause was present,
         ''' Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AsClause As InternalSyntax.SimpleAsClauseSyntax
             Get
                 Return Me._asClause
@@ -7863,9 +7547,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' If present, an Implements clause indicates the interface methods that this
         ''' method implements.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ImplementsClause As InternalSyntax.ImplementsClauseSyntax
             Get
                 Return Me._implementsClause
@@ -8007,18 +7689,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.OperatorStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Operator" keyword that introduces this operator declaration.
-        ''' </summary>
+        ''' <summary>The "Operator" keyword that introduces this operator declaration.</summary>
         Friend  ReadOnly Property OperatorKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._operatorKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The operator being defined.
-        ''' </summary>
+        ''' <summary>The operator being defined.</summary>
         Friend  ReadOnly Property OperatorToken As InternalSyntax.SyntaxToken
             Get
                 Return Me._operatorToken
@@ -8029,9 +7707,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "As" clause that describes the return type. If no As clause was present,
         ''' Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AsClause As InternalSyntax.SimpleAsClauseSyntax
             Get
                 Return Me._asClause
@@ -8207,18 +7883,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.PropertyStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Property" keyword that introduces this property declaration.
-        ''' </summary>
+        ''' <summary>The "Property" keyword that introduces this property declaration.</summary>
         Friend  ReadOnly Property PropertyKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._propertyKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The name of the property being declared.
-        ''' </summary>
+        ''' <summary>The name of the property being declared.</summary>
         Friend  ReadOnly Property Identifier As InternalSyntax.IdentifierTokenSyntax
             Get
                 Return Me._identifier
@@ -8229,9 +7901,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "As" clause that describes the return type. If no As clause was present,
         ''' Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AsClause As InternalSyntax.AsClauseSyntax
             Get
                 Return Me._asClause
@@ -8242,9 +7912,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' If present, an "= initial-value" clause describing the initial value of the
         ''' property.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Initializer As InternalSyntax.EqualsValueSyntax
             Get
                 Return Me._initializer
@@ -8255,9 +7923,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' If present, an Implements clause indicated the interface methods that this
         ''' method implements.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ImplementsClause As InternalSyntax.ImplementsClauseSyntax
             Get
                 Return Me._implementsClause
@@ -8489,18 +8155,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ImplementsClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Implements" keyword.
-        ''' </summary>
+        ''' <summary>The "Implements" keyword.</summary>
         Friend  ReadOnly Property ImplementsKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._implementsKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The list of interface members being implemented.
-        ''' </summary>
+        ''' <summary>The list of interface members being implemented.</summary>
         Friend  ReadOnly Property InterfaceMembers As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of QualifiedNameSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of QualifiedNameSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of QualifiedNameSyntax)(Me._interfaceMembers))
@@ -8615,18 +8277,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.HandlesClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Handles" keyword.
-        ''' </summary>
+        ''' <summary>The "Handles" keyword.</summary>
         Friend  ReadOnly Property HandlesKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._handlesKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The list of event members being handled.
-        ''' </summary>
+        ''' <summary>The list of event members being handled.</summary>
         Friend  ReadOnly Property Events As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of HandlesClauseItemSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of HandlesClauseItemSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of HandlesClauseItemSyntax)(Me._events))
@@ -8660,9 +8318,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents container of an event in a Handles clause item.
-    ''' </summary>
+    ''' <summary>Represents container of an event in a Handles clause item.</summary>
     Friend MustInherit Class EventContainerSyntax
         Inherits ExpressionSyntax
 
@@ -8782,9 +8438,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents event container that refers to a WithEvents member.
-    ''' </summary>
+    ''' <summary>Represents event container that refers to a WithEvents member.</summary>
     Friend NotInheritable Class WithEventsEventContainerSyntax
         Inherits EventContainerSyntax
 
@@ -8877,9 +8531,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents event container that refers to a WithEvents member's property.
-    ''' </summary>
+    ''' <summary>Represents event container that refers to a WithEvents member's property.</summary>
     Friend NotInheritable Class WithEventsPropertyEventContainerSyntax
         Inherits EventContainerSyntax
 
@@ -8964,18 +8616,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.WithEventsPropertyEventContainerSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The container of the event.
-        ''' </summary>
+        ''' <summary>The container of the event.</summary>
         Friend  ReadOnly Property WithEventsContainer As InternalSyntax.WithEventsEventContainerSyntax
             Get
                 Return Me._withEventsContainer
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "." token.
-        ''' </summary>
+        ''' <summary>The "." token.</summary>
         Friend  ReadOnly Property DotToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._dotToken
@@ -9021,9 +8669,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a single handled event in a "Handles ..." clause.
-    ''' </summary>
+    ''' <summary>Represents a single handled event in a "Handles ..." clause.</summary>
     Friend NotInheritable Class HandlesClauseItemSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -9119,18 +8765,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "." token.
-        ''' </summary>
+        ''' <summary>The "." token.</summary>
         Friend  ReadOnly Property DotToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._dotToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The event being handled. This must be a simple identifier.
-        ''' </summary>
+        ''' <summary>The event being handled. This must be a simple identifier.</summary>
         Friend  ReadOnly Property EventMember As InternalSyntax.IdentifierNameSyntax
             Get
                 Return Me._eventMember
@@ -9277,9 +8919,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property AttributeLists As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)(Me._attributeLists)
@@ -9290,9 +8930,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of all the modifier tokens that were present on this declaration. If no
         ''' modifiers were specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Modifiers As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of KeywordSyntax)
             Get
                 Return New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)(Me._modifiers)
@@ -9303,9 +8941,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The missing identifier token for this incomplete member. Should only be used to
         ''' have a location for error reporting.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property MissingIdentifier As InternalSyntax.IdentifierTokenSyntax
             Get
                 Return Me._missingIdentifier
@@ -9453,9 +9089,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property AttributeLists As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)(Me._attributeLists)
@@ -9466,9 +9100,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of all the modifier tokens that were present on this declaration. If no
         ''' modifiers were specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Modifiers As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of KeywordSyntax)
             Get
                 Return New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)(Me._modifiers)
@@ -9634,9 +9266,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "As" clause that describes the return type, and possibly includes "New",
         ''' "With" or "From". If no As clause was present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AsClause As InternalSyntax.AsClauseSyntax
             Get
                 Return Me._asClause
@@ -9647,9 +9277,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' If present, an "= initial-value" clause describing the initial value of the
         ''' variable or the value of the constant.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Initializer As InternalSyntax.EqualsValueSyntax
             Get
                 Return Me._initializer
@@ -9735,9 +9363,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           writer.WriteValue(Me._asKeyword)
         End Sub
 
-        ''' <summary>
-        ''' The "As" keyword.
-        ''' </summary>
+        ''' <summary>The "As" keyword.</summary>
         Friend  ReadOnly Property AsKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._asKeyword
@@ -9832,18 +9458,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of all attribute lists on the type. If no attributes were specified, an
         ''' empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property AttributeLists As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)(Me._attributeLists)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The type-name part of the As clause.
-        ''' </summary>
+        ''' <summary>The type-name part of the As clause.</summary>
         Friend  ReadOnly Property Type As InternalSyntax.TypeSyntax
             Get
                 Return Me._type
@@ -9943,9 +9565,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.AsNewClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The New expression
-        ''' </summary>
+        ''' <summary>The New expression</summary>
         Friend  ReadOnly Property NewExpression As InternalSyntax.NewExpressionSyntax
             Get
                 Return Me._newExpression
@@ -10006,9 +9626,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "With {...} clause used to initialize a new object's members.
-    ''' </summary>
+    ''' <summary>Represents a "With {...} clause used to initialize a new object's members.</summary>
     Friend NotInheritable Class ObjectMemberInitializerSyntax
         Inherits ObjectCreationInitializerSyntax
 
@@ -10112,36 +9730,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ObjectMemberInitializerSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "With" keyword.
-        ''' </summary>
+        ''' <summary>The "With" keyword.</summary>
         Friend  ReadOnly Property WithKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._withKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "{" token.
-        ''' </summary>
+        ''' <summary>The "{" token.</summary>
         Friend  ReadOnly Property OpenBraceToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openBraceToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The comma-separated list of field initializers.
-        ''' </summary>
+        ''' <summary>The comma-separated list of field initializers.</summary>
         Friend  ReadOnly Property Initializers As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of FieldInitializerSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of FieldInitializerSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of FieldInitializerSyntax)(Me._initializers))
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "}" token.
-        ''' </summary>
+        ''' <summary>The "}" token.</summary>
         Friend  ReadOnly Property CloseBraceToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeBraceToken
@@ -10254,18 +9864,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ObjectCollectionInitializerSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "From" keyword.
-        ''' </summary>
+        ''' <summary>The "From" keyword.</summary>
         Friend  ReadOnly Property FromKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._fromKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The initializer including the braces.
-        ''' </summary>
+        ''' <summary>The initializer including the braces.</summary>
         Friend  ReadOnly Property Initializer As InternalSyntax.CollectionInitializerSyntax
             Get
                 Return Me._initializer
@@ -10353,12 +9959,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           writer.WriteValue(Me._keyKeyword)
         End Sub
 
-        ''' <summary>
-        ''' The optional "Key" keyword.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The optional "Key" keyword.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property KeyKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._keyKeyword
@@ -10429,9 +10031,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.InferredFieldInitializerSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The value being assigned.
-        ''' </summary>
+        ''' <summary>The value being assigned.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -10566,36 +10166,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.NamedFieldInitializerSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "." token.
-        ''' </summary>
+        ''' <summary>The "." token.</summary>
         Friend  ReadOnly Property DotToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._dotToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The name of the field being initialized.
-        ''' </summary>
+        ''' <summary>The name of the field being initialized.</summary>
         Friend  ReadOnly Property Name As InternalSyntax.IdentifierNameSyntax
             Get
                 Return Me._name
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "=" token.
-        ''' </summary>
+        ''' <summary>The "=" token.</summary>
         Friend  ReadOnly Property EqualsToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._equalsToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The value being assigned to the field.
-        ''' </summary>
+        ''' <summary>The value being assigned to the field.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -10710,18 +10302,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.EqualsValueSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "=" token.
-        ''' </summary>
+        ''' <summary>The "=" token.</summary>
         Friend  ReadOnly Property EqualsToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._equalsToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression used as the initial value.
-        ''' </summary>
+        ''' <summary>The expression used as the initial value.</summary>
         Friend  ReadOnly Property Value As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._value
@@ -10755,9 +10343,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represent a parameter to a method, property, constructor, etc.
-    ''' </summary>
+    ''' <summary>Represent a parameter to a method, property, constructor, etc.</summary>
     Friend NotInheritable Class ParameterSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -10896,9 +10482,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of all attribute lists on this parameter. If no attributes were
         ''' specified, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property AttributeLists As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)(Me._attributeLists)
@@ -10909,18 +10493,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of the modifier tokens "ByVal", "ByRef", "Optional" or "ParamArray" that
         ''' modify this parameter.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Modifiers As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of KeywordSyntax)
             Get
                 Return New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)(Me._modifiers)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The name of the parameter, including any "?" or "()" modifiers.
-        ''' </summary>
+        ''' <summary>The name of the parameter, including any "?" or "()" modifiers.</summary>
         Friend  ReadOnly Property Identifier As InternalSyntax.ModifiedIdentifierSyntax
             Get
                 Return Me._identifier
@@ -10931,9 +10511,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' If present, the "As type-name" clause describing the type of the parameter. If
         ''' no As clause is present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AsClause As InternalSyntax.SimpleAsClauseSyntax
             Get
                 Return Me._asClause
@@ -10944,9 +10522,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' If present, an initializer with the default value of the parameter. If no
         ''' default value is present, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property [Default] As InternalSyntax.EqualsValueSyntax
             Get
                 Return Me._default
@@ -11105,33 +10681,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ModifiedIdentifierSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The identifier that names the item being declared.
-        ''' </summary>
+        ''' <summary>The identifier that names the item being declared.</summary>
         Friend  ReadOnly Property Identifier As InternalSyntax.IdentifierTokenSyntax
             Get
                 Return Me._identifier
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "?" token that indicates a nullable type.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The "?" token that indicates a nullable type.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Nullable As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._nullable
             End Get
         End Property
 
-        ''' <summary>
-        ''' The optional array bounds, such as "(4)" or "(0 to 5, 0 To 6)".
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The optional array bounds, such as "(4)" or "(0 to 5, 0 To 6)".</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ArrayBounds As InternalSyntax.ArgumentListSyntax
             Get
                 Return Me._arrayBounds
@@ -11142,9 +10708,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of array modifiers for the type. If no array modifiers were present, an
         ''' empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property ArrayRankSpecifiers As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of ArrayRankSpecifierSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of ArrayRankSpecifierSyntax)(Me._arrayRankSpecifiers)
@@ -11276,30 +10840,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ArrayRankSpecifierSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Friend  ReadOnly Property OpenParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openParenToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The comma tokens in the array type. There is one less comma than the rank.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The comma tokens in the array type. There is one less comma than the rank.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property CommaTokens As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of PunctuationSyntax)
             Get
                 Return New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)(Me._commaTokens)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Friend  ReadOnly Property CloseParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeParenToken
@@ -11335,9 +10891,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a group of attributes within "&lt;" and "&gt;" brackets.
-    ''' </summary>
+    ''' <summary>Represents a group of attributes within "&lt;" and "&gt;" brackets.</summary>
     Friend NotInheritable Class AttributeListSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -11428,30 +10982,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.AttributeListSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "&lt;" token.
-        ''' </summary>
+        ''' <summary>The "&lt;" token.</summary>
         Friend  ReadOnly Property LessThanToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._lessThanToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' A comma separated list of attribute declarations in this attribute list.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A comma separated list of attribute declarations in this attribute list.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Attributes As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of AttributeSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of AttributeSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of AttributeSyntax)(Me._attributes))
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "&gt;" token.
-        ''' </summary>
+        ''' <summary>The "&gt;" token.</summary>
         Friend  ReadOnly Property GreaterThanToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._greaterThanToken
@@ -11487,9 +11033,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a single attribute declaration within an attribute list.
-    ''' </summary>
+    ''' <summary>Represents a single attribute declaration within an attribute list.</summary>
     Friend NotInheritable Class AttributeSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -11586,21 +11130,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.AttributeSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' Optional attribute target. Assembly|Module :
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>Optional attribute target. Assembly|Module :</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Target As InternalSyntax.AttributeTargetSyntax
             Get
                 Return Me._target
             End Get
         End Property
 
-        ''' <summary>
-        ''' The name of the attribute.
-        ''' </summary>
+        ''' <summary>The name of the attribute.</summary>
         Friend  ReadOnly Property Name As InternalSyntax.TypeSyntax
             Get
                 Return Me._name
@@ -11611,9 +11149,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The argument list, if present. If no argument list was supplied, Nothing is
         ''' returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ArgumentList As InternalSyntax.ArgumentListSyntax
             Get
                 Return Me._argumentList
@@ -11649,9 +11185,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a single attribute declaration within an attribute list.
-    ''' </summary>
+    ''' <summary>Represents a single attribute declaration within an attribute list.</summary>
     Friend NotInheritable Class AttributeTargetSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -11838,12 +11372,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.AttributesStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The list of attribute lists.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The list of attribute lists.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property AttributeLists As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)(Me._attributeLists)
@@ -11937,9 +11467,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The expression.
-        ''' </summary>
+        ''' <summary>The expression.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -11970,9 +11498,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represent a "? expression" "Print" statement in VB Interactive code.
-    ''' </summary>
+    ''' <summary>Represent a "? expression" "Print" statement in VB Interactive code.</summary>
     Friend NotInheritable Class PrintStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -12044,18 +11570,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.PrintStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' "?" token.
-        ''' </summary>
+        ''' <summary>"?" token.</summary>
         Friend  ReadOnly Property QuestionToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._questionToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression whose value is being output.
-        ''' </summary>
+        ''' <summary>The expression whose value is being output.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -12183,30 +11705,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.WhileBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The While statement that begins the block.
-        ''' </summary>
+        ''' <summary>The While statement that begins the block.</summary>
         Friend  ReadOnly Property WhileStatement As InternalSyntax.WhileStatementSyntax
             Get
                 Return Me._whileStatement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The statements contained in the While...End While. This might be an empty list.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The statements contained in the While...End While. This might be an empty list.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The End While statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End While statement that ends the block.</summary>
         Friend  ReadOnly Property EndWhileStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endWhileStatement
@@ -12336,9 +11850,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.UsingBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The UsingStatement that begins the Using...End Using block.
-        ''' </summary>
+        ''' <summary>The UsingStatement that begins the Using...End Using block.</summary>
         Friend  ReadOnly Property UsingStatement As InternalSyntax.UsingStatementSyntax
             Get
                 Return Me._usingStatement
@@ -12349,18 +11861,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The statements contained in the Using...End Using block. This might be an empty
         ''' list.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The End Using statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End Using statement that ends the block.</summary>
         Friend  ReadOnly Property EndUsingStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endUsingStatement
@@ -12490,9 +11998,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.SyncLockBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The SyncLock statement that begins the block.
-        ''' </summary>
+        ''' <summary>The SyncLock statement that begins the block.</summary>
         Friend  ReadOnly Property SyncLockStatement As InternalSyntax.SyncLockStatementSyntax
             Get
                 Return Me._syncLockStatement
@@ -12503,18 +12009,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The statements contained in the SyncLock...End SyncLock statement. This might
         ''' be an empty list.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The End SyncLock statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End SyncLock statement that ends the block.</summary>
         Friend  ReadOnly Property EndSyncLockStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endSyncLockStatement
@@ -12644,9 +12146,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.WithBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The WithStatement that begins the With...End With block.
-        ''' </summary>
+        ''' <summary>The WithStatement that begins the With...End With block.</summary>
         Friend  ReadOnly Property WithStatement As InternalSyntax.WithStatementSyntax
             Get
                 Return Me._withStatement
@@ -12657,18 +12157,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The statements contained in the With...End With block. This might be an empty
         ''' list.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The End With statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End With statement that ends the block.</summary>
         Friend  ReadOnly Property EndWithStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endWithStatement
@@ -12704,9 +12200,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the declaration of one or more local variables or constants.
-    ''' </summary>
+    ''' <summary>Represents the declaration of one or more local variables or constants.</summary>
     Friend NotInheritable Class LocalDeclarationStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -12837,9 +12331,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a label statement.
-    ''' </summary>
+    ''' <summary>Represents a label statement.</summary>
     Friend NotInheritable Class LabelStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -12921,9 +12413,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ":" token of the label statement.
-        ''' </summary>
+        ''' <summary>The ":" token of the label statement.</summary>
         Friend  ReadOnly Property ColonToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._colonToken
@@ -12957,9 +12447,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "GoTo" statement.
-    ''' </summary>
+    ''' <summary>Represents a "GoTo" statement.</summary>
     Friend NotInheritable Class GoToStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -13031,9 +12519,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.GoToStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "GoTo" keyword.
-        ''' </summary>
+        ''' <summary>The "GoTo" keyword.</summary>
         Friend  ReadOnly Property GoToKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._goToKeyword
@@ -13235,9 +12721,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.StopOrEndStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Stop" or "End" keyword.
-        ''' </summary>
+        ''' <summary>The "Stop" or "End" keyword.</summary>
         Friend  ReadOnly Property StopOrEndKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._stopOrEndKeyword
@@ -13343,18 +12827,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ExitStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Exit" keyword.
-        ''' </summary>
+        ''' <summary>The "Exit" keyword.</summary>
         Friend  ReadOnly Property ExitKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._exitKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The keyword describing the block to exit.
-        ''' </summary>
+        ''' <summary>The keyword describing the block to exit.</summary>
         Friend  ReadOnly Property BlockKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._blockKeyword
@@ -13463,9 +12943,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ContinueStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Continue" keyword.
-        ''' </summary>
+        ''' <summary>The "Continue" keyword.</summary>
         Friend  ReadOnly Property ContinueKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._continueKeyword
@@ -13509,9 +12987,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "Return" statement.
-    ''' </summary>
+    ''' <summary>Represents a "Return" statement.</summary>
     Friend NotInheritable Class ReturnStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -13589,21 +13065,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ReturnStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Return" keyword.
-        ''' </summary>
+        ''' <summary>The "Return" keyword.</summary>
         Friend  ReadOnly Property ReturnKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._returnKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression being returned, if present.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The expression being returned, if present.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -13637,9 +13107,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a single-line "If ... Then ... Else ..." statement.
-    ''' </summary>
+    ''' <summary>Represents a single-line "If ... Then ... Else ..." statement.</summary>
     Friend NotInheritable Class SingleLineIfStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -13762,27 +13230,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.SingleLineIfStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "If" keyword.
-        ''' </summary>
+        ''' <summary>The "If" keyword.</summary>
         Friend  ReadOnly Property IfKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._ifKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The condition expression to be evaluated.
-        ''' </summary>
+        ''' <summary>The condition expression to be evaluated.</summary>
         Friend  ReadOnly Property Condition As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._condition
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Then" keyword.
-        ''' </summary>
+        ''' <summary>The "Then" keyword.</summary>
         Friend  ReadOnly Property ThenKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._thenKeyword
@@ -13793,21 +13255,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of statements to be executed if the condition expression evaluates as
         ''' true. Multiple statements must be separated by colons.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
             End Get
         End Property
 
-        ''' <summary>
-        ''' An "Else" clause to be executed if the condition expression evaluates as false.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>An "Else" clause to be executed if the condition expression evaluates as false.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ElseClause As InternalSyntax.SingleLineElseClauseSyntax
             Get
                 Return Me._elseClause
@@ -13847,9 +13303,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Else ..." clause of a single-line "If" statement.
-    ''' </summary>
+    ''' <summary>Represents the "Else ..." clause of a single-line "If" statement.</summary>
     Friend NotInheritable Class SingleLineElseClauseSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -13927,9 +13381,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.SingleLineElseClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Else" keyword.
-        ''' </summary>
+        ''' <summary>The "Else" keyword.</summary>
         Friend  ReadOnly Property ElseKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._elseKeyword
@@ -13940,9 +13392,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of statements to be executed. Multiple statements must be separated by
         ''' colons.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
@@ -14108,9 +13558,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.MultiLineIfBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "If" statement that begins the "If" block.
-        ''' </summary>
+        ''' <summary>The "If" statement that begins the "If" block.</summary>
         Friend  ReadOnly Property IfStatement As InternalSyntax.IfStatementSyntax
             Get
                 Return Me._ifStatement
@@ -14121,9 +13569,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of statements to be executed if the condition expression evaluates as
         ''' true.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
@@ -14134,9 +13580,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of "ElseIf" blocks to be evaluated, in order, if the condition
         ''' expression of the "If" statement evaluates as false.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property ElseIfBlocks As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of ElseIfBlockSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of ElseIfBlockSyntax)(Me._elseIfBlocks)
@@ -14147,18 +13591,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' An "Else" block to be executed if the condition expression of the "If"
         ''' statement and all "ElseIf" blocks evaluate as false.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ElseBlock As InternalSyntax.ElseBlockSyntax
             Get
                 Return Me._elseBlock
             End Get
         End Property
 
-        ''' <summary>
-        ''' Then "End If" statement.
-        ''' </summary>
+        ''' <summary>Then "End If" statement.</summary>
         Friend  ReadOnly Property EndIfStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endIfStatement
@@ -14198,9 +13638,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "If ... Then" statement that begins a multi-line "If" block.
-    ''' </summary>
+    ''' <summary>Represents the "If ... Then" statement that begins a multi-line "If" block.</summary>
     Friend NotInheritable Class IfStatementSyntax
         Inherits StatementSyntax
 
@@ -14291,30 +13729,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.IfStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "If" keyword.
-        ''' </summary>
+        ''' <summary>The "If" keyword.</summary>
         Friend  ReadOnly Property IfKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._ifKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The condition expression to be evaluated.
-        ''' </summary>
+        ''' <summary>The condition expression to be evaluated.</summary>
         Friend  ReadOnly Property Condition As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._condition
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Then" keyword.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The "Then" keyword.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ThenKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._thenKeyword
@@ -14350,9 +13780,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an "ElseIf ... Then ..." block.
-    ''' </summary>
+    ''' <summary>Represents an "ElseIf ... Then ..." block.</summary>
     Friend NotInheritable Class ElseIfBlockSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -14430,9 +13858,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ElseIfBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "ElseIf ... Then" statement the begins the "ElseIf" block.
-        ''' </summary>
+        ''' <summary>The "ElseIf ... Then" statement the begins the "ElseIf" block.</summary>
         Friend  ReadOnly Property ElseIfStatement As InternalSyntax.ElseIfStatementSyntax
             Get
                 Return Me._elseIfStatement
@@ -14443,9 +13869,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of statements to be executed if the condition expression of the "ElseIf"
         ''' statement evaluates as true.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
@@ -14479,9 +13903,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "ElseIf ... Then" statement that begins an "ElseIf" block.
-    ''' </summary>
+    ''' <summary>Represents the "ElseIf ... Then" statement that begins an "ElseIf" block.</summary>
     Friend NotInheritable Class ElseIfStatementSyntax
         Inherits StatementSyntax
 
@@ -14572,30 +13994,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ElseIfStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "ElseIf" keyword.
-        ''' </summary>
+        ''' <summary>The "ElseIf" keyword.</summary>
         Friend  ReadOnly Property ElseIfKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._elseIfKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The condition expression to be evaluated.
-        ''' </summary>
+        ''' <summary>The condition expression to be evaluated.</summary>
         Friend  ReadOnly Property Condition As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._condition
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Then" keyword.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The "Then" keyword.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ThenKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._thenKeyword
@@ -14631,9 +14045,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an "Else ..." block.
-    ''' </summary>
+    ''' <summary>Represents an "Else ..." block.</summary>
     Friend NotInheritable Class ElseBlockSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -14711,21 +14123,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ElseBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Else" statement that begins the "Else" block.
-        ''' </summary>
+        ''' <summary>The "Else" statement that begins the "Else" block.</summary>
         Friend  ReadOnly Property ElseStatement As InternalSyntax.ElseStatementSyntax
             Get
                 Return Me._elseStatement
             End Get
         End Property
 
-        ''' <summary>
-        ''' A list of statements to be executed.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of statements to be executed.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
@@ -14759,9 +14165,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Else" statement that begins an "Else" block.
-    ''' </summary>
+    ''' <summary>Represents the "Else" statement that begins an "Else" block.</summary>
     Friend NotInheritable Class ElseStatementSyntax
         Inherits StatementSyntax
 
@@ -14820,9 +14224,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ElseStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Else" keyword.
-        ''' </summary>
+        ''' <summary>The "Else" keyword.</summary>
         Friend  ReadOnly Property ElseKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._elseKeyword
@@ -14853,9 +14255,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "Try ... Catch ... Finally ... End Try" block.
-    ''' </summary>
+    ''' <summary>Represents a "Try ... Catch ... Finally ... End Try" block.</summary>
     Friend NotInheritable Class TryBlockSyntax
         Inherits ExecutableStatementSyntax
 
@@ -14984,21 +14384,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.TryBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Try" statement that begins the "Try" block.
-        ''' </summary>
+        ''' <summary>The "Try" statement that begins the "Try" block.</summary>
         Friend  ReadOnly Property TryStatement As InternalSyntax.TryStatementSyntax
             Get
                 Return Me._tryStatement
             End Get
         End Property
 
-        ''' <summary>
-        ''' A list of statements to be executed.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of statements to be executed.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
@@ -15009,30 +14403,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of "Catch" blocks which may be executed if an exception is thrown while
         ''' executing the statements in the "Try" block.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property CatchBlocks As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of CatchBlockSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of CatchBlockSyntax)(Me._catchBlocks)
             End Get
         End Property
 
-        ''' <summary>
-        ''' A "Finally" block to be executed before execution leaves the "Try" block.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>A "Finally" block to be executed before execution leaves the "Try" block.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property FinallyBlock As InternalSyntax.FinallyBlockSyntax
             Get
                 Return Me._finallyBlock
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "End Try" statement.
-        ''' </summary>
+        ''' <summary>The "End Try" statement.</summary>
         Friend  ReadOnly Property EndTryStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endTryStatement
@@ -15072,9 +14458,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Try" statement that begins a "Try" block.
-    ''' </summary>
+    ''' <summary>Represents the "Try" statement that begins a "Try" block.</summary>
     Friend NotInheritable Class TryStatementSyntax
         Inherits StatementSyntax
 
@@ -15133,9 +14517,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.TryStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Try" keyword.
-        ''' </summary>
+        ''' <summary>The "Try" keyword.</summary>
         Friend  ReadOnly Property TryKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._tryKeyword
@@ -15166,9 +14548,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "Catch ..." block.
-    ''' </summary>
+    ''' <summary>Represents a "Catch ..." block.</summary>
     Friend NotInheritable Class CatchBlockSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -15246,9 +14626,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.CatchBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Catch" statement that begins the "Catch" block.
-        ''' </summary>
+        ''' <summary>The "Catch" statement that begins the "Catch" block.</summary>
         Friend  ReadOnly Property CatchStatement As InternalSyntax.CatchStatementSyntax
             Get
                 Return Me._catchStatement
@@ -15259,9 +14637,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of statements to be executed if an exception is caught by the "Catch"
         ''' block.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
@@ -15295,9 +14671,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Catch ... When ..." statement that begins a "Catch" block.
-    ''' </summary>
+    ''' <summary>Represents the "Catch ... When ..." statement that begins a "Catch" block.</summary>
     Friend NotInheritable Class CatchStatementSyntax
         Inherits StatementSyntax
 
@@ -15413,9 +14787,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.CatchStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Catch" keyword.
-        ''' </summary>
+        ''' <summary>The "Catch" keyword.</summary>
         Friend  ReadOnly Property CatchKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._catchKeyword
@@ -15426,33 +14798,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' An identifier declaring a new variable or naming an existing variable to store
         ''' the exception caught by the "Catch" statement.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property IdentifierName As InternalSyntax.IdentifierNameSyntax
             Get
                 Return Me._identifierName
             End Get
         End Property
 
-        ''' <summary>
-        ''' A simple "As" clause specifying the type of exception to catch.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>A simple "As" clause specifying the type of exception to catch.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AsClause As InternalSyntax.SimpleAsClauseSyntax
             Get
                 Return Me._asClause
             End Get
         End Property
 
-        ''' <summary>
-        ''' A "When" clause to filter exceptions before catching.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>A "When" clause to filter exceptions before catching.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property WhenClause As InternalSyntax.CatchFilterClauseSyntax
             Get
                 Return Me._whenClause
@@ -15490,9 +14852,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "When ..." clause of a "Catch" statement.
-    ''' </summary>
+    ''' <summary>Represents the "When ..." clause of a "Catch" statement.</summary>
     Friend NotInheritable Class CatchFilterClauseSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -15564,18 +14924,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.CatchFilterClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "When" keyword.
-        ''' </summary>
+        ''' <summary>The "When" keyword.</summary>
         Friend  ReadOnly Property WhenKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._whenKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The filter expression to be evaluated.
-        ''' </summary>
+        ''' <summary>The filter expression to be evaluated.</summary>
         Friend  ReadOnly Property Filter As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._filter
@@ -15609,9 +14965,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "Finally ..." block of a "Try" block.
-    ''' </summary>
+    ''' <summary>Represents a "Finally ..." block of a "Try" block.</summary>
     Friend NotInheritable Class FinallyBlockSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -15689,21 +15043,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.FinallyBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Finally" statement that begins the "Finally" block.
-        ''' </summary>
+        ''' <summary>The "Finally" statement that begins the "Finally" block.</summary>
         Friend  ReadOnly Property FinallyStatement As InternalSyntax.FinallyStatementSyntax
             Get
                 Return Me._finallyStatement
             End Get
         End Property
 
-        ''' <summary>
-        ''' A list of statements to be executed.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of statements to be executed.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
@@ -15737,9 +15085,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Finally" statement that begins a "Finally" block.
-    ''' </summary>
+    ''' <summary>Represents the "Finally" statement that begins a "Finally" block.</summary>
     Friend NotInheritable Class FinallyStatementSyntax
         Inherits StatementSyntax
 
@@ -15798,9 +15144,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.FinallyStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Finally" keyword.
-        ''' </summary>
+        ''' <summary>The "Finally" keyword.</summary>
         Friend  ReadOnly Property FinallyKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._finallyKeyword
@@ -15831,9 +15175,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Error" statement.
-    ''' </summary>
+    ''' <summary>Represents the "Error" statement.</summary>
     Friend NotInheritable Class ErrorStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -15905,18 +15247,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ErrorStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Error" keyword.
-        ''' </summary>
+        ''' <summary>The "Error" keyword.</summary>
         Friend  ReadOnly Property ErrorKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._errorKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression that represents the error number.
-        ''' </summary>
+        ''' <summary>The expression that represents the error number.</summary>
         Friend  ReadOnly Property ErrorNumber As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._errorNumber
@@ -15950,9 +15288,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an OnError Goto statement.
-    ''' </summary>
+    ''' <summary>Represents an OnError Goto statement.</summary>
     Friend NotInheritable Class OnErrorGoToStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -16069,39 +15405,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.OnErrorGoToStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "On" keyword
-        ''' </summary>
+        ''' <summary>The "On" keyword</summary>
         Friend  ReadOnly Property OnKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._onKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Error" keyword.
-        ''' </summary>
+        ''' <summary>The "Error" keyword.</summary>
         Friend  ReadOnly Property ErrorKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._errorKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "GoTo" keyword
-        ''' </summary>
+        ''' <summary>The "GoTo" keyword</summary>
         Friend  ReadOnly Property GoToKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._goToKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' An optional minus for On Error Goto -1
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>An optional minus for On Error Goto -1</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Minus As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._minus
@@ -16151,9 +15477,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an OnError Resume Next statement.
-    ''' </summary>
+    ''' <summary>Represents an OnError Resume Next statement.</summary>
     Friend NotInheritable Class OnErrorResumeNextStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -16251,36 +15575,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.OnErrorResumeNextStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "On" keyword
-        ''' </summary>
+        ''' <summary>The "On" keyword</summary>
         Friend  ReadOnly Property OnKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._onKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Error" keyword.
-        ''' </summary>
+        ''' <summary>The "Error" keyword.</summary>
         Friend  ReadOnly Property ErrorKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._errorKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Resume" keyword.
-        ''' </summary>
+        ''' <summary>The "Resume" keyword.</summary>
         Friend  ReadOnly Property ResumeKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._resumeKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Next"
-        ''' </summary>
+        ''' <summary>The "Next"</summary>
         Friend  ReadOnly Property NextKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._nextKeyword
@@ -16399,9 +15715,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ResumeStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Resume" keyword.
-        ''' </summary>
+        ''' <summary>The "Resume" keyword.</summary>
         Friend  ReadOnly Property ResumeKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._resumeKeyword
@@ -16413,9 +15727,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' Nothing. If Kind=ResumeNext, wraps the keyword "Next", If Kind=ResumeLabel,
         ''' wraps an Identifier or IntegerLiteralToken with the label or line number.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Label As InternalSyntax.LabelSyntax
             Get
                 Return Me._label
@@ -16543,30 +15855,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The Select Case statement that begins the block.
-        ''' </summary>
+        ''' <summary>The Select Case statement that begins the block.</summary>
         Friend  ReadOnly Property SelectStatement As InternalSyntax.SelectStatementSyntax
             Get
                 Return Me._selectStatement
             End Get
         End Property
 
-        ''' <summary>
-        ''' A list of the contained Case blocks.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of the contained Case blocks.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property CaseBlocks As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of CaseBlockSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of CaseBlockSyntax)(Me._caseBlocks)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The End Select statement that ends the block.
-        ''' </summary>
+        ''' <summary>The End Select statement that ends the block.</summary>
         Friend  ReadOnly Property EndSelectStatement As InternalSyntax.EndBlockStatementSyntax
             Get
                 Return Me._endSelectStatement
@@ -16696,30 +16000,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Select" keyword.
-        ''' </summary>
+        ''' <summary>The "Select" keyword.</summary>
         Friend  ReadOnly Property SelectKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._selectKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Case" keyword, if present.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The "Case" keyword, if present.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property CaseKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._caseKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The value that branching is based on.
-        ''' </summary>
+        ''' <summary>The value that branching is based on.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -16755,9 +16051,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a case statement and its subsequent block.
-    ''' </summary>
+    ''' <summary>Represents a case statement and its subsequent block.</summary>
     Friend NotInheritable Class CaseBlockSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -16835,21 +16129,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.CaseBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The statement that begins the case block.
-        ''' </summary>
+        ''' <summary>The statement that begins the case block.</summary>
         Friend  ReadOnly Property CaseStatement As InternalSyntax.CaseStatementSyntax
             Get
                 Return Me._caseStatement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The statements contained in the case block. This might be an empty list.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The statements contained in the case block. This might be an empty list.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
@@ -16965,9 +16253,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.CaseStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Case" keyword
-        ''' </summary>
+        ''' <summary>The "Case" keyword</summary>
         Friend  ReadOnly Property CaseKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._caseKeyword
@@ -17038,9 +16324,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' The "Else" part in a Case Else statement.
-    ''' </summary>
+    ''' <summary>The "Else" part in a Case Else statement.</summary>
     Friend NotInheritable Class ElseCaseClauseSyntax
         Inherits CaseClauseSyntax
 
@@ -17099,9 +16383,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ElseCaseClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Else" keyword.
-        ''' </summary>
+        ''' <summary>The "Else" keyword.</summary>
         Friend  ReadOnly Property ElseKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._elseKeyword
@@ -17132,9 +16414,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a single value in a Case.
-    ''' </summary>
+    ''' <summary>Represents a single value in a Case.</summary>
     Friend NotInheritable Class SimpleCaseClauseSyntax
         Inherits CaseClauseSyntax
 
@@ -17193,9 +16473,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.SimpleCaseClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The expression that denotes the value being tested against.
-        ''' </summary>
+        ''' <summary>The expression that denotes the value being tested against.</summary>
         Friend  ReadOnly Property Value As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._value
@@ -17226,9 +16504,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a range "expression To expression" in a Case.
-    ''' </summary>
+    ''' <summary>Represents a range "expression To expression" in a Case.</summary>
     Friend NotInheritable Class RangeCaseClauseSyntax
         Inherits CaseClauseSyntax
 
@@ -17313,27 +16589,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.RangeCaseClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The lower bound of the range.
-        ''' </summary>
+        ''' <summary>The lower bound of the range.</summary>
         Friend  ReadOnly Property LowerBound As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._lowerBound
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "To" keyword
-        ''' </summary>
+        ''' <summary>The "To" keyword</summary>
         Friend  ReadOnly Property ToKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._toKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The upper bound of the range.
-        ''' </summary>
+        ''' <summary>The upper bound of the range.</summary>
         Friend  ReadOnly Property UpperBound As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._upperBound
@@ -17369,9 +16639,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-    ''' </summary>
+    ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
     Friend NotInheritable Class RelationalCaseClauseSyntax
         Inherits CaseClauseSyntax
 
@@ -17462,12 +16730,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.RelationalCaseClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Is" keyword, if present.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The "Is" keyword, if present.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property IsKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._isKeyword
@@ -17484,9 +16748,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression that denotes the value being tested against.
-        ''' </summary>
+        ''' <summary>The expression that denotes the value being tested against.</summary>
         Friend  ReadOnly Property Value As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._value
@@ -17597,18 +16859,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.SyncLockStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "SyncLock" keyword.
-        ''' </summary>
+        ''' <summary>The "SyncLock" keyword.</summary>
         Friend  ReadOnly Property SyncLockKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._syncLockKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression being synchronized on.
-        ''' </summary>
+        ''' <summary>The expression being synchronized on.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -17736,30 +16994,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.DoLoopBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The Do statement that begins the block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins the block.</summary>
         Friend  ReadOnly Property DoStatement As InternalSyntax.DoStatementSyntax
             Get
                 Return Me._doStatement
             End Get
         End Property
 
-        ''' <summary>
-        ''' The statements contained in the block statement. This might be an empty list.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The statements contained in the block statement. This might be an empty list.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The Loop statement that ends the block.
-        ''' </summary>
+        ''' <summary>The Loop statement that ends the block.</summary>
         Friend  ReadOnly Property LoopStatement As InternalSyntax.LoopStatementSyntax
             Get
                 Return Me._loopStatement
@@ -17795,9 +17045,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' The Do statement that begins a Do-Loop block.
-    ''' </summary>
+    ''' <summary>The Do statement that begins a Do-Loop block.</summary>
     Friend NotInheritable Class DoStatementSyntax
         Inherits StatementSyntax
 
@@ -17875,9 +17123,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.DoStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Do" keyword.
-        ''' </summary>
+        ''' <summary>The "Do" keyword.</summary>
         Friend  ReadOnly Property DoKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._doKeyword
@@ -17888,9 +17134,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "While expression" or "Until expression" clause of the Do statement, if
         ''' present.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property WhileOrUntilClause As InternalSyntax.WhileOrUntilClauseSyntax
             Get
                 Return Me._whileOrUntilClause
@@ -17924,9 +17168,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' The Loop statement that begins a Do-Loop block.
-    ''' </summary>
+    ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
     Friend NotInheritable Class LoopStatementSyntax
         Inherits StatementSyntax
 
@@ -18004,9 +17246,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.LoopStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Loop" keyword.
-        ''' </summary>
+        ''' <summary>The "Loop" keyword.</summary>
         Friend  ReadOnly Property LoopKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._loopKeyword
@@ -18017,9 +17257,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "While expression" or "Until expression" clause of the Loop statement, if
         ''' present.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property WhileOrUntilClause As InternalSyntax.WhileOrUntilClauseSyntax
             Get
                 Return Me._whileOrUntilClause
@@ -18129,18 +17367,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.WhileOrUntilClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "While" or "Until" keyword.
-        ''' </summary>
+        ''' <summary>The "While" or "Until" keyword.</summary>
         Friend  ReadOnly Property WhileOrUntilKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._whileOrUntilKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The boolean expression after the While or Until.
-        ''' </summary>
+        ''' <summary>The boolean expression after the While or Until.</summary>
         Friend  ReadOnly Property Condition As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._condition
@@ -18249,18 +17483,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.WhileStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "While" keyword.
-        ''' </summary>
+        ''' <summary>The "While" keyword.</summary>
         Friend  ReadOnly Property WhileKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._whileKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The boolean expression that controls the While loop.
-        ''' </summary>
+        ''' <summary>The boolean expression that controls the While loop.</summary>
         Friend  ReadOnly Property Condition As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._condition
@@ -18294,9 +17524,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a For or For Each block.
-    ''' </summary>
+    ''' <summary>Represents a For or For Each block.</summary>
     Friend MustInherit Class ForOrForEachBlockSyntax
         Inherits ExecutableStatementSyntax
 
@@ -18370,9 +17598,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The statements contained in the For or For Each loop. This might be an empty
         ''' list.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
@@ -18383,9 +17609,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The Next statement that ends the block. If two For or For Each statements are
         ''' ended by a single Next statement, the inner For will not have a Next statement.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property NextStatement As InternalSyntax.NextStatementSyntax
             Get
                 Return Me._nextStatement
@@ -18457,9 +17681,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ForBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The For statement that begins the block.
-        ''' </summary>
+        ''' <summary>The For statement that begins the block.</summary>
         Friend  ReadOnly Property ForStatement As InternalSyntax.ForStatementSyntax
             Get
                 Return Me._forStatement
@@ -18558,9 +17780,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ForEachBlockSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The For Each statement that begins the block.
-        ''' </summary>
+        ''' <summary>The For Each statement that begins the block.</summary>
         Friend  ReadOnly Property ForEachStatement As InternalSyntax.ForEachStatementSyntax
             Get
                 Return Me._forEachStatement
@@ -18596,9 +17816,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a For or For Each statement.
-    ''' </summary>
+    ''' <summary>Represents a For or For Each statement.</summary>
     Friend MustInherit Class ForOrForEachStatementSyntax
         Inherits StatementSyntax
 
@@ -18656,9 +17874,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           writer.WriteValue(Me._controlVariable)
         End Sub
 
-        ''' <summary>
-        ''' The "For" keyword.
-        ''' </summary>
+        ''' <summary>The "For" keyword.</summary>
         Friend  ReadOnly Property ForKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._forKeyword
@@ -18803,48 +18019,36 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ForStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "=" token.
-        ''' </summary>
+        ''' <summary>The "=" token.</summary>
         Friend  ReadOnly Property EqualsToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._equalsToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression denoting the initial value of the iteration.
-        ''' </summary>
+        ''' <summary>The expression denoting the initial value of the iteration.</summary>
         Friend  ReadOnly Property FromValue As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._fromValue
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "To" keyword.
-        ''' </summary>
+        ''' <summary>The "To" keyword.</summary>
         Friend  ReadOnly Property ToKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._toKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression denoting the final value of the iteration.
-        ''' </summary>
+        ''' <summary>The expression denoting the final value of the iteration.</summary>
         Friend  ReadOnly Property ToValue As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._toValue
             End Get
         End Property
 
-        ''' <summary>
-        ''' The optional Step clause.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The optional Step clause.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property StepClause As InternalSyntax.ForStepClauseSyntax
             Get
                 Return Me._stepClause
@@ -18888,9 +18092,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' The Step clause in a For Statement.
-    ''' </summary>
+    ''' <summary>The Step clause in a For Statement.</summary>
     Friend NotInheritable Class ForStepClauseSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -18962,18 +18164,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ForStepClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Step" keyword.
-        ''' </summary>
+        ''' <summary>The "Step" keyword.</summary>
         Friend  ReadOnly Property StepKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._stepKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression denoting the step increment.
-        ''' </summary>
+        ''' <summary>The expression denoting the step increment.</summary>
         Friend  ReadOnly Property StepValue As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._stepValue
@@ -19100,27 +18298,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ForEachStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Each" keyword.
-        ''' </summary>
+        ''' <summary>The "Each" keyword.</summary>
         Friend  ReadOnly Property EachKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._eachKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "In" keyword.
-        ''' </summary>
+        ''' <summary>The "In" keyword.</summary>
         Friend  ReadOnly Property InKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._inKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression denoting the collection to iterate over.
-        ''' </summary>
+        ''' <summary>The expression denoting the collection to iterate over.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -19243,21 +18435,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.NextStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Next" keyword.
-        ''' </summary>
+        ''' <summary>The "Next" keyword.</summary>
         Friend  ReadOnly Property NextKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._nextKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The variables in the Next statement, if present
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The variables in the Next statement, if present</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property ControlVariables As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ExpressionSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ExpressionSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of ExpressionSyntax)(Me._controlVariables))
@@ -19392,9 +18578,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.UsingStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Using" keyword.
-        ''' </summary>
+        ''' <summary>The "Using" keyword.</summary>
         Friend  ReadOnly Property UsingKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._usingKeyword
@@ -19405,9 +18589,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' If the Using statement is of a form that does not declare a new variable, this
         ''' is the expression used in the using. Otherwise, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -19418,9 +18600,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' If the Using statement is of a form that declares one or more new variables,
         ''' this is the list of variable declarations. Otherwise, Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Variables As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of VariableDeclaratorSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of VariableDeclaratorSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of VariableDeclaratorSyntax)(Me._variables))
@@ -19456,9 +18636,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a Throw statement.
-    ''' </summary>
+    ''' <summary>Represents a Throw statement.</summary>
     Friend NotInheritable Class ThrowStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -19536,21 +18714,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ThrowStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Throw" keyword
-        ''' </summary>
+        ''' <summary>The "Throw" keyword</summary>
         Friend  ReadOnly Property ThrowKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._throwKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression denoting the value being thrown.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The expression denoting the value being thrown.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -19672,9 +18844,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.AssignmentStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The target (left hand side) of the assignment.
-        ''' </summary>
+        ''' <summary>The target (left hand side) of the assignment.</summary>
         Friend  ReadOnly Property Left As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._left
@@ -19691,9 +18861,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' The source (right hand side) of the assignment.
-        ''' </summary>
+        ''' <summary>The source (right hand side) of the assignment.</summary>
         Friend  ReadOnly Property Right As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._right
@@ -19729,9 +18897,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a left-hand side of a MidAssignment statement.
-    ''' </summary>
+    ''' <summary>Represents a left-hand side of a MidAssignment statement.</summary>
     Friend NotInheritable Class MidExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -19803,18 +18969,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.MidExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Mid" possibly followed by a type character.
-        ''' </summary>
+        ''' <summary>The "Mid" possibly followed by a type character.</summary>
         Friend  ReadOnly Property Mid As InternalSyntax.IdentifierTokenSyntax
             Get
                 Return Me._mid
             End Get
         End Property
 
-        ''' <summary>
-        ''' The argument list.
-        ''' </summary>
+        ''' <summary>The argument list.</summary>
         Friend  ReadOnly Property ArgumentList As InternalSyntax.ArgumentListSyntax
             Get
                 Return Me._argumentList
@@ -19848,9 +19010,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represent a call statement (also known as a invocation statement).
-    ''' </summary>
+    ''' <summary>Represent a call statement (also known as a invocation statement).</summary>
     Friend NotInheritable Class CallStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -19922,9 +19082,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.CallStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Call" keyword.
-        ''' </summary>
+        ''' <summary>The "Call" keyword.</summary>
         Friend  ReadOnly Property CallKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._callKeyword
@@ -20069,36 +19227,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.AddRemoveHandlerStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "AddHandler" or "RemoveHandler" keyword.
-        ''' </summary>
+        ''' <summary>The "AddHandler" or "RemoveHandler" keyword.</summary>
         Friend  ReadOnly Property AddHandlerOrRemoveHandlerKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._addHandlerOrRemoveHandlerKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The event being accessed.
-        ''' </summary>
+        ''' <summary>The event being accessed.</summary>
         Friend  ReadOnly Property EventExpression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._eventExpression
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "," token.
-        ''' </summary>
+        ''' <summary>The "," token.</summary>
         Friend  ReadOnly Property CommaToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._commaToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The delegate being added or removed.
-        ''' </summary>
+        ''' <summary>The delegate being added or removed.</summary>
         Friend  ReadOnly Property DelegateExpression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._delegateExpression
@@ -20136,9 +19286,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represent a RaiseEvent statement.
-    ''' </summary>
+    ''' <summary>Represent a RaiseEvent statement.</summary>
     Friend NotInheritable Class RaiseEventStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -20229,30 +19377,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.RaiseEventStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "RaiseEvent" keyword
-        ''' </summary>
+        ''' <summary>The "RaiseEvent" keyword</summary>
         Friend  ReadOnly Property RaiseEventKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._raiseEventKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The name of the event being raised.
-        ''' </summary>
+        ''' <summary>The name of the event being raised.</summary>
         Friend  ReadOnly Property Name As InternalSyntax.IdentifierNameSyntax
             Get
                 Return Me._name
             End Get
         End Property
 
-        ''' <summary>
-        ''' The argument list, if present.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The argument list, if present.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ArgumentList As InternalSyntax.ArgumentListSyntax
             Get
                 Return Me._argumentList
@@ -20364,18 +19504,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.WithStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "With" keyword.
-        ''' </summary>
+        ''' <summary>The "With" keyword.</summary>
         Friend  ReadOnly Property WithKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._withKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression that is the operand of the With statement.
-        ''' </summary>
+        ''' <summary>The expression that is the operand of the With statement.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -20409,9 +19545,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a ReDim statement.
-    ''' </summary>
+    ''' <summary>Represents a ReDim statement.</summary>
     Friend NotInheritable Class ReDimStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -20508,9 +19642,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ReDimStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "ReDim" keyword.
-        ''' </summary>
+        ''' <summary>The "ReDim" keyword.</summary>
         Friend  ReadOnly Property ReDimKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._reDimKeyword
@@ -20521,18 +19653,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' Returns Nothing if Kind=ReDim, returns the "Preserve" keyword if
         ''' Kind=RedimPreserve.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property PreserveKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._preserveKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The list of ReDim clauses.
-        ''' </summary>
+        ''' <summary>The list of ReDim clauses.</summary>
         Friend  ReadOnly Property Clauses As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of RedimClauseSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of RedimClauseSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of RedimClauseSyntax)(Me._clauses))
@@ -20568,9 +19696,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a ReDim statement clause.
-    ''' </summary>
+    ''' <summary>Represents a ReDim statement clause.</summary>
     Friend NotInheritable Class RedimClauseSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -20642,18 +19768,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.RedimClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The target of the ReDim statement.
-        ''' </summary>
+        ''' <summary>The target of the ReDim statement.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ArraySizeInitializationModifier.
-        ''' </summary>
+        ''' <summary>The ArraySizeInitializationModifier.</summary>
         Friend  ReadOnly Property ArrayBounds As InternalSyntax.ArgumentListSyntax
             Get
                 Return Me._arrayBounds
@@ -20687,9 +19809,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an "Erase" statement.
-    ''' </summary>
+    ''' <summary>Represents an "Erase" statement.</summary>
     Friend NotInheritable Class EraseStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -20767,18 +19887,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.EraseStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Erase" keyword.
-        ''' </summary>
+        ''' <summary>The "Erase" keyword.</summary>
         Friend  ReadOnly Property EraseKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._eraseKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' A list of expressions denoting the arrays to erase.
-        ''' </summary>
+        ''' <summary>A list of expressions denoting the arrays to erase.</summary>
         Friend  ReadOnly Property Expressions As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ExpressionSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ExpressionSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of ExpressionSyntax)(Me._expressions))
@@ -20812,9 +19928,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' An abstract base class for all node classes that define expressions.
-    ''' </summary>
+    ''' <summary>An abstract base class for all node classes that define expressions.</summary>
     Friend MustInherit Class ExpressionSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -20944,9 +20058,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a parenthesized expression.
-    ''' </summary>
+    ''' <summary>Represents a parenthesized expression.</summary>
     Friend NotInheritable Class ParenthesizedExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -21031,27 +20143,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ParenthesizedExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "(" token
-        ''' </summary>
+        ''' <summary>The "(" token</summary>
         Friend  ReadOnly Property OpenParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openParenToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression inside the parentheses.
-        ''' </summary>
+        ''' <summary>The expression inside the parentheses.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ")" token
-        ''' </summary>
+        ''' <summary>The ")" token</summary>
         Friend  ReadOnly Property CloseParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeParenToken
@@ -21087,9 +20193,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a tuple literal expression.
-    ''' </summary>
+    ''' <summary>Represents a tuple literal expression.</summary>
     Friend NotInheritable Class TupleExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -21180,27 +20284,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.TupleExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "(" token
-        ''' </summary>
+        ''' <summary>The "(" token</summary>
         Friend  ReadOnly Property OpenParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openParenToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The list of tuple arguments.
-        ''' </summary>
+        ''' <summary>The list of tuple arguments.</summary>
         Friend  ReadOnly Property Arguments As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of SimpleArgumentSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of SimpleArgumentSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of SimpleArgumentSyntax)(Me._arguments))
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ")" token
-        ''' </summary>
+        ''' <summary>The ")" token</summary>
         Friend  ReadOnly Property CloseParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeParenToken
@@ -21236,9 +20334,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a tuple type expression.
-    ''' </summary>
+    ''' <summary>Represents a tuple type expression.</summary>
     Friend NotInheritable Class TupleTypeSyntax
         Inherits TypeSyntax
 
@@ -21329,27 +20425,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.TupleTypeSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "(" token
-        ''' </summary>
+        ''' <summary>The "(" token</summary>
         Friend  ReadOnly Property OpenParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openParenToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The list of tuple elements.
-        ''' </summary>
+        ''' <summary>The list of tuple elements.</summary>
         Friend  ReadOnly Property Elements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of TupleElementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of TupleElementSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of TupleElementSyntax)(Me._elements))
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ")" token
-        ''' </summary>
+        ''' <summary>The ")" token</summary>
         Friend  ReadOnly Property CloseParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeParenToken
@@ -21385,9 +20475,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a single declaration of a tuple element.
-    ''' </summary>
+    ''' <summary>Represents a single declaration of a tuple element.</summary>
     Friend MustInherit Class TupleElementSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -21411,9 +20499,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a single declaration of a tuple element supplying only the type.
-    ''' </summary>
+    ''' <summary>Represents a single declaration of a tuple element supplying only the type.</summary>
     Friend NotInheritable Class TypedTupleElementSyntax
         Inherits TupleElementSyntax
 
@@ -21472,9 +20558,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.TypedTupleElementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The type-name part of the tuple element syntax.
-        ''' </summary>
+        ''' <summary>The type-name part of the tuple element syntax.</summary>
         Friend  ReadOnly Property Type As InternalSyntax.TypeSyntax
             Get
                 Return Me._type
@@ -21586,21 +20670,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.NamedTupleElementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The name of the element.
-        ''' </summary>
+        ''' <summary>The name of the element.</summary>
         Friend  ReadOnly Property Identifier As InternalSyntax.IdentifierTokenSyntax
             Get
                 Return Me._identifier
             End Get
         End Property
 
-        ''' <summary>
-        ''' A simple "As" clause specifying the type of the tuple element.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>A simple "As" clause specifying the type of the tuple element.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AsClause As InternalSyntax.SimpleAsClauseSyntax
             Get
                 Return Me._asClause
@@ -21682,9 +20760,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           writer.WriteValue(Me._keyword)
         End Sub
 
-        ''' <summary>
-        ''' The "Me", "MyClass" or "MyBase" keyword.
-        ''' </summary>
+        ''' <summary>The "Me", "MyClass" or "MyBase" keyword.</summary>
         Friend  ReadOnly Property Keyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._keyword
@@ -21693,9 +20769,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Identifies the special instance "Me"
-    ''' </summary>
+    ''' <summary>Identifies the special instance "Me"</summary>
     Friend NotInheritable Class MeExpressionSyntax
         Inherits InstanceExpressionSyntax
 
@@ -21755,9 +20829,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Identifies the special instance "MyBase"
-    ''' </summary>
+    ''' <summary>Identifies the special instance "MyBase"</summary>
     Friend NotInheritable Class MyBaseExpressionSyntax
         Inherits InstanceExpressionSyntax
 
@@ -21817,9 +20889,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Identifies the special instance "MyClass"
-    ''' </summary>
+    ''' <summary>Identifies the special instance "MyClass"</summary>
     Friend NotInheritable Class MyClassExpressionSyntax
         Inherits InstanceExpressionSyntax
 
@@ -21879,9 +20949,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a GetType expression.
-    ''' </summary>
+    ''' <summary>Represents a GetType expression.</summary>
     Friend NotInheritable Class GetTypeExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -21979,36 +21047,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.GetTypeExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "GetType" keyword.
-        ''' </summary>
+        ''' <summary>The "GetType" keyword.</summary>
         Friend  ReadOnly Property GetTypeKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._getTypeKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Friend  ReadOnly Property OpenParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openParenToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The type to get the Type object for. This can be an open generic type.
-        ''' </summary>
+        ''' <summary>The type to get the Type object for. This can be an open generic type.</summary>
         Friend  ReadOnly Property Type As InternalSyntax.TypeSyntax
             Get
                 Return Me._type
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Friend  ReadOnly Property CloseParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeParenToken
@@ -22046,9 +21106,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a TypeOf...Is or IsNot expression.
-    ''' </summary>
+    ''' <summary>Represents a TypeOf...Is or IsNot expression.</summary>
     Friend NotInheritable Class TypeOfExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -22146,36 +21204,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeOfExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "TypeOf" keyword.
-        ''' </summary>
+        ''' <summary>The "TypeOf" keyword.</summary>
         Friend  ReadOnly Property TypeOfKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._typeOfKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression being tested.
-        ''' </summary>
+        ''' <summary>The expression being tested.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Is" or "IsNot" keyword.
-        ''' </summary>
+        ''' <summary>The "Is" or "IsNot" keyword.</summary>
         Friend  ReadOnly Property OperatorToken As InternalSyntax.KeywordSyntax
             Get
                 Return Me._operatorToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The name of the type being tested against.
-        ''' </summary>
+        ''' <summary>The name of the type being tested against.</summary>
         Friend  ReadOnly Property Type As InternalSyntax.TypeSyntax
             Get
                 Return Me._type
@@ -22213,9 +21263,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a GetXmlNamespace expression.
-    ''' </summary>
+    ''' <summary>Represents a GetXmlNamespace expression.</summary>
     Friend NotInheritable Class GetXmlNamespaceExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -22319,39 +21367,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.GetXmlNamespaceExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "GetXmlNamespace" keyword.
-        ''' </summary>
+        ''' <summary>The "GetXmlNamespace" keyword.</summary>
         Friend  ReadOnly Property GetXmlNamespaceKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._getXmlNamespaceKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Friend  ReadOnly Property OpenParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openParenToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The Xml namespace name being referenced.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The Xml namespace name being referenced.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Name As InternalSyntax.XmlPrefixNameSyntax
             Get
                 Return Me._name
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Friend  ReadOnly Property CloseParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeParenToken
@@ -22483,30 +21521,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.MemberAccessExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The expression on the left-hand-side of the "." or "!" token.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The expression on the left-hand-side of the "." or "!" token.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "." or "!" token.
-        ''' </summary>
+        ''' <summary>The "." or "!" token.</summary>
         Friend  ReadOnly Property OperatorToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._operatorToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The identifier after the "." or "!" token.
-        ''' </summary>
+        ''' <summary>The identifier after the "." or "!" token.</summary>
         Friend  ReadOnly Property Name As InternalSyntax.SimpleNameSyntax
             Get
                 Return Me._name
@@ -22675,54 +21705,38 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.XmlMemberAccessExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The expression on the left-hand-side of the ".", ".@" or "..." .
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The expression on the left-hand-side of the ".", ".@" or "..." .</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Base As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._base
             End Get
         End Property
 
-        ''' <summary>
-        ''' The initial dot "." part of the separator.
-        ''' </summary>
+        ''' <summary>The initial dot "." part of the separator.</summary>
         Friend  ReadOnly Property Token1 As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._token1
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "@" part of .@ or the second "." of "...".
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The "@" part of .@ or the second "." of "...".</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Token2 As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._token2
             End Get
         End Property
 
-        ''' <summary>
-        ''' The third "." in a "..." separator.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The third "." in a "..." separator.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Token3 As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._token3
             End Get
         End Property
 
-        ''' <summary>
-        ''' The identifier after the ".", ".@" or "..."
-        ''' </summary>
+        ''' <summary>The identifier after the ".", ".@" or "..."</summary>
         Friend  ReadOnly Property Name As InternalSyntax.XmlNodeSyntax
             Get
                 Return Me._name
@@ -22850,24 +21864,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.InvocationExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The target of the call or index expression.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The target of the call or index expression.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
             End Get
         End Property
 
-        ''' <summary>
-        ''' The argument list.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The argument list.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ArgumentList As InternalSyntax.ArgumentListSyntax
             Get
                 Return Me._argumentList
@@ -22901,9 +21907,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Base class for object, array and anonymous object creation expressions
-    ''' </summary>
+    ''' <summary>Base class for object, array and anonymous object creation expressions</summary>
     Partial Friend MustInherit Class NewExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -22967,9 +21971,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           writer.WriteValue(Me._attributeLists)
         End Sub
 
-        ''' <summary>
-        ''' The "New" keyword.
-        ''' </summary>
+        ''' <summary>The "New" keyword.</summary>
         Friend  ReadOnly Property NewKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._newKeyword
@@ -22980,9 +21982,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of all attribute lists on the type. If no attributes were specified, an
         ''' empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property AttributeLists As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of AttributeListSyntax)(Me._attributeLists)
@@ -23091,9 +22091,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ObjectCreationExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The type of the object being initialized.
-        ''' </summary>
+        ''' <summary>The type of the object being initialized.</summary>
         Friend  ReadOnly Property Type As InternalSyntax.TypeSyntax
             Get
                 Return Me._type
@@ -23104,21 +22102,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The argument list, if present. If no argument list was supplied, Nothing is
         ''' returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ArgumentList As InternalSyntax.ArgumentListSyntax
             Get
                 Return Me._argumentList
             End Get
         End Property
 
-        ''' <summary>
-        ''' An optional From or With clause to initialize the new object.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>An optional From or With clause to initialize the new object.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Initializer As InternalSyntax.ObjectCreationInitializerSyntax
             Get
                 Return Me._initializer
@@ -23158,9 +22150,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a New expression that create an object of anonymous type.
-    ''' </summary>
+    ''' <summary>Represents a New expression that create an object of anonymous type.</summary>
     Friend NotInheritable Class AnonymousObjectCreationExpressionSyntax
         Inherits NewExpressionSyntax
 
@@ -23219,9 +22209,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.AnonymousObjectCreationExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The With clause to initialize the new object.
-        ''' </summary>
+        ''' <summary>The With clause to initialize the new object.</summary>
         Friend  ReadOnly Property Initializer As InternalSyntax.ObjectMemberInitializerSyntax
             Get
                 Return Me._initializer
@@ -23257,9 +22245,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an expression that creates a new array.
-    ''' </summary>
+    ''' <summary>Represents an expression that creates a new array.</summary>
     Friend NotInheritable Class ArrayCreationExpressionSyntax
         Inherits NewExpressionSyntax
 
@@ -23369,21 +22355,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ArrayCreationExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The element type of the array being created.
-        ''' </summary>
+        ''' <summary>The element type of the array being created.</summary>
         Friend  ReadOnly Property Type As InternalSyntax.TypeSyntax
             Get
                 Return Me._type
             End Get
         End Property
 
-        ''' <summary>
-        ''' The optional array bounds, such as "(4)" or "(0 to 5, 0 To 6)".
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The optional array bounds, such as "(4)" or "(0 to 5, 0 To 6)".</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ArrayBounds As InternalSyntax.ArgumentListSyntax
             Get
                 Return Me._arrayBounds
@@ -23394,18 +22374,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' A list of array modifiers such as "()" or "(,)". If no array modifiers were
         ''' present, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property RankSpecifiers As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of ArrayRankSpecifierSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of ArrayRankSpecifierSyntax)(Me._rankSpecifiers)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The initializer including the braces.
-        ''' </summary>
+        ''' <summary>The initializer including the braces.</summary>
         Friend  ReadOnly Property Initializer As InternalSyntax.CollectionInitializerSyntax
             Get
                 Return Me._initializer
@@ -23541,30 +22517,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.CollectionInitializerSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "{" token.
-        ''' </summary>
+        ''' <summary>The "{" token.</summary>
         Friend  ReadOnly Property OpenBraceToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openBraceToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The list of initializers between the braces.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The list of initializers between the braces.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Initializers As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ExpressionSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ExpressionSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of ExpressionSyntax)(Me._initializers))
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "}" token.
-        ''' </summary>
+        ''' <summary>The "}" token.</summary>
         Friend  ReadOnly Property CloseBraceToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeBraceToken
@@ -23713,54 +22681,42 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           writer.WriteValue(Me._closeParenToken)
         End Sub
 
-        ''' <summary>
-        ''' The "CType", "DirectCast" or "TryCast" keyword.
-        ''' </summary>
+        ''' <summary>The "CType", "DirectCast" or "TryCast" keyword.</summary>
         Friend  ReadOnly Property Keyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._keyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Friend  ReadOnly Property OpenParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openParenToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression being cast.
-        ''' </summary>
+        ''' <summary>The expression being cast.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "," token.
-        ''' </summary>
+        ''' <summary>The "," token.</summary>
         Friend  ReadOnly Property CommaToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._commaToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The type the expression is being cast to.
-        ''' </summary>
+        ''' <summary>The type the expression is being cast to.</summary>
         Friend  ReadOnly Property Type As InternalSyntax.TypeSyntax
             Get
                 Return Me._type
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Friend  ReadOnly Property CloseParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeParenToken
@@ -24080,36 +23036,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.PredefinedCastExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The keyword that was used in the cast operation.
-        ''' </summary>
+        ''' <summary>The keyword that was used in the cast operation.</summary>
         Friend  ReadOnly Property Keyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._keyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Friend  ReadOnly Property OpenParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openParenToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression being cast.
-        ''' </summary>
+        ''' <summary>The expression being cast.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Friend  ReadOnly Property CloseParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeParenToken
@@ -24236,9 +23184,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.BinaryExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The left operand.
-        ''' </summary>
+        ''' <summary>The left operand.</summary>
         Friend  ReadOnly Property Left As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._left
@@ -24251,9 +23197,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' The right operand.
-        ''' </summary>
+        ''' <summary>The right operand.</summary>
         Friend  ReadOnly Property Right As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._right
@@ -24289,9 +23233,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-    ''' </summary>
+    ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
     Friend NotInheritable Class UnaryExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -24363,18 +23305,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.UnaryExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The token that is the operator.
-        ''' </summary>
+        ''' <summary>The token that is the operator.</summary>
         Friend  ReadOnly Property OperatorToken As InternalSyntax.SyntaxToken
             Get
                 Return Me._operatorToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression being operated on.
-        ''' </summary>
+        ''' <summary>The expression being operated on.</summary>
         Friend  ReadOnly Property Operand As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._operand
@@ -24535,54 +23473,42 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.BinaryConditionalExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "If" keyword
-        ''' </summary>
+        ''' <summary>The "If" keyword</summary>
         Friend  ReadOnly Property IfKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._ifKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "(" token
-        ''' </summary>
+        ''' <summary>The "(" token</summary>
         Friend  ReadOnly Property OpenParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openParenToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The first expression inside the parentheses.
-        ''' </summary>
+        ''' <summary>The first expression inside the parentheses.</summary>
         Friend  ReadOnly Property FirstExpression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._firstExpression
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "," token.
-        ''' </summary>
+        ''' <summary>The "," token.</summary>
         Friend  ReadOnly Property CommaToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._commaToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The second expression inside the parentheses.
-        ''' </summary>
+        ''' <summary>The second expression inside the parentheses.</summary>
         Friend  ReadOnly Property SecondExpression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._secondExpression
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ")" token
-        ''' </summary>
+        ''' <summary>The ")" token</summary>
         Friend  ReadOnly Property CloseParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeParenToken
@@ -24777,72 +23703,56 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.TernaryConditionalExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "If" keyword
-        ''' </summary>
+        ''' <summary>The "If" keyword</summary>
         Friend  ReadOnly Property IfKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._ifKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "(" token
-        ''' </summary>
+        ''' <summary>The "(" token</summary>
         Friend  ReadOnly Property OpenParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openParenToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The first expression inside the parentheses.
-        ''' </summary>
+        ''' <summary>The first expression inside the parentheses.</summary>
         Friend  ReadOnly Property Condition As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._condition
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "," token.
-        ''' </summary>
+        ''' <summary>The "," token.</summary>
         Friend  ReadOnly Property FirstCommaToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._firstCommaToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The second expression inside the parentheses.
-        ''' </summary>
+        ''' <summary>The second expression inside the parentheses.</summary>
         Friend  ReadOnly Property WhenTrue As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._whenTrue
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "," token.
-        ''' </summary>
+        ''' <summary>The "," token.</summary>
         Friend  ReadOnly Property SecondCommaToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._secondCommaToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The second expression inside the parentheses.
-        ''' </summary>
+        ''' <summary>The second expression inside the parentheses.</summary>
         Friend  ReadOnly Property WhenFalse As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._whenFalse
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ")" token
-        ''' </summary>
+        ''' <summary>The ")" token</summary>
         Friend  ReadOnly Property CloseParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeParenToken
@@ -24888,9 +23798,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a lambda expression, either single line or multi-line.
-    ''' </summary>
+    ''' <summary>Represents a lambda expression, either single line or multi-line.</summary>
     Friend MustInherit Class LambdaExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -24947,9 +23855,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a single line lambda expression.
-    ''' </summary>
+    ''' <summary>Represents a single line lambda expression.</summary>
     Friend NotInheritable Class SingleLineLambdaExpressionSyntax
         Inherits LambdaExpressionSyntax
 
@@ -25045,9 +23951,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a multi-line lambda expression.
-    ''' </summary>
+    ''' <summary>Represents a multi-line lambda expression.</summary>
     Friend NotInheritable Class MultiLineLambdaExpressionSyntax
         Inherits LambdaExpressionSyntax
 
@@ -25130,9 +24034,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' StatementBody (multi-line lambda), Statement (single-line Sub lambda) or
         ''' Expression (single-line Function). This might be an empty list.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
@@ -25178,9 +24080,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the header part of a lambda expression
-    ''' </summary>
+    ''' <summary>Represents the header part of a lambda expression</summary>
     Friend NotInheritable Class LambdaHeaderSyntax
         Inherits MethodBaseSyntax
 
@@ -25258,9 +24158,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.LambdaHeaderSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Sub" or "Function" keyword that introduces this lambda expression.
-        ''' </summary>
+        ''' <summary>The "Sub" or "Function" keyword that introduces this lambda expression.</summary>
         Friend  ReadOnly Property SubOrFunctionKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._subOrFunctionKeyword
@@ -25271,9 +24169,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "As" clause that describes the return type. If no As clause was present,
         ''' Nothing is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AsClause As InternalSyntax.SimpleAsClauseSyntax
             Get
                 Return Me._asClause
@@ -25313,9 +24209,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a parenthesized argument list.
-    ''' </summary>
+    ''' <summary>Represents a parenthesized argument list.</summary>
     Friend NotInheritable Class ArgumentListSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -25406,9 +24300,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ArgumentListSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Friend  ReadOnly Property OpenParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openParenToken
@@ -25419,18 +24311,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The list of arguments. This may be empty. Omitted argument are represented by
         ''' an OmittedArgumentSyntax node.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Arguments As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ArgumentSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ArgumentSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of ArgumentSyntax)(Me._arguments))
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Friend  ReadOnly Property CloseParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeParenToken
@@ -25555,9 +24443,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.OmittedArgumentSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' An empty token because all non terminals must have a token.
-        ''' </summary>
+        ''' <summary>An empty token because all non terminals must have a token.</summary>
         Friend  ReadOnly Property Empty As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._empty
@@ -25669,21 +24555,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.SimpleArgumentSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The optional name and ":=" prefix of a named argument.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The optional name and ":=" prefix of a named argument.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property NameColonEquals As InternalSyntax.NameColonEqualsSyntax
             Get
                 Return Me._nameColonEquals
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression that is the argument.
-        ''' </summary>
+        ''' <summary>The expression that is the argument.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -25717,9 +24597,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an identifier name followed by a ":=" token in a named argument.
-    ''' </summary>
+    ''' <summary>Represents an identifier name followed by a ":=" token in a named argument.</summary>
     Friend NotInheritable Class NameColonEqualsSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -25791,18 +24669,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.NameColonEqualsSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The name used to identify the named argument.
-        ''' </summary>
+        ''' <summary>The name used to identify the named argument.</summary>
         Friend  ReadOnly Property Name As InternalSyntax.IdentifierNameSyntax
             Get
                 Return Me._name
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ":=" token.
-        ''' </summary>
+        ''' <summary>The ":=" token.</summary>
         Friend  ReadOnly Property ColonEqualsToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._colonEqualsToken
@@ -25924,27 +24798,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.RangeArgumentSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The lower bound of the range. This is typically the integer constant zero.
-        ''' </summary>
+        ''' <summary>The lower bound of the range. This is typically the integer constant zero.</summary>
         Friend  ReadOnly Property LowerBound As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._lowerBound
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "To" keyword.
-        ''' </summary>
+        ''' <summary>The "To" keyword.</summary>
         Friend  ReadOnly Property ToKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._toKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The upper bound of the range.
-        ''' </summary>
+        ''' <summary>The upper bound of the range.</summary>
         Friend  ReadOnly Property UpperBound As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._upperBound
@@ -26083,9 +24951,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' This is a base class for all query operators.
-    ''' </summary>
+    ''' <summary>This is a base class for all query operators.</summary>
     Friend MustInherit Class QueryClauseSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -26216,39 +25082,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.CollectionRangeVariableSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The name of the range variable being defined.
-        ''' </summary>
+        ''' <summary>The name of the range variable being defined.</summary>
         Friend  ReadOnly Property Identifier As InternalSyntax.ModifiedIdentifierSyntax
             Get
                 Return Me._identifier
             End Get
         End Property
 
-        ''' <summary>
-        ''' Describes the type of the variable being defined.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>Describes the type of the variable being defined.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AsClause As InternalSyntax.SimpleAsClauseSyntax
             Get
                 Return Me._asClause
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "In" keyword.
-        ''' </summary>
+        ''' <summary>The "In" keyword.</summary>
         Friend  ReadOnly Property InKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._inKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression that serves as the source of items for the range variable.
-        ''' </summary>
+        ''' <summary>The expression that serves as the source of items for the range variable.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -26371,18 +25227,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The optional name and type of the expression range variable. If omitted, the
         ''' name of the expression range variable is inferred from the expression.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property NameEquals As InternalSyntax.VariableNameEqualsSyntax
             Get
                 Return Me._nameEquals
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression used to initialize the expression variable.
-        ''' </summary>
+        ''' <summary>The expression used to initialize the expression variable.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -26503,9 +25355,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' name of the expression range variable is inferred from the aggregation
         ''' expression.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property NameEquals As InternalSyntax.VariableNameEqualsSyntax
             Get
                 Return Me._nameEquals
@@ -26549,9 +25399,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the name and optional type of an expression range variable.
-    ''' </summary>
+    ''' <summary>Represents the name and optional type of an expression range variable.</summary>
     Friend NotInheritable Class VariableNameEqualsSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -26642,30 +25490,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.VariableNameEqualsSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The name of the variable being defined.
-        ''' </summary>
+        ''' <summary>The name of the variable being defined.</summary>
         Friend  ReadOnly Property Identifier As InternalSyntax.ModifiedIdentifierSyntax
             Get
                 Return Me._identifier
             End Get
         End Property
 
-        ''' <summary>
-        ''' Describes the type of the variable being defined.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>Describes the type of the variable being defined.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AsClause As InternalSyntax.SimpleAsClauseSyntax
             Get
                 Return Me._asClause
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "=" token.
-        ''' </summary>
+        ''' <summary>The "=" token.</summary>
         Friend  ReadOnly Property EqualsToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._equalsToken
@@ -26847,45 +25687,31 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.FunctionAggregationSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The name of the aggregation function.
-        ''' </summary>
+        ''' <summary>The name of the aggregation function.</summary>
         Friend  ReadOnly Property FunctionName As InternalSyntax.IdentifierTokenSyntax
             Get
                 Return Me._functionName
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "(" token if present.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The "(" token if present.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property OpenParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openParenToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The argument to the aggregation function.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The argument to the aggregation function.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Argument As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._argument
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ")" token, if present.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The ")" token, if present.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property CloseParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeParenToken
@@ -26986,9 +25812,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.GroupAggregationSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Group" keyword.
-        ''' </summary>
+        ''' <summary>The "Group" keyword.</summary>
         Friend  ReadOnly Property GroupKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._groupKeyword
@@ -27101,18 +25925,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.FromClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "From" keyword.
-        ''' </summary>
+        ''' <summary>The "From" keyword.</summary>
         Friend  ReadOnly Property FromKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._fromKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The list of collection variables declared by this From operator.
-        ''' </summary>
+        ''' <summary>The list of collection variables declared by this From operator.</summary>
         Friend  ReadOnly Property Variables As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of CollectionRangeVariableSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of CollectionRangeVariableSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of CollectionRangeVariableSyntax)(Me._variables))
@@ -27146,9 +25966,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "Let" query operator.
-    ''' </summary>
+    ''' <summary>Represents a "Let" query operator.</summary>
     Friend NotInheritable Class LetClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -27226,18 +26044,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.LetClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Let" keyword.
-        ''' </summary>
+        ''' <summary>The "Let" keyword.</summary>
         Friend  ReadOnly Property LetKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._letKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The list of expression range variable being defined by the Let operator.
-        ''' </summary>
+        ''' <summary>The list of expression range variable being defined by the Let operator.</summary>
         Friend  ReadOnly Property Variables As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ExpressionRangeVariableSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ExpressionRangeVariableSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of ExpressionRangeVariableSyntax)(Me._variables))
@@ -27271,9 +26085,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an Aggregate query operator.
-    ''' </summary>
+    ''' <summary>Represents an Aggregate query operator.</summary>
     Friend NotInheritable Class AggregateClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -27402,48 +26214,36 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.AggregateClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Aggregate" keyword.
-        ''' </summary>
+        ''' <summary>The "Aggregate" keyword.</summary>
         Friend  ReadOnly Property AggregateKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._aggregateKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The list of collection range variables declared by this Aggregate operator.
-        ''' </summary>
+        ''' <summary>The list of collection range variables declared by this Aggregate operator.</summary>
         Friend  ReadOnly Property Variables As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of CollectionRangeVariableSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of CollectionRangeVariableSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of CollectionRangeVariableSyntax)(Me._variables))
             End Get
         End Property
 
-        ''' <summary>
-        ''' A list of additional query operators. It may be empty.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>A list of additional query operators. It may be empty.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property AdditionalQueryOperators As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of QueryClauseSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of QueryClauseSyntax)(Me._additionalQueryOperators)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Into" keyword.
-        ''' </summary>
+        ''' <summary>The "Into" keyword.</summary>
         Friend  ReadOnly Property IntoKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._intoKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The list of new variables being defined by the aggregation.
-        ''' </summary>
+        ''' <summary>The list of new variables being defined by the aggregation.</summary>
         Friend  ReadOnly Property AggregationVariables As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of AggregationRangeVariableSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of AggregationRangeVariableSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of AggregationRangeVariableSyntax)(Me._aggregationVariables))
@@ -27483,9 +26283,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Distinct" query operator.
-    ''' </summary>
+    ''' <summary>Represents the "Distinct" query operator.</summary>
     Friend NotInheritable Class DistinctClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -27544,9 +26342,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.DistinctClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Distinct" keyword.
-        ''' </summary>
+        ''' <summary>The "Distinct" keyword.</summary>
         Friend  ReadOnly Property DistinctKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._distinctKeyword
@@ -27577,9 +26373,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "Where" query operator.
-    ''' </summary>
+    ''' <summary>Represents a "Where" query operator.</summary>
     Friend NotInheritable Class WhereClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -27651,18 +26445,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.WhereClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Where" keyword.
-        ''' </summary>
+        ''' <summary>The "Where" keyword.</summary>
         Friend  ReadOnly Property WhereKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._whereKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The boolean expression used for filtering.
-        ''' </summary>
+        ''' <summary>The boolean expression used for filtering.</summary>
         Friend  ReadOnly Property Condition As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._condition
@@ -27784,27 +26574,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.PartitionWhileClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Skip" or "Take" keyword.
-        ''' </summary>
+        ''' <summary>The "Skip" or "Take" keyword.</summary>
         Friend  ReadOnly Property SkipOrTakeKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._skipOrTakeKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "While" keyword.
-        ''' </summary>
+        ''' <summary>The "While" keyword.</summary>
         Friend  ReadOnly Property WhileKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._whileKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The boolean expression used for partitioning.
-        ''' </summary>
+        ''' <summary>The boolean expression used for partitioning.</summary>
         Friend  ReadOnly Property Condition As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._condition
@@ -27840,9 +26624,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a "Skip" or "Take" query operator. The Kind property tells which.
-    ''' </summary>
+    ''' <summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary>
     Friend NotInheritable Class PartitionClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -27914,18 +26696,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.PartitionClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Skip" or "Take" keyword.
-        ''' </summary>
+        ''' <summary>The "Skip" or "Take" keyword.</summary>
         Friend  ReadOnly Property SkipOrTakeKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._skipOrTakeKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' Represents the expression with the number of items to take or skip.
-        ''' </summary>
+        ''' <summary>Represents the expression with the number of items to take or skip.</summary>
         Friend  ReadOnly Property Count As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._count
@@ -27959,9 +26737,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Group By" query operator.
-    ''' </summary>
+    ''' <summary>Represents the "Group By" query operator.</summary>
     Friend NotInheritable Class GroupByClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -28103,9 +26879,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.GroupByClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Group" keyword.
-        ''' </summary>
+        ''' <summary>The "Group" keyword.</summary>
         Friend  ReadOnly Property GroupKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._groupKeyword
@@ -28116,27 +26890,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The optional list of variables being grouped; the contents of the Group clause.
         ''' If none were specified, an empty list is returned.
         ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Items As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ExpressionRangeVariableSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ExpressionRangeVariableSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of ExpressionRangeVariableSyntax)(Me._items))
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "By" keyword.
-        ''' </summary>
+        ''' <summary>The "By" keyword.</summary>
         Friend  ReadOnly Property ByKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._byKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The key values being used for grouping.
-        ''' </summary>
+        ''' <summary>The key values being used for grouping.</summary>
         Friend  ReadOnly Property Keys As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ExpressionRangeVariableSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ExpressionRangeVariableSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of ExpressionRangeVariableSyntax)(Me._keys))
@@ -28149,9 +26917,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' The list of new variables that calculate aggregations.
-        ''' </summary>
+        ''' <summary>The list of new variables that calculate aggregations.</summary>
         Friend  ReadOnly Property AggregationVariables As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of AggregationRangeVariableSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of AggregationRangeVariableSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of AggregationRangeVariableSyntax)(Me._aggregationVariables))
@@ -28193,9 +26959,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a Join or a Group Join query operator.
-    ''' </summary>
+    ''' <summary>Represents a Join or a Group Join query operator.</summary>
     Friend MustInherit Class JoinClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -28310,39 +27074,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           writer.WriteValue(Me._joinConditions)
         End Sub
 
-        ''' <summary>
-        ''' The "Join" keyword.
-        ''' </summary>
+        ''' <summary>The "Join" keyword.</summary>
         Friend  ReadOnly Property JoinKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._joinKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' Defines the collection range variables being joined to.
-        ''' </summary>
+        ''' <summary>Defines the collection range variables being joined to.</summary>
         Friend  ReadOnly Property JoinedVariables As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of CollectionRangeVariableSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of CollectionRangeVariableSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of CollectionRangeVariableSyntax)(Me._joinedVariables))
             End Get
         End Property
 
-        ''' <summary>
-        ''' An additional Join or Group Join query operator.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>An additional Join or Group Join query operator.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property AdditionalJoins As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of JoinClauseSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of JoinClauseSyntax)(Me._additionalJoins)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "On" keyword.
-        ''' </summary>
+        ''' <summary>The "On" keyword.</summary>
         Friend  ReadOnly Property OnKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._onKeyword
@@ -28361,9 +27115,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "expression Equals expression" condition in a Join.
-    ''' </summary>
+    ''' <summary>Represents the "expression Equals expression" condition in a Join.</summary>
     Friend NotInheritable Class JoinConditionSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -28448,27 +27200,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.JoinConditionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The left expression in the Join condition.
-        ''' </summary>
+        ''' <summary>The left expression in the Join condition.</summary>
         Friend  ReadOnly Property Left As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._left
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Equals" keyword.
-        ''' </summary>
+        ''' <summary>The "Equals" keyword.</summary>
         Friend  ReadOnly Property EqualsKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._equalsKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The right expression in the Join condition.
-        ''' </summary>
+        ''' <summary>The right expression in the Join condition.</summary>
         Friend  ReadOnly Property Right As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._right
@@ -28504,9 +27250,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a Join query operator.
-    ''' </summary>
+    ''' <summary>Represents a Join query operator.</summary>
     Friend NotInheritable Class SimpleJoinClauseSyntax
         Inherits JoinClauseSyntax
 
@@ -28575,9 +27319,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Group Join" query operator.
-    ''' </summary>
+    ''' <summary>Represents the "Group Join" query operator.</summary>
     Friend NotInheritable Class GroupJoinClauseSyntax
         Inherits JoinClauseSyntax
 
@@ -28668,27 +27410,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.GroupJoinClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Group" keyword.
-        ''' </summary>
+        ''' <summary>The "Group" keyword.</summary>
         Friend  ReadOnly Property GroupKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._groupKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Into" keyword.
-        ''' </summary>
+        ''' <summary>The "Into" keyword.</summary>
         Friend  ReadOnly Property IntoKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._intoKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The list of new variables that calculate aggregations.
-        ''' </summary>
+        ''' <summary>The list of new variables that calculate aggregations.</summary>
         Friend  ReadOnly Property AggregationVariables As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of AggregationRangeVariableSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of AggregationRangeVariableSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of AggregationRangeVariableSyntax)(Me._aggregationVariables))
@@ -28734,9 +27470,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Order By" query operator.
-    ''' </summary>
+    ''' <summary>Represents the "Order By" query operator.</summary>
     Friend NotInheritable Class OrderByClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -28827,27 +27561,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.OrderByClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Order" keyword
-        ''' </summary>
+        ''' <summary>The "Order" keyword</summary>
         Friend  ReadOnly Property OrderKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._orderKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "By" keyword.
-        ''' </summary>
+        ''' <summary>The "By" keyword.</summary>
         Friend  ReadOnly Property ByKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._byKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The list of OrderExpression's to sort by.
-        ''' </summary>
+        ''' <summary>The list of OrderExpression's to sort by.</summary>
         Friend  ReadOnly Property Orderings As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of OrderingSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of OrderingSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of OrderingSyntax)(Me._orderings))
@@ -28964,9 +27692,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.OrderingSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The expression to sort by.
-        ''' </summary>
+        ''' <summary>The expression to sort by.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -28977,9 +27703,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "Ascending" or "Descending" keyword, if present. To determine whether to
         ''' sort in ascending or descending order, checking the Kind property is easier.
         ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AscendingOrDescendingKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._ascendingOrDescendingKeyword
@@ -29013,9 +27737,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "Select" query operator.
-    ''' </summary>
+    ''' <summary>Represents the "Select" query operator.</summary>
     Friend NotInheritable Class SelectClauseSyntax
         Inherits QueryClauseSyntax
 
@@ -29093,9 +27815,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Select" keyword.
-        ''' </summary>
+        ''' <summary>The "Select" keyword.</summary>
         Friend  ReadOnly Property SelectKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._selectKeyword
@@ -29166,9 +27886,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an XML Document literal expression.
-    ''' </summary>
+    ''' <summary>Represents an XML Document literal expression.</summary>
     Friend NotInheritable Class XmlDocumentSyntax
         Inherits XmlNodeSyntax
 
@@ -29284,9 +28002,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property PrecedingMisc As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of XmlNodeSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of XmlNodeSyntax)(Me._precedingMisc)
@@ -29299,9 +28015,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property FollowingMisc As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of XmlNodeSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of XmlNodeSyntax)(Me._followingMisc)
@@ -29339,9 +28053,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the XML declaration prologue in an XML literal expression.
-    ''' </summary>
+    ''' <summary>Represents the XML declaration prologue in an XML literal expression.</summary>
     Friend NotInheritable Class XmlDeclarationSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -29495,18 +28207,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Encoding As InternalSyntax.XmlDeclarationOptionSyntax
             Get
                 Return Me._encoding
             End Get
         End Property
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Standalone As InternalSyntax.XmlDeclarationOptionSyntax
             Get
                 Return Me._standalone
@@ -29689,9 +28397,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an XML element with content in an XML literal expression.
-    ''' </summary>
+    ''' <summary>Represents an XML element with content in an XML literal expression.</summary>
     Friend NotInheritable Class XmlElementSyntax
         Inherits XmlNodeSyntax
 
@@ -29788,9 +28494,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Content As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of XmlNodeSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of XmlNodeSyntax)(Me._content)
@@ -29832,9 +28536,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents Xml text.
-    ''' </summary>
+    ''' <summary>Represents Xml text.</summary>
     Friend NotInheritable Class XmlTextSyntax
         Inherits XmlNodeSyntax
 
@@ -29933,9 +28635,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the start tag of an XML element of the form &lt;element&gt;.
-    ''' </summary>
+    ''' <summary>Represents the start tag of an XML element of the form &lt;element&gt;.</summary>
     Friend NotInheritable Class XmlElementStartTagSyntax
         Inherits XmlNodeSyntax
 
@@ -30051,9 +28751,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Attributes As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of XmlNodeSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of XmlNodeSyntax)(Me._attributes)
@@ -30097,9 +28795,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the end tag of an XML element of the form &lt;/element&gt;.
-    ''' </summary>
+    ''' <summary>Represents the end tag of an XML element of the form &lt;/element&gt;.</summary>
     Friend NotInheritable Class XmlElementEndTagSyntax
         Inherits XmlNodeSyntax
 
@@ -30196,9 +28892,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Name As InternalSyntax.XmlNameSyntax
             Get
                 Return Me._name
@@ -30240,9 +28934,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an empty XML element of the form &lt;element /&gt;
-    ''' </summary>
+    ''' <summary>Represents an empty XML element of the form &lt;element /&gt;</summary>
     Friend NotInheritable Class XmlEmptyElementSyntax
         Inherits XmlNodeSyntax
 
@@ -30358,9 +29050,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Attributes As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of XmlNodeSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of XmlNodeSyntax)(Me._attributes)
@@ -30404,9 +29094,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an XML attribute in an XML literal expression.
-    ''' </summary>
+    ''' <summary>Represents an XML attribute in an XML literal expression.</summary>
     Friend NotInheritable Class XmlAttributeSyntax
         Inherits BaseXmlAttributeSyntax
 
@@ -30538,9 +29226,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an XML attribute in an XML literal expression.
-    ''' </summary>
+    ''' <summary>Represents an XML attribute in an XML literal expression.</summary>
     Friend MustInherit Class BaseXmlAttributeSyntax
         Inherits XmlNodeSyntax
 
@@ -30664,9 +29350,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property TextTokens As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of XmlTextTokenSyntax)
             Get
                 Return New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)(Me._textTokens)
@@ -30708,9 +29392,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an XML name of the form 'name' appearing in GetXmlNamespace().
-    ''' </summary>
+    ''' <summary>Represents an XML name of the form 'name' appearing in GetXmlNamespace().</summary>
     Friend NotInheritable Class XmlPrefixNameSyntax
         Inherits XmlNodeSyntax
 
@@ -30881,9 +29563,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.XmlNameSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Prefix As InternalSyntax.XmlPrefixSyntax
             Get
                 Return Me._prefix
@@ -31059,9 +29739,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an XML namespace prefix of the form 'prefix:' as in xml:ns="".
-    ''' </summary>
+    ''' <summary>Represents an XML namespace prefix of the form 'prefix:' as in xml:ns="".</summary>
     Friend NotInheritable Class XmlPrefixSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -31475,9 +30153,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an XML CDATA section in an XML literal expression.
-    ''' </summary>
+    ''' <summary>Represents an XML CDATA section in an XML literal expression.</summary>
     Friend NotInheritable Class XmlCDataSectionSyntax
         Inherits XmlNodeSyntax
 
@@ -31859,18 +30535,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ArrayTypeSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The type of the elements of the array.
-        ''' </summary>
+        ''' <summary>The type of the elements of the array.</summary>
         Friend  ReadOnly Property ElementType As InternalSyntax.TypeSyntax
             Get
                 Return Me._elementType
             End Get
         End Property
 
-        ''' <summary>
-        ''' Represents the list of "()" or "(,,)" modifiers on the array type.
-        ''' </summary>
+        ''' <summary>Represents the list of "()" or "(,,)" modifiers on the array type.</summary>
         Friend  ReadOnly Property RankSpecifiers As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of ArrayRankSpecifierSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of ArrayRankSpecifierSyntax)(Me._rankSpecifiers)
@@ -31904,9 +30576,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' A type name that represents a nullable type, such as "Integer?".
-    ''' </summary>
+    ''' <summary>A type name that represents a nullable type, such as "Integer?".</summary>
     Friend NotInheritable Class NullableTypeSyntax
         Inherits TypeSyntax
 
@@ -31988,9 +30658,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "?" token.
-        ''' </summary>
+        ''' <summary>The "?" token.</summary>
         Friend  ReadOnly Property QuestionMarkToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._questionMarkToken
@@ -32086,9 +30754,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.PredefinedTypeSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The keyword that was used to describe the built-in type.
-        ''' </summary>
+        ''' <summary>The keyword that was used to describe the built-in type.</summary>
         Friend  ReadOnly Property Keyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._keyword
@@ -32146,9 +30812,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Abstract node class that represents a name, possibly include generic arguments.
-    ''' </summary>
+    ''' <summary>Abstract node class that represents a name, possibly include generic arguments.</summary>
     Friend MustInherit Class SimpleNameSyntax
         Inherits NameSyntax
 
@@ -32193,9 +30857,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           writer.WriteValue(Me._identifier)
         End Sub
 
-        ''' <summary>
-        ''' The identifier in the name.
-        ''' </summary>
+        ''' <summary>The identifier in the name.</summary>
         Friend  ReadOnly Property Identifier As InternalSyntax.IdentifierTokenSyntax
             Get
                 Return Me._identifier
@@ -32329,9 +30991,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.GenericNameSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The generic argument list.
-        ''' </summary>
+        ''' <summary>The generic argument list.</summary>
         Friend  ReadOnly Property TypeArgumentList As InternalSyntax.TypeArgumentListSyntax
             Get
                 Return Me._typeArgumentList
@@ -32365,9 +31025,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a qualified type name, for example X.Y or X(Of Z).Y.
-    ''' </summary>
+    ''' <summary>Represents a qualified type name, for example X.Y or X(Of Z).Y.</summary>
     Friend NotInheritable Class QualifiedNameSyntax
         Inherits NameSyntax
 
@@ -32462,9 +31120,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "." token that separates the names.
-        ''' </summary>
+        ''' <summary>The "." token that separates the names.</summary>
         Friend  ReadOnly Property DotToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._dotToken
@@ -32510,9 +31166,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a name in the global namespace.
-    ''' </summary>
+    ''' <summary>Represents a name in the global namespace.</summary>
     Friend NotInheritable Class GlobalNameSyntax
         Inherits NameSyntax
 
@@ -32571,9 +31225,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.GlobalNameSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Global" keyword.
-        ''' </summary>
+        ''' <summary>The "Global" keyword.</summary>
         Friend  ReadOnly Property GlobalKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._globalKeyword
@@ -32604,9 +31256,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a parenthesized list of generic type arguments.
-    ''' </summary>
+    ''' <summary>Represents a parenthesized list of generic type arguments.</summary>
     Friend NotInheritable Class TypeArgumentListSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -32710,36 +31360,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeArgumentListSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Friend  ReadOnly Property OpenParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openParenToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Of" keyword.
-        ''' </summary>
+        ''' <summary>The "Of" keyword.</summary>
         Friend  ReadOnly Property OfKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._ofKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' A list of all the type arguments.
-        ''' </summary>
+        ''' <summary>A list of all the type arguments.</summary>
         Friend  ReadOnly Property Arguments As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of TypeSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of TypeSyntax)(New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of TypeSyntax)(Me._arguments))
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Friend  ReadOnly Property CloseParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeParenToken
@@ -32883,18 +31525,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Signature As InternalSyntax.CrefSignatureSyntax
             Get
                 Return Me._signature
             End Get
         End Property
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AsClause As InternalSyntax.SimpleAsClauseSyntax
             Get
                 Return Me._asClause
@@ -33154,18 +31792,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.CrefSignaturePartSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Modifier As InternalSyntax.KeywordSyntax
             Get
                 Return Me._modifier
             End Get
         End Property
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Type As InternalSyntax.TypeSyntax
             Get
                 Return Me._type
@@ -33440,9 +32074,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represent a Yield statement.
-    ''' </summary>
+    ''' <summary>Represent a Yield statement.</summary>
     Friend NotInheritable Class YieldStatementSyntax
         Inherits ExecutableStatementSyntax
 
@@ -33514,18 +32146,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.YieldStatementSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Yield" keyword.
-        ''' </summary>
+        ''' <summary>The "Yield" keyword.</summary>
         Friend  ReadOnly Property YieldKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._yieldKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression whose value is being yielded.
-        ''' </summary>
+        ''' <summary>The expression whose value is being yielded.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -33559,9 +32187,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an Await expression.
-    ''' </summary>
+    ''' <summary>Represents an Await expression.</summary>
     Friend NotInheritable Class AwaitExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -33633,18 +32259,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.AwaitExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Await" keyword.
-        ''' </summary>
+        ''' <summary>The "Await" keyword.</summary>
         Friend  ReadOnly Property AwaitKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._awaitKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The expression being awaited.
-        ''' </summary>
+        ''' <summary>The expression being awaited.</summary>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
@@ -33787,9 +32409,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an Xml NCName per Namespaces in XML 1.0
-    ''' </summary>
+    ''' <summary>Represents an Xml NCName per Namespaces in XML 1.0</summary>
     Friend NotInheritable Class XmlNameTokenSyntax
         Inherits SyntaxToken
 
@@ -33893,9 +32513,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           ObjectBinder.RegisterTypeReader(GetType(XmlTextTokenSyntax), Function(r) New XmlTextTokenSyntax(r))
         End Sub
 
-        ''' <summary>
-        ''' The text of the attribute or pcdata after normalization.
-        ''' </summary>
+        ''' <summary>The text of the attribute or pcdata after normalization.</summary>
         Friend  ReadOnly Property Value As String
             Get
                 Return Me._value
@@ -33920,9 +32538,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents literal character data in interpolated string expression.
-    ''' </summary>
+    ''' <summary>Represents literal character data in interpolated string expression.</summary>
     Friend NotInheritable Class InterpolatedStringTextTokenSyntax
         Inherits SyntaxToken
 
@@ -33960,9 +32576,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           ObjectBinder.RegisterTypeReader(GetType(InterpolatedStringTextTokenSyntax), Function(r) New InterpolatedStringTextTokenSyntax(r))
         End Sub
 
-        ''' <summary>
-        ''' The text.
-        ''' </summary>
+        ''' <summary>The text.</summary>
         Friend  ReadOnly Property Value As String
             Get
                 Return Me._value
@@ -33987,9 +32601,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a Decimal literal token.
-    ''' </summary>
+    ''' <summary>Represents a Decimal literal token.</summary>
     Friend NotInheritable Class DecimalLiteralTokenSyntax
         Inherits SyntaxToken
 
@@ -34043,9 +32655,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' The value of the token.
-        ''' </summary>
+        ''' <summary>The value of the token.</summary>
         Friend  ReadOnly Property Value As System.Decimal
             Get
                 Return Me._value
@@ -34070,9 +32680,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a Date literal token.
-    ''' </summary>
+    ''' <summary>Represents a Date literal token.</summary>
     Friend NotInheritable Class DateLiteralTokenSyntax
         Inherits SyntaxToken
 
@@ -34110,9 +32718,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           ObjectBinder.RegisterTypeReader(GetType(DateLiteralTokenSyntax), Function(r) New DateLiteralTokenSyntax(r))
         End Sub
 
-        ''' <summary>
-        ''' The value of the token.
-        ''' </summary>
+        ''' <summary>The value of the token.</summary>
         Friend  ReadOnly Property Value As DateTime
             Get
                 Return Me._value
@@ -34137,9 +32743,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a string literal token.
-    ''' </summary>
+    ''' <summary>Represents a string literal token.</summary>
     Friend NotInheritable Class StringLiteralTokenSyntax
         Inherits SyntaxToken
 
@@ -34205,9 +32809,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a string literal token.
-    ''' </summary>
+    ''' <summary>Represents a string literal token.</summary>
     Friend NotInheritable Class CharacterLiteralTokenSyntax
         Inherits SyntaxToken
 
@@ -34245,9 +32847,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           ObjectBinder.RegisterTypeReader(GetType(CharacterLiteralTokenSyntax), Function(r) New CharacterLiteralTokenSyntax(r))
         End Sub
 
-        ''' <summary>
-        ''' The value of the character, after removing the quotation marks.
-        ''' </summary>
+        ''' <summary>The value of the character, after removing the quotation marks.</summary>
         Friend  ReadOnly Property Value As Char
             Get
                 Return Me._value
@@ -34272,9 +32872,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Abstract class that represent structured trivia.
-    ''' </summary>
+    ''' <summary>Abstract class that represent structured trivia.</summary>
     Friend MustInherit Class StructuredTriviaSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -34349,12 +32947,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.SkippedTokensTriviaSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The list of tokens that were skipped by the parser.
-        ''' </summary>
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <summary>The list of tokens that were skipped by the parser.</summary>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Tokens As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of SyntaxToken)
             Get
                 Return New Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)(Me._tokens)
@@ -34453,9 +33047,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.DocumentationCommentTriviaSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <remarks>
-        ''' If nothing is present, an empty list is returned.
-        ''' </remarks>
+        ''' <remarks>If nothing is present, an empty list is returned.</remarks>
         Friend  ReadOnly Property Content As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of XmlNodeSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of XmlNodeSyntax)(Me._content)
@@ -34842,9 +33434,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' ExpressionSyntax node representing the object conditionally accessed.
-    ''' </summary>
+    ''' <summary>ExpressionSyntax node representing the object conditionally accessed.</summary>
     Friend NotInheritable Class ConditionalAccessExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -34935,21 +33525,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ConditionalAccessExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The expression on the left-hand-side of the "?".
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>The expression on the left-hand-side of the "?".</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._expression
             End Get
         End Property
 
-        ''' <summary>
-        ''' "?" token.
-        ''' </summary>
+        ''' <summary>"?" token.</summary>
         Friend  ReadOnly Property QuestionMarkToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._questionMarkToken
@@ -34995,9 +33579,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a NameOf expression.
-    ''' </summary>
+    ''' <summary>Represents a NameOf expression.</summary>
     Friend NotInheritable Class NameOfExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -35095,36 +33677,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.NameOfExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "NameOf" keyword.
-        ''' </summary>
+        ''' <summary>The "NameOf" keyword.</summary>
         Friend  ReadOnly Property NameOfKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._nameOfKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "(" token.
-        ''' </summary>
+        ''' <summary>The "(" token.</summary>
         Friend  ReadOnly Property OpenParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openParenToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The argument.
-        ''' </summary>
+        ''' <summary>The argument.</summary>
         Friend  ReadOnly Property Argument As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._argument
             End Get
         End Property
 
-        ''' <summary>
-        ''' The ")" token.
-        ''' </summary>
+        ''' <summary>The ")" token.</summary>
         Friend  ReadOnly Property CloseParenToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeParenToken
@@ -35162,9 +33736,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an interpolated string expression.
-    ''' </summary>
+    ''' <summary>Represents an interpolated string expression.</summary>
     Friend NotInheritable Class InterpolatedStringExpressionSyntax
         Inherits ExpressionSyntax
 
@@ -35255,27 +33827,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.InterpolatedStringExpressionSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The opening '$"', '$“', or '$”' token.
-        ''' </summary>
+        ''' <summary>The opening '$"', '$“', or '$”' token.</summary>
         Friend  ReadOnly Property DollarSignDoubleQuoteToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._dollarSignDoubleQuoteToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The contents of the interpolated string.
-        ''' </summary>
+        ''' <summary>The contents of the interpolated string.</summary>
         Friend  ReadOnly Property Contents As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of InterpolatedStringContentSyntax)
             Get
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of InterpolatedStringContentSyntax)(Me._contents)
             End Get
         End Property
 
-        ''' <summary>
-        ''' The closing '"', '”', or '“' token.
-        ''' </summary>
+        ''' <summary>The closing '"', '”', or '“' token.</summary>
         Friend  ReadOnly Property DoubleQuoteToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._doubleQuoteToken
@@ -35311,9 +33877,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents either text content or an interpolation.
-    ''' </summary>
+    ''' <summary>Represents either text content or an interpolation.</summary>
     Friend MustInherit Class InterpolatedStringContentSyntax
         Inherits VisualBasicSyntaxNode
 
@@ -35337,9 +33901,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents literal text content in an interpolated string.
-    ''' </summary>
+    ''' <summary>Represents literal text content in an interpolated string.</summary>
     Friend NotInheritable Class InterpolatedStringTextSyntax
         Inherits InterpolatedStringContentSyntax
 
@@ -35398,9 +33960,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.InterpolatedStringTextSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The text token.
-        ''' </summary>
+        ''' <summary>The text token.</summary>
         Friend  ReadOnly Property TextToken As InternalSyntax.InterpolatedStringTextTokenSyntax
             Get
                 Return Me._textToken
@@ -35557,9 +34117,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.InterpolationSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The opening curly brace '{' token.
-        ''' </summary>
+        ''' <summary>The opening curly brace '{' token.</summary>
         Friend  ReadOnly Property OpenBraceToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._openBraceToken
@@ -35576,33 +34134,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <summary>
-        ''' Optional. The alignment clause ',alignment' of the embedded expression.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>Optional. The alignment clause ',alignment' of the embedded expression.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property AlignmentClause As InternalSyntax.InterpolationAlignmentClauseSyntax
             Get
                 Return Me._alignmentClause
             End Get
         End Property
 
-        ''' <summary>
-        ''' Optional. The format string clause ':formatString' of the embedded expression.
-        ''' </summary>
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <summary>Optional. The format string clause ':formatString' of the embedded expression.</summary>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property FormatClause As InternalSyntax.InterpolationFormatClauseSyntax
             Get
                 Return Me._formatClause
             End Get
         End Property
 
-        ''' <summary>
-        ''' The closing curly brace '}' token of the embedded expression.
-        ''' </summary>
+        ''' <summary>The closing curly brace '}' token of the embedded expression.</summary>
         Friend  ReadOnly Property CloseBraceToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._closeBraceToken
@@ -35717,18 +34265,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.InterpolationAlignmentClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The comma ',' token.
-        ''' </summary>
+        ''' <summary>The comma ',' token.</summary>
         Friend  ReadOnly Property CommaToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._commaToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' An expression representing the alignment of the interpolated expression.
-        ''' </summary>
+        ''' <summary>An expression representing the alignment of the interpolated expression.</summary>
         Friend  ReadOnly Property Value As InternalSyntax.ExpressionSyntax
             Get
                 Return Me._value
@@ -35837,18 +34381,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.InterpolationFormatClauseSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The ':' token.
-        ''' </summary>
+        ''' <summary>The ':' token.</summary>
         Friend  ReadOnly Property ColonToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._colonToken
             End Get
         End Property
 
-        ''' <summary>
-        ''' The format string.
-        ''' </summary>
+        ''' <summary>The format string.</summary>
         Friend  ReadOnly Property FormatStringToken As InternalSyntax.InterpolatedStringTextTokenSyntax
             Get
                 Return Me._formatStringToken
@@ -35934,9 +34474,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
           writer.WriteValue(Me._hashToken)
         End Sub
 
-        ''' <summary>
-        ''' The "#" token in a preprocessor directive.
-        ''' </summary>
+        ''' <summary>The "#" token in a preprocessor directive.</summary>
         Friend  ReadOnly Property HashToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._hashToken
@@ -35964,9 +34502,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents a #Const pre-processing constant declaration appearing in source.
-    ''' </summary>
+    ''' <summary>Represents a #Const pre-processing constant declaration appearing in source.</summary>
     Friend NotInheritable Class ConstDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -36064,27 +34600,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ConstDirectiveTriviaSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Const" keyword.
-        ''' </summary>
+        ''' <summary>The "Const" keyword.</summary>
         Friend  ReadOnly Property ConstKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._constKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The name of the pre-processing constant being defined.
-        ''' </summary>
+        ''' <summary>The name of the pre-processing constant being defined.</summary>
         Friend  ReadOnly Property Name As InternalSyntax.IdentifierTokenSyntax
             Get
                 Return Me._name
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "=" token.
-        ''' </summary>
+        ''' <summary>The "=" token.</summary>
         Friend  ReadOnly Property EqualsToken As InternalSyntax.PunctuationSyntax
             Get
                 Return Me._equalsToken
@@ -36247,9 +34777,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.IfDirectiveTriviaSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ElseKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._elseKeyword
@@ -36268,9 +34796,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
+        ''' <remarks>This child is optional. If it is not present, then Nothing is returned.</remarks>
         Friend  ReadOnly Property ThenKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._thenKeyword
@@ -36310,9 +34836,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an #Else pre-processing directive appearing in source.
-    ''' </summary>
+    ''' <summary>Represents an #Else pre-processing directive appearing in source.</summary>
     Friend NotInheritable Class ElseDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -36404,9 +34928,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an #End If pre-processing directive appearing in source.
-    ''' </summary>
+    ''' <summary>Represents an #End If pre-processing directive appearing in source.</summary>
     Friend NotInheritable Class EndIfDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -36519,9 +35041,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the beginning of a #Region directive appearing in source.
-    ''' </summary>
+    ''' <summary>Represents the beginning of a #Region directive appearing in source.</summary>
     Friend NotInheritable Class RegionDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -36593,18 +35113,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.RegionDirectiveTriviaSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "Region" keyword.
-        ''' </summary>
+        ''' <summary>The "Region" keyword.</summary>
         Friend  ReadOnly Property RegionKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._regionKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The label of the code region being defined.
-        ''' </summary>
+        ''' <summary>The label of the code region being defined.</summary>
         Friend  ReadOnly Property Name As InternalSyntax.StringLiteralTokenSyntax
             Get
                 Return Me._name
@@ -36640,9 +35156,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an #End Region directive appearing in source.
-    ''' </summary>
+    ''' <summary>Represents an #End Region directive appearing in source.</summary>
     Friend NotInheritable Class EndRegionDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -36714,18 +35228,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.EndRegionDirectiveTriviaSyntax(Me, parent, startLocation)
         End Function
 
-        ''' <summary>
-        ''' The "End" keyword.
-        ''' </summary>
+        ''' <summary>The "End" keyword.</summary>
         Friend  ReadOnly Property EndKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._endKeyword
             End Get
         End Property
 
-        ''' <summary>
-        ''' The "Region" keyword.
-        ''' </summary>
+        ''' <summary>The "Region" keyword.</summary>
         Friend  ReadOnly Property RegionKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._regionKeyword
@@ -36961,9 +35471,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an #End ExternalSource pre-processing directive appearing in source.
-    ''' </summary>
+    ''' <summary>Represents an #End ExternalSource pre-processing directive appearing in source.</summary>
     Friend NotInheritable Class EndExternalSourceDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -37076,9 +35584,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an #ExternalChecksum pre-processing directive appearing in source.
-    ''' </summary>
+    ''' <summary>Represents an #ExternalChecksum pre-processing directive appearing in source.</summary>
     Friend NotInheritable Class ExternalChecksumDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -37317,9 +35823,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents #Enable Warning pre-processing directive appearing in source.
-    ''' </summary>
+    ''' <summary>Represents #Enable Warning pre-processing directive appearing in source.</summary>
     Friend NotInheritable Class EnableWarningDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -37459,9 +35963,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents #Disable Warning pre-processing directive appearing in source.
-    ''' </summary>
+    ''' <summary>Represents #Disable Warning pre-processing directive appearing in source.</summary>
     Friend NotInheritable Class DisableWarningDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -37601,9 +36103,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents an #r directive appearing in scripts.
-    ''' </summary>
+    ''' <summary>Represents an #r directive appearing in scripts.</summary>
     Friend NotInheritable Class ReferenceDirectiveTriviaSyntax
         Inherits DirectiveTriviaSyntax
 
@@ -43643,9 +42143,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -43674,9 +42172,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -43705,9 +42201,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -43736,9 +42230,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -43767,9 +42259,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -43798,9 +42288,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -43829,9 +42317,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -43860,9 +42346,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -43891,9 +42375,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -43922,9 +42404,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -43953,9 +42433,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -43984,9 +42462,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44015,9 +42491,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44046,9 +42520,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44077,9 +42549,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44108,9 +42578,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44139,9 +42607,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44170,9 +42636,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44201,9 +42665,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44232,9 +42694,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44263,9 +42723,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44294,9 +42752,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44325,9 +42781,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44356,9 +42810,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44387,9 +42839,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44418,9 +42868,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44449,9 +42897,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44480,9 +42926,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -44511,9 +42955,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' EndBlockStatementSyntax. One of EndIfStatement, EndUsingStatement,
@@ -44555,9 +42997,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an entire source file of VB code.
-        ''' </summary>
+        ''' <summary>Represents an entire source file of VB code.</summary>
         ''' <param name="options">
         ''' Represents the list of Option statements at the beginning of a source file.
         ''' </param>
@@ -44583,9 +43023,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Option statement, such as "Option Strict On".
-        ''' </summary>
+        ''' <summary>Represents an Option statement, such as "Option Strict On".</summary>
         ''' <param name="optionKeyword">
         ''' The "Option" keyword.
         ''' </param>
@@ -44616,9 +43054,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Imports statement, which has one or more imports clauses.
-        ''' </summary>
+        ''' <summary>Represents an Imports statement, which has one or more imports clauses.</summary>
         ''' <param name="importsKeyword">
         ''' The "Imports" keyword.
         ''' </param>
@@ -44672,9 +43108,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an alias identifier followed by an "=" token in an Imports clause.
-        ''' </summary>
+        ''' <summary>Represents an alias identifier followed by an "=" token in an Imports clause.</summary>
         ''' <param name="identifier">
         ''' The identifier being introduced.
         ''' </param>
@@ -44700,9 +43134,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Defines a XML namespace for XML expressions.
-        ''' </summary>
+        ''' <summary>Defines a XML namespace for XML expressions.</summary>
         ''' <param name="xmlNamespace">
         ''' Identifies the XML namespace alias and URI.
         ''' </param>
@@ -44996,9 +43428,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Namespace statement, its contents and the End Namespace statement.
-        ''' </summary>
+        ''' <summary>Represents a Namespace statement, its contents and the End Namespace statement.</summary>
         ''' <param name="namespaceStatement">
         ''' The statement that begins the NamespaceBlock.
         ''' </param>
@@ -45192,9 +43622,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Inherits statement in a Class, Structure or Interface.
-        ''' </summary>
+        ''' <summary>Represents an Inherits statement in a Class, Structure or Interface.</summary>
         ''' <param name="inheritsKeyword">
         ''' The "Inherits" keyword.
         ''' </param>
@@ -45219,9 +43647,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Implements statement in a Class or Structure.
-        ''' </summary>
+        ''' <summary>Represents an Implements statement in a Class or Structure.</summary>
         ''' <param name="implementsKeyword">
         ''' The "Implements" keyword.
         ''' </param>
@@ -45391,9 +43817,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the type parameter list in a declaration.
-        ''' </summary>
+        ''' <summary>Represents the type parameter list in a declaration.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token.
         ''' </param>
@@ -45415,9 +43839,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a type parameter on a generic type declaration.
-        ''' </summary>
+        ''' <summary>Represents a type parameter on a generic type declaration.</summary>
         ''' <param name="varianceKeyword">
         ''' Represents the "In" or "Out" variance keyword on a type parameter, if present.
         ''' If no variance modifier was present, Nothing is returned.
@@ -45617,9 +44039,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a type parameter constraint that is a type.
-        ''' </summary>
+        ''' <summary>Represents a type parameter constraint that is a type.</summary>
         ''' <param name="type">
         ''' The type describing the constraint.
         ''' </param>
@@ -45641,9 +44061,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a name and value in an EnumDeclarationBlock.
-        ''' </summary>
+        ''' <summary>Represents a name and value in an EnumDeclarationBlock.</summary>
         ''' <param name="initializer">
         ''' An optional value for the enum member.
         ''' </param>
@@ -46112,9 +44530,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the parameter list in a method declaration.
-        ''' </summary>
+        ''' <summary>Represents the parameter list in a method declaration.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token that introduces the parameter list. If no parameter list was
         ''' present, Nothing is returned.
@@ -46326,9 +44742,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -46382,9 +44796,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -46438,9 +44850,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' DeclareStatementSyntax. One of DeclareSubStatement, DeclareFunctionStatement.
@@ -46499,9 +44909,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -46541,9 +44949,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -46583,9 +44989,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' DelegateStatementSyntax. One of DelegateSubStatement,
@@ -47025,9 +45429,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents event container that refers to a WithEvents member.
-        ''' </summary>
+        ''' <summary>Represents event container that refers to a WithEvents member.</summary>
         ''' <param name="identifier">
         ''' The container of the event. It is a simple identifier that refers to a
         ''' WithEvents member of the containing type.
@@ -47050,9 +45452,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents event container that refers to a WithEvents member's property.
-        ''' </summary>
+        ''' <summary>Represents event container that refers to a WithEvents member's property.</summary>
         ''' <param name="withEventsContainer">
         ''' The container of the event.
         ''' </param>
@@ -47083,9 +45483,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single handled event in a "Handles ..." clause.
-        ''' </summary>
+        ''' <summary>Represents a single handled event in a "Handles ..." clause.</summary>
         ''' <param name="eventContainer">
         ''' The container of the event. This can either be a simple identifier (identifying
         ''' a members of the containing type) or one of the special keywords "Me", "MyBase"
@@ -47284,9 +45682,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "With {...} clause used to initialize a new object's members.
-        ''' </summary>
+        ''' <summary>Represents a "With {...} clause used to initialize a new object's members.</summary>
         ''' <param name="withKeyword">
         ''' The "With" keyword.
         ''' </param>
@@ -47421,9 +45817,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represent a parameter to a method, property, constructor, etc.
-        ''' </summary>
+        ''' <summary>Represent a parameter to a method, property, constructor, etc.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this parameter. If no attributes were
         ''' specified, Nothing is returned.
@@ -47504,9 +45898,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a group of attributes within "&lt;" and "&gt;" brackets.
-        ''' </summary>
+        ''' <summary>Represents a group of attributes within "&lt;" and "&gt;" brackets.</summary>
         ''' <param name="lessThanToken">
         ''' The "&lt;" token.
         ''' </param>
@@ -47535,9 +45927,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single attribute declaration within an attribute list.
-        ''' </summary>
+        ''' <summary>Represents a single attribute declaration within an attribute list.</summary>
         ''' <param name="target">
         ''' Optional attribute target. Assembly|Module :
         ''' </param>
@@ -47566,9 +45956,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single attribute declaration within an attribute list.
-        ''' </summary>
+        ''' <summary>Represents a single attribute declaration within an attribute list.</summary>
         ''' <param name="attributeModifier">
         ''' The "Assembly" or "Module" attribute modifier, is present. If no attribute
         ''' modifier is present, Nothing is returned.
@@ -47646,9 +46034,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represent a "? expression" "Print" statement in VB Interactive code.
-        ''' </summary>
+        ''' <summary>Represent a "? expression" "Print" statement in VB Interactive code.</summary>
         ''' <param name="questionToken">
         ''' "?" token.
         ''' </param>
@@ -47805,9 +46191,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the declaration of one or more local variables or constants.
-        ''' </summary>
+        ''' <summary>Represents the declaration of one or more local variables or constants.</summary>
         ''' <param name="modifiers">
         ''' The modifier token (Static, Dim or Const) that introduces this local variable
         ''' declaration.
@@ -47833,9 +46217,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a label statement.
-        ''' </summary>
+        ''' <summary>Represents a label statement.</summary>
         ''' <param name="labelToken">
         ''' The name of the label. If the label is a line number, returns an IntegerLiteral
         ''' that is the line number, otherwise, returns an Identifier.
@@ -47862,9 +46244,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "GoTo" statement.
-        ''' </summary>
+        ''' <summary>Represents a "GoTo" statement.</summary>
         ''' <param name="goToKeyword">
         ''' The "GoTo" keyword.
         ''' </param>
@@ -48503,9 +46883,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Return" statement.
-        ''' </summary>
+        ''' <summary>Represents a "Return" statement.</summary>
         ''' <param name="returnKeyword">
         ''' The "Return" keyword.
         ''' </param>
@@ -48530,9 +46908,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single-line "If ... Then ... Else ..." statement.
-        ''' </summary>
+        ''' <summary>Represents a single-line "If ... Then ... Else ..." statement.</summary>
         ''' <param name="ifKeyword">
         ''' The "If" keyword.
         ''' </param>
@@ -48557,9 +46933,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Else ..." clause of a single-line "If" statement.
-        ''' </summary>
+        ''' <summary>Represents the "Else ..." clause of a single-line "If" statement.</summary>
         ''' <param name="elseKeyword">
         ''' The "Else" keyword.
         ''' </param>
@@ -48614,9 +46988,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "If ... Then" statement that begins a multi-line "If" block.
-        ''' </summary>
+        ''' <summary>Represents the "If ... Then" statement that begins a multi-line "If" block.</summary>
         ''' <param name="ifKeyword">
         ''' The "If" keyword.
         ''' </param>
@@ -48645,9 +47017,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "ElseIf ... Then ..." block.
-        ''' </summary>
+        ''' <summary>Represents an "ElseIf ... Then ..." block.</summary>
         ''' <param name="elseIfStatement">
         ''' The "ElseIf ... Then" statement the begins the "ElseIf" block.
         ''' </param>
@@ -48673,9 +47043,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "ElseIf ... Then" statement that begins an "ElseIf" block.
-        ''' </summary>
+        ''' <summary>Represents the "ElseIf ... Then" statement that begins an "ElseIf" block.</summary>
         ''' <param name="elseIfKeyword">
         ''' The "ElseIf" keyword.
         ''' </param>
@@ -48704,9 +47072,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "Else ..." block.
-        ''' </summary>
+        ''' <summary>Represents an "Else ..." block.</summary>
         ''' <param name="elseStatement">
         ''' The "Else" statement that begins the "Else" block.
         ''' </param>
@@ -48731,9 +47097,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Else" statement that begins an "Else" block.
-        ''' </summary>
+        ''' <summary>Represents the "Else" statement that begins an "Else" block.</summary>
         ''' <param name="elseKeyword">
         ''' The "Else" keyword.
         ''' </param>
@@ -48755,9 +47119,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Try ... Catch ... Finally ... End Try" block.
-        ''' </summary>
+        ''' <summary>Represents a "Try ... Catch ... Finally ... End Try" block.</summary>
         ''' <param name="tryStatement">
         ''' The "Try" statement that begins the "Try" block.
         ''' </param>
@@ -48781,9 +47143,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Try" statement that begins a "Try" block.
-        ''' </summary>
+        ''' <summary>Represents the "Try" statement that begins a "Try" block.</summary>
         ''' <param name="tryKeyword">
         ''' The "Try" keyword.
         ''' </param>
@@ -48805,9 +47165,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Catch ..." block.
-        ''' </summary>
+        ''' <summary>Represents a "Catch ..." block.</summary>
         ''' <param name="catchStatement">
         ''' The "Catch" statement that begins the "Catch" block.
         ''' </param>
@@ -48833,9 +47191,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Catch ... When ..." statement that begins a "Catch" block.
-        ''' </summary>
+        ''' <summary>Represents the "Catch ... When ..." statement that begins a "Catch" block.</summary>
         ''' <param name="catchKeyword">
         ''' The "Catch" keyword.
         ''' </param>
@@ -48855,9 +47211,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "When ..." clause of a "Catch" statement.
-        ''' </summary>
+        ''' <summary>Represents the "When ..." clause of a "Catch" statement.</summary>
         ''' <param name="whenKeyword">
         ''' The "When" keyword.
         ''' </param>
@@ -48883,9 +47237,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Finally ..." block of a "Try" block.
-        ''' </summary>
+        ''' <summary>Represents a "Finally ..." block of a "Try" block.</summary>
         ''' <param name="finallyStatement">
         ''' The "Finally" statement that begins the "Finally" block.
         ''' </param>
@@ -48910,9 +47262,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Finally" statement that begins a "Finally" block.
-        ''' </summary>
+        ''' <summary>Represents the "Finally" statement that begins a "Finally" block.</summary>
         ''' <param name="finallyKeyword">
         ''' The "Finally" keyword.
         ''' </param>
@@ -48934,9 +47284,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Error" statement.
-        ''' </summary>
+        ''' <summary>Represents the "Error" statement.</summary>
         ''' <param name="errorKeyword">
         ''' The "Error" keyword.
         ''' </param>
@@ -48962,9 +47310,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Goto statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Goto statement.</summary>
         ''' <param name="onKeyword">
         ''' The "On" keyword
         ''' </param>
@@ -48990,9 +47336,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Goto statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Goto statement.</summary>
         ''' <param name="onKeyword">
         ''' The "On" keyword
         ''' </param>
@@ -49018,9 +47362,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Goto statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Goto statement.</summary>
         ''' <param name="onKeyword">
         ''' The "On" keyword
         ''' </param>
@@ -49046,9 +47388,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Goto statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Goto statement.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' OnErrorGoToStatementSyntax. One of OnErrorGoToZeroStatement,
@@ -49080,9 +47420,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Resume Next statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Resume Next statement.</summary>
         ''' <param name="onKeyword">
         ''' The "On" keyword
         ''' </param>
@@ -49258,9 +47596,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a case statement and its subsequent block.
-        ''' </summary>
+        ''' <summary>Represents a case statement and its subsequent block.</summary>
         ''' <param name="caseStatement">
         ''' The statement that begins the case block.
         ''' </param>
@@ -49285,9 +47621,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a case statement and its subsequent block.
-        ''' </summary>
+        ''' <summary>Represents a case statement and its subsequent block.</summary>
         ''' <param name="caseStatement">
         ''' The statement that begins the case block.
         ''' </param>
@@ -49372,9 +47706,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The "Else" part in a Case Else statement.
-        ''' </summary>
+        ''' <summary>The "Else" part in a Case Else statement.</summary>
         ''' <param name="elseKeyword">
         ''' The "Else" keyword.
         ''' </param>
@@ -49396,9 +47728,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single value in a Case.
-        ''' </summary>
+        ''' <summary>Represents a single value in a Case.</summary>
         ''' <param name="value">
         ''' The expression that denotes the value being tested against.
         ''' </param>
@@ -49420,9 +47750,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a range "expression To expression" in a Case.
-        ''' </summary>
+        ''' <summary>Represents a range "expression To expression" in a Case.</summary>
         ''' <param name="lowerBound">
         ''' The lower bound of the range.
         ''' </param>
@@ -49452,9 +47780,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -49484,9 +47810,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -49516,9 +47840,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -49548,9 +47870,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -49580,9 +47900,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -49612,9 +47930,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -49644,9 +47960,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' RelationalCaseClauseSyntax. One of CaseEqualsClause, CaseNotEqualsClause,
@@ -49910,9 +48224,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="doKeyword">
         ''' The "Do" keyword.
         ''' </param>
@@ -49938,9 +48250,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="doKeyword">
         ''' The "Do" keyword.
         ''' </param>
@@ -49966,9 +48276,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="doKeyword">
         ''' The "Do" keyword.
         ''' </param>
@@ -49994,9 +48302,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of DoStatementSyntax.
         ''' One of SimpleDoStatement, DoWhileStatement, DoUntilStatement.
@@ -50027,9 +48333,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="loopKeyword">
         ''' The "Loop" keyword.
         ''' </param>
@@ -50055,9 +48359,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="loopKeyword">
         ''' The "Loop" keyword.
         ''' </param>
@@ -50083,9 +48385,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="loopKeyword">
         ''' The "Loop" keyword.
         ''' </param>
@@ -50111,9 +48411,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of LoopStatementSyntax.
         ''' One of SimpleLoopStatement, LoopWhileStatement, LoopUntilStatement.
@@ -50379,9 +48677,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Step clause in a For Statement.
-        ''' </summary>
+        ''' <summary>The Step clause in a For Statement.</summary>
         ''' <param name="stepKeyword">
         ''' The "Step" keyword.
         ''' </param>
@@ -50508,9 +48804,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Throw statement.
-        ''' </summary>
+        ''' <summary>Represents a Throw statement.</summary>
         ''' <param name="throwKeyword">
         ''' The "Throw" keyword
         ''' </param>
@@ -50953,9 +49247,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a left-hand side of a MidAssignment statement.
-        ''' </summary>
+        ''' <summary>Represents a left-hand side of a MidAssignment statement.</summary>
         ''' <param name="mid">
         ''' The "Mid" possibly followed by a type character.
         ''' </param>
@@ -50981,9 +49273,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represent a call statement (also known as a invocation statement).
-        ''' </summary>
+        ''' <summary>Represent a call statement (also known as a invocation statement).</summary>
         ''' <param name="callKeyword">
         ''' The "Call" keyword.
         ''' </param>
@@ -51091,9 +49381,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represent a RaiseEvent statement.
-        ''' </summary>
+        ''' <summary>Represent a RaiseEvent statement.</summary>
         ''' <param name="raiseEventKeyword">
         ''' The "RaiseEvent" keyword
         ''' </param>
@@ -51152,9 +49440,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a ReDim statement.
-        ''' </summary>
+        ''' <summary>Represents a ReDim statement.</summary>
         ''' <param name="reDimKeyword">
         ''' The "ReDim" keyword.
         ''' </param>
@@ -51183,9 +49469,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a ReDim statement.
-        ''' </summary>
+        ''' <summary>Represents a ReDim statement.</summary>
         ''' <param name="reDimKeyword">
         ''' The "ReDim" keyword.
         ''' </param>
@@ -51214,9 +49498,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a ReDim statement clause.
-        ''' </summary>
+        ''' <summary>Represents a ReDim statement clause.</summary>
         ''' <param name="expression">
         ''' The target of the ReDim statement.
         ''' </param>
@@ -51242,9 +49524,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "Erase" statement.
-        ''' </summary>
+        ''' <summary>Represents an "Erase" statement.</summary>
         ''' <param name="eraseKeyword">
         ''' The "Erase" keyword.
         ''' </param>
@@ -51564,9 +49844,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a parenthesized expression.
-        ''' </summary>
+        ''' <summary>Represents a parenthesized expression.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token
         ''' </param>
@@ -51596,9 +49874,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a tuple literal expression.
-        ''' </summary>
+        ''' <summary>Represents a tuple literal expression.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token
         ''' </param>
@@ -51627,9 +49903,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a tuple type expression.
-        ''' </summary>
+        ''' <summary>Represents a tuple type expression.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token
         ''' </param>
@@ -51658,9 +49932,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single declaration of a tuple element supplying only the type.
-        ''' </summary>
+        ''' <summary>Represents a single declaration of a tuple element supplying only the type.</summary>
         ''' <param name="type">
         ''' The type-name part of the tuple element syntax.
         ''' </param>
@@ -51710,9 +49982,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Identifies the special instance "Me"
-        ''' </summary>
+        ''' <summary>Identifies the special instance "Me"</summary>
         ''' <param name="keyword">
         ''' The "Me", "MyClass" or "MyBase" keyword.
         ''' </param>
@@ -51734,9 +50004,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Identifies the special instance "MyBase"
-        ''' </summary>
+        ''' <summary>Identifies the special instance "MyBase"</summary>
         ''' <param name="keyword">
         ''' The "Me", "MyClass" or "MyBase" keyword.
         ''' </param>
@@ -51758,9 +50026,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Identifies the special instance "MyClass"
-        ''' </summary>
+        ''' <summary>Identifies the special instance "MyClass"</summary>
         ''' <param name="keyword">
         ''' The "Me", "MyClass" or "MyBase" keyword.
         ''' </param>
@@ -51782,9 +50048,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a GetType expression.
-        ''' </summary>
+        ''' <summary>Represents a GetType expression.</summary>
         ''' <param name="getTypeKeyword">
         ''' The "GetType" keyword.
         ''' </param>
@@ -51806,9 +50070,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
+        ''' <summary>Represents a TypeOf...Is or IsNot expression.</summary>
         ''' <param name="typeOfKeyword">
         ''' The "TypeOf" keyword.
         ''' </param>
@@ -51830,9 +50092,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
+        ''' <summary>Represents a TypeOf...Is or IsNot expression.</summary>
         ''' <param name="typeOfKeyword">
         ''' The "TypeOf" keyword.
         ''' </param>
@@ -51854,9 +50114,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
+        ''' <summary>Represents a TypeOf...Is or IsNot expression.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' TypeOfExpressionSyntax. One of TypeOfIsExpression, TypeOfIsNotExpression.
@@ -51883,9 +50141,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a GetXmlNamespace expression.
-        ''' </summary>
+        ''' <summary>Represents a GetXmlNamespace expression.</summary>
         ''' <param name="getXmlNamespaceKeyword">
         ''' The "GetXmlNamespace" keyword.
         ''' </param>
@@ -52178,9 +50434,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a New expression that create an object of anonymous type.
-        ''' </summary>
+        ''' <summary>Represents a New expression that create an object of anonymous type.</summary>
         ''' <param name="newKeyword">
         ''' The "New" keyword.
         ''' </param>
@@ -52210,9 +50464,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an expression that creates a new array.
-        ''' </summary>
+        ''' <summary>Represents an expression that creates a new array.</summary>
         ''' <param name="newKeyword">
         ''' The "New" keyword.
         ''' </param>
@@ -53172,9 +51424,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="operatorToken">
         ''' The token that is the operator.
         ''' </param>
@@ -53200,9 +51450,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="operatorToken">
         ''' The token that is the operator.
         ''' </param>
@@ -53228,9 +51476,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="operatorToken">
         ''' The token that is the operator.
         ''' </param>
@@ -53256,9 +51502,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="operatorToken">
         ''' The token that is the operator.
         ''' </param>
@@ -53284,9 +51528,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' UnaryExpressionSyntax. One of UnaryPlusExpression, UnaryMinusExpression,
@@ -53392,9 +51634,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a single line lambda expression.</summary>
         ''' <param name="subOrFunctionHeader">
         ''' The header part of the lambda that includes the "Sub" or "Function" keyword,
         ''' the argument list and return type.
@@ -53422,9 +51662,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a single line lambda expression.</summary>
         ''' <param name="subOrFunctionHeader">
         ''' The header part of the lambda that includes the "Sub" or "Function" keyword,
         ''' the argument list and return type.
@@ -53452,9 +51690,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a single line lambda expression.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' SingleLineLambdaExpressionSyntax. One of SingleLineFunctionLambdaExpression,
@@ -53488,9 +51724,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a multi-line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a multi-line lambda expression.</summary>
         ''' <param name="subOrFunctionHeader">
         ''' The header part of the lambda that includes the "Sub" or "Function" keyword,
         ''' the argument list and return type.
@@ -53523,9 +51757,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a multi-line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a multi-line lambda expression.</summary>
         ''' <param name="subOrFunctionHeader">
         ''' The header part of the lambda that includes the "Sub" or "Function" keyword,
         ''' the argument list and return type.
@@ -53558,9 +51790,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a multi-line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a multi-line lambda expression.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' MultiLineLambdaExpressionSyntax. One of MultiLineFunctionLambdaExpression,
@@ -53599,9 +51829,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the header part of a lambda expression
-        ''' </summary>
+        ''' <summary>Represents the header part of a lambda expression</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -53629,9 +51857,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the header part of a lambda expression
-        ''' </summary>
+        ''' <summary>Represents the header part of a lambda expression</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -53659,9 +51885,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the header part of a lambda expression
-        ''' </summary>
+        ''' <summary>Represents the header part of a lambda expression</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of LambdaHeaderSyntax.
         ''' One of SubLambdaHeader, FunctionLambdaHeader.
@@ -53694,9 +51918,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a parenthesized argument list.
-        ''' </summary>
+        ''' <summary>Represents a parenthesized argument list.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token.
         ''' </param>
@@ -53779,9 +52001,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an identifier name followed by a ":=" token in a named argument.
-        ''' </summary>
+        ''' <summary>Represents an identifier name followed by a ":=" token in a named argument.</summary>
         ''' <param name="name">
         ''' The name used to identify the named argument.
         ''' </param>
@@ -53951,9 +52171,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the name and optional type of an expression range variable.
-        ''' </summary>
+        ''' <summary>Represents the name and optional type of an expression range variable.</summary>
         ''' <param name="identifier">
         ''' The name of the variable being defined.
         ''' </param>
@@ -54059,9 +52277,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Let" query operator.
-        ''' </summary>
+        ''' <summary>Represents a "Let" query operator.</summary>
         ''' <param name="letKeyword">
         ''' The "Let" keyword.
         ''' </param>
@@ -54086,9 +52302,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Aggregate query operator.
-        ''' </summary>
+        ''' <summary>Represents an Aggregate query operator.</summary>
         ''' <param name="aggregateKeyword">
         ''' The "Aggregate" keyword.
         ''' </param>
@@ -54111,9 +52325,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Distinct" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Distinct" query operator.</summary>
         ''' <param name="distinctKeyword">
         ''' The "Distinct" keyword.
         ''' </param>
@@ -54135,9 +52347,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Where" query operator.
-        ''' </summary>
+        ''' <summary>Represents a "Where" query operator.</summary>
         ''' <param name="whereKeyword">
         ''' The "Where" keyword.
         ''' </param>
@@ -54267,9 +52477,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Skip" or "Take" query operator. The Kind property tells which.
-        ''' </summary>
+        ''' <summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary>
         ''' <param name="skipOrTakeKeyword">
         ''' The "Skip" or "Take" keyword.
         ''' </param>
@@ -54295,9 +52503,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Skip" or "Take" query operator. The Kind property tells which.
-        ''' </summary>
+        ''' <summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary>
         ''' <param name="skipOrTakeKeyword">
         ''' The "Skip" or "Take" keyword.
         ''' </param>
@@ -54323,9 +52529,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Skip" or "Take" query operator. The Kind property tells which.
-        ''' </summary>
+        ''' <summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' PartitionClauseSyntax. One of SkipClause, TakeClause.
@@ -54356,9 +52560,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Group By" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Group By" query operator.</summary>
         ''' <param name="groupKeyword">
         ''' The "Group" keyword.
         ''' </param>
@@ -54383,9 +52585,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "expression Equals expression" condition in a Join.
-        ''' </summary>
+        ''' <summary>Represents the "expression Equals expression" condition in a Join.</summary>
         ''' <param name="left">
         ''' The left expression in the Join condition.
         ''' </param>
@@ -54415,9 +52615,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Join query operator.
-        ''' </summary>
+        ''' <summary>Represents a Join query operator.</summary>
         ''' <param name="joinKeyword">
         ''' The "Join" keyword.
         ''' </param>
@@ -54441,9 +52639,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Group Join" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Group Join" query operator.</summary>
         ''' <param name="groupKeyword">
         ''' The "Group" keyword.
         ''' </param>
@@ -54478,9 +52674,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Order By" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Order By" query operator.</summary>
         ''' <param name="orderKeyword">
         ''' The "Order" keyword
         ''' </param>
@@ -54601,9 +52795,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Select" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Select" query operator.</summary>
         ''' <param name="selectKeyword">
         ''' The "Select" keyword.
         ''' </param>
@@ -54629,9 +52821,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML Document literal expression.
-        ''' </summary>
+        ''' <summary>Represents an XML Document literal expression.</summary>
         Friend Shared Function XmlDocument(declaration As XmlDeclarationSyntax, precedingMisc As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), root As XmlNodeSyntax, followingMisc As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)) As XmlDocumentSyntax
             Debug.Assert(declaration IsNot Nothing)
             Debug.Assert(root IsNot Nothing)
@@ -54639,9 +52829,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the XML declaration prologue in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents the XML declaration prologue in an XML literal expression.</summary>
         Friend Shared Function XmlDeclaration(lessThanQuestionToken As PunctuationSyntax, xmlKeyword As KeywordSyntax, version As XmlDeclarationOptionSyntax, encoding As XmlDeclarationOptionSyntax, standalone As XmlDeclarationOptionSyntax, questionGreaterThanToken As PunctuationSyntax) As XmlDeclarationSyntax
             Debug.Assert(lessThanQuestionToken IsNot Nothing AndAlso lessThanQuestionToken.Kind = SyntaxKind.LessThanQuestionToken)
             Debug.Assert(xmlKeyword IsNot Nothing AndAlso xmlKeyword.Kind = SyntaxKind.XmlKeyword)
@@ -54675,9 +52863,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML element with content in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents an XML element with content in an XML literal expression.</summary>
         Friend Shared Function XmlElement(startTag As XmlElementStartTagSyntax, content As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), endTag As XmlElementEndTagSyntax) As XmlElementSyntax
             Debug.Assert(startTag IsNot Nothing)
             Debug.Assert(endTag IsNot Nothing)
@@ -54697,9 +52883,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents Xml text.
-        ''' </summary>
+        ''' <summary>Represents Xml text.</summary>
         ''' <param name="textTokens">
         ''' A list of all the text tokens in the Xml text. This list always contains at
         ''' least one token.
@@ -54721,9 +52905,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the start tag of an XML element of the form &lt;element&gt;.
-        ''' </summary>
+        ''' <summary>Represents the start tag of an XML element of the form &lt;element&gt;.</summary>
         Friend Shared Function XmlElementStartTag(lessThanToken As PunctuationSyntax, name As XmlNodeSyntax, attributes As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), greaterThanToken As PunctuationSyntax) As XmlElementStartTagSyntax
             Debug.Assert(lessThanToken IsNot Nothing AndAlso lessThanToken.Kind = SyntaxKind.LessThanToken)
             Debug.Assert(name IsNot Nothing)
@@ -54732,9 +52914,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the end tag of an XML element of the form &lt;/element&gt;.
-        ''' </summary>
+        ''' <summary>Represents the end tag of an XML element of the form &lt;/element&gt;.</summary>
         Friend Shared Function XmlElementEndTag(lessThanSlashToken As PunctuationSyntax, name As XmlNameSyntax, greaterThanToken As PunctuationSyntax) As XmlElementEndTagSyntax
             Debug.Assert(lessThanSlashToken IsNot Nothing AndAlso lessThanSlashToken.Kind = SyntaxKind.LessThanSlashToken)
             Debug.Assert(greaterThanToken IsNot Nothing AndAlso greaterThanToken.Kind = SyntaxKind.GreaterThanToken)
@@ -54754,9 +52934,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an empty XML element of the form &lt;element /&gt;
-        ''' </summary>
+        ''' <summary>Represents an empty XML element of the form &lt;element /&gt;</summary>
         Friend Shared Function XmlEmptyElement(lessThanToken As PunctuationSyntax, name As XmlNodeSyntax, attributes As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), slashGreaterThanToken As PunctuationSyntax) As XmlEmptyElementSyntax
             Debug.Assert(lessThanToken IsNot Nothing AndAlso lessThanToken.Kind = SyntaxKind.LessThanToken)
             Debug.Assert(name IsNot Nothing)
@@ -54765,9 +52943,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML attribute in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents an XML attribute in an XML literal expression.</summary>
         Friend Shared Function XmlAttribute(name As XmlNodeSyntax, equalsToken As PunctuationSyntax, value As XmlNodeSyntax) As XmlAttributeSyntax
             Debug.Assert(name IsNot Nothing)
             Debug.Assert(equalsToken IsNot Nothing AndAlso equalsToken.Kind = SyntaxKind.EqualsToken)
@@ -54811,9 +52987,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML name of the form 'name' appearing in GetXmlNamespace().
-        ''' </summary>
+        ''' <summary>Represents an XML name of the form 'name' appearing in GetXmlNamespace().</summary>
         Friend Shared Function XmlPrefixName(name As XmlNameTokenSyntax) As XmlPrefixNameSyntax
             Debug.Assert(name IsNot Nothing AndAlso name.Kind = SyntaxKind.XmlNameToken)
 
@@ -54880,9 +53054,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML namespace prefix of the form 'prefix:' as in xml:ns="".
-        ''' </summary>
+        ''' <summary>Represents an XML namespace prefix of the form 'prefix:' as in xml:ns="".</summary>
         Friend Shared Function XmlPrefix(name As XmlNameTokenSyntax, colonToken As PunctuationSyntax) As XmlPrefixSyntax
             Debug.Assert(name IsNot Nothing AndAlso name.Kind = SyntaxKind.XmlNameToken)
             Debug.Assert(colonToken IsNot Nothing AndAlso colonToken.Kind = SyntaxKind.ColonToken)
@@ -54937,9 +53109,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML CDATA section in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents an XML CDATA section in an XML literal expression.</summary>
         Friend Shared Function XmlCDataSection(beginCDataToken As PunctuationSyntax, textTokens As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), endCDataToken As PunctuationSyntax) As XmlCDataSectionSyntax
             Debug.Assert(beginCDataToken IsNot Nothing AndAlso beginCDataToken.Kind = SyntaxKind.BeginCDataToken)
             Debug.Assert(endCDataToken IsNot Nothing AndAlso endCDataToken.Kind = SyntaxKind.EndCDataToken)
@@ -55011,9 +53181,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' A type name that represents a nullable type, such as "Integer?".
-        ''' </summary>
+        ''' <summary>A type name that represents a nullable type, such as "Integer?".</summary>
         ''' <param name="elementType">
         ''' The kind of type that is this type is a nullable of. Cannot be an array type or
         ''' a nullable type.
@@ -55119,9 +53287,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a qualified type name, for example X.Y or X(Of Z).Y.
-        ''' </summary>
+        ''' <summary>Represents a qualified type name, for example X.Y or X(Of Z).Y.</summary>
         ''' <param name="left">
         ''' The part of the name that appears to the left of the dot. This can itself be
         ''' any name.
@@ -55153,9 +53319,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a name in the global namespace.
-        ''' </summary>
+        ''' <summary>Represents a name in the global namespace.</summary>
         ''' <param name="globalKeyword">
         ''' The "Global" keyword.
         ''' </param>
@@ -55177,9 +53341,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a parenthesized list of generic type arguments.
-        ''' </summary>
+        ''' <summary>Represents a parenthesized list of generic type arguments.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token.
         ''' </param>
@@ -55301,9 +53463,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represent a Yield statement.
-        ''' </summary>
+        ''' <summary>Represent a Yield statement.</summary>
         ''' <param name="yieldKeyword">
         ''' The "Yield" keyword.
         ''' </param>
@@ -55329,9 +53489,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Await expression.
-        ''' </summary>
+        ''' <summary>Represents an Await expression.</summary>
         ''' <param name="awaitKeyword">
         ''' The "Await" keyword.
         ''' </param>
@@ -55357,9 +53515,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Xml NCName per Namespaces in XML 1.0
-        ''' </summary>
+        ''' <summary>Represents an Xml NCName per Namespaces in XML 1.0</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -55431,9 +53587,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents literal character data in interpolated string expression.
-        ''' </summary>
+        ''' <summary>Represents literal character data in interpolated string expression.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -55443,9 +53597,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Decimal literal token.
-        ''' </summary>
+        ''' <summary>Represents a Decimal literal token.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -55455,9 +53607,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Date literal token.
-        ''' </summary>
+        ''' <summary>Represents a Date literal token.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -55467,9 +53617,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a string literal token.
-        ''' </summary>
+        ''' <summary>Represents a string literal token.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -55479,9 +53627,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a string literal token.
-        ''' </summary>
+        ''' <summary>Represents a string literal token.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -55542,9 +53688,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' ExpressionSyntax node representing the object conditionally accessed.
-        ''' </summary>
+        ''' <summary>ExpressionSyntax node representing the object conditionally accessed.</summary>
         ''' <param name="expression">
         ''' The expression on the left-hand-side of the "?".
         ''' </param>
@@ -55574,9 +53718,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a NameOf expression.
-        ''' </summary>
+        ''' <summary>Represents a NameOf expression.</summary>
         ''' <param name="nameOfKeyword">
         ''' The "NameOf" keyword.
         ''' </param>
@@ -55598,9 +53740,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an interpolated string expression.
-        ''' </summary>
+        ''' <summary>Represents an interpolated string expression.</summary>
         ''' <param name="dollarSignDoubleQuoteToken">
         ''' The opening '$"', '$“', or '$”' token.
         ''' </param>
@@ -55629,9 +53769,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents literal text content in an interpolated string.
-        ''' </summary>
+        ''' <summary>Represents literal text content in an interpolated string.</summary>
         ''' <param name="textToken">
         ''' The text token.
         ''' </param>
@@ -55872,9 +54010,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a #Const pre-processing constant declaration appearing in source.
-        ''' </summary>
+        ''' <summary>Represents a #Const pre-processing constant declaration appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -55931,9 +54067,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #Else pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #Else pre-processing directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -55944,9 +54078,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #End If pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #End If pre-processing directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -55958,9 +54090,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the beginning of a #Region directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents the beginning of a #Region directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -55978,9 +54108,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #End Region directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #End Region directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -56017,9 +54145,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #End ExternalSource pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #End ExternalSource pre-processing directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -56031,9 +54157,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #ExternalChecksum pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #ExternalChecksum pre-processing directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -56051,9 +54175,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents #Enable Warning pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents #Enable Warning pre-processing directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -56065,9 +54187,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents #Disable Warning pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents #Disable Warning pre-processing directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -56079,9 +54199,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #r directive appearing in scripts.
-        ''' </summary>
+        ''' <summary>Represents an #r directive appearing in scripts.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -56146,9 +54264,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56177,9 +54293,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56208,9 +54322,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56239,9 +54351,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56270,9 +54380,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56301,9 +54409,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56332,9 +54438,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56363,9 +54467,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56394,9 +54496,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56425,9 +54525,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56456,9 +54554,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56487,9 +54583,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56518,9 +54612,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56549,9 +54641,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56580,9 +54670,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56611,9 +54699,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56642,9 +54728,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56673,9 +54757,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56704,9 +54786,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56735,9 +54815,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56766,9 +54844,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56797,9 +54873,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56828,9 +54902,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56859,9 +54931,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56890,9 +54960,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56921,9 +54989,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56952,9 +55018,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -56983,9 +55047,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="endKeyword">
         ''' The "End" keyword
         ''' </param>
@@ -57014,9 +55076,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "End XXX" statement, where XXX is a single keyword.
-        ''' </summary>
+        ''' <summary>Represents an "End XXX" statement, where XXX is a single keyword.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' EndBlockStatementSyntax. One of EndIfStatement, EndUsingStatement,
@@ -57058,9 +55118,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an entire source file of VB code.
-        ''' </summary>
+        ''' <summary>Represents an entire source file of VB code.</summary>
         ''' <param name="options">
         ''' Represents the list of Option statements at the beginning of a source file.
         ''' </param>
@@ -57086,9 +55144,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Option statement, such as "Option Strict On".
-        ''' </summary>
+        ''' <summary>Represents an Option statement, such as "Option Strict On".</summary>
         ''' <param name="optionKeyword">
         ''' The "Option" keyword.
         ''' </param>
@@ -57119,9 +55175,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Imports statement, which has one or more imports clauses.
-        ''' </summary>
+        ''' <summary>Represents an Imports statement, which has one or more imports clauses.</summary>
         ''' <param name="importsKeyword">
         ''' The "Imports" keyword.
         ''' </param>
@@ -57175,9 +55229,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an alias identifier followed by an "=" token in an Imports clause.
-        ''' </summary>
+        ''' <summary>Represents an alias identifier followed by an "=" token in an Imports clause.</summary>
         ''' <param name="identifier">
         ''' The identifier being introduced.
         ''' </param>
@@ -57203,9 +55255,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Defines a XML namespace for XML expressions.
-        ''' </summary>
+        ''' <summary>Defines a XML namespace for XML expressions.</summary>
         ''' <param name="xmlNamespace">
         ''' Identifies the XML namespace alias and URI.
         ''' </param>
@@ -57499,9 +55549,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Namespace statement, its contents and the End Namespace statement.
-        ''' </summary>
+        ''' <summary>Represents a Namespace statement, its contents and the End Namespace statement.</summary>
         ''' <param name="namespaceStatement">
         ''' The statement that begins the NamespaceBlock.
         ''' </param>
@@ -57695,9 +55743,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Inherits statement in a Class, Structure or Interface.
-        ''' </summary>
+        ''' <summary>Represents an Inherits statement in a Class, Structure or Interface.</summary>
         ''' <param name="inheritsKeyword">
         ''' The "Inherits" keyword.
         ''' </param>
@@ -57722,9 +55768,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Implements statement in a Class or Structure.
-        ''' </summary>
+        ''' <summary>Represents an Implements statement in a Class or Structure.</summary>
         ''' <param name="implementsKeyword">
         ''' The "Implements" keyword.
         ''' </param>
@@ -57894,9 +55938,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the type parameter list in a declaration.
-        ''' </summary>
+        ''' <summary>Represents the type parameter list in a declaration.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token.
         ''' </param>
@@ -57918,9 +55960,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a type parameter on a generic type declaration.
-        ''' </summary>
+        ''' <summary>Represents a type parameter on a generic type declaration.</summary>
         ''' <param name="varianceKeyword">
         ''' Represents the "In" or "Out" variance keyword on a type parameter, if present.
         ''' If no variance modifier was present, Nothing is returned.
@@ -58120,9 +56160,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a type parameter constraint that is a type.
-        ''' </summary>
+        ''' <summary>Represents a type parameter constraint that is a type.</summary>
         ''' <param name="type">
         ''' The type describing the constraint.
         ''' </param>
@@ -58144,9 +56182,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a name and value in an EnumDeclarationBlock.
-        ''' </summary>
+        ''' <summary>Represents a name and value in an EnumDeclarationBlock.</summary>
         ''' <param name="initializer">
         ''' An optional value for the enum member.
         ''' </param>
@@ -58615,9 +56651,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the parameter list in a method declaration.
-        ''' </summary>
+        ''' <summary>Represents the parameter list in a method declaration.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token that introduces the parameter list. If no parameter list was
         ''' present, Nothing is returned.
@@ -58829,9 +56863,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -58885,9 +56917,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -58941,9 +56971,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' A Declare statement that declares an external DLL method.
-        ''' </summary>
+        ''' <summary>A Declare statement that declares an external DLL method.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' DeclareStatementSyntax. One of DeclareSubStatement, DeclareFunctionStatement.
@@ -59002,9 +57030,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -59044,9 +57070,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -59086,9 +57110,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' A statement that declares a delegate type.
-        ''' </summary>
+        ''' <summary>A statement that declares a delegate type.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' DelegateStatementSyntax. One of DelegateSubStatement,
@@ -59528,9 +57550,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents event container that refers to a WithEvents member.
-        ''' </summary>
+        ''' <summary>Represents event container that refers to a WithEvents member.</summary>
         ''' <param name="identifier">
         ''' The container of the event. It is a simple identifier that refers to a
         ''' WithEvents member of the containing type.
@@ -59553,9 +57573,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents event container that refers to a WithEvents member's property.
-        ''' </summary>
+        ''' <summary>Represents event container that refers to a WithEvents member's property.</summary>
         ''' <param name="withEventsContainer">
         ''' The container of the event.
         ''' </param>
@@ -59586,9 +57604,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single handled event in a "Handles ..." clause.
-        ''' </summary>
+        ''' <summary>Represents a single handled event in a "Handles ..." clause.</summary>
         ''' <param name="eventContainer">
         ''' The container of the event. This can either be a simple identifier (identifying
         ''' a members of the containing type) or one of the special keywords "Me", "MyBase"
@@ -59787,9 +57803,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "With {...} clause used to initialize a new object's members.
-        ''' </summary>
+        ''' <summary>Represents a "With {...} clause used to initialize a new object's members.</summary>
         ''' <param name="withKeyword">
         ''' The "With" keyword.
         ''' </param>
@@ -59924,9 +57938,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represent a parameter to a method, property, constructor, etc.
-        ''' </summary>
+        ''' <summary>Represent a parameter to a method, property, constructor, etc.</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this parameter. If no attributes were
         ''' specified, Nothing is returned.
@@ -60007,9 +58019,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a group of attributes within "&lt;" and "&gt;" brackets.
-        ''' </summary>
+        ''' <summary>Represents a group of attributes within "&lt;" and "&gt;" brackets.</summary>
         ''' <param name="lessThanToken">
         ''' The "&lt;" token.
         ''' </param>
@@ -60038,9 +58048,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single attribute declaration within an attribute list.
-        ''' </summary>
+        ''' <summary>Represents a single attribute declaration within an attribute list.</summary>
         ''' <param name="target">
         ''' Optional attribute target. Assembly|Module :
         ''' </param>
@@ -60069,9 +58077,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single attribute declaration within an attribute list.
-        ''' </summary>
+        ''' <summary>Represents a single attribute declaration within an attribute list.</summary>
         ''' <param name="attributeModifier">
         ''' The "Assembly" or "Module" attribute modifier, is present. If no attribute
         ''' modifier is present, Nothing is returned.
@@ -60149,9 +58155,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represent a "? expression" "Print" statement in VB Interactive code.
-        ''' </summary>
+        ''' <summary>Represent a "? expression" "Print" statement in VB Interactive code.</summary>
         ''' <param name="questionToken">
         ''' "?" token.
         ''' </param>
@@ -60308,9 +58312,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the declaration of one or more local variables or constants.
-        ''' </summary>
+        ''' <summary>Represents the declaration of one or more local variables or constants.</summary>
         ''' <param name="modifiers">
         ''' The modifier token (Static, Dim or Const) that introduces this local variable
         ''' declaration.
@@ -60336,9 +58338,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a label statement.
-        ''' </summary>
+        ''' <summary>Represents a label statement.</summary>
         ''' <param name="labelToken">
         ''' The name of the label. If the label is a line number, returns an IntegerLiteral
         ''' that is the line number, otherwise, returns an Identifier.
@@ -60365,9 +58365,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "GoTo" statement.
-        ''' </summary>
+        ''' <summary>Represents a "GoTo" statement.</summary>
         ''' <param name="goToKeyword">
         ''' The "GoTo" keyword.
         ''' </param>
@@ -61006,9 +59004,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Return" statement.
-        ''' </summary>
+        ''' <summary>Represents a "Return" statement.</summary>
         ''' <param name="returnKeyword">
         ''' The "Return" keyword.
         ''' </param>
@@ -61033,9 +59029,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single-line "If ... Then ... Else ..." statement.
-        ''' </summary>
+        ''' <summary>Represents a single-line "If ... Then ... Else ..." statement.</summary>
         ''' <param name="ifKeyword">
         ''' The "If" keyword.
         ''' </param>
@@ -61060,9 +59054,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Else ..." clause of a single-line "If" statement.
-        ''' </summary>
+        ''' <summary>Represents the "Else ..." clause of a single-line "If" statement.</summary>
         ''' <param name="elseKeyword">
         ''' The "Else" keyword.
         ''' </param>
@@ -61117,9 +59109,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "If ... Then" statement that begins a multi-line "If" block.
-        ''' </summary>
+        ''' <summary>Represents the "If ... Then" statement that begins a multi-line "If" block.</summary>
         ''' <param name="ifKeyword">
         ''' The "If" keyword.
         ''' </param>
@@ -61148,9 +59138,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "ElseIf ... Then ..." block.
-        ''' </summary>
+        ''' <summary>Represents an "ElseIf ... Then ..." block.</summary>
         ''' <param name="elseIfStatement">
         ''' The "ElseIf ... Then" statement the begins the "ElseIf" block.
         ''' </param>
@@ -61176,9 +59164,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "ElseIf ... Then" statement that begins an "ElseIf" block.
-        ''' </summary>
+        ''' <summary>Represents the "ElseIf ... Then" statement that begins an "ElseIf" block.</summary>
         ''' <param name="elseIfKeyword">
         ''' The "ElseIf" keyword.
         ''' </param>
@@ -61207,9 +59193,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "Else ..." block.
-        ''' </summary>
+        ''' <summary>Represents an "Else ..." block.</summary>
         ''' <param name="elseStatement">
         ''' The "Else" statement that begins the "Else" block.
         ''' </param>
@@ -61234,9 +59218,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Else" statement that begins an "Else" block.
-        ''' </summary>
+        ''' <summary>Represents the "Else" statement that begins an "Else" block.</summary>
         ''' <param name="elseKeyword">
         ''' The "Else" keyword.
         ''' </param>
@@ -61258,9 +59240,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Try ... Catch ... Finally ... End Try" block.
-        ''' </summary>
+        ''' <summary>Represents a "Try ... Catch ... Finally ... End Try" block.</summary>
         ''' <param name="tryStatement">
         ''' The "Try" statement that begins the "Try" block.
         ''' </param>
@@ -61284,9 +59264,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Try" statement that begins a "Try" block.
-        ''' </summary>
+        ''' <summary>Represents the "Try" statement that begins a "Try" block.</summary>
         ''' <param name="tryKeyword">
         ''' The "Try" keyword.
         ''' </param>
@@ -61308,9 +59286,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Catch ..." block.
-        ''' </summary>
+        ''' <summary>Represents a "Catch ..." block.</summary>
         ''' <param name="catchStatement">
         ''' The "Catch" statement that begins the "Catch" block.
         ''' </param>
@@ -61336,9 +59312,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Catch ... When ..." statement that begins a "Catch" block.
-        ''' </summary>
+        ''' <summary>Represents the "Catch ... When ..." statement that begins a "Catch" block.</summary>
         ''' <param name="catchKeyword">
         ''' The "Catch" keyword.
         ''' </param>
@@ -61358,9 +59332,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "When ..." clause of a "Catch" statement.
-        ''' </summary>
+        ''' <summary>Represents the "When ..." clause of a "Catch" statement.</summary>
         ''' <param name="whenKeyword">
         ''' The "When" keyword.
         ''' </param>
@@ -61386,9 +59358,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Finally ..." block of a "Try" block.
-        ''' </summary>
+        ''' <summary>Represents a "Finally ..." block of a "Try" block.</summary>
         ''' <param name="finallyStatement">
         ''' The "Finally" statement that begins the "Finally" block.
         ''' </param>
@@ -61413,9 +59383,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Finally" statement that begins a "Finally" block.
-        ''' </summary>
+        ''' <summary>Represents the "Finally" statement that begins a "Finally" block.</summary>
         ''' <param name="finallyKeyword">
         ''' The "Finally" keyword.
         ''' </param>
@@ -61437,9 +59405,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Error" statement.
-        ''' </summary>
+        ''' <summary>Represents the "Error" statement.</summary>
         ''' <param name="errorKeyword">
         ''' The "Error" keyword.
         ''' </param>
@@ -61465,9 +59431,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Goto statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Goto statement.</summary>
         ''' <param name="onKeyword">
         ''' The "On" keyword
         ''' </param>
@@ -61493,9 +59457,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Goto statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Goto statement.</summary>
         ''' <param name="onKeyword">
         ''' The "On" keyword
         ''' </param>
@@ -61521,9 +59483,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Goto statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Goto statement.</summary>
         ''' <param name="onKeyword">
         ''' The "On" keyword
         ''' </param>
@@ -61549,9 +59509,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Goto statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Goto statement.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' OnErrorGoToStatementSyntax. One of OnErrorGoToZeroStatement,
@@ -61583,9 +59541,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an OnError Resume Next statement.
-        ''' </summary>
+        ''' <summary>Represents an OnError Resume Next statement.</summary>
         ''' <param name="onKeyword">
         ''' The "On" keyword
         ''' </param>
@@ -61761,9 +59717,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a case statement and its subsequent block.
-        ''' </summary>
+        ''' <summary>Represents a case statement and its subsequent block.</summary>
         ''' <param name="caseStatement">
         ''' The statement that begins the case block.
         ''' </param>
@@ -61788,9 +59742,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a case statement and its subsequent block.
-        ''' </summary>
+        ''' <summary>Represents a case statement and its subsequent block.</summary>
         ''' <param name="caseStatement">
         ''' The statement that begins the case block.
         ''' </param>
@@ -61875,9 +59827,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The "Else" part in a Case Else statement.
-        ''' </summary>
+        ''' <summary>The "Else" part in a Case Else statement.</summary>
         ''' <param name="elseKeyword">
         ''' The "Else" keyword.
         ''' </param>
@@ -61899,9 +59849,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single value in a Case.
-        ''' </summary>
+        ''' <summary>Represents a single value in a Case.</summary>
         ''' <param name="value">
         ''' The expression that denotes the value being tested against.
         ''' </param>
@@ -61923,9 +59871,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a range "expression To expression" in a Case.
-        ''' </summary>
+        ''' <summary>Represents a range "expression To expression" in a Case.</summary>
         ''' <param name="lowerBound">
         ''' The lower bound of the range.
         ''' </param>
@@ -61955,9 +59901,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -61987,9 +59931,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -62019,9 +59961,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -62051,9 +59991,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -62083,9 +60021,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -62115,9 +60051,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="isKeyword">
         ''' The "Is" keyword, if present.
         ''' </param>
@@ -62147,9 +60081,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a relation clause in a Case statement, such as "Is &gt; expression".
-        ''' </summary>
+        ''' <summary>Represents a relation clause in a Case statement, such as "Is &gt; expression".</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' RelationalCaseClauseSyntax. One of CaseEqualsClause, CaseNotEqualsClause,
@@ -62413,9 +60345,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="doKeyword">
         ''' The "Do" keyword.
         ''' </param>
@@ -62441,9 +60371,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="doKeyword">
         ''' The "Do" keyword.
         ''' </param>
@@ -62469,9 +60397,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="doKeyword">
         ''' The "Do" keyword.
         ''' </param>
@@ -62497,9 +60423,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Do statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Do statement that begins a Do-Loop block.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of DoStatementSyntax.
         ''' One of SimpleDoStatement, DoWhileStatement, DoUntilStatement.
@@ -62530,9 +60454,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="loopKeyword">
         ''' The "Loop" keyword.
         ''' </param>
@@ -62558,9 +60480,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="loopKeyword">
         ''' The "Loop" keyword.
         ''' </param>
@@ -62586,9 +60506,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="loopKeyword">
         ''' The "Loop" keyword.
         ''' </param>
@@ -62614,9 +60532,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Loop statement that begins a Do-Loop block.
-        ''' </summary>
+        ''' <summary>The Loop statement that begins a Do-Loop block.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of LoopStatementSyntax.
         ''' One of SimpleLoopStatement, LoopWhileStatement, LoopUntilStatement.
@@ -62882,9 +60798,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' The Step clause in a For Statement.
-        ''' </summary>
+        ''' <summary>The Step clause in a For Statement.</summary>
         ''' <param name="stepKeyword">
         ''' The "Step" keyword.
         ''' </param>
@@ -63011,9 +60925,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Throw statement.
-        ''' </summary>
+        ''' <summary>Represents a Throw statement.</summary>
         ''' <param name="throwKeyword">
         ''' The "Throw" keyword
         ''' </param>
@@ -63456,9 +61368,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a left-hand side of a MidAssignment statement.
-        ''' </summary>
+        ''' <summary>Represents a left-hand side of a MidAssignment statement.</summary>
         ''' <param name="mid">
         ''' The "Mid" possibly followed by a type character.
         ''' </param>
@@ -63484,9 +61394,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represent a call statement (also known as a invocation statement).
-        ''' </summary>
+        ''' <summary>Represent a call statement (also known as a invocation statement).</summary>
         ''' <param name="callKeyword">
         ''' The "Call" keyword.
         ''' </param>
@@ -63594,9 +61502,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represent a RaiseEvent statement.
-        ''' </summary>
+        ''' <summary>Represent a RaiseEvent statement.</summary>
         ''' <param name="raiseEventKeyword">
         ''' The "RaiseEvent" keyword
         ''' </param>
@@ -63655,9 +61561,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a ReDim statement.
-        ''' </summary>
+        ''' <summary>Represents a ReDim statement.</summary>
         ''' <param name="reDimKeyword">
         ''' The "ReDim" keyword.
         ''' </param>
@@ -63686,9 +61590,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a ReDim statement.
-        ''' </summary>
+        ''' <summary>Represents a ReDim statement.</summary>
         ''' <param name="reDimKeyword">
         ''' The "ReDim" keyword.
         ''' </param>
@@ -63717,9 +61619,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a ReDim statement clause.
-        ''' </summary>
+        ''' <summary>Represents a ReDim statement clause.</summary>
         ''' <param name="expression">
         ''' The target of the ReDim statement.
         ''' </param>
@@ -63745,9 +61645,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "Erase" statement.
-        ''' </summary>
+        ''' <summary>Represents an "Erase" statement.</summary>
         ''' <param name="eraseKeyword">
         ''' The "Erase" keyword.
         ''' </param>
@@ -64067,9 +61965,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a parenthesized expression.
-        ''' </summary>
+        ''' <summary>Represents a parenthesized expression.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token
         ''' </param>
@@ -64099,9 +61995,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a tuple literal expression.
-        ''' </summary>
+        ''' <summary>Represents a tuple literal expression.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token
         ''' </param>
@@ -64130,9 +62024,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a tuple type expression.
-        ''' </summary>
+        ''' <summary>Represents a tuple type expression.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token
         ''' </param>
@@ -64161,9 +62053,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single declaration of a tuple element supplying only the type.
-        ''' </summary>
+        ''' <summary>Represents a single declaration of a tuple element supplying only the type.</summary>
         ''' <param name="type">
         ''' The type-name part of the tuple element syntax.
         ''' </param>
@@ -64213,9 +62103,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Identifies the special instance "Me"
-        ''' </summary>
+        ''' <summary>Identifies the special instance "Me"</summary>
         ''' <param name="keyword">
         ''' The "Me", "MyClass" or "MyBase" keyword.
         ''' </param>
@@ -64237,9 +62125,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Identifies the special instance "MyBase"
-        ''' </summary>
+        ''' <summary>Identifies the special instance "MyBase"</summary>
         ''' <param name="keyword">
         ''' The "Me", "MyClass" or "MyBase" keyword.
         ''' </param>
@@ -64261,9 +62147,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Identifies the special instance "MyClass"
-        ''' </summary>
+        ''' <summary>Identifies the special instance "MyClass"</summary>
         ''' <param name="keyword">
         ''' The "Me", "MyClass" or "MyBase" keyword.
         ''' </param>
@@ -64285,9 +62169,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a GetType expression.
-        ''' </summary>
+        ''' <summary>Represents a GetType expression.</summary>
         ''' <param name="getTypeKeyword">
         ''' The "GetType" keyword.
         ''' </param>
@@ -64309,9 +62191,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
+        ''' <summary>Represents a TypeOf...Is or IsNot expression.</summary>
         ''' <param name="typeOfKeyword">
         ''' The "TypeOf" keyword.
         ''' </param>
@@ -64333,9 +62213,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
+        ''' <summary>Represents a TypeOf...Is or IsNot expression.</summary>
         ''' <param name="typeOfKeyword">
         ''' The "TypeOf" keyword.
         ''' </param>
@@ -64357,9 +62235,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
+        ''' <summary>Represents a TypeOf...Is or IsNot expression.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' TypeOfExpressionSyntax. One of TypeOfIsExpression, TypeOfIsNotExpression.
@@ -64386,9 +62262,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a GetXmlNamespace expression.
-        ''' </summary>
+        ''' <summary>Represents a GetXmlNamespace expression.</summary>
         ''' <param name="getXmlNamespaceKeyword">
         ''' The "GetXmlNamespace" keyword.
         ''' </param>
@@ -64681,9 +62555,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a New expression that create an object of anonymous type.
-        ''' </summary>
+        ''' <summary>Represents a New expression that create an object of anonymous type.</summary>
         ''' <param name="newKeyword">
         ''' The "New" keyword.
         ''' </param>
@@ -64713,9 +62585,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an expression that creates a new array.
-        ''' </summary>
+        ''' <summary>Represents an expression that creates a new array.</summary>
         ''' <param name="newKeyword">
         ''' The "New" keyword.
         ''' </param>
@@ -65675,9 +63545,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="operatorToken">
         ''' The token that is the operator.
         ''' </param>
@@ -65703,9 +63571,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="operatorToken">
         ''' The token that is the operator.
         ''' </param>
@@ -65731,9 +63597,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="operatorToken">
         ''' The token that is the operator.
         ''' </param>
@@ -65759,9 +63623,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="operatorToken">
         ''' The token that is the operator.
         ''' </param>
@@ -65787,9 +63649,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary>Describes a unary operator: Plus, Negate, Not or AddressOf.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' UnaryExpressionSyntax. One of UnaryPlusExpression, UnaryMinusExpression,
@@ -65895,9 +63755,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a single line lambda expression.</summary>
         ''' <param name="subOrFunctionHeader">
         ''' The header part of the lambda that includes the "Sub" or "Function" keyword,
         ''' the argument list and return type.
@@ -65925,9 +63783,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a single line lambda expression.</summary>
         ''' <param name="subOrFunctionHeader">
         ''' The header part of the lambda that includes the "Sub" or "Function" keyword,
         ''' the argument list and return type.
@@ -65955,9 +63811,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a single line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a single line lambda expression.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' SingleLineLambdaExpressionSyntax. One of SingleLineFunctionLambdaExpression,
@@ -65991,9 +63845,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a multi-line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a multi-line lambda expression.</summary>
         ''' <param name="subOrFunctionHeader">
         ''' The header part of the lambda that includes the "Sub" or "Function" keyword,
         ''' the argument list and return type.
@@ -66026,9 +63878,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a multi-line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a multi-line lambda expression.</summary>
         ''' <param name="subOrFunctionHeader">
         ''' The header part of the lambda that includes the "Sub" or "Function" keyword,
         ''' the argument list and return type.
@@ -66061,9 +63911,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a multi-line lambda expression.
-        ''' </summary>
+        ''' <summary>Represents a multi-line lambda expression.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' MultiLineLambdaExpressionSyntax. One of MultiLineFunctionLambdaExpression,
@@ -66102,9 +63950,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the header part of a lambda expression
-        ''' </summary>
+        ''' <summary>Represents the header part of a lambda expression</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -66132,9 +63978,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the header part of a lambda expression
-        ''' </summary>
+        ''' <summary>Represents the header part of a lambda expression</summary>
         ''' <param name="attributeLists">
         ''' A list of all attribute lists on this declaration. If no attributes were
         ''' specified, Nothing is returned.
@@ -66162,9 +64006,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the header part of a lambda expression
-        ''' </summary>
+        ''' <summary>Represents the header part of a lambda expression</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of LambdaHeaderSyntax.
         ''' One of SubLambdaHeader, FunctionLambdaHeader.
@@ -66197,9 +64039,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a parenthesized argument list.
-        ''' </summary>
+        ''' <summary>Represents a parenthesized argument list.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token.
         ''' </param>
@@ -66282,9 +64122,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an identifier name followed by a ":=" token in a named argument.
-        ''' </summary>
+        ''' <summary>Represents an identifier name followed by a ":=" token in a named argument.</summary>
         ''' <param name="name">
         ''' The name used to identify the named argument.
         ''' </param>
@@ -66454,9 +64292,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the name and optional type of an expression range variable.
-        ''' </summary>
+        ''' <summary>Represents the name and optional type of an expression range variable.</summary>
         ''' <param name="identifier">
         ''' The name of the variable being defined.
         ''' </param>
@@ -66562,9 +64398,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Let" query operator.
-        ''' </summary>
+        ''' <summary>Represents a "Let" query operator.</summary>
         ''' <param name="letKeyword">
         ''' The "Let" keyword.
         ''' </param>
@@ -66589,9 +64423,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Aggregate query operator.
-        ''' </summary>
+        ''' <summary>Represents an Aggregate query operator.</summary>
         ''' <param name="aggregateKeyword">
         ''' The "Aggregate" keyword.
         ''' </param>
@@ -66614,9 +64446,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Distinct" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Distinct" query operator.</summary>
         ''' <param name="distinctKeyword">
         ''' The "Distinct" keyword.
         ''' </param>
@@ -66638,9 +64468,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Where" query operator.
-        ''' </summary>
+        ''' <summary>Represents a "Where" query operator.</summary>
         ''' <param name="whereKeyword">
         ''' The "Where" keyword.
         ''' </param>
@@ -66770,9 +64598,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Skip" or "Take" query operator. The Kind property tells which.
-        ''' </summary>
+        ''' <summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary>
         ''' <param name="skipOrTakeKeyword">
         ''' The "Skip" or "Take" keyword.
         ''' </param>
@@ -66798,9 +64624,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Skip" or "Take" query operator. The Kind property tells which.
-        ''' </summary>
+        ''' <summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary>
         ''' <param name="skipOrTakeKeyword">
         ''' The "Skip" or "Take" keyword.
         ''' </param>
@@ -66826,9 +64650,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a "Skip" or "Take" query operator. The Kind property tells which.
-        ''' </summary>
+        ''' <summary>Represents a "Skip" or "Take" query operator. The Kind property tells which.</summary>
         ''' <param name="kind">
         ''' A <cref c="SyntaxKind"/> representing the specific kind of
         ''' PartitionClauseSyntax. One of SkipClause, TakeClause.
@@ -66859,9 +64681,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Group By" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Group By" query operator.</summary>
         ''' <param name="groupKeyword">
         ''' The "Group" keyword.
         ''' </param>
@@ -66886,9 +64706,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "expression Equals expression" condition in a Join.
-        ''' </summary>
+        ''' <summary>Represents the "expression Equals expression" condition in a Join.</summary>
         ''' <param name="left">
         ''' The left expression in the Join condition.
         ''' </param>
@@ -66918,9 +64736,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Join query operator.
-        ''' </summary>
+        ''' <summary>Represents a Join query operator.</summary>
         ''' <param name="joinKeyword">
         ''' The "Join" keyword.
         ''' </param>
@@ -66944,9 +64760,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Group Join" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Group Join" query operator.</summary>
         ''' <param name="groupKeyword">
         ''' The "Group" keyword.
         ''' </param>
@@ -66981,9 +64795,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Order By" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Order By" query operator.</summary>
         ''' <param name="orderKeyword">
         ''' The "Order" keyword
         ''' </param>
@@ -67104,9 +64916,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the "Select" query operator.
-        ''' </summary>
+        ''' <summary>Represents the "Select" query operator.</summary>
         ''' <param name="selectKeyword">
         ''' The "Select" keyword.
         ''' </param>
@@ -67132,9 +64942,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML Document literal expression.
-        ''' </summary>
+        ''' <summary>Represents an XML Document literal expression.</summary>
         Friend Function XmlDocument(declaration As XmlDeclarationSyntax, precedingMisc As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), root As XmlNodeSyntax, followingMisc As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)) As XmlDocumentSyntax
             Debug.Assert(declaration IsNot Nothing)
             Debug.Assert(root IsNot Nothing)
@@ -67142,9 +64950,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the XML declaration prologue in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents the XML declaration prologue in an XML literal expression.</summary>
         Friend Function XmlDeclaration(lessThanQuestionToken As PunctuationSyntax, xmlKeyword As KeywordSyntax, version As XmlDeclarationOptionSyntax, encoding As XmlDeclarationOptionSyntax, standalone As XmlDeclarationOptionSyntax, questionGreaterThanToken As PunctuationSyntax) As XmlDeclarationSyntax
             Debug.Assert(lessThanQuestionToken IsNot Nothing AndAlso lessThanQuestionToken.Kind = SyntaxKind.LessThanQuestionToken)
             Debug.Assert(xmlKeyword IsNot Nothing AndAlso xmlKeyword.Kind = SyntaxKind.XmlKeyword)
@@ -67178,9 +64984,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML element with content in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents an XML element with content in an XML literal expression.</summary>
         Friend Function XmlElement(startTag As XmlElementStartTagSyntax, content As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), endTag As XmlElementEndTagSyntax) As XmlElementSyntax
             Debug.Assert(startTag IsNot Nothing)
             Debug.Assert(endTag IsNot Nothing)
@@ -67200,9 +65004,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents Xml text.
-        ''' </summary>
+        ''' <summary>Represents Xml text.</summary>
         ''' <param name="textTokens">
         ''' A list of all the text tokens in the Xml text. This list always contains at
         ''' least one token.
@@ -67224,9 +65026,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the start tag of an XML element of the form &lt;element&gt;.
-        ''' </summary>
+        ''' <summary>Represents the start tag of an XML element of the form &lt;element&gt;.</summary>
         Friend Function XmlElementStartTag(lessThanToken As PunctuationSyntax, name As XmlNodeSyntax, attributes As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), greaterThanToken As PunctuationSyntax) As XmlElementStartTagSyntax
             Debug.Assert(lessThanToken IsNot Nothing AndAlso lessThanToken.Kind = SyntaxKind.LessThanToken)
             Debug.Assert(name IsNot Nothing)
@@ -67235,9 +65035,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the end tag of an XML element of the form &lt;/element&gt;.
-        ''' </summary>
+        ''' <summary>Represents the end tag of an XML element of the form &lt;/element&gt;.</summary>
         Friend Function XmlElementEndTag(lessThanSlashToken As PunctuationSyntax, name As XmlNameSyntax, greaterThanToken As PunctuationSyntax) As XmlElementEndTagSyntax
             Debug.Assert(lessThanSlashToken IsNot Nothing AndAlso lessThanSlashToken.Kind = SyntaxKind.LessThanSlashToken)
             Debug.Assert(greaterThanToken IsNot Nothing AndAlso greaterThanToken.Kind = SyntaxKind.GreaterThanToken)
@@ -67257,9 +65055,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an empty XML element of the form &lt;element /&gt;
-        ''' </summary>
+        ''' <summary>Represents an empty XML element of the form &lt;element /&gt;</summary>
         Friend Function XmlEmptyElement(lessThanToken As PunctuationSyntax, name As XmlNodeSyntax, attributes As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), slashGreaterThanToken As PunctuationSyntax) As XmlEmptyElementSyntax
             Debug.Assert(lessThanToken IsNot Nothing AndAlso lessThanToken.Kind = SyntaxKind.LessThanToken)
             Debug.Assert(name IsNot Nothing)
@@ -67268,9 +65064,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML attribute in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents an XML attribute in an XML literal expression.</summary>
         Friend Function XmlAttribute(name As XmlNodeSyntax, equalsToken As PunctuationSyntax, value As XmlNodeSyntax) As XmlAttributeSyntax
             Debug.Assert(name IsNot Nothing)
             Debug.Assert(equalsToken IsNot Nothing AndAlso equalsToken.Kind = SyntaxKind.EqualsToken)
@@ -67314,9 +65108,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML name of the form 'name' appearing in GetXmlNamespace().
-        ''' </summary>
+        ''' <summary>Represents an XML name of the form 'name' appearing in GetXmlNamespace().</summary>
         Friend Function XmlPrefixName(name As XmlNameTokenSyntax) As XmlPrefixNameSyntax
             Debug.Assert(name IsNot Nothing AndAlso name.Kind = SyntaxKind.XmlNameToken)
 
@@ -67383,9 +65175,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML namespace prefix of the form 'prefix:' as in xml:ns="".
-        ''' </summary>
+        ''' <summary>Represents an XML namespace prefix of the form 'prefix:' as in xml:ns="".</summary>
         Friend Function XmlPrefix(name As XmlNameTokenSyntax, colonToken As PunctuationSyntax) As XmlPrefixSyntax
             Debug.Assert(name IsNot Nothing AndAlso name.Kind = SyntaxKind.XmlNameToken)
             Debug.Assert(colonToken IsNot Nothing AndAlso colonToken.Kind = SyntaxKind.ColonToken)
@@ -67440,9 +65230,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an XML CDATA section in an XML literal expression.
-        ''' </summary>
+        ''' <summary>Represents an XML CDATA section in an XML literal expression.</summary>
         Friend Function XmlCDataSection(beginCDataToken As PunctuationSyntax, textTokens As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), endCDataToken As PunctuationSyntax) As XmlCDataSectionSyntax
             Debug.Assert(beginCDataToken IsNot Nothing AndAlso beginCDataToken.Kind = SyntaxKind.BeginCDataToken)
             Debug.Assert(endCDataToken IsNot Nothing AndAlso endCDataToken.Kind = SyntaxKind.EndCDataToken)
@@ -67514,9 +65302,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' A type name that represents a nullable type, such as "Integer?".
-        ''' </summary>
+        ''' <summary>A type name that represents a nullable type, such as "Integer?".</summary>
         ''' <param name="elementType">
         ''' The kind of type that is this type is a nullable of. Cannot be an array type or
         ''' a nullable type.
@@ -67622,9 +65408,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a qualified type name, for example X.Y or X(Of Z).Y.
-        ''' </summary>
+        ''' <summary>Represents a qualified type name, for example X.Y or X(Of Z).Y.</summary>
         ''' <param name="left">
         ''' The part of the name that appears to the left of the dot. This can itself be
         ''' any name.
@@ -67656,9 +65440,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a name in the global namespace.
-        ''' </summary>
+        ''' <summary>Represents a name in the global namespace.</summary>
         ''' <param name="globalKeyword">
         ''' The "Global" keyword.
         ''' </param>
@@ -67680,9 +65462,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a parenthesized list of generic type arguments.
-        ''' </summary>
+        ''' <summary>Represents a parenthesized list of generic type arguments.</summary>
         ''' <param name="openParenToken">
         ''' The "(" token.
         ''' </param>
@@ -67804,9 +65584,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represent a Yield statement.
-        ''' </summary>
+        ''' <summary>Represent a Yield statement.</summary>
         ''' <param name="yieldKeyword">
         ''' The "Yield" keyword.
         ''' </param>
@@ -67832,9 +65610,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Await expression.
-        ''' </summary>
+        ''' <summary>Represents an Await expression.</summary>
         ''' <param name="awaitKeyword">
         ''' The "Await" keyword.
         ''' </param>
@@ -67860,9 +65636,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an Xml NCName per Namespaces in XML 1.0
-        ''' </summary>
+        ''' <summary>Represents an Xml NCName per Namespaces in XML 1.0</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -67934,9 +65708,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents literal character data in interpolated string expression.
-        ''' </summary>
+        ''' <summary>Represents literal character data in interpolated string expression.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -67946,9 +65718,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Decimal literal token.
-        ''' </summary>
+        ''' <summary>Represents a Decimal literal token.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -67958,9 +65728,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a Date literal token.
-        ''' </summary>
+        ''' <summary>Represents a Date literal token.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -67970,9 +65738,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a string literal token.
-        ''' </summary>
+        ''' <summary>Represents a string literal token.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -67982,9 +65748,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a string literal token.
-        ''' </summary>
+        ''' <summary>Represents a string literal token.</summary>
         ''' <param name="text">
         ''' The actual text of this token.
         ''' </param>
@@ -68045,9 +65809,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' ExpressionSyntax node representing the object conditionally accessed.
-        ''' </summary>
+        ''' <summary>ExpressionSyntax node representing the object conditionally accessed.</summary>
         ''' <param name="expression">
         ''' The expression on the left-hand-side of the "?".
         ''' </param>
@@ -68077,9 +65839,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a NameOf expression.
-        ''' </summary>
+        ''' <summary>Represents a NameOf expression.</summary>
         ''' <param name="nameOfKeyword">
         ''' The "NameOf" keyword.
         ''' </param>
@@ -68101,9 +65861,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an interpolated string expression.
-        ''' </summary>
+        ''' <summary>Represents an interpolated string expression.</summary>
         ''' <param name="dollarSignDoubleQuoteToken">
         ''' The opening '$"', '$“', or '$”' token.
         ''' </param>
@@ -68132,9 +65890,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents literal text content in an interpolated string.
-        ''' </summary>
+        ''' <summary>Represents literal text content in an interpolated string.</summary>
         ''' <param name="textToken">
         ''' The text token.
         ''' </param>
@@ -68375,9 +66131,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents a #Const pre-processing constant declaration appearing in source.
-        ''' </summary>
+        ''' <summary>Represents a #Const pre-processing constant declaration appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -68434,9 +66188,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #Else pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #Else pre-processing directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -68447,9 +66199,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #End If pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #End If pre-processing directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -68461,9 +66211,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents the beginning of a #Region directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents the beginning of a #Region directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -68481,9 +66229,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #End Region directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #End Region directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -68520,9 +66266,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #End ExternalSource pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #End ExternalSource pre-processing directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -68534,9 +66278,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an #ExternalChecksum pre-processing directive appearing in source.
-        ''' </summary>
+        ''' <summary>Represents an #ExternalChecksum pre-processing directive appearing in source.</summary>
         ''' <param name="hashToken">
         ''' The "#" token in a preprocessor directive.
         ''' </param>
@@ -68550,65 +66292,4 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(secondCommaToken IsNot Nothing AndAlso secondCommaToken.Kind = SyntaxKind.CommaToken)
             Debug.Assert(checksum IsNot Nothing AndAlso checksum.Kind = SyntaxKind.StringLiteralToken)
             Debug.Assert(closeParenToken IsNot Nothing AndAlso closeParenToken.Kind = SyntaxKind.CloseParenToken)
-            Return New ExternalChecksumDirectiveTriviaSyntax(SyntaxKind.ExternalChecksumDirectiveTrivia, hashToken, externalChecksumKeyword, openParenToken, externalSource, firstCommaToken, guid, secondCommaToken, checksum, closeParenToken, _factoryContext)
-        End Function
-
-
-        ''' <summary>
-        ''' Represents #Enable Warning pre-processing directive appearing in source.
-        ''' </summary>
-        ''' <param name="hashToken">
-        ''' The "#" token in a preprocessor directive.
-        ''' </param>
-        Friend Function EnableWarningDirectiveTrivia(hashToken As PunctuationSyntax, enableKeyword As KeywordSyntax, warningKeyword As KeywordSyntax, errorCodes As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)) As EnableWarningDirectiveTriviaSyntax
-            Debug.Assert(hashToken IsNot Nothing AndAlso hashToken.Kind = SyntaxKind.HashToken)
-            Debug.Assert(enableKeyword IsNot Nothing AndAlso enableKeyword.Kind = SyntaxKind.EnableKeyword)
-            Debug.Assert(warningKeyword IsNot Nothing AndAlso warningKeyword.Kind = SyntaxKind.WarningKeyword)
-            Return New EnableWarningDirectiveTriviaSyntax(SyntaxKind.EnableWarningDirectiveTrivia, hashToken, enableKeyword, warningKeyword, errorCodes.Node, _factoryContext)
-        End Function
-
-
-        ''' <summary>
-        ''' Represents #Disable Warning pre-processing directive appearing in source.
-        ''' </summary>
-        ''' <param name="hashToken">
-        ''' The "#" token in a preprocessor directive.
-        ''' </param>
-        Friend Function DisableWarningDirectiveTrivia(hashToken As PunctuationSyntax, disableKeyword As KeywordSyntax, warningKeyword As KeywordSyntax, errorCodes As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(of GreenNode)) As DisableWarningDirectiveTriviaSyntax
-            Debug.Assert(hashToken IsNot Nothing AndAlso hashToken.Kind = SyntaxKind.HashToken)
-            Debug.Assert(disableKeyword IsNot Nothing AndAlso disableKeyword.Kind = SyntaxKind.DisableKeyword)
-            Debug.Assert(warningKeyword IsNot Nothing AndAlso warningKeyword.Kind = SyntaxKind.WarningKeyword)
-            Return New DisableWarningDirectiveTriviaSyntax(SyntaxKind.DisableWarningDirectiveTrivia, hashToken, disableKeyword, warningKeyword, errorCodes.Node, _factoryContext)
-        End Function
-
-
-        ''' <summary>
-        ''' Represents an #r directive appearing in scripts.
-        ''' </summary>
-        ''' <param name="hashToken">
-        ''' The "#" token in a preprocessor directive.
-        ''' </param>
-        Friend Function ReferenceDirectiveTrivia(hashToken As PunctuationSyntax, referenceKeyword As KeywordSyntax, file As StringLiteralTokenSyntax) As ReferenceDirectiveTriviaSyntax
-            Debug.Assert(hashToken IsNot Nothing AndAlso hashToken.Kind = SyntaxKind.HashToken)
-            Debug.Assert(referenceKeyword IsNot Nothing AndAlso referenceKeyword.Kind = SyntaxKind.ReferenceKeyword)
-            Debug.Assert(file IsNot Nothing AndAlso file.Kind = SyntaxKind.StringLiteralToken)
-            Return New ReferenceDirectiveTriviaSyntax(SyntaxKind.ReferenceDirectiveTrivia, hashToken, referenceKeyword, file, _factoryContext)
-        End Function
-
-
-        ''' <summary>
-        ''' Represents an unrecognized pre-processing directive. This occurs when the
-        ''' parser encounters a hash '#' token at the beginning of a physical line but does
-        ''' recognize the text that follows as a valid Visual Basic pre-processing
-        ''' directive.
-        ''' </summary>
-        ''' <param name="hashToken">
-        ''' The "#" token in a preprocessor directive.
-        ''' </param>
-        Friend Function BadDirectiveTrivia(hashToken As PunctuationSyntax) As BadDirectiveTriviaSyntax
-            Debug.Assert(hashToken IsNot Nothing AndAlso hashToken.Kind = SyntaxKind.HashToken)
-            Return New BadDirectiveTriviaSyntax(SyntaxKind.BadDirectiveTrivia, hashToken, _factoryContext)
-        End Function
-
-    End Class
-End Namespace
+            Return New ExternalChecksumDirectiveTriviaSyntax(SyntaxKind.ExternalChecksumDirectiveTrivia, hashToken, externalChecksumKeyword, openParenToken, externalSource, firstCommaToken, guid, sec

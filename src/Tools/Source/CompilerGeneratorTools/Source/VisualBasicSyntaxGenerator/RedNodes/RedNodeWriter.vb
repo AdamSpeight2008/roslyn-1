@@ -3,12 +3,13 @@
 ' See the LICENSE file in the project root for more information.
 
 Imports System.IO
-
+Imports System.CodeDom.Compiler
+ 
 ' Class to write out the code for the code tree.
 Friend Class RedNodeWriter
     Inherits WriteUtils
 
-    Private _writer As TextWriter    'output is sent here.
+    Private _writer As IndentedTextWriter    'output is sent here.
 
     ' Initialize the class with the parse tree to write.
     Public Sub New(parseTree As ParseTree)
@@ -16,21 +17,25 @@ Friend Class RedNodeWriter
     End Sub
 
     ' Write out the code defining the tree to the give file.
-    Public Sub WriteMainTreeAsCode(writer As TextWriter)
+    Public Sub WriteMainTreeAsCode(writer As IndentedTextWriter)
         _writer = writer
         GenerateMainNamespace()
     End Sub
 
-    Public Sub WriteSyntaxTreeAsCode(writer As TextWriter)
+    Public Sub WriteSyntaxTreeAsCode(writer As IndentedTextWriter)
         _writer = writer
         GenerateSyntaxNamespace()
     End Sub
 
     Private Sub GenerateMainNamespace()
         If Not String.IsNullOrEmpty(_parseTree.NamespaceName) Then
-            _writer.WriteLine()
-            _writer.WriteLine("Namespace {0}", Ident(_parseTree.NamespaceName))
-            _writer.WriteLine()
+            With _writer
+                If .Indent > 0 Then .indent+=2
+                .WriteLine()
+                .WriteLine($"Namespace {Ident(_parseTree.NamespaceName)}")
+                .WriteLine()
+            End With
+
         End If
 
         ' We no longer generate SyntaxKind. Instead we write it by hand to ensure we do
@@ -70,32 +75,6 @@ Friend Class RedNodeWriter
         If Not String.IsNullOrEmpty(_parseTree.NamespaceName) Then
             _writer.WriteLine("End Namespace")
         End If
-    End Sub
-
-    Private Sub GenerateKindEnum()
-        ' XML comment
-        GenerateXmlComment(_writer, "Enumeration with all Visual Basic syntax node kinds.", Nothing, 4)
-
-#If ListFlags Then
-        _writer.WriteLine("    <Flags()>", NodeKindType())
-#End If
-        _writer.WriteLine("    Public Enum {0} As UShort", NodeKindType())
-
-        _writer.WriteLine("        None")
-        _writer.WriteLine("        List = GreenNode.ListKind")
-
-        Dim count = 0
-        For Each kind In _parseTree.NodeKinds.Values
-            GenerateKindEnumerator(kind)
-            count += 1
-        Next
-
-#If ListFlags Then
-        Dim syntaxListKind = (2 * count) And MaxSyntaxKinds
-        _writer.WriteLine("        List = &h{0:x}", syntaxListKind)
-        _writer.WriteLine("        SeparatedList = &h{0:x}", syntaxListKind * 2 + syntaxListKind)
-#End If
-        _writer.WriteLine("    End Enum")
     End Sub
 
     Private Sub GenerateKindEnumerator(kind As ParseNodeKind)
@@ -187,38 +166,48 @@ Friend Class RedNodeWriter
         Next
     End Sub
 
-    ' Generate an enumeration type
+    #region "Generate an enumeration type"
     Private Sub GenerateEnumerationType(enumeration As ParseEnumeration)
         ' XML comment
         GenerateXmlComment(_writer, enumeration, 4)
-
-        If enumeration.IsFlags Then
-            _writer.WriteLine("    <Flags()> _")
-        End If
-        _writer.WriteLine("    Public Enum {0}", EnumerationTypeName(enumeration))
-
+        Generate_Enumeration_Header(enumeration)
+        Dim maxWidth = enumeration.Enumerators.Max(Function(e) e.Name.Length)
         For Each enumerator In enumeration.Enumerators
-            GenerateEnumeratorVariable(enumerator, enumeration.IsFlags)
+            Dim AlsoWriteValue = enumeration.IsFlags OrElse (enumerator.ValueString IsNot Nothing)
+            GenerateEnumeratorVariable(enumerator, AlsoWriteValue, maxwidth)
         Next
 
         _writer.WriteLine("    End Enum")
         _writer.WriteLine()
     End Sub
 
+    Private Sub Generate_Enumeration_Flags(enumeration As ParseEnumeration)
+        If enumeration.IsFlags Then _writer.WriteLine("    <Flags>")
+    End Sub
+
+    Private Sub Generate_Enumeration_Header(enumeration As ParseEnumeration)
+        _writer.Write($"    Public Enum {EnumerationTypeName(enumeration)}")
+        If enumeration.basetype IsNot Nothing Then
+            _writer.Write($" As {enumeration.basetype}")
+        End If
+        _writer.WriteLine()
+    End Sub
     ' Generate a public enumerator declaration for a enumerator. 
     ' If generateValue is true, generate the value also
-    Private Sub GenerateEnumeratorVariable(enumerator As ParseEnumerator, generateValue As Boolean)
-        _writer.WriteLine()
-
+    Private Sub GenerateEnumeratorVariable(enumerator As ParseEnumerator, generateValue As Boolean, maxWidth  as Integer)
         ' XML comment
         GenerateXmlComment(_writer, enumerator, 8)
+        Dim name = Ident(enumerator.Name)
 
-        _writer.Write("        {0}", Ident(enumerator.Name))
+        _writer.Write("        {0}", name)
         If generateValue Then
+            _writer.Write(New String(" "c, maxWidth- name.length))
             _writer.Write(" = {0}", GetConstantValue(enumerator.Value))
         End If
         _writer.WriteLine()
     End Sub
+
+    #End Region
 
     ' Generate a constant value
     Private Function GetConstantValue(val As Long) As String

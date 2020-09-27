@@ -29,16 +29,16 @@ Public Class ParseTree
     Public ContextualFactoryClassName As String   ' name of the contextual factory class
 
     ' Dictionary of all node-structure's, indexed by name
-    Public NodeStructures As New Dictionary(Of String, ParseNodeStructure)
+    Public NodeStructures As New Dictionary(Of String, ParseNodeStructure)(StringComparer.InvariantCultureIgnoreCase)
 
     ' Dictionary of all node-kinds, indexed by name
-    Public NodeKinds As New Dictionary(Of String, ParseNodeKind)
+    Public NodeKinds As New Dictionary(Of String, ParseNodeKind)(StringComparer.InvariantCultureIgnoreCase)
 
     ' Dictionary of all enumerations, indexed by name
-    Public Enumerations As New Dictionary(Of String, ParseEnumeration)
+    Public Enumerations As New Dictionary(Of String, ParseEnumeration)(StringComparer.InvariantCultureIgnoreCase)
 
     ' Dictionary of all node-kind-alias's, indexed by name
-    Public Aliases As New Dictionary(Of String, ParseNodeKindAlias)
+    Public Aliases As New Dictionary(Of String, ParseNodeKindAlias)(StringComparer.InvariantCultureIgnoreCase)
 
     ' Determines which structures are abstract
     Public IsAbstract As New Dictionary(Of ParseNodeStructure, Boolean)
@@ -652,23 +652,21 @@ End Class
 Public Class ParseEnumeration
     Inherits ParseTreeDefinition
 
-    Public Name As String
-
-    Public IsFlags As Boolean
-
-    Public Description As String
-
-    Public Enumerators As List(Of ParseEnumerator)
+    Public Readonly IsFlags As Boolean
+    Public Readonly Name As String
+    Public Readonly BaseType As String
+    Public Readonly Description As String
+    Public Readonly Enumerators As List(Of ParseEnumerator)
 
     Public Sub New(el As XElement, tree As ParseTree)
         ParseTree = tree
         Me.Element = el
-
-        Name = el.@name
         IsFlags = If(CType(el.Attribute("flags"), Boolean?), False)
+        BaseType = el.@basetype
+        Name = el.@name
         Description = el.<description>.Value
 
-        Enumerators = (From en In el.<enumerators>.<enumerator> Select New ParseEnumerator(en, Me)).ToList()
+        Enumerators = (From en In el.<enums>.<enum> Select New ParseEnumerator(en, Me)).ToList()
     End Sub
 End Class
 
@@ -679,18 +677,25 @@ Public Class ParseEnumerator
     Public ValueString As String
 
     Public Description As String
+    Public ReadOnly Property Value As Long
+
 
     Public Sub New(el As XElement, enumeration As ParseEnumeration)
         Name = el.@name
-        ValueString = el.@hexvalue
-        Description = el.<description>.Value
+        TryGetHexValue(el, Me.ValueString, Me.Value)
+        If Me.ValueString Is Nothing Then TryGetDecValue(el, Me.ValueString, Me.Value)
+        Description = el.<summary>.Value
+    End Sub
+    Private Sub TryGetHexValue(el As XElement, ByRef result As String, ByRef value As Long)
+        result = el.@hexvalue
+        If result IsNot Nothing  ANdAlso Not Int64.TryParse(result, NumberStyles.AllowHexSpecifier, NumberFormatInfo.InvariantInfo, value) Then    System.Console.WriteLIne($"[{result}]")
     End Sub
 
-    Public ReadOnly Property Value() As Long
-        Get
-            Return Convert.ToInt64(ValueString, 16)
-        End Get
-    End Property
+    Private Sub TryGetDecValue(el As XElement, ByRef result As String, ByRef value As Long)
+        result = el.@value
+        If  result IsNot Nothing  ANdAlso Not Int64.TryParse(result, NumberStyles.Integer, NumberFormatInfo.InvariantInfo, value) Then    System.Console.WriteLIne($"[{result}]")
+    End sub
+
 
 
 End Class

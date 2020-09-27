@@ -16,7 +16,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\..\..\..\Compilers\VisualBasic\Portable\Declarations\DeclarationModifiers.vb" Link="Grammar\DeclarationModifiers.vb" />
-    <Compile Include="..\..\..\..\..\Compilers\VisualBasic\Portable\Syntax\SyntaxKind.vb" Link="Grammar\SyntaxKind.vb" />
   </ItemGroup>
   <ItemGroup>
     <Import Include="System.Collections.ObjectModel" />

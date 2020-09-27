@@ -444,6 +444,7 @@ Public MustInherit Class WriteUtils
     ' Get the type name of an enumeration type
     Protected Function EnumerationTypeName(enumType As ParseEnumeration) As String
         Return Ident(enumType.Name)
+
     End Function
 
     ' The name of the node kind enumeration
@@ -593,13 +594,18 @@ Public MustInherit Class WriteUtils
 
         Dim lines = WordWrap(text)
 
+        Dim prefix = New String(" "c, indent) & "''' "
+        If lines.Count = 1 Then
+            writer.WriteLine($"{prefix}<{xmlTag}>{lines(0)}</{xmlTag}>")
+            else
         lines.Insert(0, "<" & xmlTag & ">")
         lines.Add("</" & xmlTag & ">")
-
-        Dim prefix = New String(" "c, indent) & "''' "
         For Each line In lines
             writer.WriteLine(prefix & line)
         Next
+        End If
+
+
     End Sub
 
     Protected Shared Function XmlEscape(value As String) As String

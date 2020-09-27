@@ -68,7 +68,7 @@ Unify Enum declarations with other block type declarations.
 
 <define-parse-tree namespace="Microsoft.CodeAnalysis.VisualBasic" visitor="VisualBasicSyntaxVisitor" rewrite-visitor="VisualBasicSyntaxRewriter" factory-class="SyntaxFactory" contextual-factory-class="ContextAwareSyntaxFactory" xmlns="http://schemas.microsoft.com/VisualStudio/Roslyn/Compiler" >
   <definitions>
-    <enumeration name="_SyntaxKind">
+    <enumeration name="SyntaxKind" basetype="UShort">
       <summary>Represents kind of a syntax node.</summary>
       <enums name="_SyntaxKind">
         <summary>Represents the kind of syntax node.</summary>
@@ -10033,7 +10033,7 @@ Unify Enum declarations with other block type declarations.
         <enum name="Binary"      value="2"  ><summary>Represents numeric base 2  (BIN)</summary></enum>
         <enum name="Octal"       value="8"  ><summary>Represents numeric base 8  (OCT)</summary></enum>
         <enum name="Decimal"     value="10" ><summary>Represents numeric base 10 (DEC)</summary></enum>
-        <enum name="Hexadecimal" value="!6" ><summary>Represents numeric base 16 (HEX)</summary></enum>
+        <enum name="Hexadecimal" value="16" ><summary>Represents numeric base 16 (HEX)</summary></enum>
       </enums>
     </enumeration>
 
