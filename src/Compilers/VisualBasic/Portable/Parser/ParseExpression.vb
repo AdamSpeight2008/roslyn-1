@@ -953,7 +953,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </summary>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function ParseTypeOf() As AbstractTypeOfExpressionSyntax
+        Private Function ParseTypeOf() As ExpressionSyntax
             Debug.Assert(CurrentToken.Kind = SyntaxKind.TypeOfKeyword, "must be at TypeOf.")
             Dim [typeOf] As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -998,13 +998,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return result
         End Function
 
-        Private Function ParseTypeOf_Many([typeOf] As KeywordSyntax, exp As ExpressionSyntax, operatorToken As KeywordSyntax) As ExpressionSyntax
+        Private Function ParseTypeOf_Many([typeOf] As KeywordSyntax, exp As ExpressionSyntax, operatorToken As KeywordSyntax) As TypeOfExpressionSyntax
             dim allowEmptyGenericArguments = False
             dim allowNonEmptyGenericArguments = True
             Dim types = ParseGenericArguments(allowEmptyGenericArguments, allowNonEmptyGenericArguments)
-            Dim kind  = If(operatorToken.Kind = SyntaxKind.IsNotKeyword, SyntaxKind.TypeOfIsManyExpression, SyntaxKind.TypeOfIsNotManyExpression)
+            Dim kind  = If(operatorToken.Kind = SyntaxKind.IsNotKeyword, SyntaxKind.TypeOfIsExpression, SyntaxKind.TypeOfIsNotExpression)
 
-            Return SyntaxFactory.TypeOfManyExpression(kind, [typeOf], exp, operatorToken, types)
+            Return SyntaxFactory.TypeOfExpression(kind, [typeOf], exp, operatorToken, types)
         End Function
 
         Private Function IsStartOfTypeArgumentList() As Boolean
@@ -1014,24 +1014,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseTypeOfIntoVariable(expr As ExpressionSyntax) As ExpressionSyntax
-            Dim intoKeyword As KeywordSyntax        = Nothing
-            Dim variable    As IdentifierNameSyntax = Nothing
+            Dim intoKeyword As KeywordSyntax = Nothing
+            Dim variable As IdentifierNameSyntax = Nothing
             Dim valid_variable = TryParseCurrentTokenAsContextualKeyword(SyntaxKind.IntoKeyword, intoKeyword, Consume:=True)
             intoKeyword = CheckFeatureAvailability(Feature.IntoVariable, intoKeyword)
-
             variable = ParseIdentifierNameAllowingKeyword()
+
+            'variable = ParseIdentifierNameAllowingKeyword()
             iF variable.ContainsDiagnostics Then variable = ReportSyntaxError(variable, ERRID.ERR_ExpectedIdentifier)
             Dim tr = TryCast(expr, TypeOfExpressionSyntax)
             If tr IsNot Nothing Then
                 if tr.OperatorToken.Kind <> SyntaxKind.IsKeyword Then
-                   expr = ReportSyntaxError(of ExpressionSyntax)(expr, ERRID.ERR_TypeOfIsNotExpressionDoesNotSupportIntoVariable, Feature.IntoVariable.GetResourceId)
+                    expr = ReportSyntaxError(of ExpressionSyntax)(expr, ERRID.ERR_TypeOfIsNotExpressionDoesNotSupportIntoVariable, Feature.IntoVariable.GetResourceId)
                 End If
             End If
 
-            variable = ParseIdentifier()
+            'variable = ParseIdentifier()
 
             ' Create an instance of into expresion
-            Dim result= SyntaxFactory.IntoVariableExpression(expr, intoKeyword, variable)
+            Dim result = SyntaxFactory.IntoVariableExpression(expr, intoKeyword, variable)
             Return result
         End Function
 

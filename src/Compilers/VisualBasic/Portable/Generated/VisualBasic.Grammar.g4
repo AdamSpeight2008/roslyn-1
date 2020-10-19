@@ -1174,8 +1174,7 @@ for_or_for_each_statement
   ;
 
 expression
-  : abstract_type_of_expression
-  | aggregation
+  : aggregation
   | await_expression
   | binary_conditional_expression
   | binary_expression
@@ -1202,27 +1201,10 @@ expression
   | ternary_conditional_expression
   | tuple_expression
   | type
-  | type_of_into_variable
+  | type_of_expression
   | unary_expression
   | xml_member_access_expression
   | xml_node
-  ;
-
-abstract_type_of_expression
-  : type_of_expression
-  | type_of_many_expression
-  ;
-
-type_of_expression
-  : 'TypeOf' expression ('Is' | 'IsNot') type type_of_into_variable?
-  ;
-
-type_of_into_variable
-  : 'Into' identifier_token
-  ;
-
-type_of_many_expression
-  : 'TypeOf' expression ('Is' | 'IsNot') type_argument_list
   ;
 
 aggregation
@@ -1648,6 +1630,19 @@ ternary_conditional_expression
 
 tuple_expression
   : '(' simple_argument (',' simple_argument)+ ')'
+  ;
+
+type_of_expression
+  : type_of_is_expression
+  | type_of_is_not_expression
+  ;
+
+type_of_is_expression
+  : 'TypeOf' expression 'Is' (expression | type_argument_list)
+  ;
+
+type_of_is_not_expression
+  : 'TypeOf' expression 'IsNot' (expression | type_argument_list)
   ;
 
 unary_expression

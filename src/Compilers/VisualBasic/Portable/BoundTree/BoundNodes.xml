@@ -530,15 +530,31 @@
         <Field Name="RelaxationLambdaOpt" Type="BoundLambda" Null="allow" />
     </Node>
 
-    <Node Name="BoundTypeOf" Base="BoundExpression">
+    <AbstractNode Name="BoundBaseTypeOf" Base="BoundExpression">
       <!-- Non-null type is required for this node kind -->
       <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
-
       <Field Name="Operand" Type="BoundExpression"/>
       <Field Name="IsTypeOfIsNotExpression" Type="Boolean"/>
-      <Field Name="TargetType" Type="TypeSymbol"/>
-    </Node>
+    </AbstractNode>
 
+    <AbstractNode Name="BoundAbstractTypeOf" Base="BoundBaseTypeOf">
+      <Field Name="TargetType" Type="TypeSymbol"/>
+    </AbstractNode>
+
+    <Node Name="BoundTypeOf" Base="BoundAbstractTypeOf">
+      <!--<Field Name="Type" Type="TypeSymbol" Overload="true" Null="disallow"/>-->
+      <!--<Field Name="Update" Overload="true" />-->
+    </Node>
+    <Node Name="BoundTypeOfMany" Base="BoundBaseTypeOf">
+      <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
+      <Field Name="TypeArguments" Type="BoundTypeArguments"/>
+    </Node>
+  
+    <Node Name="BoundExpressionIntoVariable" Base="BoundExpression">
+      <Field Name="Expression" Type="BoundExpression" />
+      <Field Name="Variable" Type="BoundExpression" />
+    </Node>
+  
     <AbstractNode Name="BoundStatement" Base="BoundNode"/>
 
     <Node Name="BoundSequencePoint" Base="BoundStatement">

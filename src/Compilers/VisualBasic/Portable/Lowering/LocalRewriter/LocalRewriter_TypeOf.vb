@@ -25,7 +25,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ' => (TypeOf expression IsNot T0) AndAlso (TypeOf expression IsNot T1) AndAlso (TypeOf expression IsNot T2))
             '
             Dim f As New SyntheticBoundNodeFactory(_topMethod, _currentMethodOrLambda, node.Syntax, _compilationState, _diagnostics)
-            Dim expr = TryCast(node.Syntax, TypeOfManyExpressionSyntax)
+            Dim expr = TryCast(node.Syntax, TypeOfExpressionSyntax)
             If expr Is Nothing Then
                 Return f.BadExpression()
             End If
@@ -38,6 +38,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 _diagnostics.Add(ERRID.ERR_ArgumentSyntax, expr.OperatorToken.GetLocation())
                 Return MyBase.VisitTypeOfMany(node)
             End If
+            Dim types = TryCast(expr.Type, TypeArgumentListSyntax)
+            if types Is Nothing Then Return f.BadExpression()
 
             Dim numberOfTypes = node.TypeArguments.Arguments.Length
             If numberOfTypes < 1 Then
@@ -48,7 +50,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim idx = 0
             While idx < numberOfTypes
                 ' Construct the typeof expression corrisponding to the current iteration's type.
-                Dim thisTypeOfExpr = New BoundTypeOf(expr.Types.Arguments(idx),
+                Dim thisTypeOfExpr = New BoundTypeOf(types.Arguments(idx),
                                                      node.TypeArguments.Arguments(idx),
                                                      node.Operand,
                                                      isNotOperand,

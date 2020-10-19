@@ -62,6 +62,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         [DirectCast]
         [TryCast]
         [TypeOf]
+        TypeOfMany
+        ExpressionIntoVariable
         SequencePoint
         SequencePointExpression
         SequencePointWithSpan
@@ -2418,19 +2420,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
     End Class
 
-    Partial Friend NotInheritable Class BoundTypeOf
+    Partial Friend MustInherit Class BoundBaseTypeOf
         Inherits BoundExpression
 
-        Public Sub New(syntax As SyntaxNode, operand As BoundExpression, isTypeOfIsNotExpression As Boolean, targetType As TypeSymbol, type As TypeSymbol, Optional hasErrors As Boolean = False)
-            MyBase.New(BoundKind.TypeOf, syntax, type, hasErrors OrElse operand.NonNullAndHasErrors())
+        Protected Sub New(kind As BoundKind, syntax as SyntaxNode, operand As BoundExpression, isTypeOfIsNotExpression As Boolean, type As TypeSymbol, Optional hasErrors As Boolean = False)
+            MyBase.New(kind, syntax, type, hasErrors)
 
             Debug.Assert(operand IsNot Nothing, "Field 'operand' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
-            Debug.Assert(targetType IsNot Nothing, "Field 'targetType' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
             Debug.Assert(type IsNot Nothing, "Field 'type' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
 
             Me._Operand = operand
             Me._IsTypeOfIsNotExpression = isTypeOfIsNotExpression
-            Me._TargetType = targetType
         End Sub
 
 
@@ -2447,6 +2447,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return _IsTypeOfIsNotExpression
             End Get
         End Property
+    End Class
+
+    Partial Friend MustInherit Class BoundAbstractTypeOf
+        Inherits BoundBaseTypeOf
+
+        Protected Sub New(kind As BoundKind, syntax as SyntaxNode, targetType As TypeSymbol, operand As BoundExpression, isTypeOfIsNotExpression As Boolean, type As TypeSymbol, Optional hasErrors As Boolean = False)
+            MyBase.New(kind, syntax, operand, isTypeOfIsNotExpression, type, hasErrors)
+
+            Debug.Assert(targetType IsNot Nothing, "Field 'targetType' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+            Debug.Assert(operand IsNot Nothing, "Field 'operand' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+            Debug.Assert(type IsNot Nothing, "Field 'type' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+            Me._TargetType = targetType
+        End Sub
+
 
         Private ReadOnly _TargetType As TypeSymbol
         Public ReadOnly Property TargetType As TypeSymbol
@@ -2454,15 +2469,108 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return _TargetType
             End Get
         End Property
+    End Class
+
+    Partial Friend NotInheritable Class BoundTypeOf
+        Inherits BoundAbstractTypeOf
+
+        Public Sub New(syntax As SyntaxNode, targetType As TypeSymbol, operand As BoundExpression, isTypeOfIsNotExpression As Boolean, type As TypeSymbol, Optional hasErrors As Boolean = False)
+            MyBase.New(BoundKind.TypeOf, syntax, targetType, operand, isTypeOfIsNotExpression, type, hasErrors OrElse operand.NonNullAndHasErrors())
+
+            Debug.Assert(targetType IsNot Nothing, "Field 'targetType' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+            Debug.Assert(operand IsNot Nothing, "Field 'operand' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+            Debug.Assert(type IsNot Nothing, "Field 'type' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
 
         <DebuggerStepThrough>
         Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
             Return visitor.VisitTypeOf(Me)
         End Function
 
-        Public Function Update(operand As BoundExpression, isTypeOfIsNotExpression As Boolean, targetType As TypeSymbol, type As TypeSymbol) As BoundTypeOf
-            If operand IsNot Me.Operand OrElse isTypeOfIsNotExpression <> Me.IsTypeOfIsNotExpression OrElse targetType IsNot Me.TargetType OrElse type IsNot Me.Type Then
-                Dim result = New BoundTypeOf(Me.Syntax, operand, isTypeOfIsNotExpression, targetType, type, Me.HasErrors)
+        Public Function Update(targetType As TypeSymbol, operand As BoundExpression, isTypeOfIsNotExpression As Boolean, type As TypeSymbol) As BoundTypeOf
+            If targetType IsNot Me.TargetType OrElse operand IsNot Me.Operand OrElse isTypeOfIsNotExpression <> Me.IsTypeOfIsNotExpression OrElse type IsNot Me.Type Then
+                Dim result = New BoundTypeOf(Me.Syntax, targetType, operand, isTypeOfIsNotExpression, type, Me.HasErrors)
+                result.CopyAttributes(Me)
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
+    Partial Friend NotInheritable Class BoundTypeOfMany
+        Inherits BoundBaseTypeOf
+
+        Public Sub New(syntax As SyntaxNode, typeArguments As BoundTypeArguments, operand As BoundExpression, isTypeOfIsNotExpression As Boolean, type As TypeSymbol, Optional hasErrors As Boolean = False)
+            MyBase.New(BoundKind.TypeOfMany, syntax, operand, isTypeOfIsNotExpression, type, hasErrors OrElse typeArguments.NonNullAndHasErrors() OrElse operand.NonNullAndHasErrors())
+
+            Debug.Assert(typeArguments IsNot Nothing, "Field 'typeArguments' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+            Debug.Assert(operand IsNot Nothing, "Field 'operand' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+            Debug.Assert(type IsNot Nothing, "Field 'type' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+            Me._TypeArguments = typeArguments
+        End Sub
+
+
+        Private ReadOnly _TypeArguments As BoundTypeArguments
+        Public ReadOnly Property TypeArguments As BoundTypeArguments
+            Get
+                Return _TypeArguments
+            End Get
+        End Property
+
+        <DebuggerStepThrough>
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitTypeOfMany(Me)
+        End Function
+
+        Public Function Update(typeArguments As BoundTypeArguments, operand As BoundExpression, isTypeOfIsNotExpression As Boolean, type As TypeSymbol) As BoundTypeOfMany
+            If typeArguments IsNot Me.TypeArguments OrElse operand IsNot Me.Operand OrElse isTypeOfIsNotExpression <> Me.IsTypeOfIsNotExpression OrElse type IsNot Me.Type Then
+                Dim result = New BoundTypeOfMany(Me.Syntax, typeArguments, operand, isTypeOfIsNotExpression, type, Me.HasErrors)
+                result.CopyAttributes(Me)
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
+    Partial Friend NotInheritable Class BoundExpressionIntoVariable
+        Inherits BoundExpression
+
+        Public Sub New(syntax As SyntaxNode, expression As BoundExpression, variable As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
+            MyBase.New(BoundKind.ExpressionIntoVariable, syntax, type, hasErrors OrElse expression.NonNullAndHasErrors() OrElse variable.NonNullAndHasErrors())
+
+            Debug.Assert(expression IsNot Nothing, "Field 'expression' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+            Debug.Assert(variable IsNot Nothing, "Field 'variable' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+            Me._Expression = expression
+            Me._Variable = variable
+        End Sub
+
+
+        Private ReadOnly _Expression As BoundExpression
+        Public ReadOnly Property Expression As BoundExpression
+            Get
+                Return _Expression
+            End Get
+        End Property
+
+        Private ReadOnly _Variable As BoundExpression
+        Public ReadOnly Property Variable As BoundExpression
+            Get
+                Return _Variable
+            End Get
+        End Property
+
+        <DebuggerStepThrough>
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitExpressionIntoVariable(Me)
+        End Function
+
+        Public Function Update(expression As BoundExpression, variable As BoundExpression, type As TypeSymbol) As BoundExpressionIntoVariable
+            If expression IsNot Me.Expression OrElse variable IsNot Me.Variable OrElse type IsNot Me.Type Then
+                Dim result = New BoundExpressionIntoVariable(Me.Syntax, expression, variable, type, Me.HasErrors)
                 result.CopyAttributes(Me)
                 Return result
             End If
@@ -9371,6 +9479,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Return VisitTryCast(CType(node, BoundTryCast), arg)
                 Case BoundKind.[TypeOf]
                     Return VisitTypeOf(CType(node, BoundTypeOf), arg)
+                Case BoundKind.TypeOfMany
+                    Return VisitTypeOfMany(CType(node, BoundTypeOfMany), arg)
+                Case BoundKind.ExpressionIntoVariable
+                    Return VisitExpressionIntoVariable(CType(node, BoundExpressionIntoVariable), arg)
                 Case BoundKind.SequencePoint
                     Return VisitSequencePoint(CType(node, BoundSequencePoint), arg)
                 Case BoundKind.SequencePointExpression
@@ -9815,6 +9927,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overridable Function VisitTypeOf(node As BoundTypeOf, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
+        Public Overridable Function VisitTypeOfMany(node As BoundTypeOfMany, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
+        Public Overridable Function VisitExpressionIntoVariable(node As BoundExpressionIntoVariable, arg As A) As R
             Return Me.DefaultVisit(node, arg)
         End Function
 
@@ -10518,6 +10638,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overridable Function VisitTypeOf(node As BoundTypeOf) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitTypeOfMany(node As BoundTypeOfMany) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitExpressionIntoVariable(node As BoundExpressionIntoVariable) As BoundNode
             Return Me.DefaultVisit(node)
         End Function
 
@@ -11266,6 +11394,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides Function VisitTypeOf(node As BoundTypeOf) As BoundNode
             Me.Visit(node.Operand)
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitTypeOfMany(node As BoundTypeOfMany) As BoundNode
+            Me.Visit(node.TypeArguments)
+            Me.Visit(node.Operand)
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitExpressionIntoVariable(node As BoundExpressionIntoVariable) As BoundNode
+            Me.Visit(node.Expression)
+            Me.Visit(node.Variable)
             Return Nothing
         End Function
 
@@ -12260,7 +12400,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim operand As BoundExpression = DirectCast(Me.Visit(node.Operand), BoundExpression)
             Dim targetType as TypeSymbol = Me.VisitType(node.TargetType)
             Dim type as TypeSymbol = Me.VisitType(node.Type)
-            Return node.Update(operand, node.IsTypeOfIsNotExpression, targetType, type)
+            Return node.Update(targetType, operand, node.IsTypeOfIsNotExpression, type)
+        End Function
+
+        Public Overrides Function VisitTypeOfMany(node As BoundTypeOfMany) As BoundNode
+            Dim typeArguments As BoundTypeArguments = DirectCast(Me.Visit(node.TypeArguments), BoundTypeArguments)
+            Dim operand As BoundExpression = DirectCast(Me.Visit(node.Operand), BoundExpression)
+            Dim type as TypeSymbol = Me.VisitType(node.Type)
+            Return node.Update(typeArguments, operand, node.IsTypeOfIsNotExpression, type)
+        End Function
+
+        Public Overrides Function VisitExpressionIntoVariable(node As BoundExpressionIntoVariable) As BoundNode
+            Dim expression As BoundExpression = DirectCast(Me.Visit(node.Expression), BoundExpression)
+            Dim variable As BoundExpression = DirectCast(Me.Visit(node.Variable), BoundExpression)
+            Dim type as TypeSymbol = Me.VisitType(node.Type)
+            Return node.Update(expression, variable, type)
         End Function
 
         Public Overrides Function VisitSequencePoint(node As BoundSequencePoint) As BoundNode
@@ -13439,9 +13593,26 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides Function VisitTypeOf(node As BoundTypeOf, arg As Object) As TreeDumperNode
             Return New TreeDumperNode("[typeOf]", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("targetType", node.TargetType, Nothing),
                 New TreeDumperNode("operand", Nothing, new TreeDumperNode() {Visit(node.Operand, Nothing)}),
                 New TreeDumperNode("isTypeOfIsNotExpression", node.IsTypeOfIsNotExpression, Nothing),
-                New TreeDumperNode("targetType", node.TargetType, Nothing),
+                New TreeDumperNode("type", node.Type, Nothing)
+            })
+        End Function
+
+        Public Overrides Function VisitTypeOfMany(node As BoundTypeOfMany, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("typeOfMany", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("typeArguments", Nothing, new TreeDumperNode() {Visit(node.TypeArguments, Nothing)}),
+                New TreeDumperNode("operand", Nothing, new TreeDumperNode() {Visit(node.Operand, Nothing)}),
+                New TreeDumperNode("isTypeOfIsNotExpression", node.IsTypeOfIsNotExpression, Nothing),
+                New TreeDumperNode("type", node.Type, Nothing)
+            })
+        End Function
+
+        Public Overrides Function VisitExpressionIntoVariable(node As BoundExpressionIntoVariable, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("expressionIntoVariable", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("expression", Nothing, new TreeDumperNode() {Visit(node.Expression, Nothing)}),
+                New TreeDumperNode("variable", Nothing, new TreeDumperNode() {Visit(node.Variable, Nothing)}),
                 New TreeDumperNode("type", node.Type, Nothing)
             })
         End Function
