@@ -12,6 +12,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Partial Friend NotInheritable Class LocalRewriter
 
         Public Overrides Function VisitTypeOfMany(node As BoundTypeOfMany) As BoundNode
+
             ' 
             ' A TypeofMany expression is lowered into a sequence of TypeOfExpressions with a boolean logic operations between each pair.
             ' The boolean logic operation for Is is OrElse,
@@ -26,25 +27,33 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             '
             Dim f As New SyntheticBoundNodeFactory(_topMethod, _currentMethodOrLambda, node.Syntax, _compilationState, _diagnostics)
             Dim expr = TryCast(node.Syntax, TypeOfExpressionSyntax)
-            If expr Is Nothing Then
-                Return f.BadExpression()
-            End If
+            If expr Is Nothing Then Return f.BadExpression()
 
             ' Validate that the operation is valid, either an IsExpression or IsNot Expression.
-            Dim isOperand = expr.OperatorToken.Kind = SyntaxKind.IsExpression
+            Dim is___Operand = expr.OperatorToken.Kind = SyntaxKind.IsExpression
             Dim isNotOperand = expr.OperatorToken.Kind = SyntaxKind.IsNotExpression
-            If Not (isOperand Xor isNotOperand) Then
+            If Not (is___Operand Xor isNotOperand) Then
                 ' If both are false or both are true, something has gone wrong.
                 _diagnostics.Add(ERRID.ERR_ArgumentSyntax, expr.OperatorToken.GetLocation())
                 Return MyBase.VisitTypeOfMany(node)
             End If
+
             Dim types = TryCast(expr.Type, TypeArgumentListSyntax)
             if types Is Nothing Then Return f.BadExpression()
 
             Dim numberOfTypes = node.TypeArguments.Arguments.Length
-            If numberOfTypes < 1 Then
-                Return MyBase.VisitTypeOfMany(node)
-            End If
+            If numberOfTypes < 1 Then Return MyBase.VisitTypeOfMany(node)
+
+            Return Rewrite_TypeOfMany(node, f, is___Operand, isNotOperand, types, numberOfTypes)
+        End Function
+
+        Private Function Rewrite_TypeOfMany( node As BoundTypeOfMany,
+                                             f As SyntheticBoundNodeFactory,
+                                             isOperand As Boolean,
+                                             isNotOperand As Boolean,
+                                             types As TypeArgumentListSyntax,
+                                             numberOfTypes As Integer
+                                           ) As BoundExpression
             ' Prepare to construce the output expression.
             Dim result As BoundExpression = Nothing
             Dim idx = 0
@@ -72,17 +81,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End If
                 idx += 1
             End While
+
             Return result
         End Function
+
+#Region "TypeOf ... In ..."
 
         Public Overrides Function VisitExpressionIntoVariable(node As BoundExpressionIntoVariable) As BoundNode
             ' Currently only TypeOfExpression is supported.
             ' Other expression maybe supported in the future.
             If TypeOf node.Expression Is BoundTypeOf Then
                 Return Rewrite_TypeOfExpression_Into_Variable(node, DirectCast(node.Expression, BoundTypeOf))
+            Else
+                Return MyBase.VisitExpressionIntoVariable(node)
             End If
-
-            Return MyBase.VisitExpressionIntoVariable(node)
         End Function
 
         Private Function Can_ConvertTo(f As SyntheticBoundNodeFactory, node as BoundExpression, type As TypeSymbol, byref convkind As ConversionKind) As Boolean
@@ -95,13 +107,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim targetType = typeofexpr.TargetType
             Dim factory As New SyntheticBoundNodeFactory(_topMethod, _currentMethodOrLambda, node.Syntax, _compilationState, _diagnostics)
             Dim convKind As ConversionKind = Nothing
-            If Not Can_ConvertTo(factory, typeofexpr.Operand, typeofexpr.TargetType, convKind) Then
-                return factory.BadExpression()
-            End if
+            If Not Can_ConvertTo(factory, typeofexpr.Operand, typeofexpr.TargetType, convKind) Then Return factory.BadExpression()
+
             Dim convkind1 As ConversionKind = nothing
-            If Not Can_ConvertTo(factory, typeofexpr.Operand, node.Variable.Type, convKind1) Then
-                Return factory.BadExpression()
-            End If
+            If Not Can_ConvertTo(factory, typeofexpr.Operand, node.Variable.Type, convKind1) Then Return factory.BadExpression()
+
             ' Depending on the type kind of the target type, different lowering are created.
             If targetType.IsNullableType Then
                 Return factory.BadExpression()
@@ -198,7 +208,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             ' Construct the DirectCast( expression, Object)
             Dim expression_as_object = Make_DirectCastToObject(f, node.Syntax, typeofexpr.Operand).MakeCompilerGenerated
-            
+
             Dim conv =  Conversions.ClassifyDirectCastConversion(expression_as_object.Type, nullableOf_T, Nothing)
             ' Construct the assignment to the temporary variable with DirectCast( expression_as_object, Nullable(Of T))
             Dim assigment = f.AssignmentExpression(f.Local(tmp_variable, True),
@@ -216,5 +226,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return code_sequence.MakeCompilerGenerated
         End Function
 
+#End Region
+
     End Class
+
 End Namespace

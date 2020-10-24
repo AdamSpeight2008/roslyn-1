@@ -860,12 +860,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             return operand
         End Function
 
-        'Private Function BindTypeOfManyExpression(node As TypeOfManyExpressionSyntax, diagnostics As DiagnosticBag) As BoundExpression
-
-
-        'End Function
-
-
         Friend Function BindIntoVariableExpression(node as IntoVariableExpressionSyntax, diagnostics As DiagnosticBag) As BoundExpression
             Dim BLExpr = BindExpression(node.Expression, diagnostics)
             If TypeOf BLExpr Is BoundTypeOf Then
