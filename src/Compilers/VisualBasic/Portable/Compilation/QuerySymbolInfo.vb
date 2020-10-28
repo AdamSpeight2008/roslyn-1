@@ -8,6 +8,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
     Public Structure CollectionRangeVariableSymbolInfo
+
         ''' <summary>
         ''' Optional AsQueryable/AsEnumerable/Cast(Of Object) method used 
         ''' to "convert" <see cref="CollectionRangeVariableSyntax.Expression"/> to queryable
@@ -29,11 +30,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Friend Shared ReadOnly None As New CollectionRangeVariableSymbolInfo(SymbolInfo.None, SymbolInfo.None, SymbolInfo.None)
 
-        Friend Sub New(
-            toQueryableCollectionConversion As SymbolInfo,
-            asClauseConversion As SymbolInfo,
-            selectMany As SymbolInfo
-        )
+        Friend Sub New( toQueryableCollectionConversion As SymbolInfo,
+                        asClauseConversion              As SymbolInfo,
+                        selectMany                      As SymbolInfo
+                      )
             Me.ToQueryableCollectionConversion = toQueryableCollectionConversion
             Me.AsClauseConversion = asClauseConversion
             Me.SelectMany = selectMany
@@ -41,14 +41,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     End Structure
 
     Public Structure AggregateClauseSymbolInfo
-        ''' <summary>
-        ''' The first of the two optional Select methods associated with <see cref="AggregateClauseSyntax"/>.
-        ''' </summary>
+
+        ''' <summary> The first of the two optional Select methods associated with <see cref="AggregateClauseSyntax"/>. </summary>
         Public ReadOnly Property Select1 As SymbolInfo
 
-        ''' <summary>
-        ''' The second of the two optional Select methods associated with <see cref="AggregateClauseSyntax"/>.
-        ''' </summary>
+        ''' <summary> The second of the two optional Select methods associated with <see cref="AggregateClauseSyntax"/>. </summary>
         Public ReadOnly Property Select2 As SymbolInfo
 
         Friend Sub New(select1 As SymbolInfo)
@@ -67,35 +64,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' Returns information about methods associated with CollectionRangeVariableSyntax.
         ''' </summary>
-        Public Function GetCollectionRangeVariableSymbolInfo(
-            variableSyntax As CollectionRangeVariableSyntax,
-            Optional cancellationToken As CancellationToken = Nothing
-        ) As CollectionRangeVariableSymbolInfo
-            If variableSyntax Is Nothing Then
-                Throw New ArgumentNullException(NameOf(variableSyntax))
-            End If
-            If Not IsInTree(variableSyntax) Then
-                Throw New ArgumentException(VBResources.VariableSyntaxNotWithinSyntaxTree)
-            End If
+        Public Function GetCollectionRangeVariableSymbolInfo( variableSyntax    As CollectionRangeVariableSyntax,
+                                                     Optional cancellationToken As CancellationToken = Nothing
+                                                            ) As CollectionRangeVariableSymbolInfo
+
+            If variableSyntax Is Nothing    Then Throw New ArgumentNullException(NameOf(variableSyntax))
+            If Not IsInTree(variableSyntax) Then Throw New ArgumentException(VBResources.VariableSyntaxNotWithinSyntaxTree)
 
             Return GetCollectionRangeVariableSymbolInfoWorker(variableSyntax, cancellationToken)
         End Function
 
-        Friend MustOverride Function GetCollectionRangeVariableSymbolInfoWorker(node As CollectionRangeVariableSyntax, Optional cancellationToken As CancellationToken = Nothing) As CollectionRangeVariableSymbolInfo
+        Friend MustOverride Function GetCollectionRangeVariableSymbolInfoWorker( node As CollectionRangeVariableSyntax,
+                                                                        Optional cancellationToken As CancellationToken = Nothing
+                                                                               ) As CollectionRangeVariableSymbolInfo
 
         ''' <summary>
         ''' Returns information about methods associated with AggregateClauseSyntax.
         ''' </summary>
-        Public Function GetAggregateClauseSymbolInfo(
-            aggregateSyntax As AggregateClauseSyntax,
-            Optional cancellationToken As CancellationToken = Nothing
-        ) As AggregateClauseSymbolInfo
-            If aggregateSyntax Is Nothing Then
-                Throw New ArgumentNullException(NameOf(aggregateSyntax))
-            End If
-            If Not IsInTree(aggregateSyntax) Then
-                Throw New ArgumentException(VBResources.AggregateSyntaxNotWithinSyntaxTree)
-            End If
+        Public Function GetAggregateClauseSymbolInfo( aggregateSyntax   As AggregateClauseSyntax,
+                                             Optional cancellationToken As CancellationToken = Nothing
+                                                    ) As AggregateClauseSymbolInfo
+            If aggregateSyntax Is Nothing    Then Throw New ArgumentNullException(NameOf(aggregateSyntax))
+            If Not IsInTree(aggregateSyntax) Then Throw New ArgumentException(VBResources.AggregateSyntaxNotWithinSyntaxTree)
 
             ' Stand-alone Aggregate does not use Select methods.
             If aggregateSyntax.Parent Is Nothing OrElse
@@ -107,7 +97,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return GetAggregateClauseSymbolInfoWorker(aggregateSyntax, cancellationToken)
         End Function
 
-        Friend MustOverride Function GetAggregateClauseSymbolInfoWorker(node As AggregateClauseSyntax, Optional cancellationToken As CancellationToken = Nothing) As AggregateClauseSymbolInfo
+        Friend MustOverride Function GetAggregateClauseSymbolInfoWorker( node As AggregateClauseSyntax,
+                                                                Optional cancellationToken As CancellationToken = Nothing
+                                                                       ) As AggregateClauseSymbolInfo
 
         ''' <summary>
         ''' DistinctClauseSyntax -       Returns Distinct method associated with DistinctClauseSyntax.
@@ -136,25 +128,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' 
         ''' AggregateClauseSyntax -      Empty SymbolInfo. GetAggregateClauseInfo should be used instead.
         ''' </summary>
-        Public Shadows Function GetSymbolInfo(
-            clauseSyntax As QueryClauseSyntax,
-            Optional cancellationToken As CancellationToken = Nothing
-        ) As SymbolInfo
+        Public Shadows Function GetSymbolInfo( clauseSyntax As QueryClauseSyntax,
+                                      Optional cancellationToken As CancellationToken = Nothing
+                                             ) As SymbolInfo
             CheckSyntaxNode(clauseSyntax)
 
-            If CanGetSemanticInfo(clauseSyntax) Then
-                Select Case clauseSyntax.Kind
-                    Case SyntaxKind.LetClause, SyntaxKind.OrderByClause
-                        Return SymbolInfo.None
+            If Not CanGetSemanticInfo(clauseSyntax) Then Return SymbolInfo.None
 
-                    Case SyntaxKind.AggregateClause
+            Select Case clauseSyntax.Kind
+                   Case SyntaxKind.LetClause, SyntaxKind.OrderByClause
                         Return SymbolInfo.None
-                End Select
+                   Case SyntaxKind.AggregateClause
+                        Return SymbolInfo.None
+            End Select
 
-                Return GetQueryClauseSymbolInfo(clauseSyntax, cancellationToken)
-            Else
-                Return SymbolInfo.None
-            End If
+            Return GetQueryClauseSymbolInfo(clauseSyntax, cancellationToken)
         End Function
 
         Friend MustOverride Function GetQueryClauseSymbolInfo(node As QueryClauseSyntax, Optional cancellationToken As CancellationToken = Nothing) As SymbolInfo
@@ -163,21 +151,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Returns Select method associated with ExpressionRangeVariableSyntax within a LetClauseSyntax, if needed.
         ''' NotNeeded SymbolInfo otherwise.
         ''' </summary>
-        Public Shadows Function GetSymbolInfo(
-            variableSyntax As ExpressionRangeVariableSyntax,
-            Optional cancellationToken As CancellationToken = Nothing
-        ) As SymbolInfo
+        Public Shadows Function GetSymbolInfo( variableSyntax As ExpressionRangeVariableSyntax,
+                                      Optional cancellationToken As CancellationToken = Nothing
+                                             ) As SymbolInfo
             CheckSyntaxNode(variableSyntax)
 
-            If CanGetSemanticInfo(variableSyntax) Then
-                If variableSyntax.Parent Is Nothing OrElse variableSyntax.Parent.Kind <> SyntaxKind.LetClause Then
-                    Return SymbolInfo.None
-                End If
-
-                Return GetLetClauseSymbolInfo(variableSyntax, cancellationToken)
-            Else
-                Return SymbolInfo.None
-            End If
+            If Not CanGetSemanticInfo(variableSyntax) Then Return SymbolInfo.None
+            If variableSyntax.Parent Is Nothing OrElse variableSyntax.Parent.Kind <> SyntaxKind.LetClause Then Return SymbolInfo.None
+            Return GetLetClauseSymbolInfo(variableSyntax, cancellationToken)
         End Function
 
         Friend MustOverride Function GetLetClauseSymbolInfo(node As ExpressionRangeVariableSyntax, Optional cancellationToken As CancellationToken = Nothing) As SymbolInfo
@@ -185,40 +166,34 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' Returns aggregate function associated with FunctionAggregationSyntax.
         ''' </summary>
-        Public Shadows Function GetSymbolInfo(
-            functionSyntax As FunctionAggregationSyntax,
-            Optional cancellationToken As CancellationToken = Nothing
-        ) As SymbolInfo
+        Public Shadows Function GetSymbolInfo( functionSyntax As FunctionAggregationSyntax,
+                                      Optional cancellationToken As CancellationToken = Nothing
+                                             ) As SymbolInfo
             CheckSyntaxNode(functionSyntax)
 
-            If CanGetSemanticInfo(functionSyntax) Then
-                If Not IsInTree(functionSyntax) Then
-                    Throw New ArgumentException(VBResources.FunctionSyntaxNotWithinSyntaxTree)
-                End If
+            If Not CanGetSemanticInfo(functionSyntax) Then Return SymbolInfo.None
 
-                Return GetSymbolInfo(DirectCast(functionSyntax, ExpressionSyntax), cancellationToken)
-            Else
-                Return SymbolInfo.None
-            End If
+            If Not IsInTree(functionSyntax) Then Throw New ArgumentException(VBResources.FunctionSyntaxNotWithinSyntaxTree)
+            
+            Return GetSymbolInfo(DirectCast(functionSyntax, ExpressionSyntax), cancellationToken)
         End Function
 
         ''' <summary>
         ''' Returns OrderBy/OrderByDescending/ThenBy/ThenByDescending method associated with OrderingSyntax.
         ''' </summary>
-        Public Shadows Function GetSymbolInfo(
-            orderingSyntax As OrderingSyntax,
-            Optional cancellationToken As CancellationToken = Nothing
-        ) As SymbolInfo
+        Public Shadows Function GetSymbolInfo( orderingSyntax As OrderingSyntax,
+                                      Optional cancellationToken As CancellationToken = Nothing
+                                             ) As SymbolInfo
             CheckSyntaxNode(orderingSyntax)
 
-            If CanGetSemanticInfo(orderingSyntax) Then
-                Return GetOrderingSymbolInfo(orderingSyntax, cancellationToken)
-            Else
-                Return SymbolInfo.None
-            End If
+            If Not CanGetSemanticInfo(orderingSyntax) Then Return SymbolInfo.None
+            Return GetOrderingSymbolInfo(orderingSyntax, cancellationToken)
         End Function
 
-        Friend MustOverride Function GetOrderingSymbolInfo(node As OrderingSyntax, Optional cancellationToken As CancellationToken = Nothing) As SymbolInfo
+        Friend MustOverride Function GetOrderingSymbolInfo( node As OrderingSyntax,
+                                                   Optional cancellationToken As CancellationToken = Nothing
+                                                          ) As SymbolInfo
+
     End Class
 
 End Namespace

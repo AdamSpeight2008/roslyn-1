@@ -66,22 +66,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="cancellationToken">To stop traversing the symbol table early.</param>
         ''' <param name="filterTree">Only report diagnostics from this syntax tree, if non-null.</param>
         ''' <param name="filterSpanWithinTree">If <paramref name="filterTree"/> and <paramref name="filterSpanWithinTree"/> is non-null, report diagnostics within this span in the <paramref name="filterTree"/>.</param>
-        Public Shared Sub CheckCompliance(compilation As VisualBasicCompilation, diagnostics As DiagnosticBag, cancellationToken As CancellationToken, Optional filterTree As SyntaxTree = Nothing, Optional filterSpanWithinTree As TextSpan? = Nothing)
-            Dim queue = New ConcurrentQueue(Of Diagnostic)()
-            Dim checker = New ClsComplianceChecker(compilation, filterTree, filterSpanWithinTree, queue, cancellationToken)
+        Public Shared Sub CheckCompliance( compilation As VisualBasicCompilation,
+                                           diagnostics As DiagnosticBag,
+                                           cancellationToken As CancellationToken,
+                                  Optional filterTree As SyntaxTree = Nothing,
+                                  Optional filterSpanWithinTree As TextSpan? = Nothing
+                                         )
+            Dim queue As New ConcurrentQueue(Of Diagnostic)()
+            Dim checker As New ClsComplianceChecker(compilation, filterTree, filterSpanWithinTree, queue, cancellationToken)
             checker.Visit(compilation.Assembly)
             checker.WaitForWorkers()
-
-            For Each diag In queue
-                diagnostics.Add(diag)
-            Next
+            diagnostics.AddRange(queue)
+            'For Each diag In queue
+            '    diagnostics.Add(diag)
+            'Next
         End Sub
 
         Private Sub WaitForWorkers()
             Dim tasks As ConcurrentStack(Of Task) = Me._compilerTasks
-            If tasks Is Nothing Then
-                Return
-            End If
+            If tasks Is Nothing Then Return
 
             Dim curTask As Task = Nothing
             While tasks.TryPop(curTask)
@@ -111,9 +114,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         UICultureUtilities.WithCurrentUICulture(
                             Sub()
                                 Try
-                                    VisitModule(m)
+                                      VisitModule(m)
                                 Catch e As Exception When FatalError.ReportUnlessCanceled(e)
-                                    Throw ExceptionUtilities.Unreachable
+                                      Throw ExceptionUtilities.Unreachable
                                 End Try
                             End Sub),
                         Me._cancellationToken))
@@ -132,9 +135,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides Sub VisitNamespace(symbol As NamespaceSymbol)
             Me._cancellationToken.ThrowIfCancellationRequested()
-            If DoNotVisit(symbol) Then
-                Return
-            End If
+            If DoNotVisit(symbol) Then Return
 
             If IsTrue(GetDeclaredOrInheritedCompliance(symbol)) Then
                 CheckName(symbol)
@@ -173,9 +174,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         <PerformanceSensitive("https://github.com/dotnet/roslyn/issues/23582", IsParallelEntry:=False)>
         Public Overrides Sub VisitNamedType(symbol As NamedTypeSymbol)
             Me._cancellationToken.ThrowIfCancellationRequested()
-            If DoNotVisit(symbol) Then
-                Return
-            End If
+            If DoNotVisit(symbol) Then Return
 
             Debug.Assert(Not symbol.IsImplicitClass)
             Dim compliance As Compliance = GetDeclaredOrInheritedCompliance(symbol)
@@ -205,9 +204,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         End If
                     Next
 
-                    If Not hasUnacceptableParameterType Then
-                        Return True
-                    End If
+                    If Not hasUnacceptableParameterType Then Return True
+
                 End If
             Next
 
@@ -216,18 +214,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides Sub VisitMethod(symbol As MethodSymbol)
             Me._cancellationToken.ThrowIfCancellationRequested()
-            If DoNotVisit(symbol) Then
-                Return
-            End If
+            If DoNotVisit(symbol) Then Return
 
             Dim compliance As Compliance = GetDeclaredOrInheritedCompliance(symbol)
 
             Dim checkForAdditionalWarnings As Boolean = VisitTypeOrMember(symbol, compliance)
             Dim isAccessor As Boolean = symbol.IsAccessor()
 
-            If Not checkForAdditionalWarnings AndAlso Not isAccessor Then
-                Return
-            End If
+            If Not checkForAdditionalWarnings AndAlso Not isAccessor Then Return
 
             If Not isAccessor Then
                 If IsTrue(compliance) Then
@@ -237,82 +231,67 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Else
                 Dim methodKind As MethodKind = symbol.MethodKind
                 Select Case methodKind
-                    Case MethodKind.PropertyGet, MethodKind.PropertySet
-                        ' As in dev11, this warning is not produced for event accessors.
-                        For Each attribute In symbol.GetAttributes()
-                            If attribute.IsTargetAttribute(symbol, AttributeDescription.CLSCompliantAttribute) Then
-                                Dim attributeLocation As Location = Nothing
-                                If TryGetAttributeWarningLocation(attribute, attributeLocation) Then
-                                    Dim attributeUsage As AttributeUsageInfo = attribute.AttributeClass.GetAttributeUsageInfo()
-                                    Me.AddDiagnostic(symbol, ERRID.WRN_CLSAttrInvalidOnGetSet, attributeLocation, attribute.AttributeClass.Name, attributeUsage.GetValidTargetsErrorArgument())
-                                    Exit For
+                       Case MethodKind.PropertyGet, MethodKind.PropertySet
+                            ' As in dev11, this warning is not produced for event accessors.
+                            For Each attribute In symbol.GetAttributes()
+                                If attribute.IsTargetAttribute(symbol, AttributeDescription.CLSCompliantAttribute) Then
+                                    Dim attributeLocation As Location = Nothing
+                                    If TryGetAttributeWarningLocation(attribute, attributeLocation) Then
+                                        Dim attributeUsage As AttributeUsageInfo = attribute.AttributeClass.GetAttributeUsageInfo()
+                                        Me.AddDiagnostic(symbol, ERRID.WRN_CLSAttrInvalidOnGetSet, attributeLocation, attribute.AttributeClass.Name, attributeUsage.GetValidTargetsErrorArgument())
+                                        Exit For
+                                    End If
                                 End If
-                            End If
-                        Next
+                            Next
 
-                    Case MethodKind.EventAdd, MethodKind.EventRemove
-                        If checkForAdditionalWarnings Then
-                            Dim containingType = symbol.ContainingType
-                            ' As in dev11, this warning is not produced for EventRaise methods, because they are not accessible outside the assembly.
-                            If Not IsTrue(GetDeclaredOrInheritedCompliance(containingType)) Then
-                                ' Note that we can't reuse the value of GetDeclaredOrInheritedCompliance, because that is actually based on the event.
-                                Dim attributeLocation As Location = Nothing
-                                If GetDeclaredCompliance(symbol, attributeLocation) = True Then
-                                    ' This warning is a little strange since attributes on event accessors are silently ignored.
-                                    Me.AddDiagnostic(symbol, ERRID.WRN_CLSEventMethodInNonCLSType3, attributeLocation, methodKind.TryGetAccessorDisplayName(), symbol.AssociatedSymbol.Name, containingType)
+                       Case MethodKind.EventAdd, MethodKind.EventRemove
+                            If checkForAdditionalWarnings Then
+                                Dim containingType = symbol.ContainingType
+                                ' As in dev11, this warning is not produced for EventRaise methods, because they are not accessible outside the assembly.
+                                If Not IsTrue(GetDeclaredOrInheritedCompliance(containingType)) Then
+                                    ' Note that we can't reuse the value of GetDeclaredOrInheritedCompliance, because that is actually based on the event.
+                                    Dim attributeLocation As Location = Nothing
+                                    If GetDeclaredCompliance(symbol, attributeLocation) = True Then
+                                        ' This warning is a little strange since attributes on event accessors are silently ignored.
+                                        Me.AddDiagnostic(symbol, ERRID.WRN_CLSEventMethodInNonCLSType3, attributeLocation, methodKind.TryGetAccessorDisplayName(), symbol.AssociatedSymbol.Name, containingType)
+                                    End If
                                 End If
                             End If
-                        End If
                 End Select
             End If
         End Sub
 
         Public Overrides Sub VisitProperty(symbol As PropertySymbol)
             Me._cancellationToken.ThrowIfCancellationRequested()
-            If DoNotVisit(symbol) Then
-                Return
-            End If
+            If DoNotVisit(symbol) Then Return
 
             Dim compliance As Compliance = GetDeclaredOrInheritedCompliance(symbol)
-            If Not VisitTypeOrMember(symbol, compliance) Then
-                Return
-            End If
+            If Not VisitTypeOrMember(symbol, compliance) Then Return
 
-            If IsTrue(compliance) Then
-                CheckParameterCompliance(symbol.Parameters, symbol.ContainingType)
-            End If
+            If IsTrue(compliance) Then CheckParameterCompliance(symbol.Parameters, symbol.ContainingType)
+
         End Sub
 
         Public Overrides Sub VisitEvent(symbol As EventSymbol)
             Me._cancellationToken.ThrowIfCancellationRequested()
-            If DoNotVisit(symbol) Then
-                Return
-            End If
+            If DoNotVisit(symbol) Then Return
 
             Dim compliance As Compliance = GetDeclaredOrInheritedCompliance(symbol)
-            If Not VisitTypeOrMember(symbol, compliance) Then
-                Return
-            End If
+            If Not VisitTypeOrMember(symbol, compliance) Then Return
         End Sub
 
         Public Overrides Sub VisitField(symbol As FieldSymbol)
             Me._cancellationToken.ThrowIfCancellationRequested()
-            If DoNotVisit(symbol) Then
-                Return
-            End If
+            If DoNotVisit(symbol) Then Return
 
             Dim compliance As Compliance = GetDeclaredOrInheritedCompliance(symbol)
-            If Not VisitTypeOrMember(symbol, compliance) Then
-                Return
-            End If
+            If Not VisitTypeOrMember(symbol, compliance) Then Return
         End Sub
 
         Private Function VisitTypeOrMember(symbol As Symbol, compliance As Compliance) As Boolean
             Debug.Assert(symbol.Kind = SymbolKind.NamedType OrElse symbol.Kind = SymbolKind.Field OrElse symbol.Kind = SymbolKind.Property OrElse symbol.Kind = SymbolKind.Event OrElse symbol.Kind = SymbolKind.Method)
 
-            If Not IsAccessibleOutsideAssembly(symbol) Then
-                Return False
-            End If
+            If Not IsAccessibleOutsideAssembly(symbol) Then Return False
 
             Dim isAccessor As Boolean = symbol.IsAccessor()
 
@@ -434,20 +413,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim code As ERRID
             Dim type As TypeSymbol
             Select Case symbol.Kind
-                Case SymbolKind.Field
-                    code = ERRID.WRN_FieldNotCLSCompliant1
-                    type = (DirectCast(symbol, FieldSymbol)).Type
-                Case SymbolKind.Property
-                    code = ERRID.WRN_ProcTypeNotCLSCompliant1
-                    type = (DirectCast(symbol, PropertySymbol)).Type
-                Case SymbolKind.Method
-                    code = ERRID.WRN_ProcTypeNotCLSCompliant1
-                    Dim method As MethodSymbol = DirectCast(symbol, MethodSymbol)
-                    type = method.ReturnType
-                    ' As in dev11, we report on the delegate Invoke method, rather than on the delegate itself.
-                    Debug.Assert(Not method.IsAccessor())
-                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(symbol.Kind)
+                   Case SymbolKind.Field
+                        code = ERRID.WRN_FieldNotCLSCompliant1
+                        type = (DirectCast(symbol, FieldSymbol)).Type
+                   Case SymbolKind.Property
+                        code = ERRID.WRN_ProcTypeNotCLSCompliant1
+                        type = (DirectCast(symbol, PropertySymbol)).Type
+                   Case SymbolKind.Method
+                        code = ERRID.WRN_ProcTypeNotCLSCompliant1
+                        Dim method As MethodSymbol = DirectCast(symbol, MethodSymbol)
+                        type = method.ReturnType
+                        ' As in dev11, we report on the delegate Invoke method, rather than on the delegate itself.
+                        Debug.Assert(Not method.IsAccessor())
+                   Case Else
+                        Throw ExceptionUtilities.UnexpectedValue(symbol.Kind)
             End Select
 
             If ShouldReportNonCompliantType(type, symbol.ContainingType, symbol) Then
@@ -468,7 +447,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Sub CheckMemberDistinctness(symbol As NamespaceOrTypeSymbol)
             Debug.Assert(IsAccessibleOutsideAssembly(symbol))
             Debug.Assert(IsTrue(GetDeclaredOrInheritedCompliance(symbol)))
-            Dim seenByName As MultiDictionary(Of String, Symbol) = New MultiDictionary(Of String, Symbol)(CaseInsensitiveComparison.Comparer)
+            Dim seenByName As New MultiDictionary(Of String, Symbol)(CaseInsensitiveComparison.Comparer)
 
             ' BREAK: Dev11 does not consider collisions with inherited members
 
@@ -539,9 +518,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Debug.Assert(sameNameSymbols.Count > 0)
 
             Dim isMethodOrProperty As Boolean = symbol.Kind = SymbolKind.Method OrElse symbol.Kind = SymbolKind.Property
-            If Not isMethodOrProperty Then
-                Return
-            End If
+            If Not isMethodOrProperty Then Return
 
             For Each other As Symbol In sameNameSymbols
                 ' Note: not checking accessor signatures, but checking accessor names.
@@ -589,9 +566,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Private Function DoNotVisit(symbol As Symbol) As Boolean
-            If symbol.Kind = SymbolKind.Namespace Then
-                Return False
-            End If
+            If symbol.Kind = SymbolKind.Namespace Then Return False
 
             Return symbol.DeclaringCompilation IsNot Me._compilation OrElse symbol.IsImplicitlyDeclared OrElse IsSyntacticallyFilteredOut(symbol)
         End Function
@@ -609,21 +584,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private Sub ReportNonCompliantTypeArguments(type As TypeSymbol, context As NamedTypeSymbol, diagnosticSymbol As Symbol)
             Select Case type.TypeKind
-                Case TypeKind.Array
-                    ReportNonCompliantTypeArguments((DirectCast(type, ArrayTypeSymbol)).ElementType, context, diagnosticSymbol)
-                Case TypeKind.Error, TypeKind.TypeParameter
-                    Return
-                Case TypeKind.Class, TypeKind.Structure, TypeKind.Interface, TypeKind.Delegate, TypeKind.Enum, TypeKind.Submission, TypeKind.Module
-                    ReportNonCompliantTypeArguments(DirectCast(type, NamedTypeSymbol), context, diagnosticSymbol)
-                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(type.TypeKind)
+                   Case TypeKind.Array
+                        ReportNonCompliantTypeArguments((DirectCast(type, ArrayTypeSymbol)).ElementType, context, diagnosticSymbol)
+                   Case TypeKind.Error, TypeKind.TypeParameter
+                        Return
+                   Case TypeKind.Class, TypeKind.Structure, TypeKind.Interface, TypeKind.Delegate, TypeKind.Enum, TypeKind.Submission, TypeKind.Module
+                        ReportNonCompliantTypeArguments(DirectCast(type, NamedTypeSymbol), context, diagnosticSymbol)
+                   Case Else
+                        Throw ExceptionUtilities.UnexpectedValue(type.TypeKind)
             End Select
         End Sub
 
         Private Sub ReportNonCompliantTypeArguments(type As NamedTypeSymbol, context As NamedTypeSymbol, diagnosticSymbol As Symbol)
-            If type.IsTupleType Then
-                type = type.TupleUnderlyingType
-            End If
+            If type.IsTupleType Then type = type.TupleUnderlyingType
 
             For Each typeArg In type.TypeArgumentsNoUseSiteDiagnostics
                 If Not IsCompliantType(typeArg, context) Then
@@ -635,36 +608,30 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private Function IsCompliantType(type As TypeSymbol, context As NamedTypeSymbol) As Boolean
             Select Case type.TypeKind
-                Case TypeKind.Array
-                    Return IsCompliantType((DirectCast(type, ArrayTypeSymbol)).ElementType, context)
-                Case TypeKind.Error, TypeKind.TypeParameter
-                    Return True
-                Case TypeKind.Class, TypeKind.Structure, TypeKind.Interface, TypeKind.Delegate, TypeKind.Enum, TypeKind.Submission, TypeKind.Module
-                    Return IsCompliantType(DirectCast(type, NamedTypeSymbol))
-                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(type.TypeKind)
+                   Case TypeKind.Array
+                        Return IsCompliantType((DirectCast(type, ArrayTypeSymbol)).ElementType, context)
+                   Case TypeKind.Error, TypeKind.TypeParameter
+                        Return True
+                   Case TypeKind.Class, TypeKind.Structure, TypeKind.Interface, TypeKind.Delegate, TypeKind.Enum, TypeKind.Submission, TypeKind.Module
+                        Return IsCompliantType(DirectCast(type, NamedTypeSymbol))
+                   Case Else
+                        Throw ExceptionUtilities.UnexpectedValue(type.TypeKind)
             End Select
         End Function
 
         Private Function IsCompliantType(type As NamedTypeSymbol) As Boolean
             Select Case type.SpecialType
-                Case SpecialType.System_TypedReference, SpecialType.System_UIntPtr
-                    Return False
-                Case SpecialType.System_SByte, SpecialType.System_UInt16, SpecialType.System_UInt32, SpecialType.System_UInt64
-                    Return False
+                   Case SpecialType.System_TypedReference, SpecialType.System_UIntPtr
+                        Return False
+                   Case SpecialType.System_SByte, SpecialType.System_UInt16, SpecialType.System_UInt32, SpecialType.System_UInt64
+                        Return False
             End Select
 
-            If type.TypeKind = TypeKind.Error Then
-                Return True
-            End If
+            If type.TypeKind = TypeKind.Error Then Return True
 
-            If Not IsTrue(GetDeclaredOrInheritedCompliance(type.OriginalDefinition)) Then
-                Return False
-            End If
+            If Not IsTrue(GetDeclaredOrInheritedCompliance(type.OriginalDefinition)) Then Return False
 
-            If type.IsTupleType Then
-                Return IsCompliantType(type.TupleUnderlyingType)
-            End If
+            If type.IsTupleType Then Return IsCompliantType(type.TupleUnderlyingType)
 
             ' NOTE: Type arguments are checked separately (see HasNonCompliantTypeArguments)
 
@@ -714,10 +681,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
 
             Select Case (symbol.Kind)
-                Case SymbolKind.Assembly, SymbolKind.NetModule, SymbolKind.NamedType
-                    Return Me._declaredOrInheritedCompliance.GetOrAdd(symbol, compliance)
-                Case Else
-                    Return compliance
+                   Case SymbolKind.Assembly, SymbolKind.NetModule, SymbolKind.NamedType
+                        Return Me._declaredOrInheritedCompliance.GetOrAdd(symbol, compliance)
+                   Case Else
+                        Return compliance
             End Select
         End Function
 
@@ -818,9 +785,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Function GetContainingModuleOrAssembly(symbol As Symbol) As Symbol
             Dim containingAssembly = symbol.ContainingAssembly
 
-            If containingAssembly IsNot Me._compilation.Assembly Then
-                Return containingAssembly
-            End If
+            If containingAssembly IsNot Me._compilation.Assembly Then Return containingAssembly
 
             Dim producingNetModule = Me._compilation.Options.OutputKind = OutputKind.NetModule
             Return If(producingNetModule, DirectCast(symbol.ContainingModule, Symbol), containingAssembly)
@@ -828,9 +793,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private Shared Function IsAccessibleOutsideAssembly(symbol As Symbol) As Boolean
             While symbol IsNot Nothing AndAlso Not IsImplicitClass(symbol)
-                If Not IsAccessibleIfContainerIsAccessible(symbol) Then
-                    Return False
-                End If
+                If Not IsAccessibleIfContainerIsAccessible(symbol) Then Return False
 
                 symbol = symbol.ContainingType
             End While
@@ -840,19 +803,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private Shared Function IsAccessibleIfContainerIsAccessible(symbol As Symbol) As Boolean
             Select Case symbol.DeclaredAccessibility
-                Case Accessibility.Public
-                    Return True
-                Case Accessibility.Protected, Accessibility.ProtectedOrFriend
-                    ' NOTE: Unlike C#, VB considers protected members of sealed types inaccessible.
-                    Dim containingType = symbol.ContainingType
-                    Return containingType Is Nothing OrElse Not containingType.IsNotInheritable
-                Case Accessibility.Private, Accessibility.ProtectedAndFriend, Accessibility.Friend
-                    Return False
-                Case Accessibility.NotApplicable
-                    Debug.Assert(symbol.Kind = SymbolKind.ErrorType)
-                    Return False
-                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(symbol.DeclaredAccessibility)
+                   Case Accessibility.Public
+                        Return True
+                   Case Accessibility.Protected, Accessibility.ProtectedOrFriend
+                        ' NOTE: Unlike C#, VB considers protected members of sealed types inaccessible.
+                        Dim containingType = symbol.ContainingType
+                        Return containingType Is Nothing OrElse Not containingType.IsNotInheritable
+                   Case Accessibility.Private, Accessibility.ProtectedAndFriend, Accessibility.Friend
+                        Return False
+                   Case Accessibility.NotApplicable
+                        Debug.Assert(symbol.Kind = SymbolKind.ErrorType)
+                        Return False
+                   Case Else
+                        Throw ExceptionUtilities.UnexpectedValue(symbol.DeclaredAccessibility)
             End Select
         End Function
 
@@ -862,8 +825,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Private Sub AddDiagnostic(symbol As Symbol, code As ERRID, location As Location, ParamArray args As Object())
-            Dim info = New BadSymbolDiagnostic(symbol, code, args)
-            Dim diag = New VBDiagnostic(info, location)
+            Dim info As New BadSymbolDiagnostic(symbol, code, args)
+            Dim diag As New VBDiagnostic(info, location)
             Me._diagnostics.Enqueue(diag)
         End Sub
 
@@ -873,23 +836,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private Shared Function IsTrue(compliance As Compliance) As Boolean
             Select Case compliance
-                Case Compliance.DeclaredTrue, Compliance.InheritedTrue
-                    Return True
-                Case Compliance.DeclaredFalse, Compliance.InheritedFalse, Compliance.ImpliedFalse
-                    Return False
-                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(compliance)
+                   Case Compliance.DeclaredTrue, Compliance.InheritedTrue
+                        Return True
+                   Case Compliance.DeclaredFalse, Compliance.InheritedFalse, Compliance.ImpliedFalse
+                        Return False
+                   Case Else
+                        Throw ExceptionUtilities.UnexpectedValue(compliance)
             End Select
         End Function
 
         Private Shared Function IsDeclared(compliance As Compliance) As Boolean
             Select Case compliance
-                Case Compliance.DeclaredTrue, Compliance.DeclaredFalse
-                    Return True
-                Case Compliance.InheritedTrue, Compliance.InheritedFalse, Compliance.ImpliedFalse
-                    Return False
-                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(compliance)
+                   Case Compliance.DeclaredTrue, Compliance.DeclaredFalse
+                        Return True
+                   Case Compliance.InheritedTrue, Compliance.InheritedFalse, Compliance.ImpliedFalse
+                        Return False
+                   Case Else
+                        Throw ExceptionUtilities.UnexpectedValue(compliance)
             End Select
         End Function
 
@@ -956,17 +919,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Shared Function GetParameterTypes(symbol As Symbol) As ImmutableArray(Of TypeSymbol)
             Dim parameters As ImmutableArray(Of ParameterSymbol)
             Select Case (symbol.Kind)
-                Case SymbolKind.Method
-                    parameters = DirectCast(symbol, MethodSymbol).Parameters
-                Case SymbolKind.Property
-                    parameters = DirectCast(symbol, PropertySymbol).Parameters
-                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(symbol.Kind)
+                   Case SymbolKind.Method
+                        parameters = DirectCast(symbol, MethodSymbol).Parameters
+                   Case SymbolKind.Property
+                        parameters = DirectCast(symbol, PropertySymbol).Parameters
+                   Case Else
+                        Throw ExceptionUtilities.UnexpectedValue(symbol.Kind)
             End Select
 
-            If parameters.IsEmpty Then
-                Return ImmutableArray(Of TypeSymbol).Empty
-            End If
+            If parameters.IsEmpty Then Return ImmutableArray(Of TypeSymbol).Empty
 
             Dim builder = ArrayBuilder(Of TypeSymbol).GetInstance(parameters.Length)
             For Each parameter In parameters
@@ -978,17 +939,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Shared Function GetParameterRefKinds(symbol As Symbol) As ImmutableArray(Of RefKind)
             Dim parameters As ImmutableArray(Of ParameterSymbol)
             Select Case (symbol.Kind)
-                Case SymbolKind.Method
-                    parameters = DirectCast(symbol, MethodSymbol).Parameters
-                Case SymbolKind.Property
-                    parameters = DirectCast(symbol, PropertySymbol).Parameters
-                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(symbol.Kind)
+                   Case SymbolKind.Method
+                        parameters = DirectCast(symbol, MethodSymbol).Parameters
+                   Case SymbolKind.Property
+                        parameters = DirectCast(symbol, PropertySymbol).Parameters
+                   Case Else
+                        Throw ExceptionUtilities.UnexpectedValue(symbol.Kind)
             End Select
 
-            If parameters.IsEmpty Then
-                Return ImmutableArray(Of RefKind).Empty
-            End If
+            If parameters.IsEmpty Then Return ImmutableArray(Of RefKind).Empty
 
             Dim builder = ArrayBuilder(Of RefKind).GetInstance(parameters.Length)
             For Each parameter In parameters

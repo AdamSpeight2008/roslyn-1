@@ -21,14 +21,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Friend NotInheritable Class MethodCompiler
         Inherits VisualBasicSymbolVisitor
 
-        Private ReadOnly _compilation As VisualBasicCompilation
-        Private ReadOnly _cancellationToken As CancellationToken
-        Private ReadOnly _emittingPdb As Boolean
-        Private ReadOnly _emitTestCoverageData As Boolean
-        Private ReadOnly _diagnostics As DiagnosticBag
-        Private ReadOnly _hasDeclarationErrors As Boolean
-        Private ReadOnly _moduleBeingBuiltOpt As PEModuleBuilder ' Nothing if compiling for diagnostics
-        Private ReadOnly _filterOpt As Predicate(Of Symbol)      ' If not Nothing, limit analysis to specific symbols
+        Private ReadOnly _compilation           As VisualBasicCompilation
+        Private ReadOnly _cancellationToken     As CancellationToken
+        Private ReadOnly _emittingPdb           As Boolean
+        Private ReadOnly _emitTestCoverageData  As Boolean
+        Private ReadOnly _diagnostics           As DiagnosticBag
+        Private ReadOnly _hasDeclarationErrors  As Boolean
+        Private ReadOnly _moduleBeingBuiltOpt   As PEModuleBuilder      ' Nothing if compiling for diagnostics
+        Private ReadOnly _filterOpt             As Predicate(Of Symbol) ' If not Nothing, limit analysis to specific symbols
         Private ReadOnly _debugDocumentProvider As DebugDocumentProvider
 
         ' GetDiagnostics only needs to Bind. If we need to go further, _doEmitPhase needs to be set. 
@@ -813,9 +813,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Next
 
             If stubs IsNot Nothing Then
-                For Each stub In stubs
-                    stub.Seal()
-                Next
+                stubs.Do(Sub(stub) stub.Seal())
+                'For Each stub In stubs
+                '    stub.Seal()
+                'Next
 
                 stubs.Free()
             End If
@@ -823,7 +824,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private Shared Function GetDesignerInitializeComponentMethod(sourceTypeSymbol As SourceMemberContainerTypeSymbol) As MethodSymbol
 
-            If sourceTypeSymbol.TypeKind = TypeKind.Class AndAlso sourceTypeSymbol.GetAttributes().IndexOfAttribute(sourceTypeSymbol, AttributeDescription.DesignerGeneratedAttribute) > -1 Then
+            If sourceTypeSymbol.TypeKind = TypeKind.Class AndAlso
+                sourceTypeSymbol.GetAttributes().IndexOfAttribute(sourceTypeSymbol, AttributeDescription.DesignerGeneratedAttribute) > -1 Then
                 For Each member As Symbol In sourceTypeSymbol.GetMembers("InitializeComponent")
                     If member.Kind = SymbolKind.Method Then
                         Dim method = DirectCast(member, MethodSymbol)
@@ -1151,18 +1153,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' the symbol of the constructor called from the one being compiled either explicitly or implicitly. 
         ''' For structure constructors calling parameterless constructor returns the synthesized constructor symbol.
         ''' </param>
-        Private Sub CompileMethod(
-            method As MethodSymbol,
-            methodOrdinal As Integer,
-            ByRef withEventPropertyIdDispenser As Integer,
-            ByRef delegateRelaxationIdDispenser As Integer,
-            filter As Predicate(Of Symbol),
-            compilationState As TypeCompilationState,
-            processedInitializers As Binder.ProcessedFieldOrPropertyInitializers,
-            containingTypeBinder As Binder,
-            previousSubmissionFields As SynthesizedSubmissionFields,
-            Optional ByRef referencedConstructor As MethodSymbol = Nothing
-        )
+        Private Sub CompileMethod( method As MethodSymbol,
+                                   methodOrdinal As Integer,
+                             ByRef withEventPropertyIdDispenser As Integer,
+                             ByRef delegateRelaxationIdDispenser As Integer,
+                                   filter As Predicate(Of Symbol),
+                                   compilationState As TypeCompilationState,
+                                   processedInitializers As Binder.ProcessedFieldOrPropertyInitializers,
+                                   containingTypeBinder As Binder,
+                                   previousSubmissionFields As SynthesizedSubmissionFields,
+                    Optional ByRef referencedConstructor As MethodSymbol = Nothing
+                                 )
+
             '' TODO: add filtering as follows
             'If filter IsNot Nothing AndAlso Not filter(method) Then
             '    Return
@@ -1284,14 +1286,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Debug.Assert(_moduleBeingBuiltOpt Is Nothing OrElse _moduleBeingBuiltOpt.AllowOmissionOfConditionalCalls)
 
             For Each handledEvent In handledEvents
-                If handledEvent.HandlesKind <> HandledEventKind.WithEvents Then
-                    Continue For
-                End If
+                If handledEvent.HandlesKind <> HandledEventKind.WithEvents Then Continue For
 
                 Dim prop = TryCast(handledEvent.hookupMethod.AssociatedSymbol, SynthesizedOverridingWithEventsProperty)
-                If prop Is Nothing Then
-                    Continue For
-                End If
+                If prop Is Nothing Then Continue For
 
                 Dim getter = prop.GetMethod
                 If compilationState.HasMethodWrapper(getter) Then

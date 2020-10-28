@@ -16,22 +16,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' Indicates whether the compiler accepted or rejected the method during overload resolution.
     ''' </summary>
     Friend Enum MemberResolutionKind
-
-        Applicable = OverloadResolution.CandidateAnalysisResultState.Applicable
-
-        HasUseSiteError = OverloadResolution.CandidateAnalysisResultState.HasUseSiteError
-        Ambiguous = OverloadResolution.CandidateAnalysisResultState.Ambiguous
-        BadGenericArity = OverloadResolution.CandidateAnalysisResultState.BadGenericArity
-        ArgumentCountMismatch = OverloadResolution.CandidateAnalysisResultState.ArgumentCountMismatch
-        TypeInferenceFailed = OverloadResolution.CandidateAnalysisResultState.TypeInferenceFailed
-        ArgumentMismatch = OverloadResolution.CandidateAnalysisResultState.ArgumentMismatch
-        GenericConstraintsViolated = OverloadResolution.CandidateAnalysisResultState.GenericConstraintsViolated
-        RequiresNarrowing = OverloadResolution.CandidateAnalysisResultState.RequiresNarrowing
-        RequiresNarrowingNotFromObject = OverloadResolution.CandidateAnalysisResultState.RequiresNarrowingNotFromObject
+        Applicable                      = OverloadResolution.CandidateAnalysisResultState.Applicable
+        HasUseSiteError                 = OverloadResolution.CandidateAnalysisResultState.HasUseSiteError
+        Ambiguous                       = OverloadResolution.CandidateAnalysisResultState.Ambiguous
+        BadGenericArity                 = OverloadResolution.CandidateAnalysisResultState.BadGenericArity
+        ArgumentCountMismatch           = OverloadResolution.CandidateAnalysisResultState.ArgumentCountMismatch
+        TypeInferenceFailed             = OverloadResolution.CandidateAnalysisResultState.TypeInferenceFailed
+        ArgumentMismatch                = OverloadResolution.CandidateAnalysisResultState.ArgumentMismatch
+        GenericConstraintsViolated      = OverloadResolution.CandidateAnalysisResultState.GenericConstraintsViolated
+        RequiresNarrowing               = OverloadResolution.CandidateAnalysisResultState.RequiresNarrowing
+        RequiresNarrowingNotFromObject  = OverloadResolution.CandidateAnalysisResultState.RequiresNarrowingNotFromObject
         ExtensionMethodVsInstanceMethod = OverloadResolution.CandidateAnalysisResultState.ExtensionMethodVsInstanceMethod
-        Shadowed = OverloadResolution.CandidateAnalysisResultState.Shadowed
-        LessApplicable = OverloadResolution.CandidateAnalysisResultState.LessApplicable
-
+        Shadowed                        = OverloadResolution.CandidateAnalysisResultState.Shadowed
+        LessApplicable                  = OverloadResolution.CandidateAnalysisResultState.LessApplicable
     End Enum
 
     ''' <summary>
@@ -40,13 +37,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Friend Structure MemberResolutionResult(Of TMember As Symbol)
 
         Private ReadOnly _candidate As OverloadResolution.CandidateAnalysisResult
-        Private ReadOnly _isValid As Boolean
 
         Friend Sub New(candidate As OverloadResolution.CandidateAnalysisResult, isValid As Boolean)
             Debug.Assert(Not isValid OrElse candidate.State = OverloadResolution.CandidateAnalysisResultState.Applicable)
 
             _candidate = candidate
-            _isValid = isValid
+            Me.IsValid = isValid
         End Sub
 
         ''' <summary>
@@ -74,11 +70,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' Returns true if the compiler accepted this method as the sole correct result of overload resolution.
         ''' </summary>
-        Public ReadOnly Property IsValid As Boolean
-            Get
-                Return _isValid
-            End Get
-        End Property
+        Public Property IsValid As Boolean
 
         ''' <summary>
         ''' Returns true if the method is considered in its expanded param array form.
@@ -88,5 +80,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return _candidate.IsExpandedParamArrayForm
             End Get
         End Property
+
     End Structure
+
 End Namespace

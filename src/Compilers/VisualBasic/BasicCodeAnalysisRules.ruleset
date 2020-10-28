@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="Diagnostic rules for the BasicCodeAnalysis (Portable and Desktop) projects" Description="Enables rules specific to these projects." ToolsVersion="14.0">
-  <!-- Include default rules -->
-  <Include Path="..\..\..\eng\config\rulesets\Shipping.ruleset" Action="Default" />
-  <Rules AnalyzerId="Roslyn.Diagnostics.Analyzers.VisualBasic" RuleNamespace="Roslyn.Diagnostics.Analyzers.VisualBasic">
-    <Rule Id="RS0004" Action="Error" />
+<RuleSet Name="Diagnostic rules for the BasicCodeAnalysis (Portable and Desktop) projects" Description="Enables rules specific to these projects." ToolsVersion="16.0">
+  <Include Path="..\..\..\eng\config\rulesets\shipping.ruleset" Action="Default" />
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.VisualBasic.CodeStyle" RuleNamespace="Microsoft.CodeAnalysis.VisualBasic.CodeStyle">
+    <Rule Id="IDE0055" Action="None" />
   </Rules>
   <Rules AnalyzerId="Roslyn.Diagnostics.Analyzers.VisualBasic" RuleNamespace="Roslyn.Diagnostics.Analyzers.VisualBasic">
+    <Rule Id="RS0004" Action="Error" />
     <Rule Id="RS0013" Action="Warning" />
   </Rules>
 </RuleSet>

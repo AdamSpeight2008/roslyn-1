@@ -20,18 +20,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' </summary>
     Friend Class OverloadResolutionResult(Of TMember As Symbol)
 
-        Private ReadOnly _validResult As MemberResolutionResult(Of TMember)?
-        Private ReadOnly _bestResult As MemberResolutionResult(Of TMember)?
-        Private _results As ImmutableArray(Of MemberResolutionResult(Of TMember))
-
-        Friend Sub New(
-            results As ImmutableArray(Of MemberResolutionResult(Of TMember)),
-            validResult As MemberResolutionResult(Of TMember)?,
-            bestResult As MemberResolutionResult(Of TMember)?
-        )
-            _results = results
-            _validResult = validResult
-            _bestResult = bestResult
+        Friend Sub New( results     As ImmutableArray(Of MemberResolutionResult(Of TMember)),
+                        validResult As MemberResolutionResult(Of TMember)?,
+                        bestResult  As MemberResolutionResult(Of TMember)?
+                      )
+            Me.Results = results
+            Me.ValidResult = validResult
+            Me.BestResult = bestResult
         End Sub
 
         ''' <summary>
@@ -47,11 +42,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' If overload resolution successfully selected a single best method, returns information
         ''' about that method. Otherwise returns Nothing.
         ''' </summary>
-        Public ReadOnly Property ValidResult As MemberResolutionResult(Of TMember)?
-            Get
-                Return _validResult
-            End Get
-        End Property
+        Public Property ValidResult As MemberResolutionResult(Of TMember)?
 
         ''' <summary>
         ''' If there was a method that overload resolution considered better than all others,
@@ -59,20 +50,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' not considered a successful overload resolution, as long as it was better than any other
         ''' potential method considered.
         ''' </summary>
-        Public ReadOnly Property BestResult As MemberResolutionResult(Of TMember)?
-            Get
-                Return _bestResult
-            End Get
-        End Property
+        Public Property BestResult As MemberResolutionResult(Of TMember)?
 
         ''' <summary>
         ''' Returns information about each method that was considered during overload resolution,
         ''' and what the results of overload resolution were for that method.
         ''' </summary>
         Public ReadOnly Property Results As ImmutableArray(Of MemberResolutionResult(Of TMember))
-            Get
-                Return _results
-            End Get
-        End Property
+
     End Class
+
 End Namespace
