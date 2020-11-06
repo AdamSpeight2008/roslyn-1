@@ -4,6 +4,7 @@
 
 Imports System.Collections.Generic
 Imports System.Linq
+Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
@@ -28,7 +29,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Try
         End Function
 
-        Private ReadOnly _entryPoints As HashSet(Of LabelStatementSyntax) = New HashSet(Of LabelStatementSyntax)()
+        Private ReadOnly _entryPoints As PooledHashSet(Of LabelStatementSyntax) = PooledHashSet(Of LabelStatementSyntax).GetInstance()
 
         Private Overloads Function Analyze() As Boolean
             '  We only need to scan in a single pass.
@@ -40,6 +41,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Protected Overrides Sub Free()
+            _entryPoints.Free()
             MyBase.Free()
         End Sub
 

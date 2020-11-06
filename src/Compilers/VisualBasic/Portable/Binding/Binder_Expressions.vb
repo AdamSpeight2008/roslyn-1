@@ -776,14 +776,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
         End Function
 
-        Private Function BindTypeOfManyExpression(
-                                                   node As TypeOfExpressionSyntax,
-                                                   diagnostics As DiagnosticBag,
-                                                   operand As BoundExpression,
-                                                   operandType As TypeSymbol,
+        Private Function BindTypeOfManyExpression( node            As TypeOfExpressionSyntax,
+                                                   diagnostics     As DiagnosticBag,
+                                                   operand         As BoundExpression,
+                                                   operandType     As TypeSymbol,
                                                    operatorIsIsNot As Boolean,
-                                                   resultType As TypeSymbol,
-                                                   target_types As TypeArgumentListSyntax
+                                                   resultType      As TypeSymbol,
+                                                   target_types    As TypeArgumentListSyntax
                                                  ) As BoundExpression
 
             Dim targetTypes As BoundTypeArguments = BindTypeArguments(target_types, diagnostics)
@@ -810,15 +809,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return New BoundTypeOfMany(node, targetTypes, operand, operatorIsIsNot, resultType)
         End Function
 
-        Private Function BindTypeOfOneExpression(
-                                            ByRef node As TypeOfExpressionSyntax,
-                                                  diagnostics As DiagnosticBag,
-                                            ByRef operand As BoundExpression,
-                                                  operandType As TypeSymbol,
-                                                  operatorIsIsNot As Boolean,
-                                                  resultType As TypeSymbol,
-                                                  target_type As TypeSyntax
-                                                ) As BoundExpression
+        Private Function BindTypeOfOneExpression _ 
+            ( ByRef node            As TypeOfExpressionSyntax,
+                    diagnostics     As DiagnosticBag,
+              ByRef operand         As BoundExpression,
+                    operandType     As TypeSymbol,
+                    operatorIsIsNot As Boolean,
+                    resultType      As TypeSymbol,
+                    target_type     As TypeSyntax
+                  ) As BoundExpression
             Dim targetSymbol As Symbol = BindTypeOrAliasSyntax(target_type, diagnostics)
             Dim targetType = DirectCast(If(TryCast(targetSymbol, TypeSymbol), DirectCast(targetSymbol, AliasSymbol).Target), TypeSymbol)
 
@@ -841,31 +840,45 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return New BoundTypeOf(node, targetType, operand, operatorIsIsNot, resultType)
         End Function
 
-        Private function ValidateConversionIsPossible(Of TNode As SyntaxNode)(node As TNode, operandType As TypeSymbol, targetType As TypeSymbol, diagnostics As DiagnosticBag) As TNode
+        Private function ValidateConversionIsPossible(Of TNode As SyntaxNode)( node As TNode,
+                                                                               operandType As TypeSymbol,
+                                                                               targetType As TypeSymbol,
+                                                                               diagnostics As DiagnosticBag
+                                                                              ) As TNode
             Dim useSiteDiagnostics As HashSet(Of DiagnosticInfo) = Nothing
-            Dim convKind As ConversionKind = Conversions.ClassifyTryCastConversion(operandType, targetType, useSiteDiagnostics)
+            Dim convKind = Conversions.ClassifyTryCastConversion(operandType, targetType, useSiteDiagnostics)
             If diagnostics.Add(node, useSiteDiagnostics) Then
                 ' Suppress any additional diagnostics
-                diagnostics = New DiagnosticBag()
+                diagnostics =  DiagnosticBag.GetInstance()
             ElseIf Not Conversions.ConversionExists(convKind) Then
                 ReportDiagnostic(diagnostics, node, ERRID.ERR_TypeOfExprAlwaysFalse2, operandType, targetType)
             End If
             Return node
         End function
 
-        Private Function ApplyPossibleImplicitConversion(node As TypeOfExpressionSyntax, operandType As TypeSymbol, operand As BoundExpression, diagnostics As DiagnosticBag) As BoundExpression
+        Private Function ApplyPossibleImplicitConversion( node        As TypeOfExpressionSyntax,
+                                                          operandType As TypeSymbol,
+                                                          operand     As BoundExpression,
+                                                          diagnostics As DiagnosticBag
+                                                        ) As BoundExpression
             If operandType.IsTypeParameter() Then
                 operand = ApplyImplicitConversion(node, GetSpecialType(SpecialType.System_Object, node.Expression, diagnostics), operand, diagnostics)
             End If
             return operand
         End Function
 
-        Friend Function BindIntoVariableExpression(node as IntoVariableExpressionSyntax, diagnostics As DiagnosticBag) As BoundExpression
+        Friend Function BindIntoVariableExpression( node        As IntoVariableExpressionSyntax,
+                                                    diagnostics As DiagnosticBag
+                                                  ) As BoundExpression
             Dim BLExpr = BindExpression(node.Expression, diagnostics)
             If TypeOf BLExpr Is BoundTypeOf Then
                 Dim BTExpr = DirectCast(BLExpr, BoundTypeOf)
                 Dim BRExpr = BindAssignmentTarget(node.Variable, diagnostics)
-                Return New BoundExpressionIntoVariable(node, BtExpr, BRExpr, GetSpecialType(SpecialType.System_Boolean, node, diagnostics)) ' BTExpr.TargetType)
+                Return New BoundExpressionIntoVariable(node,
+                                                       BtExpr,
+                                                       BRExpr,
+                                                       GetSpecialType(SpecialType.System_Boolean, node, diagnostics)
+                                                      )
             Else
                 Return New BoundBadExpression(node,
                                               LookupResultKind.NotCreatable,

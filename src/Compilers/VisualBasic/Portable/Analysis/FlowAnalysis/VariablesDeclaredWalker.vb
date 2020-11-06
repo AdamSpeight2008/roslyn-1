@@ -3,6 +3,7 @@
 ' See the LICENSE file in the project root for more information.
 
 Imports System.Collections.Generic
+Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
@@ -23,12 +24,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Try
         End Function
 
-        Private ReadOnly _variablesDeclared As New HashSet(Of Symbol)
+        Private ReadOnly _variablesDeclared As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance()
 
         Private Overloads Function Analyze() As Boolean
             ' only one pass needed.
             Return Scan()
         End Function
+
+        Protected Overrides Sub Free()
+            _variablesDeclared.Free()
+            MyBase.Free()
+        End Sub
 
         Private Sub New(info As FlowAnalysisInfo, region As FlowAnalysisRegionInfo)
             MyBase.New(info, region)
@@ -89,5 +95,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             MyBase.VisitCatchBlock(catchBlock, finallyState)
         End Sub
+
+        Public Overrides Function VisitExpressionIntoVariable(node As BoundExpressionIntoVariable) As BoundNode 
+            If Not node.WasCompilerGenerated    AndAlso IsInside Then
+                _variablesDeclared.Add(node.Variable.ExpressionSymbol)
+            End If
+            Return MyBase.VisitExpressionIntoVariable(node)
+        End Function
     End Class
 End Namespace

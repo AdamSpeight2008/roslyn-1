@@ -51,10 +51,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' performance in unlikely but possible code such as this: "int x; if (cond) goto l1; x =
         ''' 3; l5: print x; l4: goto l5; l3: goto l4; l2: goto l3; l1: goto l2;"
         ''' </summary>
-        Private ReadOnly _labels As New Dictionary(Of LabelSymbol, LabelStateAndNesting)
+        Private ReadOnly _labels As PooledDictionary(Of LabelSymbol, LabelStateAndNesting) = _ 
+            PooledDictionary(Of LabelSymbol, LabelStateAndNesting).GetInstance()
 
         ''' <summary> All of the labels seen so far in this forward scan of the body </summary>
-        Private _labelsSeen As New HashSet(Of LabelSymbol)
+        Private _labelsSeen As PooledHashSet(Of LabelSymbol) = PooledHashSet(of LabelSymbol).GetInstance()
 
         Private _placeholderReplacementMap As Dictionary(Of BoundValuePlaceholderBase, BoundExpression)
 
@@ -116,9 +117,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Protected Sub New(_info As FlowAnalysisInfo, _region As FlowAnalysisRegionInfo, suppressConstExpressionsSupport As Boolean, trackUnassignments As Boolean)
 
             Debug.Assert(_info.Symbol.Kind = SymbolKind.Field OrElse
-                                  _info.Symbol.Kind = SymbolKind.Property OrElse
-                                  _info.Symbol.Kind = SymbolKind.Method OrElse
-                                  _info.Symbol.Kind = SymbolKind.Parameter)
+                         _info.Symbol.Kind = SymbolKind.Property OrElse
+                         _info.Symbol.Kind = SymbolKind.Method OrElse
+                         _info.Symbol.Kind = SymbolKind.Parameter)
 
             Me.compilation = _info.Compilation
             Me.symbol = _info.Symbol
@@ -236,6 +237,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
             Me.diagnostics.Free()
             Me._pendingBranches.Free()
+            Me._labels.Free()
+            Me._labelsSeen.Free()
         End Sub
 
         ''' <summary>
@@ -518,14 +521,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Protected Class SavedPending
             Public ReadOnly PendingBranches As ArrayBuilder(Of PendingBranch)
-            Public ReadOnly LabelsSeen As HashSet(Of LabelSymbol)
+            Public ReadOnly LabelsSeen As PooledHashSet(Of LabelSymbol)
 
-            Public Sub New(ByRef _pendingBranches As ArrayBuilder(Of PendingBranch), ByRef _labelsSeen As HashSet(Of LabelSymbol))
+            Public Sub New(ByRef _pendingBranches As ArrayBuilder(Of PendingBranch), ByRef _labelsSeen As PooledHashSet(Of LabelSymbol))
                 Me.PendingBranches = _pendingBranches
                 Me.LabelsSeen = _labelsSeen
 
                 _pendingBranches = ArrayBuilder(Of PendingBranch).GetInstance()
-                _labelsSeen = New HashSet(Of LabelSymbol)
+                _labelsSeen = PooledHashSet(Of LabelSymbol).GetInstance
             End Sub
         End Class
 

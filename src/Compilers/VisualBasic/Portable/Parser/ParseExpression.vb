@@ -999,10 +999,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseTypeOf_Many([typeOf] As KeywordSyntax, exp As ExpressionSyntax, operatorToken As KeywordSyntax) As TypeOfExpressionSyntax
-            dim allowEmptyGenericArguments = False
-            dim allowNonEmptyGenericArguments = True
+            Dim allowEmptyGenericArguments    = False
+            Dim allowNonEmptyGenericArguments = True
             Dim types = ParseGenericArguments(allowEmptyGenericArguments, allowNonEmptyGenericArguments)
-            Dim kind  = If(operatorToken.Kind = SyntaxKind.IsNotKeyword, SyntaxKind.TypeOfIsExpression, SyntaxKind.TypeOfIsNotExpression)
+            Dim kind  = If(operatorToken.Kind = SyntaxKind.IsKeyword, SyntaxKind.TypeOfIsExpression, SyntaxKind.TypeOfIsNotExpression)
 
             Return SyntaxFactory.TypeOfExpression(kind, [typeOf], exp, operatorToken, types)
         End Function

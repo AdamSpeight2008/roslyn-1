@@ -3,6 +3,7 @@
 ' See the LICENSE file in the project root for more information.
 
 Imports System.Collections.Generic
+Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
@@ -31,7 +32,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Try
         End Function
 
-        Private ReadOnly _result As HashSet(Of Symbol) = New HashSet(Of Symbol)()
+        Private ReadOnly _result As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance()
+
+        Protected Overrides Sub Free()
+            _result.Free()
+            MyBase.Free()
+        End Sub
 
         Protected Overrides Sub ReportUnassigned(local As Symbol,
                                                  node As SyntaxNode,
