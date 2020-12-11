@@ -397,7 +397,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         End Function
 
-        Private Function GetCurrentSyntaxNodeIfApplicable(<Out()> ByRef curSyntaxNode As VisualBasicSyntaxNode) As BlockContext
+        Private Function GetCurrentSyntaxNodeIfApplicable(
+                                               <Out> ByRef curSyntaxNode As VisualBasicSyntaxNode
+                                                         ) As BlockContext
             Dim result As BlockContext.LinkResult
             Dim incrementalContext = _context
 
@@ -510,7 +512,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return programContext.CreateCompilationUnit(terminator, notClosedIfDirectives, notClosedRegionDirectives, haveRegionDirectives, notClosedExternalSourceDirective)
         End Function
 
-        Private Function ParseWithStackGuard(Of TNode As VisualBasicSyntaxNode)(parseFunc As Func(Of TNode), defaultFunc As Func(Of TNode)) As TNode
+        Private Function ParseWithStackGuard(Of TNode As VisualBasicSyntaxNode) _ 
+                                            ( parseFunc   As Func(Of TNode),
+                                              defaultFunc As Func(Of TNode)
+                                            ) As TNode
             Debug.Assert(_recursionDepth = 0)
             Dim restorePoint = _scanner.CreateRestorePoint()
             Try
@@ -521,7 +526,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Try
         End Function
 
-        Private Function CreateForInsufficientStack(Of TNode As VisualBasicSyntaxNode)(ByRef restorePoint As Scanner.RestorePoint, result As TNode) As TNode
+        Private Function CreateForInsufficientStack(Of TNode As VisualBasicSyntaxNode) _
+                                                   ( 
+                                               ByRef restorePoint As Scanner.RestorePoint,
+                                                     result As TNode
+                                                   ) As TNode
             restorePoint.Restore()
             GetNextToken()
 
@@ -937,14 +946,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case SyntaxKind.SelectKeyword
                     Return ParseSelectStatement()
 
-                Case SyntaxKind.WithKeyword, SyntaxKind.WhileKeyword
-                    Return ParseExpressionBlockStatement()
+                Case SyntaxKind.WithKeyword
+                    Return Parse_WithExpressionBlockStatement()
+
+                Case SyntaxKind.WhileKeyword
+                    Return Parse_WhileExpressionBlockStatement()
+
+                Case SyntaxKind.SyncLockKeyword
+                    Return Parse_SyncLockExpressionBlockStatement()
 
                 Case SyntaxKind.UsingKeyword
                     Return ParseUsingStatement()
-
-                Case SyntaxKind.SyncLockKeyword
-                    Return ParseExpressionBlockStatement()
 
                 Case SyntaxKind.TryKeyword
                     Return ParseTry()
@@ -994,7 +1006,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return ParseReturnStatement()
 
                 Case SyntaxKind.StopKeyword
-                    Return ParseStopOrEndStatement()
+                    Return Parse_StopStatement()
 
                 Case SyntaxKind.ContinueKeyword
                     Return ParseContinueStatement()
@@ -1017,8 +1029,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case SyntaxKind.ReDimKeyword
                     Return ParseRedimStatement()
 
-                Case SyntaxKind.AddHandlerKeyword, SyntaxKind.RemoveHandlerKeyword
-                    Return ParseHandlerStatement()
+                Case SyntaxKind.AddHandlerKeyword
+                     Return ParseAddHandlerStatement()
+                Case SyntaxKind.RemoveHandlerKeyword
+                     Return ParseRemoveHandlerStatement()
 
                 Case SyntaxKind.PartialKeyword,
                  SyntaxKind.PrivateKeyword,
@@ -1293,15 +1307,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return ParseSpecifierDeclaration(attributes)
         End Function
 
-        Private Function ParseSpecifierDeclaration(attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax)) As StatementSyntax
+        Private Function ParseSpecifierDeclaration(
+                                                    attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax)
+                                                  ) As StatementSyntax
             Dim modifiers = ParseSpecifiers()
             Return ParseSpecifierDeclaration(attributes, modifiers)
         End Function
 
         Private Function ParseSpecifierDeclaration(
-            attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
-            modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
-        ) As StatementSyntax
+                                                    attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                                    modifiers  As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                                  ) As StatementSyntax
+
             Dim statement As StatementSyntax = Nothing
 
             ' Current token set to token after the last specifier
@@ -1452,9 +1469,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 4352 - 4352
         ' EnumTypeStatement* .Parser::ParseEnumStatement( [ ParseTree::AttributeSpecifierList* Attributes ] [ ParseTree::SpecifierList* Specifiers ] [ Token* Start ] [ _Inout_ bool& ErrorInConstruct ] )
         Private Function ParseEnumStatement(
-                  Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax) = Nothing,
-                  Optional modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax) = Nothing
-        ) As EnumStatementSyntax
+                                    Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax) = Nothing,
+                                    Optional modifiers  As CoreInternalSyntax.SyntaxList(Of KeywordSyntax) = Nothing
+                                           ) As EnumStatementSyntax
             Debug.Assert(CurrentToken.Kind = SyntaxKind.EnumKeyword, "ParseEnumStatement called on the wrong token.")
 
             Dim enumKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
@@ -1509,7 +1526,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 4438 - 4438
         ' Statement* .Parser::ParseEnumMember( [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseEnumMemberOrLabel(attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax)) As StatementSyntax
+        Private Function ParseEnumMemberOrLabel( attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax)
+                                               ) As StatementSyntax
 
             If Not attributes.Any() AndAlso ShouldParseAsLabel() Then
                 Return ParseLabel()
@@ -1570,9 +1588,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 4563 - 4563
         ' TypeStatement* .Parser::ParseTypeStatement( [ ParseTree::AttributeSpecifierList* Attributes ] [ ParseTree::SpecifierList* Specifiers ] [ Token* Start ] [ _Inout_ bool& ErrorInConstruct ] )
         Private Function ParseTypeStatement(
-                  Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax) = Nothing,
-                  Optional modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax) = Nothing
-        ) As TypeStatementSyntax
+                                    Optional attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax) = Nothing,
+                                    Optional modifiers  As CoreInternalSyntax.SyntaxList(Of KeywordSyntax) = Nothing
+                                           ) As TypeStatementSyntax
 
             Dim kind As SyntaxKind
             Dim optionalTypeParameters As TypeParameterListSyntax = Nothing
@@ -1616,7 +1634,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Dim statement As TypeStatementSyntax = InternalSyntaxFactory.TypeStatement(kind, attributes, modifiers, typeKeyword, ident, optionalTypeParameters)
 
-            If (kind = SyntaxKind.ModuleStatement OrElse kind = SyntaxKind.InterfaceStatement) AndAlso statement.Modifiers.Any(SyntaxKind.PartialKeyword) Then
+            If kind.IsIn(SyntaxKind.ModuleStatement, SyntaxKind.InterfaceStatement) AndAlso statement.Modifiers.Any(SyntaxKind.PartialKeyword) Then
                 statement = CheckFeatureAvailability(If(kind = SyntaxKind.ModuleStatement, Feature.PartialModules, Feature.PartialInterfaces), statement)
             End If
 
@@ -1678,7 +1696,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return True
         End Function
 
-        Private Function ParseNamespaceStatement(attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax), Specifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)) As NamespaceStatementSyntax
+        Private Function ParseNamespaceStatement(
+                                                  attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                                                  Specifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                                                ) As NamespaceStatementSyntax
             Debug.Assert(CurrentToken.Kind = SyntaxKind.NamespaceKeyword, "ParseNamespaceStatement called on the wrong token.")
 
             Dim namespaceKeyword As KeywordSyntax = ReportModifiersOnStatementError(ERRID.ERR_SpecifiersInvalidOnInheritsImplOpt, attributes, Specifiers, DirectCast(CurrentToken, KeywordSyntax))
@@ -1742,7 +1763,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Dim nextToken = PeekToken(1)
             If CanFollowStatementButIsNotSelectFollowingExpression(nextToken) Then
-                Return ParseStopOrEndStatement()
+                Return Parse_EndStatement()
             End If
 
             Return ParseGroupEndStatement()
@@ -1754,9 +1775,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 5054 - 5054
         ' .Parser::ParseGroupEndStatement( [ _Inout_ bool& ErrorInConstruct ] )
         Private Function ParseGroupEndStatement() As StatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.EndKeyword, "ParseGroupEndStatement called on wrong token.")
+            Dim endKeyword As KeywordSyntax = Nothing
+            AssumeToBeAtKeyword(SyntaxKind.EndKeyword, endKeyword, False)
 
-            Dim endKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             Dim nextToken = PeekToken(1)
             Dim possibleBlockKeyword = If(IsValidStatementTerminator(nextToken), Nothing, nextToken)
             Dim statement As StatementSyntax
@@ -1778,105 +1799,46 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function PeekEndStatement(i As Integer) As SyntaxKind
+          Select Case PeekToken(i).Kind
+                 Case SyntaxKind.LoopKeyword    : Return SyntaxKind.SimpleLoopStatement
+                 Case SyntaxKind.NextKeyword    : Return SyntaxKind.NextStatement
+                 Case SyntaxKind.EndKeyword     : Return GetEndStatementKindFromKeyword(PeekToken(i + 1).Kind)
 
-            Select Case PeekToken(i).Kind
-
-                Case SyntaxKind.LoopKeyword
-                    Return SyntaxKind.SimpleLoopStatement
-
-                Case SyntaxKind.NextKeyword
-                    Return SyntaxKind.NextStatement
-
-                Case SyntaxKind.EndKeyword
-                    Return GetEndStatementKindFromKeyword(PeekToken(i + 1).Kind)
-
-                ' wend and endif are anachronistic and should not be used, however they can still appear in 
-                ' the lookahead
-                Case SyntaxKind.EndIfKeyword
-                    Return SyntaxKind.EndIfStatement
-
-                Case SyntaxKind.WendKeyword
-                    Return SyntaxKind.EndWhileStatement
-            End Select
-
-            Return SyntaxKind.None
+                 ' wend and endif are anachronistic and should not be used, however they can still appear in 
+                 ' the lookahead
+                 Case SyntaxKind.EndIfKeyword   : Return SyntaxKind.EndIfStatement
+                 Case SyntaxKind.WendKeyword    : Return SyntaxKind.EndWhileStatement
+          End Select
+          Return SyntaxKind.None
         End Function
 
         Private Shared Function GetEndStatementKindFromKeyword(kind As SyntaxKind) As SyntaxKind
-            Select Case kind
-
-                Case SyntaxKind.IfKeyword
-                    Return SyntaxKind.EndIfStatement
-
-                Case SyntaxKind.UsingKeyword
-                    Return SyntaxKind.EndUsingStatement
-
-                Case SyntaxKind.WithKeyword
-                    Return SyntaxKind.EndWithStatement
-
-                Case SyntaxKind.StructureKeyword
-                    Return SyntaxKind.EndStructureStatement
-
-                Case SyntaxKind.EnumKeyword
-                    Return SyntaxKind.EndEnumStatement
-
-                Case SyntaxKind.InterfaceKeyword
-                    Return SyntaxKind.EndInterfaceStatement
-
-                Case SyntaxKind.SubKeyword
-                    Return SyntaxKind.EndSubStatement
-
-                Case SyntaxKind.FunctionKeyword
-                    Return SyntaxKind.EndFunctionStatement
-
-                Case SyntaxKind.OperatorKeyword
-                    Return SyntaxKind.EndOperatorStatement
-
-                Case SyntaxKind.SelectKeyword
-                    Return SyntaxKind.EndSelectStatement
-
-                Case SyntaxKind.TryKeyword
-                    Return SyntaxKind.EndTryStatement
-
-                Case SyntaxKind.GetKeyword
-                    Return SyntaxKind.EndGetStatement
-
-                Case SyntaxKind.SetKeyword
-                    Return SyntaxKind.EndSetStatement
-
-                Case SyntaxKind.PropertyKeyword
-                    Return SyntaxKind.EndPropertyStatement
-
-                Case SyntaxKind.AddHandlerKeyword
-                    Return SyntaxKind.EndAddHandlerStatement
-
-                Case SyntaxKind.RemoveHandlerKeyword
-                    Return SyntaxKind.EndRemoveHandlerStatement
-
-                Case SyntaxKind.RaiseEventKeyword
-                    Return SyntaxKind.EndRaiseEventStatement
-
-                Case SyntaxKind.EventKeyword
-                    Return SyntaxKind.EndEventStatement
-
-                Case SyntaxKind.ClassKeyword
-                    Return SyntaxKind.EndClassStatement
-
-                Case SyntaxKind.ModuleKeyword
-                    Return SyntaxKind.EndModuleStatement
-
-                Case SyntaxKind.NamespaceKeyword
-                    Return SyntaxKind.EndNamespaceStatement
-
-                Case SyntaxKind.SyncLockKeyword
-                    Return SyntaxKind.EndSyncLockStatement
-
-                Case SyntaxKind.WhileKeyword
-                    Return SyntaxKind.EndWhileStatement
-
-                Case Else
-                    Return SyntaxKind.None
-
+          Select Case kind
+                 Case SyntaxKind.IfKeyword              : Return SyntaxKind.EndIfStatement
+                 Case SyntaxKind.UsingKeyword           : Return SyntaxKind.EndUsingStatement
+                 Case SyntaxKind.WithKeyword            : Return SyntaxKind.EndWithStatement
+                 Case SyntaxKind.StructureKeyword       : Return SyntaxKind.EndStructureStatement
+                 Case SyntaxKind.EnumKeyword            : Return SyntaxKind.EndEnumStatement
+                 Case SyntaxKind.InterfaceKeyword       : Return SyntaxKind.EndInterfaceStatement
+                 Case SyntaxKind.SubKeyword             : Return SyntaxKind.EndSubStatement
+                 Case SyntaxKind.FunctionKeyword        : Return SyntaxKind.EndFunctionStatement
+                 Case SyntaxKind.OperatorKeyword        : Return SyntaxKind.EndOperatorStatement
+                 Case SyntaxKind.SelectKeyword          : Return SyntaxKind.EndSelectStatement
+                 Case SyntaxKind.TryKeyword             : Return SyntaxKind.EndTryStatement
+                 Case SyntaxKind.GetKeyword             : Return SyntaxKind.EndGetStatement
+                 Case SyntaxKind.SetKeyword             : Return SyntaxKind.EndSetStatement
+                 Case SyntaxKind.PropertyKeyword        : Return SyntaxKind.EndPropertyStatement
+                 Case SyntaxKind.AddHandlerKeyword      : Return SyntaxKind.EndAddHandlerStatement
+                 Case SyntaxKind.RemoveHandlerKeyword   : Return SyntaxKind.EndRemoveHandlerStatement
+                 Case SyntaxKind.RaiseEventKeyword      : Return SyntaxKind.EndRaiseEventStatement
+                 Case SyntaxKind.EventKeyword           : Return SyntaxKind.EndEventStatement
+                 Case SyntaxKind.ClassKeyword           : Return SyntaxKind.EndClassStatement
+                 Case SyntaxKind.ModuleKeyword          : Return SyntaxKind.EndModuleStatement
+                 Case SyntaxKind.NamespaceKeyword       : Return SyntaxKind.EndNamespaceStatement
+                 Case SyntaxKind.SyncLockKeyword        : Return SyntaxKind.EndSyncLockStatement
+                 Case SyntaxKind.WhileKeyword           : Return SyntaxKind.EndWhileStatement
+                 Case Else
+                      Return SyntaxKind.None
             End Select
         End Function
 
@@ -1884,11 +1846,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         'TODO - Compare this method with IsDeclarationStatement.
         'Can these two methods be unified into one?
         Private Function PeekDeclarationStatement(i As Integer) As Boolean
-            Do
-                Dim token = PeekToken(i)
+          Do
+            Dim token = PeekToken(i)
 
-                Select Case token.Kind
-                    Case SyntaxKind.PartialKeyword,
+            Select Case token.Kind
+                   Case SyntaxKind.PartialKeyword,
                         SyntaxKind.PrivateKeyword,
                         SyntaxKind.ProtectedKeyword,
                         SyntaxKind.PublicKeyword,
@@ -1913,17 +1875,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         SyntaxKind.AsyncKeyword,
                         SyntaxKind.IteratorKeyword
 
-                    Case SyntaxKind.IdentifierToken
+                   Case SyntaxKind.IdentifierToken
                         Select Case DirectCast(token, IdentifierTokenSyntax).PossibleKeywordKind
-                            Case SyntaxKind.CustomKeyword,
-                                SyntaxKind.AsyncKeyword,
-                                SyntaxKind.IteratorKeyword
-
-                            Case Else
-                                Return False
+                               Case SyntaxKind.CustomKeyword,
+                                    SyntaxKind.AsyncKeyword,
+                                    SyntaxKind.IteratorKeyword
+                               Case Else
+                                    Return False
                         End Select
 
-                    Case SyntaxKind.SubKeyword,
+                   Case SyntaxKind.SubKeyword,
                         SyntaxKind.FunctionKeyword,
                         SyntaxKind.OperatorKeyword,
                         SyntaxKind.PropertyKeyword,
@@ -1940,7 +1901,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         SyntaxKind.DelegateKeyword
                         Return True
 
-                    Case Else
+                   Case Else
                         Return False
                 End Select
 
@@ -1981,42 +1942,32 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Select Case (t.Kind)
                     ' Access category
-                    Case SyntaxKind.PublicKeyword,
-                         SyntaxKind.PrivateKeyword,
-                         SyntaxKind.ProtectedKeyword,
-                         SyntaxKind.FriendKeyword
+                    Case SyntaxKind.PublicKeyword,      SyntaxKind.PrivateKeyword,
+                         SyntaxKind.ProtectedKeyword,   SyntaxKind.FriendKeyword
 
                         ' Storage category
-                    Case SyntaxKind.SharedKeyword,
-                         SyntaxKind.ShadowsKeyword
+                    Case SyntaxKind.SharedKeyword,      SyntaxKind.ShadowsKeyword
 
                         ' Inheritance category
-                    Case SyntaxKind.MustInheritKeyword,
-                         SyntaxKind.OverloadsKeyword,
-                         SyntaxKind.NotInheritableKeyword,
-                         SyntaxKind.OverridesKeyword
+                    Case SyntaxKind.MustInheritKeyword,     SyntaxKind.OverloadsKeyword,
+                         SyntaxKind.NotInheritableKeyword,  SyntaxKind.OverridesKeyword
 
                         ' Partial types category
                     Case SyntaxKind.PartialKeyword
 
                         ' Modifier category
-                    Case SyntaxKind.NotOverridableKeyword,
-                         SyntaxKind.OverridableKeyword,
+                    Case SyntaxKind.NotOverridableKeyword,  SyntaxKind.OverridableKeyword,
                          SyntaxKind.MustOverrideKeyword
 
                         ' Writability category
-                    Case SyntaxKind.ReadOnlyKeyword,
-                         SyntaxKind.WriteOnlyKeyword
+                    Case SyntaxKind.ReadOnlyKeyword,        SyntaxKind.WriteOnlyKeyword
 
-                    Case SyntaxKind.DimKeyword,
-                         SyntaxKind.ConstKeyword,
-                         SyntaxKind.StaticKeyword,
-                         SyntaxKind.DefaultKeyword,
+                    Case SyntaxKind.DimKeyword,             SyntaxKind.ConstKeyword,
+                         SyntaxKind.StaticKeyword,          SyntaxKind.DefaultKeyword,
                          SyntaxKind.WithEventsKeyword
 
                         ' Conversion category
-                    Case SyntaxKind.WideningKeyword,
-                         SyntaxKind.NarrowingKeyword
+                    Case SyntaxKind.WideningKeyword,        SyntaxKind.NarrowingKeyword
 
                     Case SyntaxKind.IdentifierToken
                         ' This enables better error reporting for invalid uses of CUSTOM as a specifier.
@@ -2088,10 +2039,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' File: Parser.cpp
         ' Lines: 5992 - 5992
         ' Statement* .Parser::ParseVarDeclStatement( [ ParseTree::AttributeSpecifierList* Attributes ] [ ParseTree::SpecifierList* Specifiers ] [ _In_ Token* StmtStart ] [ _Inout_ bool& ErrorInConstruct ] )
-        Private Function ParseVarDeclStatement(
-            attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
-            modifiers As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
-        ) As StatementSyntax
+        Private Function ParseVarDeclStatement _ 
+                         ( attributes As CoreInternalSyntax.SyntaxList(Of AttributeListSyntax),
+                           modifiers  As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
+                         ) As StatementSyntax
             ' Parse the declarations.
 
             Dim isFieldDeclaration As Boolean = False
@@ -2800,10 +2751,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="allowedEmptyGenericArguments">Controls generic argument parsing</param>
         ''' <returns>TypeName</returns>
         Friend Function ParseTypeName(
-            Optional nonArrayName As Boolean = False,
-            Optional allowEmptyGenericArguments As Boolean = False,
-            Optional ByRef allowedEmptyGenericArguments As Boolean = False
-        ) As TypeSyntax
+                              Optional nonArrayName As Boolean = False,
+                              Optional allowEmptyGenericArguments As Boolean = False,
+                              Optional ByRef allowedEmptyGenericArguments As Boolean = False
+                                     ) As TypeSyntax
 
             Dim Start As SyntaxToken = CurrentToken
             Dim prev As SyntaxToken = PrevToken
@@ -3097,11 +3048,11 @@ checkNullable:
         ' TypeList* .Parser::ParseGenericArguments( [ _Out_ Token*& Of ] [ _Out_ Token*& openParen ] [ _Out_ Token*& closeParen ] [ _Inout_ bool& AllowEmptyGenericArguments ] [ _Inout_ bool& AllowNonEmptyGenericArguments ] [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseGenericArguments(
-            ByRef allowEmptyGenericArguments As Boolean,
-            ByRef AllowNonEmptyGenericArguments As Boolean
-        ) As TypeArgumentListSyntax
+                                          ByRef allowEmptyGenericArguments As Boolean,
+                                          ByRef allowNonEmptyGenericArguments As Boolean
+                                              ) As TypeArgumentListSyntax
 
-            Debug.Assert(allowEmptyGenericArguments OrElse AllowNonEmptyGenericArguments,
+            Debug.Assert(allowEmptyGenericArguments OrElse allowNonEmptyGenericArguments,
                 "Cannot disallow both empty and non-empty generic arguments!!!")
 
             Dim [of] As KeywordSyntax = Nothing
@@ -3131,7 +3082,7 @@ checkNullable:
                         ' non-empty type arguments, else we can allow empty type arguments.
 
                         typeName = SyntaxFactory.IdentifierName(InternalSyntaxFactory.MissingIdentifier)
-                        AllowNonEmptyGenericArguments = False
+                        allowNonEmptyGenericArguments = False
                     Else
                         typeName = ParseGeneralType()
                     End If
@@ -3142,14 +3093,14 @@ checkNullable:
                     ' non-empty type arguments.
 
                     typeName = ParseGeneralType()
-                    If AllowNonEmptyGenericArguments Then
+                    If allowNonEmptyGenericArguments Then
                         allowEmptyGenericArguments = False
                     Else
                         typeName = ReportSyntaxError(typeName, ERRID.ERR_TypeParamMissingCommaOrRParen)
                     End If
                 End If
 
-                Debug.Assert(allowEmptyGenericArguments OrElse AllowNonEmptyGenericArguments,
+                Debug.Assert(allowEmptyGenericArguments OrElse allowNonEmptyGenericArguments,
                     "Cannot disallow both empty and non-empty generic arguments!!!")
 
                 If typeName.ContainsDiagnostics Then
@@ -3170,7 +3121,9 @@ checkNullable:
             Return genericArguments
         End Function
 
-        Private Function ParseArrayRankSpecifiers(Optional errorForExplicitArraySizes As ERRID = ERRID.ERR_NoExplicitArraySizes) As CoreInternalSyntax.SyntaxList(Of ArrayRankSpecifierSyntax)
+        Private Function ParseArrayRankSpecifiers(
+                                          Optional errorForExplicitArraySizes As ERRID = ERRID.ERR_NoExplicitArraySizes
+                                                 ) As CoreInternalSyntax.SyntaxList(Of ArrayRankSpecifierSyntax)
 
             Debug.Assert(CurrentToken.Kind = SyntaxKind.OpenParenToken, "should be a (.")
 
@@ -3619,8 +3572,7 @@ checkNullable:
                 Dim ctorDecl = SyntaxFactory.SubNewStatement(attributes, modifiers, subKeyword, newKeyword, parameters)
 
                 ' do not forget unexpected handles and implements even if unexpected
-                ctorDecl = ctorDecl.AddTrailingSyntax(handlesClause)
-                ctorDecl = ctorDecl.AddTrailingSyntax(implementsClause)
+                ctorDecl = ctorDecl.AddTrailingSyntax(handlesClause).AddTrailingSyntax(implementsClause)
 
                 Return ctorDecl
             End If
@@ -3628,12 +3580,13 @@ checkNullable:
         End Function
 
         Private Sub ParseSubOrDelegateStatement(
-                                          kind As SyntaxKind,
-                                          ByRef ident As IdentifierTokenSyntax,
-                                          ByRef optionalGenericParams As TypeParameterListSyntax,
-                                          ByRef optionalParameters As ParameterListSyntax,
-                                          ByRef handlesClause As HandlesClauseSyntax,
-                                          ByRef implementsClause As ImplementsClauseSyntax)
+                                                 kind As SyntaxKind,
+                                           ByRef ident As IdentifierTokenSyntax,
+                                           ByRef optionalGenericParams As TypeParameterListSyntax,
+                                           ByRef optionalParameters As ParameterListSyntax,
+                                           ByRef handlesClause As HandlesClauseSyntax,
+                                           ByRef implementsClause As ImplementsClauseSyntax
+                                               )
 
             Debug.Assert(kind.IsIn(SyntaxKind.SubStatement,
                                    SyntaxKind.SubNewStatement,
@@ -5651,7 +5604,10 @@ checkNullable:
             Return _possibleFirstStatementOnLine = PossibleFirstStatementKind.Yes
         End Function
 
-        Friend Function ConsumeStatementTerminatorAfterDirective(ByRef stmt As DirectiveTriviaSyntax) As DirectiveTriviaSyntax
+        Friend Function ConsumeStatementTerminatorAfterDirective(
+                                                            ByRef stmt As DirectiveTriviaSyntax
+                                                                ) As DirectiveTriviaSyntax
+
             If CurrentToken.Kind = SyntaxKind.StatementTerminatorToken AndAlso
                 Not CurrentToken.HasLeadingTrivia Then
 
@@ -5672,11 +5628,16 @@ checkNullable:
             Return stmt
         End Function
 
-        Friend Sub ConsumedStatementTerminator(allowLeadingMultilineTrivia As Boolean)
+        Friend Sub ConsumedStatementTerminator(
+                                                allowLeadingMultilineTrivia As Boolean
+                                              )
             ConsumedStatementTerminator(allowLeadingMultilineTrivia, If(allowLeadingMultilineTrivia, PossibleFirstStatementKind.Yes, PossibleFirstStatementKind.No))
         End Sub
 
-        Private Sub ConsumedStatementTerminator(allowLeadingMultilineTrivia As Boolean, possibleFirstStatementOnLine As PossibleFirstStatementKind)
+        Private Sub ConsumedStatementTerminator(
+                                                 allowLeadingMultilineTrivia As Boolean,
+                                                 possibleFirstStatementOnLine As PossibleFirstStatementKind
+                                               )
             Debug.Assert(allowLeadingMultilineTrivia = (possibleFirstStatementOnLine <> PossibleFirstStatementKind.No))
             _allowLeadingMultilineTrivia = allowLeadingMultilineTrivia
             _possibleFirstStatementOnLine = possibleFirstStatementOnLine
@@ -5688,7 +5649,9 @@ checkNullable:
             GetNextToken()
         End Sub
 
-        Friend Sub ConsumeStatementTerminator(colonAsSeparator As Boolean)
+        Friend Sub ConsumeStatementTerminator( 
+                                               colonAsSeparator As Boolean
+                                             )
             ' CurrentToken may be EmptyToken if there is extra trivia at EOF.
             Debug.Assert(SyntaxFacts.IsTerminator(CurrentToken.Kind) OrElse CurrentToken.Kind = SyntaxKind.EmptyToken)
 
@@ -5716,7 +5679,11 @@ checkNullable:
             End Select
         End Sub
 
-        Friend Function IsNextStatementInsideLambda(context As BlockContext, lambdaContext As BlockContext, allowLeadingMultilineTrivia As Boolean) As Boolean
+        Friend Function IsNextStatementInsideLambda(
+                                                     context As BlockContext,
+                                                     lambdaContext As BlockContext,
+                                                     allowLeadingMultilineTrivia As Boolean
+                                                   ) As Boolean
             Debug.Assert(context.IsWithinLambda)
             Debug.Assert(SyntaxFacts.IsTerminator(CurrentToken.Kind))
 
@@ -5762,37 +5729,35 @@ checkNullable:
             Return True
         End Function
 
-        Private Function TryGetToken(Of T As SyntaxToken)(kind As SyntaxKind, ByRef token As T) As Boolean
-            If CurrentToken.Kind = kind Then
-                token = DirectCast(CurrentToken, T)
-                GetNextToken()
-                Return True
-            End If
-
-            Return False
+        Private Function TryGetToken(Of T As SyntaxToken)( kind As SyntaxKind,
+                                                     ByRef token As T
+                                                         ) As Boolean
+            If CurrentToken.Kind <> kind Then Return False
+            token = DirectCast(CurrentToken, T)
+            GetNextToken()
+            Return True
         End Function
 
-        Private Function TryGetContextualKeyword(
-            kind As SyntaxKind,
-            ByRef keyword As KeywordSyntax,
-            Optional createIfMissing As Boolean = False) As Boolean
+        Private Function TryGetContextualKeyword( kind As SyntaxKind,
+                                            ByRef keyword As KeywordSyntax,
+                                         Optional createIfMissing As Boolean = False
+                                                ) As Boolean
 
             If TryTokenAsContextualKeyword(CurrentToken, kind, keyword) Then
                 GetNextToken()
                 Return True
             End If
 
-            If createIfMissing Then
-                keyword = HandleUnexpectedKeyword(kind)
-            End If
+            If createIfMissing Then keyword = HandleUnexpectedKeyword(kind)
+
             Return False
         End Function
 
         ' This is for contextual keywords like "From"
-        Private Function TryGetContextualKeywordAndEatNewLine(
-            kind As SyntaxKind,
-            ByRef keyword As KeywordSyntax,
-            Optional createIfMissing As Boolean = False) As Boolean
+        Private Function TryGetContextualKeywordAndEatNewLine( kind As SyntaxKind,
+                                                         ByRef keyword As KeywordSyntax,
+                                                      Optional createIfMissing As Boolean = False
+                                                             ) As Boolean
 
             Dim result = TryGetContextualKeyword(kind, keyword, createIfMissing)
             If result Then
@@ -5802,14 +5767,12 @@ checkNullable:
         End Function
 
         ' This is for contextual keywords like "From"
-        Private Function TryEatNewLineAndGetContextualKeyword(
-            kind As SyntaxKind,
-            ByRef keyword As KeywordSyntax,
-            Optional createIfMissing As Boolean = False) As Boolean
+        Private Function TryEatNewLineAndGetContextualKeyword( kind As SyntaxKind,
+                                                         ByRef keyword As KeywordSyntax,
+                                                      Optional createIfMissing As Boolean = False
+                                                             ) As Boolean
 
-            If TryGetContextualKeyword(kind, keyword, createIfMissing) Then
-                Return True
-            End If
+            If TryGetContextualKeyword(kind, keyword, createIfMissing) Then Return True
 
             If CurrentToken.Kind = SyntaxKind.StatementTerminatorToken AndAlso
                 TryTokenAsContextualKeyword(PeekToken(1), kind, keyword) Then
@@ -5819,17 +5782,16 @@ checkNullable:
                 Return True
             End If
 
-            If createIfMissing Then
-                keyword = HandleUnexpectedKeyword(kind)
-            End If
+            If createIfMissing Then keyword = HandleUnexpectedKeyword(kind)
+
             Return False
         End Function
 
-        Private Function TryGetTokenAndEatNewLine(Of T As SyntaxToken)(
-            kind As SyntaxKind,
-            ByRef token As T,
-            Optional createIfMissing As Boolean = False,
-            Optional state As ScannerState = ScannerState.VB) As Boolean
+        Private Function TryGetTokenAndEatNewLine(Of T As SyntaxToken)( kind As SyntaxKind,
+                                                                  ByRef token As T,
+                                                               Optional createIfMissing As Boolean = False,
+                                                               Optional state As ScannerState = ScannerState.VB
+                                                                      ) As Boolean
 
             Debug.Assert(CanUseInTryGetToken(kind))
 
@@ -5843,17 +5805,16 @@ checkNullable:
                 Return True
             End If
 
-            If createIfMissing Then
-                token = DirectCast(HandleUnexpectedToken(kind), T)
-            End If
+            If createIfMissing Then token = DirectCast(HandleUnexpectedToken(kind), T)
+
             Return False
         End Function
 
-        Private Function TryEatNewLineAndGetToken(Of T As SyntaxToken)(
-            kind As SyntaxKind,
-            ByRef token As T,
-            Optional createIfMissing As Boolean = False,
-            Optional state As ScannerState = ScannerState.VB) As Boolean
+        Private Function TryEatNewLineAndGetToken(Of T As SyntaxToken)( kind As SyntaxKind,
+                                                                  ByRef token As T,
+                                                               Optional createIfMissing As Boolean = False,
+                                                               Optional state As ScannerState = ScannerState.VB
+                                                                      ) As Boolean
 
             Debug.Assert(CanUseInTryGetToken(kind))
 
@@ -5869,9 +5830,8 @@ checkNullable:
                 Return True
             End If
 
-            If createIfMissing Then
-                token = DirectCast(HandleUnexpectedToken(kind), T)
-            End If
+            If createIfMissing Then token = DirectCast(HandleUnexpectedToken(kind), T)
+
             Return False
         End Function
 
@@ -5940,12 +5900,11 @@ checkNullable:
             _currentToken = Nothing
         End Sub
 
+#Region "TryIdentiferAsKeyword Overloads"
         '============ Methods to test properties of NodeKind. ====================
         '
-
         ' IdentifierAsKeyword returns the token type of a identifier token,
         ' interpreting non-bracketed identifiers as (non-reserved) keywords as appropriate.
-
         Private Shared Function TryIdentifierAsContextualKeyword(id As SyntaxToken, ByRef kind As SyntaxKind) As Boolean
             Debug.Assert(id IsNot Nothing)
             Debug.Assert(DirectCast(id, IdentifierTokenSyntax) IsNot Nothing)
@@ -5959,7 +5918,9 @@ checkNullable:
 
             Return _scanner.TryIdentifierAsContextualKeyword(DirectCast(id, IdentifierTokenSyntax), k)
         End Function
+#End Region
 
+#Region "TryTokenAsContextualKeywords Overloads"
         Private Function TryTokenAsContextualKeyword(t As SyntaxToken, kind As SyntaxKind, ByRef k As KeywordSyntax) As Boolean
             Dim keyword As KeywordSyntax = Nothing
             If _scanner.TryTokenAsContextualKeyword(t, keyword) AndAlso keyword.Kind = kind Then
@@ -5973,6 +5934,8 @@ checkNullable:
         Private Function TryTokenAsContextualKeyword(t As SyntaxToken, ByRef k As KeywordSyntax) As Boolean
             Return _scanner.TryTokenAsContextualKeyword(t, k)
         End Function
+
+#End Region
 
         Private Shared Function TryTokenAsKeyword(t As SyntaxToken, ByRef kind As SyntaxKind) As Boolean
             Return Scanner.TryTokenAsKeyword(t, kind)
@@ -6004,6 +5967,7 @@ checkNullable:
             Return node.AddTrailingSyntax(b.ToList(), ERRID.ERR_Syntax)
         End Function
 
+        #Region "Feature Checking"
         ''' <summary>
         ''' Check to see if the given <paramref name="feature"/> is available with the <see cref="LanguageVersion"/>
         ''' of the parser.  If it is not available a diagnostic will be added to the returned value.
@@ -6051,7 +6015,7 @@ checkNullable:
             End If
             Return True
         End Function
-
+        #End Region
     End Class
 
     'TODO - These should be removed.  Checks should be in binding.

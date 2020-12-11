@@ -13,10 +13,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     Partial Friend Class Parser
 
-        Friend Function ParseExpression(
-            Optional pendingPrecedence As OperatorPrecedence = OperatorPrecedence.PrecedenceNone,
-            Optional bailIfFirstTokenRejected As Boolean = False
-        ) As ExpressionSyntax
+        Friend Function ParseExpression _
+                        (
+                 Optional pendingPrecedence As OperatorPrecedence = OperatorPrecedence.PrecedenceNone,
+                 Optional bailIfFirstTokenRejected As Boolean = False
+                        ) As ExpressionSyntax
 
             Return ParseWithStackGuard(Of ExpressionSyntax)(
                 Function() ParseExpressionCore(pendingPrecedence, bailIfFirstTokenRejected),
@@ -34,9 +35,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' *     Parses an expression.
         ' *
         ' **********************************************************************/
-
+        '
         ' [in] precedence of previous oper
-
+        '
         ' File: Parser.cpp
         ' Lines: 12312 - 12312
         ' Expression* .Parser::ParseExpression( [ OperatorPrecedence PendingPrecedence ] [ _Inout_ bool& ErrorInConstruct ] [ bool AllowArrayInitExpression ] )
@@ -46,10 +47,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         '
         '    bool EatLeadingNewLine,         - we no longer support it in ParseExpressionCore, please eat the new line yourself before calling
         '    bool BailIfFirstTokenRejected                 // bail (return NULL) if the first token isn't a valid expression-starter, rather than reporting an error or setting ErrorInConstruct
-        Private Function ParseExpressionCore(
-            Optional pendingPrecedence As OperatorPrecedence = OperatorPrecedence.PrecedenceNone,
-            Optional bailIfFirstTokenRejected As Boolean = False
-        ) As ExpressionSyntax
+        Private Function ParseExpressionCore _ 
+                         (
+                  Optional pendingPrecedence As OperatorPrecedence = OperatorPrecedence.PrecedenceNone,
+                  Optional bailIfFirstTokenRejected As Boolean = False
+                         ) As ExpressionSyntax
 
             Try
                 _recursionDepth += 1
@@ -172,10 +174,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Try
         End Function
 
-        Private Function ParseTerm(
-            Optional BailIfFirstTokenRejected As Boolean = False,
-            Optional RedimOrNewParent As Boolean = False
-        ) As ExpressionSyntax
+        Private Function ParseTerm _ 
+                         (
+                  Optional BailIfFirstTokenRejected As Boolean = False,
+                  Optional RedimOrNewParent As Boolean = False
+                         ) As ExpressionSyntax
 
             '// Note: this function will only ever return NULL if the flag "BailIfFirstTokenIsRejected" is set,
             '// and if the first token isn't a valid way to start an expression. In all other error scenarios
@@ -449,7 +452,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return term
         End Function
 
-        Private Function ParsePostFixExpression(RedimOrNewParent As Boolean, term As ExpressionSyntax) As ExpressionSyntax
+        Private Function ParsePostFixExpression _ 
+                         ( RedimOrNewParent As Boolean,
+                           term As ExpressionSyntax
+                         ) As ExpressionSyntax
             Do
                 Dim [Next] As SyntaxToken = CurrentToken
 
@@ -509,11 +515,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return term
         End Function
 
-        Private Function CanStartConsequenceExpression(kind As SyntaxKind, qualified As Boolean) As Boolean
-            Return kind.IsIn(SyntaxKind.DotToken, SyntaxKind.ExclamationToken) OrElse (qualified AndAlso kind = SyntaxKind.OpenParenToken)
+        Private Function CanStartConsequenceExpression _ 
+                         ( kind      As SyntaxKind,
+                           qualified As Boolean
+                         ) As Boolean
+            Return kind.IsIn(SyntaxKind.DotToken, SyntaxKind.ExclamationToken) OrElse
+                   (qualified AndAlso kind = SyntaxKind.OpenParenToken)
         End Function
 
-        Private Shared Function TokenContainsFullWidthChars(tk As SyntaxToken) As Boolean
+        Private Shared Function TokenContainsFullWidthChars _ 
+                                ( tk As SyntaxToken
+                                ) As Boolean
             Dim spelling = tk.Text
             For Each ch In spelling
                 If SyntaxFacts.IsFullWidth(ch) Then
@@ -524,7 +536,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return False
         End Function
 
-        Private Shared Function GetArgumentAsExpression(arg As ArgumentSyntax) As ExpressionSyntax
+        Private Shared Function GetArgumentAsExpression _ 
+                                ( arg As ArgumentSyntax
+                                ) As ExpressionSyntax
+
             Select Case arg.Kind
                 Case SyntaxKind.SimpleArgument
 
@@ -991,15 +1006,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' File: Parser.cpp
         ' Lines: 16211 - 16211
         ' Expression* .Parser::ParseQualifiedExpr( [ _In_ Token* Start ] [ _In_opt_ ParseTree::Expression* Term ] [ _Inout_ bool& ErrorInConstruct ] )
-        Private Function ParseQualifiedExpr(
-            Term As ExpressionSyntax
-        ) As ExpressionSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.DotToken OrElse
-                  CurrentToken.Kind = SyntaxKind.ExclamationToken,
-                  "Must be on either a '.' or '!' when entering parseQualifiedExpr()")
+        Private Function ParseQualifiedExpr _ 
+                         (
+                           Term As ExpressionSyntax
+                         ) As ExpressionSyntax
+            #Region "Assertions"
+            Debug.Assert(CurrentToken.Kind.IsIn(SyntaxKind.DotToken, SyntaxKind.ExclamationToken),
+                         "Must be on either a '.' or '!' when entering parseQualifiedExpr()")
+            #End Region
 
             Dim DotOrBangToken As PunctuationSyntax = DirectCast(CurrentToken, PunctuationSyntax)
-
             Dim prevPrevToken = PrevToken
             GetNextToken()
 
@@ -1131,7 +1147,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return result
         End Function
 
-        Private Sub RescanTrailingColonAsToken(ByRef prevToken As SyntaxToken, ByRef currentToken As SyntaxToken)
+        Private Sub RescanTrailingColonAsToken _
+                    (
+                ByRef prevToken    As SyntaxToken,
+                ByRef currentToken As SyntaxToken
+                    )
             _scanner.RescanTrailingColonAsToken(prevToken, currentToken)
             _currentToken = currentToken
         End Sub
@@ -1141,32 +1161,42 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' any single line trivia is consumed and appended to the token
         ''' which is assumed to be the token at the transition point.
         ''' </summary>
-        Private Function TransitionFromXmlToVB(Of T As VisualBasicSyntaxNode)(node As T) As T
-            node = LastTokenReplacer.Replace(node, Function(token)
-                                                       Dim trivia = New CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)(token.GetTrailingTrivia())
-                                                       Dim toRemove As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode) = Nothing
-                                                       Dim toAdd As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode) = Nothing
-                                                       _scanner.TransitionFromXmlToVB(trivia, toRemove, toAdd)
-                                                       trivia = trivia.GetStartOfTrivia(trivia.Count - toRemove.Count)
-                                                       token = DirectCast(token.WithTrailingTrivia(trivia.Node), SyntaxToken)
-                                                       token = SyntaxToken.AddTrailingTrivia(token, toAdd)
-                                                       Return token
-                                                   End Function)
+        Private Function TransitionFromXmlToVB _ 
+                         (Of T As VisualBasicSyntaxNode) _
+                         (
+                           node As T
+                         ) As T
+            node = LastTokenReplacer.Replace(node,
+                        Function(token)
+                            Dim trivia = New CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)(token.GetTrailingTrivia())
+                            Dim toRemove As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode) = Nothing
+                            Dim toAdd As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode) = Nothing
+                            _scanner.TransitionFromXmlToVB(trivia, toRemove, toAdd)
+                            trivia = trivia.GetStartOfTrivia(trivia.Count - toRemove.Count)
+                            token = DirectCast(token.WithTrailingTrivia(trivia.Node), SyntaxToken)
+                            token = SyntaxToken.AddTrailingTrivia(token, toAdd)
+                            Return token
+                        End Function)
             _currentToken = Nothing
             Return node
         End Function
 
-        Private Function TransitionFromVBToXml(Of T As VisualBasicSyntaxNode)(state As ScannerState, node As T) As T
-            node = LastTokenReplacer.Replace(node, Function(token)
-                                                       Dim trivia = New CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)(token.GetTrailingTrivia())
-                                                       Dim toRemove As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode) = Nothing
-                                                       Dim toAdd As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode) = Nothing
-                                                       _scanner.TransitionFromVBToXml(state, trivia, toRemove, toAdd)
-                                                       trivia = trivia.GetStartOfTrivia(trivia.Count - toRemove.Count)
-                                                       token = DirectCast(token.WithTrailingTrivia(trivia.Node), SyntaxToken)
-                                                       token = SyntaxToken.AddTrailingTrivia(token, toAdd)
-                                                       Return token
-                                                   End Function)
+        Private Function TransitionFromVBToXml _ 
+                         (Of T As VisualBasicSyntaxNode) _ 
+                         ( state As ScannerState,
+                           node  As T
+                         ) As T
+            node = LastTokenReplacer.Replace(node,
+                        Function(token)
+                            Dim trivia = New CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)(token.GetTrailingTrivia())
+                            Dim toRemove As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode) = Nothing
+                            Dim toAdd As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of VisualBasicSyntaxNode) = Nothing
+                            _scanner.TransitionFromVBToXml(state, trivia, toRemove, toAdd)
+                            trivia = trivia.GetStartOfTrivia(trivia.Count - toRemove.Count)
+                            token = DirectCast(token.WithTrailingTrivia(trivia.Node), SyntaxToken)
+                            token = SyntaxToken.AddTrailingTrivia(token, toAdd)
+                            Return token
+                        End Function)
             _currentToken = Nothing
             Return node
         End Function
@@ -1255,7 +1285,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return SyntaxFactory.ParenthesizedExpression(openParen, operand, closeParen)
         End Function
 
-        Private Function ParseTheRestOfTupleLiteral(openParen As PunctuationSyntax, firstArgument As SimpleArgumentSyntax) As TupleExpressionSyntax
+        Private Function ParseTheRestOfTupleLiteral _ 
+                         ( openParen     As PunctuationSyntax,
+                           firstArgument As SimpleArgumentSyntax
+                         ) As TupleExpressionSyntax
 
             Dim argumentBuilder = _pool.AllocateSeparated(Of SimpleArgumentSyntax)()
             argumentBuilder.Add(firstArgument)
@@ -1304,8 +1337,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' File: Parser.cpp
         ' Lines: 16304 - 16304
         ' ParenthesizedArgumentList .Parser::ParseParenthesizedArguments( [ _Inout_ bool& ErrorInConstruct ] )
-        Friend Function ParseParenthesizedArguments(Optional RedimOrNewParent As Boolean = False, Optional attributeListParent As Boolean = False) As ArgumentListSyntax
+        Friend Function ParseParenthesizedArguments _ 
+                        (
+                 Optional RedimOrNewParent As Boolean = False,
+                 Optional attributeListParent As Boolean = False
+                        ) As ArgumentListSyntax
+            #Region "Assertions"
             Debug.Assert(CurrentToken.Kind = SyntaxKind.OpenParenToken, "should be at tkLParen.")
+            #End Region
 
             Dim arguments As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ArgumentSyntax) = Nothing
             Dim openParen As PunctuationSyntax = Nothing
@@ -1357,15 +1396,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' *         <qualifier>(...)
         ' *
         ' **********************************************************************/
-
+        '
         ' [in] token starting term
         ' [in] preceding term
-
+        '
         ' File: Parser.cpp
         ' Lines: 16366 - 16366
         ' Expression* .Parser::ParseParenthesizedQualifier( [ _In_ Token* Start ] [ _In_ ParseTree::Expression* Term ] [ _Inout_ bool& ErrorInConstruct ] )
-
-        Private Function ParseParenthesizedQualifier(Term As ExpressionSyntax, Optional RedimOrNewParent As Boolean = False) As ExpressionSyntax
+        '
+        Private Function ParseParenthesizedQualifier _ 
+                         ( Term As ExpressionSyntax,
+                  Optional RedimOrNewParent As Boolean = False
+                         ) As ExpressionSyntax
             ' Because parentheses are used for array indexing, parameter passing, and array
             ' declaring (via the Redim statement), there is some ambiguity about how to handle
             ' a parenthesized list that begins with an expression. The most general case is to
@@ -1384,7 +1426,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 16425 - 16425
         ' .Parser::ParseArguments( [ _In_ ParseTree::ArgumentList** Target ] [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseArguments(ByRef unexpected As GreenNode, Optional RedimOrNewParent As Boolean = False, Optional attributeListParent As Boolean = False) As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ArgumentSyntax)
+        Private Function ParseArguments _ 
+                         (
+                     ByRef unexpected          As GreenNode,
+                  Optional RedimOrNewParent    As Boolean = False,
+                  Optional attributeListParent As Boolean = False
+                         ) As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ArgumentSyntax)
+
             Dim arguments = _pool.AllocateSeparated(Of ArgumentSyntax)()
 
             Dim allowNonTrailingNamedArguments = _scanner.Options.LanguageVersion.AllowNonTrailingNamedArguments()
@@ -1466,7 +1514,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         ''' <summary>After VB15.5 it is possible to use named arguments in non-trailing position, except in attribute lists (where it remains disallowed)</summary>
-        Private Shared Function ReportNonTrailingNamedArgumentIfNeeded(argument As ArgumentSyntax, seenNames As Boolean, allowNonTrailingNamedArguments As Boolean) As ArgumentSyntax
+        Private Shared Function ReportNonTrailingNamedArgumentIfNeeded _ 
+                                ( argument  As ArgumentSyntax,
+                                  seenNames As Boolean,
+                                  allowNonTrailingNamedArguments As Boolean
+                                ) As ArgumentSyntax
+
             If Not seenNames OrElse allowNonTrailingNamedArguments Then
                 Return argument
             End If
@@ -1476,15 +1529,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         ' Parse a list of comma-separated keyword arguments.
-
+        '
         ' Where to insert the next list element
-
+        '
         ' File: Parser.cpp
         ' Lines: 16515 - 16515
         ' .Parser::ParseNamedArguments( [ ParseTree::ArgumentList** Target ] [ _Inout_ bool& ErrorInConstruct ] )
-
-        Private Sub ParseNamedArguments(arguments As SeparatedSyntaxListBuilder(Of ArgumentSyntax))
-
+        '
+        Private Sub ParseNamedArguments _ 
+                    ( arguments As SeparatedSyntaxListBuilder(Of ArgumentSyntax)
+                    )
             Do
                 Dim argumentName As IdentifierNameSyntax
                 Dim colonEquals As PunctuationSyntax = Nothing
@@ -1533,9 +1587,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 16564 - 16564
         ' Argument* .Parser::ParseArgument( [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseArgument(Optional RedimOrNewParent As Boolean = False) As ArgumentSyntax
-            Dim argument As ArgumentSyntax
+        Private Function ParseArgument _ 
+                         (
+                  Optional RedimOrNewParent As Boolean = False
+                         ) As ArgumentSyntax
 
+            Dim argument As ArgumentSyntax
             Dim value As ExpressionSyntax = ParseExpressionCore(OperatorPrecedence.PrecedenceNone)
 
             If value.ContainsDiagnostics Then
@@ -1619,7 +1676,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return cast
         End Function
 
-        Private Function ParseFunctionOrSubLambdaHeader(<Out> ByRef isMultiLine As Boolean, Optional parseModifiers As Boolean = False) As LambdaHeaderSyntax
+        Private Function ParseFunctionOrSubLambdaHeader _ 
+                         (
+               <Out> ByRef isMultiLine    As Boolean,
+                  Optional parseModifiers As Boolean = False
+                         ) As LambdaHeaderSyntax
 
             Dim modifiers As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of KeywordSyntax)
 
@@ -1727,7 +1788,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         '
         'ERRID_SubDisallowsStatement for Sub() Dim x=e1 , y=e2
 
-        Private Function ParseLambda(parseModifiers As Boolean) As ExpressionSyntax
+        Private Function ParseLambda _ 
+                         ( parseModifiers As Boolean
+                         ) As ExpressionSyntax
+
             'AssertLanguageFeature(ERRID.FEATUREID_StatementLambdas, CurrentToken)
             Dim isMultiLine As Boolean = False
 
@@ -1850,9 +1914,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 16738 - 16738
         ' ExpressionList* .Parser::ParseVariableList( [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseVariableList() As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ExpressionSyntax)
+        Private Function ParseVariableList _ 
+                         (
+                         ) As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ExpressionSyntax)
 
-            Dim variables As SeparatedSyntaxListBuilder(Of ExpressionSyntax) = Me._pool.AllocateSeparated(Of ExpressionSyntax)()
+            Dim variables = _pool.AllocateSeparated(Of ExpressionSyntax)()
 
             Do
                 variables.Add(ParseVariable())
@@ -1862,7 +1928,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return variables.ToListAndFree(_pool)
         End Function
 
-        Private Function ParseAwaitExpression(Optional awaitKeyword As KeywordSyntax = Nothing) As AwaitExpressionSyntax
+        Private Function ParseAwaitExpression _ 
+                         (
+                  Optional awaitKeyword As KeywordSyntax = Nothing
+                         ) As AwaitExpressionSyntax
 
             Debug.Assert(DirectCast(CurrentToken, IdentifierTokenSyntax).ContextualKind = SyntaxKind.AwaitKeyword)
 

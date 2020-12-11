@@ -259,11 +259,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         End Function
 
-        Private Shared Function RemoveTrailingColonTriviaAndConvertToColonToken(
-                             token As SyntaxToken,
-                             <Out> ByRef colonToken As PunctuationSyntax,
-                             <Out> ByRef excessText As String
-                         ) As SyntaxToken
+        Private Shared Function RemoveTrailingColonTriviaAndConvertToColonToken _ 
+                                ( token As SyntaxToken,
+                      <Out> ByRef colonToken As PunctuationSyntax,
+                      <Out> ByRef excessText As String
+                                ) As SyntaxToken
 
             If Not token.HasTrailingTrivia Then
                 colonToken = Nothing
@@ -310,17 +310,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         End Function
 
-        Private Function RemoveTrailingColonTriviaAndConvertToColonToken(
-                             node As VisualBasicSyntaxNode,
-                             <Out> ByRef colonToken As PunctuationSyntax,
-                             <Out> ByRef excessText As String
+        Private Function RemoveTrailingColonTriviaAndConvertToColonToken _ 
+                         ( node As VisualBasicSyntaxNode,
+               <Out> ByRef colonToken As PunctuationSyntax,
+               <Out> ByRef excessText As String
                          ) As VisualBasicSyntaxNode
 
-            Dim lastNonMissing = DirectCast(node.GetLastToken(), SyntaxToken)
-
+            Dim lastNonMissing    = node.GetLastToken()
             Dim newLastNonMissing = RemoveTrailingColonTriviaAndConvertToColonToken(lastNonMissing, colonToken, excessText)
-
-            Dim newNode = LastTokenReplacer.Replace(node, Function(t) If(t Is lastNonMissing, newLastNonMissing, t))
+            Dim newNode           = LastTokenReplacer.Replace(node, Function(t) If(t Is lastNonMissing, newLastNonMissing, t))
 
             ' If no token was replaced we have failed to recover; let high contexts deal with it.
             If newNode Is node Then

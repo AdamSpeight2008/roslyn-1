@@ -109,9 +109,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' // NOTE: a statement can end with an expression. Therefore, the set denoted by CanFollowExpression
         ' // is not smaller than that denoted by CanFollowStatement. (actually, the two sets are equal
         ' // if we happen to be parsing the statement body of a single-line sub lambda).
-
+        '
         ' bool .Parser::CanFollowExpression( [ _In_ Token* T ] )
-        Private Function CanFollowExpression(t As SyntaxToken) As Boolean
+        Private Function CanFollowExpression _
+                         ( t As SyntaxToken
+                         ) As Boolean
+
             ' // e.g. "Aggregate" can end an expression
             Dim kind As SyntaxKind = Nothing
 
@@ -127,53 +130,55 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         'Token* // Returns the token following tkOF, or NULL if we aren't looking at generic type syntax 
         'Parser::BeginsGeneric // A generic is signified by '(' [tkStatementTerminator] tkOF
 
-        Private Function BeginsGeneric(Optional nonArrayName As Boolean = False, Optional allowGenericsWithoutOf As Boolean = False) As Boolean
+        Private Function BeginsGeneric _ 
+                         (
+                  Optional nonArrayName As Boolean = False,
+                  Optional allowGenericsWithoutOf As Boolean = False
+                         ) As Boolean
 
-            If CurrentToken.Kind = SyntaxKind.OpenParenToken Then
+            If CurrentToken.Kind <> SyntaxKind.OpenParenToken Then Return False 
 
-                If nonArrayName Then
-                    Return True
+            If nonArrayName Then Return True
+
+            Dim t = PeekPastStatementTerminator()
+
+            If t.Kind = SyntaxKind.OfKeyword Then
+                Return True
+            ElseIf allowGenericsWithoutOf Then
+                ' // To enable a better user experience in some common generics'
+                ' // error scenarios, we special case goo(Integer) and
+                ' // goo(Integer, garbage).
+                ' //
+                ' // "(Integer" indicates possibly type parameters with missing "of",
+                ' // but not "(Integer." and "Integer!" because they could possibly
+                ' // imply qualified names or expressions. Also note that "Integer :="
+                ' // could imply named arguments. Here "Integer" is just an example,
+                ' // it could be any intrinsic type.
+                ' //
+                If SyntaxFacts.IsPredefinedTypeOrVariant(t.Kind) Then
+                   Select Case PeekToken(2).Kind
+                          Case SyntaxKind.CloseParenToken, SyntaxKind.CommaToken
+                               Return True
+                   End Select
                 End If
-
-                Dim t = PeekPastStatementTerminator()
-
-                If t.Kind = SyntaxKind.OfKeyword Then
-                    Return True
-                ElseIf allowGenericsWithoutOf Then
-                    ' // To enable a better user experience in some common generics'
-                    ' // error scenarios, we special case goo(Integer) and
-                    ' // goo(Integer, garbage).
-                    ' //
-                    ' // "(Integer" indicates possibly type parameters with missing "of",
-                    ' // but not "(Integer." and "Integer!" because they could possibly
-                    ' // imply qualified names or expressions. Also note that "Integer :="
-                    ' // could imply named arguments. Here "Integer" is just an example,
-                    ' // it could be any intrinsic type.
-                    ' //
-                    If SyntaxFacts.IsPredefinedTypeOrVariant(t.Kind) Then
-                        Select Case PeekToken(2).Kind
-                            Case SyntaxKind.CloseParenToken, SyntaxKind.CommaToken
-                                Return True
-                        End Select
-                    End If
-                End If
-
             End If
-
             Return False
         End Function
 
         ' Does this token force the end of a statement?
-
+        '
         ' File: Parser.cpp
         ' Lines: 18635 - 18635
         ' bool .Parser::MustEndStatement( [ _In_ Token* T ] )
-
-        Private Function MustEndStatement(t As SyntaxToken) As Boolean
+        '
+        Private Function MustEndStatement _ 
+                         ( t As SyntaxToken
+                         ) As Boolean
             Debug.Assert(t IsNot Nothing)
             Return IsValidStatementTerminator(t)
         End Function
 
+        #Region "PeekAheadFor Overloads"
         ' /*********************************************************************
         ' *
         ' * Function:
@@ -188,30 +193,43 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' *     advanced. To consume tokens, use ResyncAt().
         ' *
         ' **********************************************************************/
-
+        '
         ' // [in] count of tokens to look for
         ' // [in] var_list of tokens (tk[]) to look for
-
+        '
         ' File: Parser.cpp
         ' Lines: 18847 - 18847
         ' tokens __cdecl .Parser::PeekAheadFor( [ unsigned Count ] [ ...  ] )
+        '
+        Private Function PeekAheadFor _ 
+                         (
+                ParamArray kinds As SyntaxKind()
+                         ) As SyntaxKind
 
-        Private Function PeekAheadFor(ParamArray kinds As SyntaxKind()) As SyntaxKind
             Dim token As SyntaxToken = Nothing
             PeekAheadFor(s_isTokenOrKeywordFunc, kinds, token)
             Return If(token Is Nothing, Nothing, token.Kind)
         End Function
 
-        Private Function PeekAheadForToken(ParamArray kinds As SyntaxKind()) As Integer
+        Private Function PeekAheadForToken _ 
+                         (
+                ParamArray kinds As SyntaxKind()
+                         ) As Integer
             Dim token As SyntaxToken = Nothing
             Dim index = PeekAheadFor(s_isTokenOrKeywordFunc, kinds, token)
             Return index
         End Function
 
-        Private Function PeekAheadFor(Of TArg)(predicate As Func(Of SyntaxToken, TArg, Boolean), arg As TArg, <Out()> ByRef token As SyntaxToken) As Integer
-            Dim nextToken = CurrentToken
+        Private Function PeekAheadFor _ 
+                         (Of TArg) _ 
+                         ( predicate As Func(Of SyntaxToken, TArg, Boolean),
+                           arg As TArg,
+               <Out> ByRef token As SyntaxToken
+                         ) As Integer
 
+            Dim nextToken = CurrentToken
             Dim i As Integer = 0
+
             While Not IsValidStatementTerminator(nextToken)
                 If predicate(nextToken, arg) Then
                     token = nextToken
@@ -225,7 +243,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             token = Nothing
             Return 0
         End Function
+        #End Region
 
+        #Region "ResyncAt Overloads"
         ' /*********************************************************************
         ' *
         ' * Function:
@@ -236,17 +256,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' *     given list or EOS.
         ' *
         ' **********************************************************************/
-
+        '
         ' // [in] count of tokens to look for
         ' // [in] var_list of tokens to look for
-
+        '
         ' File: Parser.cpp
         ' Lines: 18939 - 18939
         ' tokens __cdecl .Parser::ResyncAt( [ unsigned Count ] [ ...  ] )
-
+        '
         ' TODO: note that queries sometimes use very large lists of resync tokens.
         ' linear search may not make much sense. Perhaps could use lazy-inited hashtables?
-        Private Sub ResyncAt(skippedTokens As SyntaxListBuilder(Of SyntaxToken), state As ScannerState, resyncTokens As SyntaxKind())
+        '
+        Private Sub ResyncAt _ 
+                    ( skippedTokens As SyntaxListBuilder(Of SyntaxToken),
+                      state         As ScannerState,
+                      resyncTokens  As SyntaxKind()
+                    )
+
             Debug.Assert(resyncTokens IsNot Nothing)
 
             While CurrentToken.Kind <> SyntaxKind.EndOfFileToken
@@ -268,15 +294,57 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End While
         End Sub
 
-        Private Function ResyncAt(state As ScannerState, resyncTokens As SyntaxKind()) As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of SyntaxToken)
-            Dim skippedTokens = Me._pool.Allocate(Of SyntaxToken)()
+        Private Function ResyncAt _ 
+                         ( state        As ScannerState,
+                           resyncTokens As SyntaxKind()
+                         ) As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of SyntaxToken)
+ 
+            Dim skippedTokens = _pool.Allocate(Of SyntaxToken)()
 
             ResyncAt(skippedTokens, state, resyncTokens)
 
-            Dim result = skippedTokens.ToList()
-            Me._pool.Free(skippedTokens)
+            Return skippedTokens.ToListAndFree(_pool)
+        End Function
 
-            Return result
+        Friend Function ResyncAt _
+                        (
+                        ) As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of SyntaxToken)
+            Return ResyncAt(ScannerState.VB, Array.Empty(Of SyntaxKind))
+        End Function
+
+        Friend Function ResyncAt _ 
+                        ( resyncTokens As SyntaxKind()
+                        ) As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of SyntaxToken)
+            Debug.Assert(resyncTokens IsNot Nothing)
+            Return ResyncAt(ScannerState.VB, resyncTokens)
+        End Function
+
+        Private Function ResyncAt _ 
+                         (Of T As VisualBasicSyntaxNode) _ 
+                         ( syntax As T,
+                           state  As ScannerState,
+                ParamArray resyncTokens As SyntaxKind()
+                         ) As T
+
+            Debug.Assert(resyncTokens IsNot Nothing)
+            Return syntax.AddTrailingSyntax(ResyncAt(state, resyncTokens))
+        End Function
+
+        Private Function ResyncAt _
+                         (Of T As VisualBasicSyntaxNode) _
+                         ( syntax As T
+                         ) As T
+            Return syntax.AddTrailingSyntax(ResyncAt())
+        End Function
+
+        Private Function ResyncAt _
+                         (Of T As GreenNode) _
+                         ( syntax As T,
+                ParamArray resyncTokens As SyntaxKind()
+                         ) As T
+            Debug.Assert(resyncTokens IsNot Nothing)
+
+            Return syntax.AddTrailingSyntax(ResyncAt(resyncTokens).Node)
         End Function
 
         ''' <summary>
@@ -300,36 +368,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 GetNextToken(ScannerState.VB)
             End If
 
-            Dim result = skippedTokens.ToList()
-            Me._pool.Free(skippedTokens)
-
-            Return result
+            Return skippedTokens.ToListAndFree(_pool)
         End Function
 
-        Friend Function ResyncAt() As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of SyntaxToken)
-            Return ResyncAt(ScannerState.VB, Array.Empty(Of SyntaxKind))
-        End Function
-
-        Friend Function ResyncAt(resyncTokens As SyntaxKind()) As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of SyntaxToken)
-            Debug.Assert(resyncTokens IsNot Nothing)
-            Return ResyncAt(ScannerState.VB, resyncTokens)
-        End Function
-
-        Private Function ResyncAt(Of T As VisualBasicSyntaxNode)(syntax As T, state As ScannerState, ParamArray resyncTokens As SyntaxKind()) As T
-            Debug.Assert(resyncTokens IsNot Nothing)
-
-            Return syntax.AddTrailingSyntax(ResyncAt(state, resyncTokens))
-        End Function
-
-        Private Function ResyncAt(Of T As VisualBasicSyntaxNode)(syntax As T) As T
-            Return syntax.AddTrailingSyntax(ResyncAt())
-        End Function
-
-        Private Function ResyncAt(Of T As GreenNode)(syntax As T, ParamArray resyncTokens As SyntaxKind()) As T
-            Debug.Assert(resyncTokens IsNot Nothing)
-
-            Return syntax.AddTrailingSyntax(ResyncAt(resyncTokens).Node)
-        End Function
+        #end region
 
         ''' <summary>
         ''' If the current token is a newline statement terminator, then consume the token.
