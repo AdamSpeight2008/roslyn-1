@@ -391,11 +391,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim optionalCaseKeyword As KeywordSyntax = Nothing
             TryGetToken(SyntaxKind.CaseKeyword, optionalCaseKeyword)
 
-            Dim value As ExpressionSyntax = ParseExpressionCore()
-
-            If value.ContainsDiagnostics Then
-                value = ResyncAt(value)
-            End If
+            Dim value = Parse_Operand()
 
             Dim statement = SyntaxFactory.SelectStatement(selectKeyword, optionalCaseKeyword, value)
 
@@ -1068,12 +1064,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 TryEatNewLine()
 
-                Dim source = ParseExpressionCore()
-
-                If source.ContainsDiagnostics Then
-                    ' Sync to avoid other errors
-                    source = ResyncAt(source)
-                End If
+                Dim source = Parse_Operand()
 
                 Return MakeAssignmentStatement(target, operatorToken, source)
             End If
@@ -1416,9 +1407,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 optionalWhenClause = SyntaxFactory.CatchFilterClause(whenKeyword, filter)
             End If
 
-            Dim statement = SyntaxFactory.CatchStatement(catchKeyword, optionalName, optionalAsClause, optionalWhenClause)
+            Return SyntaxFactory.CatchStatement(catchKeyword, optionalName, optionalAsClause, optionalWhenClause)
 
-            Return statement
         End Function
 
         ' File: Parser.cpp
@@ -1442,10 +1432,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 End If
             End If
 
-            Dim statement = SyntaxFactory.ThrowStatement(throwKeyword, value)
-
-            Return statement
-        End Function
+            Return SyntaxFactory.ThrowStatement(throwKeyword, value)
+       End Function
 
         Private Function ParseError() As ErrorStatementSyntax
             Dim errorKeyword As KeywordSyntax = Nothing
@@ -1551,11 +1539,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim equals As PunctuationSyntax = Nothing
             VerifyExpectedToken(SyntaxKind.EqualsToken, equals)
 
-            Dim source As ExpressionSyntax = ParseExpressionCore()
-
-            If source.ContainsDiagnostics() Then
-                source = ResyncAt(source)
-            End If
+            Dim source = Parse_Operand()
 
             Dim statement = SyntaxFactory.MidAssignmentStatement(SyntaxFactory.MidExpression(mid, SyntaxFactory.ArgumentList(openParen, arguments, closeParen)),
                                                                  equals, source)
@@ -1569,7 +1553,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Expression* .Parser::ParseOptionalWhileOrUntilClause( [ _Out_ bool* IsWhile ] [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function TryParseOptionalWhileOrUntilClause _
-                         (precedingKeyword As KeywordSyntax,
+                         ( precedingKeyword As KeywordSyntax,
                      ByRef optionalWhileOrUntilClause As WhileOrUntilClauseSyntax
                          ) As Boolean
 
@@ -1613,7 +1597,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         keyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.WhileKeyword)
                     End If
 
-                    Dim clause As WhileOrUntilClauseSyntax = SyntaxFactory.WhileOrUntilClause(kind, keyword, InternalSyntaxFactory.MissingExpression)
+                    Dim clause = SyntaxFactory.WhileOrUntilClause(kind, keyword, InternalSyntaxFactory.MissingExpression)
 
                     ' Dev10 places the error only on the current token. 
                     ' This marks the entire clause which seems better.
@@ -1690,12 +1674,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim stopOrEndKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
 
-            Dim stmtKind As SyntaxKind = If(stopOrEndKeyword.Kind = SyntaxKind.StopKeyword, SyntaxKind.StopStatement, SyntaxKind.EndStatement)
+            Dim stmtKind As SyntaxKind = If(stopOrEndKeyword.Kind = SyntaxKind.StopKeyword,
+                                            SyntaxKind.StopStatement, SyntaxKind.EndStatement)
 
-            Dim statement = SyntaxFactory.StopOrEndStatement(stmtKind, stopOrEndKeyword)
+            Return SyntaxFactory.StopOrEndStatement(stmtKind, stopOrEndKeyword)
 
-            Return statement
         End Function
+        
         Private Function ParseUsingStatement() As UsingStatementSyntax
             Dim usingKeyword As KeywordSyntax = Nothing
             AssumeToBeAtKeyword(SyntaxKind.UsingKeyword, usingKeyword)
@@ -1720,9 +1705,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             'No need to resync on error.  This will be handled by GetStatementTerminator
 
-            Dim statement = SyntaxFactory.UsingStatement(usingKeyword, optionalExpression, variables)
+            Return SyntaxFactory.UsingStatement(usingKeyword, optionalExpression, variables)
 
-            Return statement
         End Function
 
 
@@ -1740,9 +1724,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 expression = ResyncAt(expression)
             End If
 
-            Dim statement = SyntaxFactory.ExpressionStatement(expression)
-
-            Return statement
+            Return SyntaxFactory.ExpressionStatement(expression)
 
         End Function
 

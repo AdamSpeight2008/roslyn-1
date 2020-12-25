@@ -386,28 +386,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Sub ParseExternalID(builder As SyntaxListBuilder(Of GreenNode))
 
-            If CurrentToken.Kind = SyntaxKind.XmlNameToken Then
+            If CurrentToken.Kind <> SyntaxKind.XmlNameToken Then Exit Sub
 
-                Dim name = DirectCast(CurrentToken, XmlNameTokenSyntax)
+            Dim name = DirectCast(CurrentToken, XmlNameTokenSyntax)
 
-                Select Case name.ToString
-                    Case "SYSTEM"
-                        builder.Add(name)
-                        GetNextToken(ScannerState.DocType)
-                        Dim systemLiteral = ParseXmlString(ScannerState.DocType)
-                        builder.Add(systemLiteral)
+            Select Case name.ToString
+                Case "SYSTEM"
+                    builder.Add(name)
+                    GetNextToken(ScannerState.DocType)
+                    builder.Add(ParseXmlString(ScannerState.DocType))
 
-                    Case "PUBLIC"
-                        builder.Add(name)
-                        GetNextToken(ScannerState.DocType)
-                        Dim publicLiteral = ParseXmlString(ScannerState.DocType)
-                        builder.Add(publicLiteral)
-                        Dim systemLiteral = ParseXmlString(ScannerState.DocType)
-                        builder.Add(systemLiteral)
+                Case "PUBLIC"
+                    builder.Add(name)
+                    GetNextToken(ScannerState.DocType)
+                    builder.Add(ParseXmlString(ScannerState.DocType)).
+                            Add(ParseXmlString(ScannerState.DocType))
 
-                End Select
-            End If
-
+            End Select
         End Sub
 
         Private Sub ParseInternalSubSet(builder As SyntaxListBuilder(Of GreenNode))
@@ -916,9 +911,12 @@ LessThanSlashTokenCase:
         ' Lines: 13770 - 13770
         ' ExpressionList* .Parser::ParseXmlAttributes( [ bool AllowNameAsExpression ] [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseXmlAttributes(requireLeadingWhitespace As Boolean, xmlElementName As XmlNodeSyntax) As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of XmlNodeSyntax)
+        Private Function ParseXmlAttributes _
+                         ( requireLeadingWhitespace As Boolean,
+                           xmlElementName As XmlNodeSyntax
+                         ) As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of XmlNodeSyntax)
 
-            Dim Attributes = Me._pool.Allocate(Of XmlNodeSyntax)()
+            Dim Attributes = _pool.Allocate(Of XmlNodeSyntax)()
 
             Do
                 Select Case CurrentToken.Kind
@@ -1446,16 +1444,14 @@ lFailed:
             End Function
 
             Private Shared Function SyntaxNodeOrTokenHasInvalidTrivia(node As GreenNode) As Boolean
-                If node IsNot Nothing Then
-                    Dim token As SyntaxToken = TryCast(node, SyntaxToken)
-                    If token IsNot Nothing Then
-                        If IsInvalidTrivia(token.GetLeadingTrivia) OrElse IsInvalidTrivia(token.GetTrailingTrivia) Then
-                            Return True
-                        End If
-
-                    ElseIf SyntaxNodeHasInvalidTrivia(node) Then
-                        Return True
-                    End If
+                If node Is Nothing Then Return False
+                Dim token As SyntaxToken = TryCast(node, SyntaxToken)
+                If token IsNot Nothing Then
+                   If IsInvalidTrivia(token.GetLeadingTrivia) OrElse IsInvalidTrivia(token.GetTrailingTrivia) Then
+                      Return True
+                   End If
+                ElseIf SyntaxNodeHasInvalidTrivia(node) Then
+                    Return True
                 End If
                 Return False
             End Function
@@ -1506,12 +1502,13 @@ lFailed:
         ' File: Parser.cpp
         ' Lines: 13931 - 13931
         ' Expression* .Parser::ParseXmlQualifiedName( [ bool AllowExpr ] [ bool IsBracketed ] [ bool IsElementName ] [ _Inout_ bool& ErrorInConstruct ] )
-        Private Function ParseXmlQualifiedName(
-            requireLeadingWhitespace As Boolean,
-            allowExpr As Boolean,
-            stateForName As ScannerState,
-            nextState As ScannerState
-        ) As XmlNodeSyntax
+        Private Function ParseXmlQualifiedName _ 
+                         ( requireLeadingWhitespace As Boolean,
+                           allowExpr    As Boolean,
+                           stateForName As ScannerState,
+                           nextState    As ScannerState
+                         ) As XmlNodeSyntax
+
             Select Case (CurrentToken.Kind)
 
                 Case SyntaxKind.XmlNameToken

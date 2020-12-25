@@ -679,15 +679,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' Parse NameOf, 
         ''' NameOfExpression -> NameOf OpenParenthesis Name CloseParenthesis 
         ''' </summary>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
         Private Function ParseNameOf() As NameOfExpressionSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.NameOfKeyword, "should be at NameOf.")
-
-            Dim [nameOf] As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
+            Dim [nameOf] As KeywordSyntax = Nothing
+            AssumeToBeAtKeyword(SyntaxKind.NameOfKeyword, [nameOf])
             [nameOf] = CheckFeatureAvailability(Feature.NameOfExpressions, [nameOf])
-
-            GetNextToken()
 
             Dim openParen As PunctuationSyntax = Nothing
             TryGetTokenAndEatNewLine(SyntaxKind.OpenParenToken, openParen, createIfMissing:=True)
@@ -700,7 +695,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return SyntaxFactory.NameOfExpression([nameOf], openParen, nameOfName, closeParen)
         End Function
 
-        Private Function ValidateNameOfArgument(argument As ExpressionSyntax, isTopLevel As Boolean) As ExpressionSyntax
+        Private Function ValidateNameOfArgument _
+                         (
+                           argument   As ExpressionSyntax,
+                           isTopLevel As Boolean
+                         ) As ExpressionSyntax
 
             Select Case argument.Kind
                 Case SyntaxKind.IdentifierName,
@@ -803,10 +802,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Expression* .Parser::ParseNewExpression( [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseNewExpression() As ExpressionSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.NewKeyword, "must be at a New expression.")
-
-            Dim NewKeyword = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken() ' get off 'new'
+            Dim newKeyword As KeywordSyntax = Nothing
+            AssumeToBeAtKeyword(SyntaxKind.NewKeyword, newKeyword)
 
             If CurrentToken.Kind = SyntaxKind.WithKeyword Then
                 ' Anonymous type initializer
@@ -936,11 +933,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <returns></returns>
         ''' <remarks></remarks>
         Private Function ParseTypeOf() As TypeOfExpressionSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.TypeOfKeyword, "must be at TypeOf.")
-            Dim [typeOf] As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-
-            ' Consume 'TypeOf'.
-            GetNextToken()
+            Dim [typeOf] As KeywordSyntax = Nothing
+            AssumeToBeAtKeyword(SyntaxKind.TypeOfKeyword, [typeOf])
 
             Dim exp As ExpressionSyntax = ParseExpressionCore(OperatorPrecedence.PrecedenceRelational) 'Dev10 uses ParseVariable
 
@@ -1286,7 +1280,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseTheRestOfTupleLiteral _ 
-                         ( openParen     As PunctuationSyntax,
+                         (
+                           openParen     As PunctuationSyntax,
                            firstArgument As SimpleArgumentSyntax
                          ) As TupleExpressionSyntax
 
