@@ -20,6 +20,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         VisualBasic15_3 = 1503
         VisualBasic15_5 = 1505
         VisualBasic16 = 1600
+        VisualBasic16_1 = 1601
 
         Latest = Integer.MaxValue
     End Enum
@@ -37,7 +38,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     LanguageVersion.VisualBasic15,
                     LanguageVersion.VisualBasic15_3,
                     LanguageVersion.VisualBasic15_5,
-                    LanguageVersion.VisualBasic16
+                    LanguageVersion.VisualBasic16,
+                    LanguageVersion.VisualBasic16_1
 
                     Return True
             End Select
@@ -67,6 +69,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Return "15.5"
                 Case LanguageVersion.VisualBasic16
                     Return "16"
+                Case LanguageVersion.VisualBasic16_1
+                    Return "16.1"
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(value)
             End Select
@@ -121,6 +125,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Return "15.5"
                 Case LanguageVersion.VisualBasic16
                     Return "16"
+                Case LanguageVersion.VisualBasic16_1
+                    Return "16.1"
                 Case LanguageVersion.Default
                     Return "default"
                 Case LanguageVersion.Latest
@@ -158,6 +164,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     result = LanguageVersion.VisualBasic15_5
                 Case "16", "16.0"
                     result = LanguageVersion.VisualBasic16
+                Case "16.1"
+                    result = LanguageVersion.VisualBasic16_1
                 Case "default"
                     result = LanguageVersion.Default
                 Case "latest"

@@ -3826,23 +3826,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Function TryBindingAsAnEnumFlag(node As MemberAccessExpressionSyntax,
                                                 left As BoundExpression,
                                          diagnostics As DiagnosticBag) As BoundExpression
-            If IsFlagsEnum(left) Then 
-                ' left side is a <Flags> Enum
-                Dim flagName = New BoundLiteral(node.Name,
-                                                ConstantValue.Create(node.Name.Identifier.ValueText),
-                                                GetSpecialType(SpecialType.System_String, node.Name, diagnostics))
-                Dim q = left.Type.OriginalDefinition
-                Dim isMemberOf = q.GetMembers.Any(Function(m) m.IsShared AndAlso m.Name.ToUpperInvariant = node.Name.Identifier.ValueText.ToLowerInvariant)
-                If isMemberOf Then
-                    Return BadExpression(left)
-                   ' Return New BoundFlagEnumExpression(node, flagName FlagsOperations.IsExplicitlySet)
+            If _compilation.Options.IsFeatureAvailable(Syntax.InternalSyntax.Feature.FlagsEnumOperations, diagnostics) Then
+                If IsFlagsEnum(left) Then 
+                    ' left side is a <Flags> Enum
+                    Dim flagName = New BoundLiteral(node.Name,
+                                                    ConstantValue.Create(node.Name.Identifier.ValueText),
+                                                    GetSpecialType(SpecialType.System_String, node.Name, diagnostics))
+                    Dim q = left.Type.OriginalDefinition
+                    Dim isMemberOf = q.GetMembers.Any(Function(m) m.IsShared AndAlso m.Name.ToUpperInvariant = node.Name.Identifier.ValueText.ToLowerInvariant)
+                    If isMemberOf Then
+                        Return BadExpression(left)
+                       ' Return New BoundFlagEnumExpression(node, flagName FlagsOperations.IsExplicitlySet)
+                    Else
+                        Return CreateBadExpr(node, left, diagnostics)
+                    End If
                 Else
+                    ' left side isn't an <Flags> Enum.
                     Return CreateBadExpr(node, left, diagnostics)
                 End If
             Else
-                ' left side isn't an <Flags> Enum.
-                Return CreateBadExpr(node, left, diagnostics)
-            End If
+                ReportQualNotObjectRecord(left, diagnostics)
+                Return CreateBadExpr(node,left, diagnostics)
+            End if
        End Function
 
         Private Shared Sub ReportNoDefaultProperty(expr As BoundExpression, diagnostics As DiagnosticBag)

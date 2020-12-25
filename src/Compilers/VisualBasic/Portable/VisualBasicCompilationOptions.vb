@@ -1381,5 +1381,38 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Throw New NotImplementedException()
             End Set
         End Property
+
+        #Region "Feature Checking"
+
+        Private Function CheckAgainstFeatureFlags(
+                                                   feature As Syntax.InternalSyntax.Feature
+                                                 ) As Boolean
+            Dim feature_flag = Syntax.InternalSyntax.FeatureExtensions.GetFeatureFlag(feature)
+            Return (feature_flag IsNot Nothing) AndAlso _parseOptions.Features.ContainsKey(feature_flag)
+        End Function
+
+        Private Function CheckAgainstLanguageVersion(
+                                                      feature As Syntax.InternalSyntax.Feature,
+                                                      diagnostics As diagnosticBag
+                                                    ) As Boolean
+            Dim current = _parseOptions.LanguageVersion.MapSpecifiedToEffectiveVersion
+            Dim required = Syntax.InternalSyntax.FeatureExtensions.GetLanguageVersion(feature)
+            Dim isValid = current >= required
+            ' todo: report issue
+            Return isValid
+        End Function
+
+         Friend Function IsFeatureAvailable(
+                                             feature As Syntax.InternalSyntax.Feature,
+                                             diagnostics As diagnosticBag,
+                                    Optional CheckFeatureFlags As Boolean = False
+                                           ) As Boolean
+            Debug.Assert(_parseOptions IsNot Nothing, NameOf(_parseOptions) & " is nothing.")
+            Return (CheckFeatureFlags AndAlso CheckAgainstFeatureFlags(feature)) OrElse
+                   CheckAgainstLanguageVersion(feature, diagnostics)
+        End Function
+
+        #End Region
+
     End Class
 End Namespace
