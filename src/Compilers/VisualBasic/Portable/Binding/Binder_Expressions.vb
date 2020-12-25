@@ -3775,6 +3775,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 ElseIf defaultPropertyGroup Is Nothing OrElse Not defaultPropertyGroup.HasErrors Then
                     Select Case type.TypeKind
+                        Case TypeKind.Enum
+                          Return  TryBindingAsAnEnumFlag(node, left, diagnostics)
                         Case TypeKind.Array, TypeKind.Enum
                             ReportQualNotObjectRecord(left, diagnostics)
                         Case TypeKind.Class
@@ -3797,6 +3799,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End If
             End If
 
+            Return CreateBadExpr(node, left, diagnostics)
+        End Function
+
+        Private Function CreateBadExpr(node As MemberAccessExpressionSyntax,
+                                       left As BoundExpression,
+                                       diagnostics As DiagnosticBag) As BoundExpression
             Return BadExpression(
                 node,
                 ImmutableArray.Create(
@@ -3807,6 +3815,35 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         GetSpecialType(SpecialType.System_String, node.Name, diagnostics))),
                 ErrorTypeSymbol.UnknownResultType)
         End Function
+
+        Private Shared ReadOnly  _Global_System_Flags_ As String = GetType(Global.System.FlagsAttribute).FullName.ToLowerInvariant()
+
+        Private Function IsFlagsEnum(node As BoundExpression) As Boolean
+            If node.Type.IsEnumType = False Then Return False
+            Return node.Type.OriginalDefinition.GetAttributes.Any(Function(a) a.AttributeClass.Name.ToLowerInvariant() = _Global_System_Flags_)
+        End Function
+
+        Private Function TryBindingAsAnEnumFlag(node As MemberAccessExpressionSyntax,
+                                                left As BoundExpression,
+                                         diagnostics As DiagnosticBag) As BoundExpression
+            If IsFlagsEnum(left) Then 
+                ' left side is a <Flags> Enum
+                Dim flagName = New BoundLiteral(node.Name,
+                                                ConstantValue.Create(node.Name.Identifier.ValueText),
+                                                GetSpecialType(SpecialType.System_String, node.Name, diagnostics))
+                Dim q = left.Type.OriginalDefinition
+                Dim isMemberOf = q.GetMembers.Any(Function(m) m.IsShared AndAlso m.Name.ToUpperInvariant = node.Name.Identifier.ValueText.ToLowerInvariant)
+                If isMemberOf Then
+                    Return BadExpression(left)
+                   ' Return New BoundFlagEnumExpression(node, flagName FlagsOperations.IsExplicitlySet)
+                Else
+                    Return CreateBadExpr(node, left, diagnostics)
+                End If
+            Else
+                ' left side isn't an <Flags> Enum.
+                Return CreateBadExpr(node, left, diagnostics)
+            End If
+       End Function
 
         Private Shared Sub ReportNoDefaultProperty(expr As BoundExpression, diagnostics As DiagnosticBag)
             Dim type = expr.Type
