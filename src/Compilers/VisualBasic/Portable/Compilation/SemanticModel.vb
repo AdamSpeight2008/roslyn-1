@@ -1930,6 +1930,7 @@ _Default:
                                   results As ArrayBuilder(Of Symbol))
             Debug.Assert(results IsNot Nothing)
 
+            Dim uniqueSymbols = PooledHashSet(Of Symbol).GetInstance()
             Dim tempResults = ArrayBuilder(Of Symbol).GetInstance(arities.Count)
 
             For Each knownArity In arities
@@ -1976,6 +1977,7 @@ _Default:
                 If result.HasDiagnostic Then
                     ' In the ambiguous symbol case, we have a good symbol with a diagnostics that
                     ' mentions the other symbols. Union everything together with a set to prevent dups.
+                    Dim symBuilder = ArrayBuilder(Of Symbol).GetInstance
                     Dim symbolSet = PooledHashSet(Of Symbol).GetInstance()
                     AddSymbolsFromDiagnosticInfo(symBuilder, result.Diagnostic)
                     symbolSet.UnionWith(symBuilder)
