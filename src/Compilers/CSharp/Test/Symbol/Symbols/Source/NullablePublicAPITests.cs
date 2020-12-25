@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System;
 using System.Collections.Immutable;
 using System.Linq;
@@ -9,7 +11,6 @@ using System.Threading;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Test.Extensions;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
@@ -1268,7 +1269,7 @@ class C
             Assert.Equal(notNull, leftInfo.Nullability);
             Assert.Equal(notNull, leftInfo.ConvertedNullability);
             Assert.Equal(@null, rightInfo.Nullability);
-            Assert.Equal(notNull, rightInfo.ConvertedNullability);
+            Assert.Equal(@null, rightInfo.ConvertedNullability);
         }
 
         [Fact]
@@ -1532,6 +1533,62 @@ class C
             }
         }
 
+        [Fact, WorkItem(48574, "https://github.com/dotnet/roslyn/issues/48574")]
+        public void SpeculativeGetTypeInfo_Constructor()
+        {
+            var source = @"
+class C
+{
+    public string Prop { get; set; }
+    public C()
+    {
+        if (Prop != null)
+        {
+            Prop.ToString();
+        }
+
+        Prop?.ToString();
+
+        Prop = """";
+        var s2 = Prop == null ? """" : Prop;
+    }
+}";
+
+            var comp = CreateCompilation(source, options: WithNonNullTypesTrue());
+            comp.VerifyDiagnostics(
+                // (5,12): warning CS8618: Non-nullable property 'Prop' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
+                //     public C()
+                Diagnostic(ErrorCode.WRN_UninitializedNonNullableField, "C").WithArguments("property", "Prop").WithLocation(5, 12));
+
+            var syntaxTree = comp.SyntaxTrees[0];
+            var root = syntaxTree.GetRoot();
+            var model = comp.GetSemanticModel(syntaxTree);
+
+            var ifStatement = root.DescendantNodes().OfType<IfStatementSyntax>().Single();
+            var conditionalAccessExpression = root.DescendantNodes().OfType<ConditionalAccessExpressionSyntax>().Single();
+            var ternary = root.DescendantNodes().OfType<ConditionalExpressionSyntax>().Single();
+
+            var newReference = (IdentifierNameSyntax)SyntaxFactory.ParseExpression(@"Prop");
+            var newCoalesce = (AssignmentExpressionSyntax)SyntaxFactory.ParseExpression(@"Prop ??= """"");
+
+            verifySpeculativeTypeInfo(ifStatement.SpanStart, PublicNullableFlowState.MaybeNull);
+            verifySpeculativeTypeInfo(ifStatement.Statement.SpanStart, PublicNullableFlowState.NotNull);
+
+            verifySpeculativeTypeInfo(conditionalAccessExpression.SpanStart, PublicNullableFlowState.MaybeNull);
+            verifySpeculativeTypeInfo(conditionalAccessExpression.WhenNotNull.SpanStart, PublicNullableFlowState.NotNull);
+
+            verifySpeculativeTypeInfo(ternary.WhenTrue.SpanStart, PublicNullableFlowState.MaybeNull);
+            verifySpeculativeTypeInfo(ternary.WhenFalse.SpanStart, PublicNullableFlowState.NotNull);
+
+            void verifySpeculativeTypeInfo(int position, PublicNullableFlowState expectedFlowState)
+            {
+                var specTypeInfo = model.GetSpeculativeTypeInfo(position, newReference, SpeculativeBindingOption.BindAsExpression);
+                Assert.Equal(expectedFlowState, specTypeInfo.Nullability.FlowState);
+                specTypeInfo = model.GetSpeculativeTypeInfo(position, newCoalesce, SpeculativeBindingOption.BindAsExpression);
+                Assert.Equal(PublicNullableFlowState.NotNull, specTypeInfo.Nullability.FlowState);
+            }
+        }
+
         [Fact, WorkItem(45398, "https://github.com/dotnet/roslyn/issues/45398")]
         public void VarInLambda_GetTypeInfo()
         {
@@ -1678,9 +1735,20 @@ class C
 }
 ";
 
-            var featureFlagOff = TestOptions.Regular8.WithFeature("run-nullable-analysis", "false");
+            var featureFlagOff = TestOptions.Regular8.WithFeature("run-nullable-analysis", "never");
 
             var comp = CreateCompilation(source, options: WithNonNullTypesTrue(), parseOptions: featureFlagOff);
+            comp.VerifyDiagnostics(
+                // (5,12): warning CS0414: The field 'C.field' is assigned but its value is never used
+                //     object field = null;
+                Diagnostic(ErrorCode.WRN_UnreferencedFieldAssg, "field").WithArguments("C.field").WithLocation(5, 12),
+                // (9,16): warning CS0219: The variable 'o' is assigned but its value is never used
+                //         object o = null;
+                Diagnostic(ErrorCode.WRN_UnreferencedVarAssg, "o").WithArguments("o").WithLocation(9, 16));
+
+            Assert.False(comp.IsNullableAnalysisEnabled);
+
+            comp = CreateCompilation(source, options: WithNonNullTypesTrue());
             comp.VerifyDiagnostics(
                 // (5,12): warning CS0414: The field 'C.field' is assigned but its value is never used
                 //     object field = null;
@@ -1695,7 +1763,7 @@ class C
                 //         object o = null;
                 Diagnostic(ErrorCode.WRN_ConvertingNullableToNonNullable, "null").WithLocation(9, 20));
 
-            Assert.False(comp.NullableSemanticAnalysisEnabled);
+            Assert.True(comp.IsNullableAnalysisEnabled);
         }
 
         private class CSharp73ProvidesNullableSemanticInfo_Analyzer : DiagnosticAnalyzer
@@ -2499,8 +2567,8 @@ class C
             }
         }
 
-        [InlineData("true")]
-        [InlineData("false")]
+        [InlineData("always")]
+        [InlineData("never")]
         [Theory, WorkItem(37659, "https://github.com/dotnet/roslyn/issues/37659")]
         public void InvalidCodeVar_GetsCorrectSymbol(string flagState)
         {
@@ -4116,6 +4184,68 @@ class Test
         }
 
         [Fact]
+        public void ParameterDefaultValue()
+        {
+            var source = @"
+class Test
+{
+    void M0(object obj = default) { } // 1
+    void M1(int i = default) { }
+}
+";
+
+            var comp = CreateCompilation(source, options: WithNonNullTypesTrue());
+            comp.VerifyDiagnostics(
+                // (4,26): warning CS8625: Cannot convert null literal to non-nullable reference type.
+                //     void M0(object obj = default) { } // 1
+                Diagnostic(ErrorCode.WRN_NullAsNonNullable, "default").WithLocation(4, 26));
+
+            var syntaxTree = comp.SyntaxTrees[0];
+            var root = syntaxTree.GetRoot();
+            var model = comp.GetSemanticModel(syntaxTree);
+
+            var default0 = root.DescendantNodes().OfType<EqualsValueClauseSyntax>().ElementAt(0).Value;
+            Assert.Equal(PublicNullableFlowState.MaybeNull, model.GetTypeInfo(default0).Nullability.FlowState);
+
+            var default1 = root.DescendantNodes().OfType<EqualsValueClauseSyntax>().ElementAt(1).Value;
+            Assert.Equal(PublicNullableFlowState.NotNull, model.GetTypeInfo(default1).Nullability.FlowState);
+        }
+
+        [Fact]
+        public void AttributeDefaultValue()
+        {
+            var source = @"
+using System;
+
+class Attr : Attribute
+{
+    public Attr(object obj, int i) { }
+}
+
+[Attr(default, default)] // 1
+class Test
+{
+}
+";
+
+            var comp = CreateCompilation(source, options: WithNonNullTypesTrue());
+            comp.VerifyDiagnostics(
+                // (9,7): warning CS8625: Cannot convert null literal to non-nullable reference type.
+                // [Attr(default, default)] // 1
+                Diagnostic(ErrorCode.WRN_NullAsNonNullable, "default").WithLocation(9, 7));
+
+            var syntaxTree = comp.SyntaxTrees[0];
+            var root = syntaxTree.GetRoot();
+            var model = comp.GetSemanticModel(syntaxTree);
+
+            var default0 = root.DescendantNodes().OfType<AttributeArgumentSyntax>().ElementAt(0).Expression;
+            Assert.Equal(PublicNullableFlowState.MaybeNull, model.GetTypeInfo(default0).Nullability.FlowState);
+
+            var default1 = root.DescendantNodes().OfType<AttributeArgumentSyntax>().ElementAt(1).Expression;
+            Assert.Equal(PublicNullableFlowState.NotNull, model.GetTypeInfo(default1).Nullability.FlowState);
+        }
+
+        [Fact]
         [WorkItem(38638, "https://github.com/dotnet/roslyn/issues/38638")]
         public void TypeParameter_Default()
         {
@@ -4551,7 +4681,7 @@ class Program
     static T F<T>(T t) => t;
     static T F1<T>(T? x1)
     {
-        T y1 = F(x1);
+        T y1 = F(x1); // 1
         if (x1 == null) throw null!;
         T z1 = F(x1);
         return z1;
@@ -4559,16 +4689,25 @@ class Program
     static T F2<T>(T x2)
     {
         T y2 = F(x2);
-        x2 = default;
-        T z2 = F(x2);
-        return z2; // 1
+        x2 = default; // 2
+        T z2 = F(x2); // 3
+        return z2; // 4
     }
 }";
 
             var comp = CreateCompilation(source, parseOptions: TestOptions.Regular9);
             comp.VerifyDiagnostics(
+                // (7,16): warning CS8600: Converting null literal or possible null value to non-nullable type.
+                //         T y1 = F(x1); // 1
+                Diagnostic(ErrorCode.WRN_ConvertingNullableToNonNullable, "F(x1)").WithLocation(7, 16),
+                // (15,14): warning CS8600: Converting null literal or possible null value to non-nullable type.
+                //         x2 = default; // 2
+                Diagnostic(ErrorCode.WRN_ConvertingNullableToNonNullable, "default").WithLocation(15, 14),
+                // (16,16): warning CS8600: Converting null literal or possible null value to non-nullable type.
+                //         T z2 = F(x2); // 3
+                Diagnostic(ErrorCode.WRN_ConvertingNullableToNonNullable, "F(x2)").WithLocation(16, 16),
                 // (17,16): warning CS8603: Possible null reference return.
-                //         return z2; // 1
+                //         return z2; // 4
                 Diagnostic(ErrorCode.WRN_NullReferenceReturn, "z2").WithLocation(17, 16));
 
             var syntaxTree = comp.SyntaxTrees[0];

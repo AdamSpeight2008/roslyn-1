@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 
@@ -37,6 +39,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         // When using pattern-based Dispose, this stores the method to invoke to Dispose
         public readonly MethodSymbol DisposeMethod;
 
+        // When enumerator needs disposing, this records if the dispose is pattern based or not
+        public readonly bool IsPatternDispose;
+
         // Conversions that will be required when the foreach is lowered.
         public readonly Conversion CollectionConversion; //collection expression to collection type
         public readonly Conversion CurrentConversion; // current to element type
@@ -57,6 +62,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool needsDisposal,
             BoundAwaitableInfo disposeAwaitableInfo,
             MethodSymbol disposeMethod,
+            bool isPatternDispose,
             Conversion collectionConversion,
             Conversion currentConversion,
             Conversion enumeratorConversion,
@@ -69,6 +75,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert((object)currentPropertyGetter != null, "Field 'currentPropertyGetter' cannot be null");
             Debug.Assert((object)moveNextMethod != null, "Field 'moveNextMethod' cannot be null");
             Debug.Assert(binder != null, "Field 'binder' cannot be null");
+            Debug.Assert(!isPatternDispose || needsDisposal);
 
             this.CollectionType = collectionType;
             this.ElementTypeWithAnnotations = elementType;
@@ -79,6 +86,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             this.NeedsDisposal = needsDisposal;
             this.DisposeAwaitableInfo = disposeAwaitableInfo;
             this.DisposeMethod = disposeMethod;
+            this.IsPatternDispose = isPatternDispose;
             this.CollectionConversion = collectionConversion;
             this.CurrentConversion = currentConversion;
             this.EnumeratorConversion = enumeratorConversion;
@@ -101,6 +109,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             public bool NeedsDisposal;
             public BoundAwaitableInfo DisposeAwaitableInfo;
             public MethodSymbol DisposeMethod;
+            public bool IsPatternDispose;
 
             public Conversion CollectionConversion;
             public Conversion CurrentConversion;
@@ -128,6 +137,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     NeedsDisposal,
                     DisposeAwaitableInfo,
                     DisposeMethod,
+                    IsPatternDispose,
                     CollectionConversion,
                     CurrentConversion,
                     EnumeratorConversion,

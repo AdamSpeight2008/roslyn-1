@@ -2,8 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System;
 using System.Collections.Immutable;
+using System.Composition;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -11,6 +14,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editor.Shared.Utilities;
 using Microsoft.CodeAnalysis.ErrorReporting;
 using Microsoft.CodeAnalysis.Host;
+using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.Internal.Log;
 using Microsoft.CodeAnalysis.Navigation;
 using Microsoft.CodeAnalysis.Options;
@@ -19,7 +23,6 @@ using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.LanguageServices.Implementation.Extensions;
 using Microsoft.VisualStudio.LanguageServices.Implementation.ProjectSystem;
-using Microsoft.VisualStudio.LanguageServices.Implementation.Venus;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
@@ -32,21 +35,30 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation
 {
     using Workspace = Microsoft.CodeAnalysis.Workspace;
 
+    [ExportWorkspaceService(typeof(IDocumentNavigationService), ServiceLayer.Host), Shared]
+    [Export(typeof(VisualStudioDocumentNavigationService))]
     internal sealed class VisualStudioDocumentNavigationService : ForegroundThreadAffinitizedObject, IDocumentNavigationService
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IVsEditorAdaptersFactoryService _editorAdaptersFactoryService;
         private readonly IVsRunningDocumentTable4 _runningDocumentTable;
+        private readonly IThreadingContext _threadingContext;
+        private readonly Lazy<SourceGeneratedFileManager> _sourceGeneratedFileManager;
 
+        [ImportingConstructor]
+        [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
         public VisualStudioDocumentNavigationService(
             IThreadingContext threadingContext,
             SVsServiceProvider serviceProvider,
-            IVsEditorAdaptersFactoryService editorAdaptersFactoryService)
+            IVsEditorAdaptersFactoryService editorAdaptersFactoryService,
+            Lazy<SourceGeneratedFileManager> sourceGeneratedFileManager /* lazy to avoid circularities */)
             : base(threadingContext)
         {
             _serviceProvider = serviceProvider;
             _editorAdaptersFactoryService = editorAdaptersFactoryService;
             _runningDocumentTable = (IVsRunningDocumentTable4)serviceProvider.GetService(typeof(SVsRunningDocumentTable));
+            _threadingContext = threadingContext;
+            _sourceGeneratedFileManager = sourceGeneratedFileManager;
         }
 
         public bool CanNavigateToSpan(Workspace workspace, DocumentId documentId, TextSpan textSpan)
@@ -69,7 +81,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation
                 {
                     throw new ArgumentOutOfRangeException();
                 }
-                catch (ArgumentOutOfRangeException e) when (FatalError.ReportWithoutCrash(e))
+                catch (ArgumentOutOfRangeException e) when (FatalError.ReportAndCatch(e))
                 {
                 }
 
@@ -118,7 +130,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation
                 {
                     throw new ArgumentOutOfRangeException();
                 }
-                catch (ArgumentOutOfRangeException e) when (FatalError.ReportWithoutCrash(e))
+                catch (ArgumentOutOfRangeException e) when (FatalError.ReportAndCatch(e))
                 {
                 }
 
@@ -147,7 +159,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation
                     {
                         throw new ArgumentOutOfRangeException();
                     }
-                    catch (ArgumentOutOfRangeException e) when (FatalError.ReportWithoutCrash(e))
+                    catch (ArgumentOutOfRangeException e) when (FatalError.ReportAndCatch(e))
                     {
                     }
                 }
@@ -206,7 +218,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation
                     {
                         throw new ArgumentOutOfRangeException();
                     }
-                    catch (ArgumentOutOfRangeException e) when (FatalError.ReportWithoutCrash(e))
+                    catch (ArgumentOutOfRangeException e) when (FatalError.ReportAndCatch(e))
                     {
                     }
                 }
@@ -227,6 +239,23 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation
 
             using (OpenNewDocumentStateScope(options ?? workspace.Options))
             {
+                if (workspace.CurrentSolution.GetDocument(documentId) == null)
+                {
+                    // We unfortunately don't have a cancellation token to pass here right now; we don't expect this to be expensive though,
+                    // because if a feature is asking to navigate to this file, it's because they already know this file contains something interesting;
+                    // that probably means generators have already ran so this should be a no-op. If this proves to be wrong, we may want to refactor
+                    // this further to have the SourceGeneratedFileManager instead open the file asynchronously.
+                    var generatedDocument = workspace.CurrentSolution.GetProject(documentId.ProjectId)
+                                                                     .GetSourceGeneratedDocumentAsync(documentId, CancellationToken.None)
+                                                                     .GetAwaiter().GetResult();
+
+                    if (generatedDocument != null)
+                    {
+                        _sourceGeneratedFileManager.Value.NavigateToSourceGeneratedFile(generatedDocument, getTextSpanForMapping(generatedDocument));
+                        return true;
+                    }
+                }
+
                 // Before attempting to open the document, check if the location maps to a different file that should be opened instead.
                 var document = workspace.CurrentSolution.GetDocument(documentId);
                 var spanMappingService = document?.Services.GetService<ISpanMappingService>();
@@ -298,12 +327,15 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation
             return false;
         }
 
-        private static MappedSpanResult? GetMappedSpan(ISpanMappingService spanMappingService, Document generatedDocument, TextSpan textSpan)
+        private MappedSpanResult? GetMappedSpan(ISpanMappingService spanMappingService, Document generatedDocument, TextSpan textSpan)
         {
-            var results = System.Threading.Tasks.Task.Run(async () =>
-            {
-                return await spanMappingService.MapSpansAsync(generatedDocument, SpecializedCollections.SingletonEnumerable(textSpan), CancellationToken.None).ConfigureAwait(true);
-            }).WaitAndGetResult(CancellationToken.None);
+            // Mappings for opened razor files are retrieved via the LSP client making a request to the razor server.
+            // If we wait for the result on the UI thread, we will hit a bug in the LSP client that brings us to a code path
+            // using ConfigureAwait(true).  This deadlocks as it then attempts to return to the UI thread which is already blocked by us.
+            // Instead, we invoke this in JTF run which will mitigate deadlocks when the ConfigureAwait(true)
+            // tries to switch back to the main thread in the LSP client.
+            // Link to LSP client bug for ConfigureAwait(true) - https://devdiv.visualstudio.com/DevDiv/_workitems/edit/1216657
+            var results = _threadingContext.JoinableTaskFactory.Run(() => spanMappingService.MapSpansAsync(generatedDocument, SpecializedCollections.SingletonEnumerable(textSpan), CancellationToken.None));
 
             if (!results.IsDefaultOrEmpty)
             {
@@ -357,7 +389,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation
             return workspace.CurrentSolution.GetDocument(documentId);
         }
 
-        private bool NavigateTo(ITextBuffer textBuffer, VsTextSpan vsTextSpan)
+        public bool NavigateTo(ITextBuffer textBuffer, VsTextSpan vsTextSpan)
         {
             using (Logger.LogBlock(FunctionId.NavigationService_VSDocumentNavigationService_NavigateTo, CancellationToken.None))
             {

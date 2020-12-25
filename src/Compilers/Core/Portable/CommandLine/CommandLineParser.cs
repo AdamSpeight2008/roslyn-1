@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
-
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -1197,5 +1195,13 @@ namespace Microsoft.CodeAnalysis
             CompilerOptionParseUtilities.ParseFeatures(builder, features);
             return builder.ToImmutable();
         }
+
+        /// <summary>
+        /// Sort so that more specific keys precede less specific.
+        /// When mapping a path we find the first key in the array that is a prefix of the path.
+        /// If multiple keys are prefixes of the path we want to use the longest (more specific) one for the mapping.
+        /// </summary>
+        internal static ImmutableArray<KeyValuePair<string, string>> SortPathMap(ImmutableArray<KeyValuePair<string, string>> pathMap)
+            => pathMap.Sort((x, y) => -x.Key.Length.CompareTo(y.Key.Length));
     }
 }

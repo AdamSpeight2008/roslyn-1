@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
-
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -802,7 +800,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal bool IsRecord
+        internal override bool IsRecord
         {
             get
             {
@@ -1082,7 +1080,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             get
             {
-                return IsTupleType ? GetMembers().Select(m => m.Name).Distinct() : this.declaration.MemberNames;
+                return (IsTupleType || IsRecord) ? GetMembers().Select(m => m.Name) : this.declaration.MemberNames;
             }
         }
 
@@ -1250,6 +1248,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             return ImmutableArray<Symbol>.Empty;
         }
+
+        /// <remarks>
+        /// For source symbols, there can only be a valid clone method if this is a record, which is a
+        /// simple syntax check. This will need to change when we generalize cloning, but it's a good
+        /// heuristic for now.
+        /// </remarks>
+        internal override bool HasPossibleWellKnownCloneMethod()
+            => IsRecord;
 
         internal override ImmutableArray<Symbol> GetSimpleNonTypeMembers(string name)
         {
@@ -3028,6 +3034,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             var members = ArrayBuilder<Symbol>.GetInstance(builder.NonTypeNonIndexerMembers.Count + 1);
             foreach (var member in builder.NonTypeNonIndexerMembers)
             {
+                switch (member)
+                {
+                    case FieldSymbol:
+                    case EventSymbol:
+                    case MethodSymbol { MethodKind: not (MethodKind.Ordinary or MethodKind.Constructor) }:
+                        continue;
+                }
+
                 if (!memberSignatures.ContainsKey(member))
                 {
                     memberSignatures.Add(member, member);
@@ -3037,24 +3051,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             CSharpCompilation compilation = this.DeclaringCompilation;
 
             // Positional record
+            bool primaryAndCopyCtorAmbiguity = false;
             if (!(paramList is null))
             {
                 Debug.Assert(builder.RecordDeclarationWithParameters is object);
                 Debug.Assert(builder.InstanceInitializersForRecordDeclarationWithParameters is object);
 
-                // https://github.com/dotnet/roslyn/issues/44677
-                // The semantics of an empty parameter list have not been decided. Error for now
-                if (paramList.ParameterCount == 0)
+                var ctor = addCtor(builder.RecordDeclarationWithParameters);
+
+                if (ctor.ParameterCount != 0)
                 {
-                    diagnostics.Add(ErrorCode.ERR_BadRecordDeclaration, paramList.Location);
+                    var existingOrAddedMembers = addProperties(ctor.Parameters);
+                    addDeconstruct(ctor, existingOrAddedMembers);
                 }
 
-                var ctor = addCtor(builder.RecordDeclarationWithParameters);
-                var existingOrAddedMembers = addProperties(ctor.Parameters);
-                addDeconstruct(ctor, existingOrAddedMembers);
+                primaryAndCopyCtorAmbiguity = ctor.ParameterCount == 1 && ctor.Parameters[0].Type.Equals(this, TypeCompareKind.AllIgnoreOptions);
             }
 
-            addCopyCtor();
+            addCopyCtor(primaryAndCopyCtorAmbiguity);
             addCloneMethod();
 
             PropertySymbol equalityContract = addEqualityContract();
@@ -3062,8 +3076,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             var thisEquals = addThisEquals(equalityContract);
             addOtherEquals();
             addObjectEquals(thisEquals);
-            addGetHashCode(equalityContract);
+            var getHashCode = addGetHashCode(equalityContract);
             addEqualityOperators();
+
+            if (thisEquals is not SynthesizedRecordEquals && getHashCode is SynthesizedRecordGetHashCode)
+            {
+                diagnostics.Add(ErrorCode.WRN_RecordEqualsWithoutGetHashCode, thisEquals.Locations[0], declaration.Name);
+            }
 
             var printMembers = addPrintMembersMethod();
             addToStringMethod(printMembers);
@@ -3081,7 +3100,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             SynthesizedRecordConstructor addCtor(RecordDeclarationSyntax declWithParameters)
             {
                 Debug.Assert(declWithParameters.ParameterList is object);
-                var ctor = new SynthesizedRecordConstructor(this, declWithParameters, diagnostics);
+                var ctor = new SynthesizedRecordConstructor(this, declWithParameters);
                 members.Add(ctor);
                 return ctor;
             }
@@ -3130,7 +3149,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
             }
 
-            void addCopyCtor()
+            void addCopyCtor(bool primaryAndCopyCtorAmbiguity)
             {
                 var targetMethod = new SignatureOnlyMethodSymbol(
                     WellKnownMemberNames.InstanceConstructorName,
@@ -3152,7 +3171,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 if (!memberSignatures.TryGetValue(targetMethod, out Symbol? existingConstructor))
                 {
-                    members.Add(new SynthesizedRecordCopyCtor(this, memberOffset: members.Count));
+                    var copyCtor = new SynthesizedRecordCopyCtor(this, memberOffset: members.Count);
+                    members.Add(copyCtor);
+
+                    if (primaryAndCopyCtorAmbiguity)
+                    {
+                        diagnostics.Add(ErrorCode.ERR_RecordAmbigCtor, copyCtor.Locations[0]);
+                    }
                 }
                 else
                 {
@@ -3283,7 +3308,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
                     if (existingMember is null)
                     {
-                        addProperty(new SynthesizedRecordPropertySymbol(this, syntax, param, isOverride: false, diagnostics));
+                        addProperty(new SynthesizedRecordPropertySymbol(this, syntax, param, isOverride: false));
                     }
                     else if (existingMember is PropertySymbol { IsStatic: false, GetMethod: { } } prop
                         && prop.TypeWithAnnotations.Equals(param.TypeWithAnnotations, TypeCompareKind.AllIgnoreOptions))
@@ -3291,7 +3316,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         // There already exists a member corresponding to the candidate synthesized property.
                         if (isInherited && prop.IsAbstract)
                         {
-                            addProperty(new SynthesizedRecordPropertySymbol(this, syntax, param, isOverride: true, diagnostics));
+                            addProperty(new SynthesizedRecordPropertySymbol(this, syntax, param, isOverride: true));
                         }
                         else
                         {
@@ -3312,6 +3337,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         existingOrAddedMembers.Add(property);
                         members.Add(property);
+                        Debug.Assert(property.GetMethod is object);
+                        Debug.Assert(property.SetMethod is object);
                         members.Add(property.GetMethod);
                         members.Add(property.SetMethod);
                         members.Add(property.BackingField);
@@ -3337,7 +3364,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 members.Add(new SynthesizedRecordObjEquals(this, thisEquals, memberOffset: members.Count, diagnostics));
             }
 
-            void addGetHashCode(PropertySymbol equalityContract)
+            MethodSymbol addGetHashCode(PropertySymbol equalityContract)
             {
                 var targetMethod = new SignatureOnlyMethodSymbol(
                     WellKnownMemberNames.ObjectGetHashCode,
@@ -3352,19 +3379,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     ImmutableArray<CustomModifier>.Empty,
                     ImmutableArray<MethodSymbol>.Empty);
 
+                MethodSymbol getHashCode;
+
                 if (!memberSignatures.TryGetValue(targetMethod, out Symbol? existingHashCodeMethod))
                 {
-                    var hashCode = new SynthesizedRecordGetHashCode(this, equalityContract, memberOffset: members.Count, diagnostics);
-                    members.Add(hashCode);
+                    getHashCode = new SynthesizedRecordGetHashCode(this, equalityContract, memberOffset: members.Count, diagnostics);
+                    members.Add(getHashCode);
                 }
                 else
                 {
-                    var method = (MethodSymbol)existingHashCodeMethod;
-                    if (!SynthesizedRecordObjectMethod.VerifyOverridesMethodFromObject(method, SpecialType.System_Int32, diagnostics) && method.IsSealed && !IsSealed)
+                    getHashCode = (MethodSymbol)existingHashCodeMethod;
+                    if (!SynthesizedRecordObjectMethod.VerifyOverridesMethodFromObject(getHashCode, SpecialType.System_Int32, diagnostics) && getHashCode.IsSealed && !IsSealed)
                     {
-                        diagnostics.Add(ErrorCode.ERR_SealedAPIInRecord, method.Locations[0], method);
+                        diagnostics.Add(ErrorCode.ERR_SealedAPIInRecord, getHashCode.Locations[0], getHashCode);
                     }
                 }
+                return getHashCode;
             }
 
             PropertySymbol addEqualityContract()
@@ -3382,7 +3412,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 if (!memberSignatures.TryGetValue(targetProperty, out Symbol? existingEqualityContractProperty))
                 {
-                    equalityContract = new SynthesizedRecordEqualityContractProperty(this, diagnostics);
+                    equalityContract = new SynthesizedRecordEqualityContractProperty(this);
                     members.Add(equalityContract);
                     members.Add(equalityContract.GetMethod);
                 }
@@ -3412,6 +3442,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     else
                     {
                         SynthesizedRecordEqualityContractProperty.VerifyOverridesEqualityContractFromBase(equalityContract, diagnostics);
+                    }
+
+                    if (equalityContract.GetMethod is null)
+                    {
+                        diagnostics.Add(ErrorCode.ERR_EqualityContractRequiresGetter, equalityContract.Locations[0], equalityContract);
                     }
 
                     reportStaticOrNotOverridableAPIInRecord(equalityContract, diagnostics);
@@ -3514,7 +3549,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         case MethodKind.Constructor:
                             // Ignore the record copy constructor
-                            if (!(method is SynthesizedRecordCopyCtor))
+                            if (!IsRecord ||
+                                !(SynthesizedRecordCopyCtor.HasCopyConstructorSignature(method) && method is not SynthesizedRecordConstructor))
                             {
                                 hasInstanceConstructor = true;
                                 hasParameterlessInstanceConstructor = hasParameterlessInstanceConstructor || method.ParameterCount == 0;

@@ -2,26 +2,29 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Xml;
 
 namespace CSharpSyntaxGenerator
 {
     internal class SourceWriter : AbstractFileWriter
     {
-        private SourceWriter(TextWriter writer, Tree tree)
-            : base(writer, tree)
+        private SourceWriter(TextWriter writer, Tree tree, CancellationToken cancellationToken = default)
+            : base(writer, tree, cancellationToken)
         {
         }
 
-        public static void WriteMain(TextWriter writer, Tree tree) => new SourceWriter(writer, tree).WriteMain();
+        public static void WriteMain(TextWriter writer, Tree tree, CancellationToken cancellationToken = default) => new SourceWriter(writer, tree, cancellationToken).WriteMain();
 
-        public static void WriteInternal(TextWriter writer, Tree tree) => new SourceWriter(writer, tree).WriteInternal();
+        public static void WriteInternal(TextWriter writer, Tree tree, CancellationToken cancellationToken = default) => new SourceWriter(writer, tree, cancellationToken).WriteInternal();
 
-        public static void WriteSyntax(TextWriter writer, Tree tree) => new SourceWriter(writer, tree).WriteSyntax();
+        public static void WriteSyntax(TextWriter writer, Tree tree, CancellationToken cancellationToken = default) => new SourceWriter(writer, tree, cancellationToken).WriteSyntax();
 
         private void WriteFileHeader()
         {
@@ -912,6 +915,17 @@ namespace CSharpSyntaxGenerator
             else if (node is Node)
             {
                 var nd = (Node)node;
+                WriteComment($"<remarks>");
+                WriteComment($"<para>This node is associated with the following syntax kinds:</para>");
+                WriteComment($"<list type=\"bullet\">");
+
+                foreach (var kind in nd.Kinds)
+                {
+                    WriteComment($"<item><description><see cref=\"SyntaxKind.{kind.Name}\"/></description></item>");
+                }
+
+                WriteComment($"</list>");
+                WriteComment($"</remarks>");
                 WriteLine($"public sealed partial class {node.Name} : {node.Base}");
                 OpenBlock();
 

@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -960,13 +962,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(!IsConditionalState);
             VisitRvalue(node.Expression);
 
-            var pattern = node.Pattern;
-            bool negated = false;
-            while (pattern is BoundNegatedPattern n)
-            {
-                negated = !negated;
-                pattern = n.Negated;
-            }
+            bool negated = node.Pattern.IsNegated(out var pattern);
+            Debug.Assert(negated == node.IsNegated);
 
             VisitPattern(pattern);
             var reachableLabels = node.DecisionDag.ReachableLabels;
