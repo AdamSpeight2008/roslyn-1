@@ -86,8 +86,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         <Extension>
         Public Function MapSpecifiedToEffectiveVersion(version As LanguageVersion) As LanguageVersion
             Select Case version
-                Case LanguageVersion.Latest,
-                     LanguageVersion.Default
+                Case LanguageVersion.Latest 
+                    Return LanguageVersion.VisualBasic16_1
+                Case LanguageVersion.Default 
                     Return LanguageVersion.VisualBasic16
                 Case Else
                     Return version
@@ -96,7 +97,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Friend ReadOnly Property CurrentVersion As LanguageVersion
             Get
-                Return LanguageVersion.VisualBasic16
+                Return LanguageVersion.VisualBasic16_1
             End Get
         End Property
 
