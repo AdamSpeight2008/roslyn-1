@@ -3816,39 +3816,69 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ErrorTypeSymbol.UnknownResultType)
         End Function
 
-        Private Shared ReadOnly  _Global_System_Flags_ As String = GetType(Global.System.FlagsAttribute).FullName.ToLowerInvariant()
+        'Private Shared ReadOnly  _Global_System_Flags_ As String = GetType(Global.System.FlagsAttribute).FullName.ToLowerInvariant()
 
-        Private Function IsFlagsEnum(node As BoundExpression) As Boolean
-            If node.Type.IsEnumType = False Then Return False
-            Return node.Type.OriginalDefinition.GetAttributes.Any(Function(a) a.AttributeClass.Name.ToLowerInvariant() = _Global_System_Flags_)
+        'Private Function IsFlagsEnum(node As BoundExpression) As Boolean
+        '    If node.Type.IsEnumType = False Then Return False
+        '    Return node.Type.OriginalDefinition.GetAttributes.Any(Function(a) a.AttributeClass.Name.ToLowerInvariant() = _Global_System_Flags_)
+        'End Function
+
+        Private Const _FlagsAttribute_ = "FlagsAttribute"
+        Private Const _System_ = "System"
+
+        Private Shared ReadOnly IsFlagsAttribute As Func(Of AttributeData, Boolean) =
+            Function(attribute)
+                Dim ctor = attribute.AttributeConstructor
+                If (ctor Is Nothing) Then Return False
+                Dim [Type] = ctor.ContainingType
+                If (ctor.Parameters.Any() OrElse [Type].Name <> _FlagsAttribute_) Then Return False
+                Dim containingSymbol = Type.ContainingSymbol
+                Return (containingSymbol.Kind = SymbolKind.Namespace) AndAlso
+                       (containingSymbol.Name = _System_) AndAlso DirectCast(containingSymbol.ContainingSymbol, INamespaceSymbol).IsGlobalNamespace
+            End Function
+
+        Private Function IsFlagsEnum(typeSymbol As INamedTypeSymbol) As Boolean
+            Return (typeSymbol.TypeKind = TypeKind.Enum) AndAlso typeSymbol.GetAttributes().Any(IsFlagsAttribute)
         End Function
 
-        Private Function TryBindingAsAnEnumFlag(node As MemberAccessExpressionSyntax,
-                                                left As BoundExpression,
-                                         diagnostics As DiagnosticBag) As BoundExpression
-            If _compilation.Options.IsFeatureAvailable(Syntax.InternalSyntax.Feature.FlagsEnumOperations, diagnostics) Then
-                If IsFlagsEnum(left) Then 
-                    ' left side is a <Flags> Enum
-                    Dim flagName = New BoundLiteral(node.Name,
-                                                    ConstantValue.Create(node.Name.Identifier.ValueText),
-                                                    GetSpecialType(SpecialType.System_String, node.Name, diagnostics))
-                    Dim q = left.Type.OriginalDefinition
-                    Dim isMemberOf = q.GetMembers.Any(Function(m) m.IsShared AndAlso m.Name.ToUpperInvariant = node.Name.Identifier.ValueText.ToLowerInvariant)
-                    If isMemberOf Then
-                        Return New BoundFlagsEnumOperation(node, left, flagName,
-                                                           GetSpecialType(SpecialType.System_Boolean, node, diagnostics))
-                    Else
-                        Return CreateBadExpr(node, left, diagnostics)
-                    End If
-                Else
-                    ' left side isn't an <Flags> Enum.
-                    Return CreateBadExpr(node, left, diagnostics)
-                End If
-            Else
+        Private Function IsMemberOfThisEnum(
+                                             thisEnumSymbol As TypeSymbol,
+                                             member As String,
+                                       ByRef result As FieldSymbol
+                                           ) As Boolean
+            Dim members = thisEnumSymbol.GetMembers(member)
+            result = DirectCast(members.FirstOrDefault(), FieldSymbol)
+            Return result IsNot Nothing
+        End Function
+    
+        Private Function TryBindingAsAnEnumFlag(
+                                                 node As MemberAccessExpressionSyntax,
+                                                 left As BoundExpression,
+                                          diagnostics As DiagnosticBag
+                                               ) As BoundExpression
+
+            If Not _compilation.Options.IsFeatureAvailable(Syntax.InternalSyntax.Feature.FlagsEnumOperations, diagnostics) Then
                 ReportQualNotObjectRecord(left, diagnostics)
                 Return CreateBadExpr(node,left, diagnostics)
             End if
-       End Function
+
+            Dim original = left.Type.OriginalDefinition
+
+            If Not IsFlagsEnum(DirectCast(original, INamedTypeSymbol)) Then
+                Return ReportDiagnosticAndProduceBadExpression(diagnostics, node, ERRID.ERR_EnumNotExpression1, original.Name)
+            End If
+            Dim flagName = node.Name.Identifier.ValueText
+            Dim thisFlag As FieldSymbol = Nothing
+            'Dim flagName = New BoundLiteral(node.Name,
+            '                                ConstantValue.Create(flagName),
+            '                                GetSpecialType(SpecialType.System_String, node.Name, diagnostics))
+            If Not IsMemberOfThisEnum(original, node.Name.Identifier.ValueText, thisFlag) Then
+                Return ReportDiagnosticAndProduceBadExpression(diagnostics, node, ERRID.ERR_NameNotMember2, flagName, original.Name)
+            End If
+
+            Return New BoundFlagsEnumOperation(node, left, thisFlag,
+                                               GetSpecialType(SpecialType.System_Boolean, node, diagnostics))
+        End Function
 
         Private Shared Sub ReportNoDefaultProperty(expr As BoundExpression, diagnostics As DiagnosticBag)
             Dim type = expr.Type
