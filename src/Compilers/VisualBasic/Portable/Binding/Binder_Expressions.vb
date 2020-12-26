@@ -3835,8 +3835,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Dim q = left.Type.OriginalDefinition
                     Dim isMemberOf = q.GetMembers.Any(Function(m) m.IsShared AndAlso m.Name.ToUpperInvariant = node.Name.Identifier.ValueText.ToLowerInvariant)
                     If isMemberOf Then
-                        Return BadExpression(left)
-                       ' Return New BoundFlagEnumExpression(node, flagName FlagsOperations.IsExplicitlySet)
+                        Return New BoundFlagsEnumOperation(node, left, flagName,
+                                                           GetSpecialType(SpecialType.System_Boolean, node, diagnostics))
                     Else
                         Return CreateBadExpr(node, left, diagnostics)
                     End If
