@@ -10,8 +10,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If _inExpressionLambda THen  Return MyBase.VisitFlagsEnumOperation(node)'
             Dim source = VisitExpression(node.Source).MakeRValue()
             Dim original = node.Source.Type.OriginalDefinition
-            Dim flagPart = (New BoundFieldAccess(node.Syntax, source, node.FlagName, False, original)).MakeRValue()
-            Return Rewrite_FlagIsExplicitlySet(node, source, flagPart)
+            Dim flagPart = Read_Field(node.Syntax, source, node.FlagName, original)
+            Return Rewrite_FlagIsExplicitlySet(node, source, flagPart.MakeRValue)
+        End Function
+
+        Private Function Read_Field(node As SyntaxNode,
+                               reciever As BoundExpression,
+                               fieldSymbol As Symbols.FieldSymbol, type As Symbols.TypeSymbol) As BoundFieldAccess
+            Return New BoundFieldAccess(node, reciever, fieldSymbol, False, type).MakeCompilerGenerated()
+        End Function
+
+        Private Function Make_AND(node As SyntaxNode, le As BoundExpression, re As BoundExpression) As BoundExpression
+           Return MakeBinaryExpression(node, BinaryOperatorKind.And, le, re, False, le.Type)
+        End Function
+
+        Private Function Make_EQ(node As SyntaxNode, le As BoundExpression, re As BoundExpression) As BoundExpression
+            Return MakeBinaryExpression(node, BinaryOperatorKind.Equals, le, re, False, GetSpecialType(SpecialType.System_Boolean))
         End Function
 
         Private Function Rewrite_FlagIsExplicitlySet(
@@ -19,14 +33,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                       source As BoundExpression,
                                                       flagName As BoundExpression
                                                     ) As BoundNode
-            Dim _And_ = MakeBinaryExpression( node.Syntax,
-                            BinaryOperatorKind.And, source, flagName,
-                            False, node.Type).MakeCompilerGenerated
-            Dim _EQ_ = MakeBinaryExpression(node.Syntax,
-                           BinaryOperatorKind.Equals, _AND_.MakeRValue, flagName,
-                           False, GetSpecialType(SpecialType.System_Boolean)).MakeCompilerGenerated
-            Return _EQ_.MakeRValue
+            ' <= (source AND flagName ) = flagName
+            Dim _And_ = Make_AND(node.Syntax, source, flagName).MakeCompilerGenerated
+            Dim _EQ__ = Make_EQ(node.Syntax, _And_, flagName).MakeCompilerGenerated
+            Return _EQ__.MakeRValue
         End Function
+
     End Class
 
 End Namespace

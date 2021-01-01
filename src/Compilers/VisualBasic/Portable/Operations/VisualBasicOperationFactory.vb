@@ -277,7 +277,8 @@ Namespace Microsoft.CodeAnalysis.Operations
                     Return CreateBoundReDimOperation(DirectCast(boundNode, BoundRedimStatement))
                 Case BoundKind.RedimClause
                     Return CreateBoundReDimClauseOperation(DirectCast(boundNode, BoundRedimClause))
-
+                Case BoundKind.FlagsEnumOperation
+                    Return CreateBoundFlagsEnumOperator(DirectCast(boundNode, BoundFlagsEnumOperation))
                 Case BoundKind.AddressOfOperator,
                      BoundKind.ArrayLiteral,
                      BoundKind.Attribute,
@@ -1650,6 +1651,14 @@ Namespace Microsoft.CodeAnalysis.Operations
             Dim isImplicit As Boolean = boundRedimClause.WasCompilerGenerated
             Return New ReDimClauseOperation(operand, dimensionSizes, _semanticModel, syntax, isImplicit)
         End Function
+
+        Private Function CreateBoundFlagsEnumOperator(boundNode As BoundFlagsEnumOperation) As IOperation
+            Return OperationFactory.CreateInvalidOperation(_semanticModel,
+                                                           boundNode.Syntax,
+                                                           ImmutableArray(Of IOperation).Empty,
+                                                           boundNode.WasCompilerGenerated)
+        End Function
+
     End Class
 End Namespace
 
