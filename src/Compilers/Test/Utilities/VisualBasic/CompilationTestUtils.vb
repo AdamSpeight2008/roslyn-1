@@ -44,6 +44,10 @@ Friend Module CompilationUtils
             options = TestOptions.ReleaseDll
         End If
 
+        'If parseOptions IsNot Nothing Then
+        '    options = options.WithParseOptions(parseOptions)
+        'End If
+
         ' Using single-threaded build if debugger attached, to simplify debugging.
         If Debugger.IsAttached Then
             options = options.WithConcurrentBuild(False)

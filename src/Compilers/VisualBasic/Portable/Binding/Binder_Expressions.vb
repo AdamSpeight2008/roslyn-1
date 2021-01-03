@@ -3850,13 +3850,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             result = DirectCast(members.FirstOrDefault(), FieldSymbol)
             Return result IsNot Nothing
         End Function
-    
+
         Private Function TryBindingAsAnEnumFlag(
                                                  node As MemberAccessExpressionSyntax,
                                                  left As BoundExpression,
                                           diagnostics As DiagnosticBag
                                                ) As BoundExpression
-            If NOt _compilation.IsFeatureAvailable(InternalSyntax.Feature.FlagsEnumOperations, diagnostics ) then
+            If Not InternalSyntax.Parser.CheckFeatureAvailability(diagnostics,
+                                                                  node.GetLocation,
+                                                                  _compilation.LanguageVersion,
+                                                                  InternalSyntax.Feature.FlagsEnumOperations) then
                 ReportQualNotObjectRecord(left, diagnostics)
                 Return CreateBadExpr(node, left, diagnostics)
             End if

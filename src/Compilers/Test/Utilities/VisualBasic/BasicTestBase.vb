@@ -174,6 +174,7 @@ Public MustInherit Class BasicTestBase
             options = If(expectedOutput Is Nothing, TestOptions.ReleaseDll, TestOptions.ReleaseExe)
         End If
 
+
         Dim assemblyName As String = Nothing
         Dim sourceTrees = ParseSourceXml(source, parseOptions, assemblyName)
         Dim compilation = CreateEmptyCompilation(sourceTrees.ToArray(), allReferences,

@@ -3154,43 +3154,5 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Function
         End Class
 
-        
-        #Region "Feature Checking"
-
-        Private Function CheckAgainstFeatureFlags(
-                                                   feature As Syntax.InternalSyntax.Feature
-                                                 ) As Boolean
-            Dim feature_flag = Syntax.InternalSyntax.FeatureExtensions.GetFeatureFlag(feature)
-            Return (feature_flag IsNot Nothing) AndAlso
-                   (Me.Options IsNot Nothing) AndAlso 
-                   (Me.Options.ParseOptions IsNot Nothing) AndAlso
-                   (Me.Options.ParseOptions.Features.ContainsKey(feature_flag))
-        End Function
-
-        Private Function CheckAgainstLanguageVersion(
-                                                      feature As Syntax.InternalSyntax.Feature,
-                                                      diagnostics As diagnosticBag
-                                                    ) As Boolean
-            If Me.Options Is Nothing Then Return False
-            Dim current = Me.LanguageVersion.MapSpecifiedToEffectiveVersion
-            'Dim current = If(Me.Options.ParseOptions Is Nothing,
-            '                   me.LanguageVersion,
-            '                   Me.Options.ParseOptions.LanguageVersion).MapSpecifiedToEffectiveVersion
-            Dim required = Syntax.InternalSyntax.FeatureExtensions.GetLanguageVersion(feature)
-            Dim isValid = current >= required
-            ' todo: report issue
-            Return isValid
-        End Function
-
-         Friend Function IsFeatureAvailable(
-                                             feature As Syntax.InternalSyntax.Feature,
-                                             diagnostics As diagnosticBag,
-                                    Optional CheckFeatureFlags As Boolean = False
-                                           ) As Boolean
-            Return (CheckFeatureFlags AndAlso CheckAgainstFeatureFlags(feature)) OrElse
-                   CheckAgainstLanguageVersion(feature, diagnostics)
-        End Function
-
-        #End Region
     End Class
 End Namespace
