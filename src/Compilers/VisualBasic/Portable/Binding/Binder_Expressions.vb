@@ -3851,33 +3851,51 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return result IsNot Nothing
         End Function
 
+        Private Function ReportQualNotObjectRecorrdAndProduceBadExpression(
+                                                                            expr As MemberAccessExpressionSyntax,
+                                                                            bexpr As BoundExpression,
+                                                                            diagnostics As DiagnosticBag
+                                                                          ) As BoundExpression
+                ReportQualNotObjectRecord(bexpr, diagnostics)
+                Return CreateBadExpr(expr, bexpr, diagnostics)
+        End Function
+
         Private Function TryBindingAsAnEnumFlag(
                                                  node As MemberAccessExpressionSyntax,
                                                  left As BoundExpression,
                                           diagnostics As DiagnosticBag
                                                ) As BoundExpression
-            If Not InternalSyntax.Parser.CheckFeatureAvailability(diagnostics,
-                                                                  node.GetLocation,
-                                                                  _compilation.LanguageVersion,
-                                                                  InternalSyntax.Feature.FlagsEnumOperations) then
-                ReportQualNotObjectRecord(left, diagnostics)
-                Return CreateBadExpr(node, left, diagnostics)
-            End if
-
+            Dim tmp = DiagnosticBag.GetInstance
             Dim original = left.Type.OriginalDefinition
+            Dim _isFlagsEnum = IsFlagsEnum(DirectCast(original, INamedTypeSymbol))
+            Dim _isAvailable = InternalSyntax.Parser.CheckFeatureAvailability(tmp,
+                                                                      node.Name.GetLocation,
+                                                                      _compilation.LanguageVersion,
+                                                                      InternalSyntax.Feature.FlagsEnumOperations)
 
-            If Not IsFlagsEnum(DirectCast(original, INamedTypeSymbol)) Then
+            If  _isAvailable = False Then
+                Return ReportQualNotObjectRecorrdAndProduceBadExpression(node, left, diagnostics)
+
+            Else If _isFlagsEnum = False Then
                 Return ReportDiagnosticAndProduceBadExpression(diagnostics, node, ERRID.ERR_EnumNotExpression1, original.Name)
-            End If
+
+            Else 
+               Return BindFlagsEnumOperations(node, left, original, diagnostics)
+
+            End IF
+        End Function
+
+        Private Function BindFlagsEnumOperations(
+                                                  node As MemberAccessExpressionSyntax,
+                                                  left As BoundExpression,
+                                                  original As TypeSymbol,
+                                                  diagnostics As DiagnosticBag
+                                                ) As BoundExpression
             Dim flagName = node.Name.Identifier.ValueText
             Dim thisFlag As FieldSymbol = Nothing
-            'Dim flagName = New BoundLiteral(node.Name,
-            '                                ConstantValue.Create(flagName),
-            '                                GetSpecialType(SpecialType.System_String, node.Name, diagnostics))
             If Not IsMemberOfThisEnum(original, node.Name.Identifier.ValueText, thisFlag) Then
                 Return ReportDiagnosticAndProduceBadExpression(diagnostics, node, ERRID.ERR_NameNotMember2, flagName, original.Name)
             End If
-
             Return New BoundFlagsEnumOperation(node, left, thisFlag,
                                                GetSpecialType(SpecialType.System_Boolean, node, diagnostics))
         End Function
