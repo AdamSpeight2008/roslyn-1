@@ -3153,6 +3153,5 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return IdentifierComparison.Equals(_name, name)
             End Function
         End Class
-
     End Class
 End Namespace

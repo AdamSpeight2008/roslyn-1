@@ -1381,7 +1381,5 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Throw New NotImplementedException()
             End Set
         End Property
-
-
     End Class
 End Namespace
