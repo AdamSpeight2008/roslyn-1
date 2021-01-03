@@ -3850,12 +3850,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             result = DirectCast(members.FirstOrDefault(), FieldSymbol)
             Return result IsNot Nothing
         End Function
-
-        Private Function IsAvailable() As Boolean
-           Return _compilation.LanguageVersion.MapSpecifiedToEffectiveVersion >= _
-                  Syntax.InternalSyntax.FeatureExtensions.GetLanguageVersion(
-                  Syntax.InternalSyntax.Feature.FlagsEnumOperations).MapSpecifiedToEffectiveVersion
-        End Function
     
         Private Function TryBindingAsAnEnumFlag(
                                                  node As MemberAccessExpressionSyntax,

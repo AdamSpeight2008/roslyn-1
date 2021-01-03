@@ -19,8 +19,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Semantics
         Inherits BasicTestBase
         <Fact>
         Public Sub Test1()
-            Dim p As new VisualBasicParseOptions(LanguageVersion.Latest)
-
+            'Dim p = VisualBasicParseOptions.Default.WithLanguageVersion(LanguageVersion.VisualBasic16_1)
+            Dim p = VisualBasicParseOptions.Default.WithLanguageVersion(LanguageVersion.VisualBasic16_1)
             Dim compilationDef =
 <compilation name="FlagsEnumOperations">
     <file name="a.vb">

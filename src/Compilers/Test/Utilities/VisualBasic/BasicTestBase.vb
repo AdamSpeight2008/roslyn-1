@@ -176,7 +176,9 @@ Public MustInherit Class BasicTestBase
 
         Dim assemblyName As String = Nothing
         Dim sourceTrees = ParseSourceXml(source, parseOptions, assemblyName)
-        Dim compilation = CreateEmptyCompilation(sourceTrees.ToArray(), allReferences, options, assemblyName:=assemblyName)
+        Dim compilation = CreateEmptyCompilation(sourceTrees.ToArray(), allReferences,
+                                                 options:= options,
+                                                 parseOptions:= parseOptions, assemblyName:=assemblyName)
 
         Return MyBase.CompileAndVerifyCommon(
             compilation,

@@ -3173,9 +3173,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                     ) As Boolean
             If Me.Options Is Nothing Then Return False
             Dim current = Me.LanguageVersion.MapSpecifiedToEffectiveVersion
-            'If(Me.Options.ParseOptions Is Nothing,
-            '                me.LanguageVersion,
-            '               Me.Options.ParseOptions.LanguageVersion).MapSpecifiedToEffectiveVersion
+            'Dim current = If(Me.Options.ParseOptions Is Nothing,
+            '                   me.LanguageVersion,
+            '                   Me.Options.ParseOptions.LanguageVersion).MapSpecifiedToEffectiveVersion
             Dim required = Syntax.InternalSyntax.FeatureExtensions.GetLanguageVersion(feature)
             Dim isValid = current >= required
             ' todo: report issue
