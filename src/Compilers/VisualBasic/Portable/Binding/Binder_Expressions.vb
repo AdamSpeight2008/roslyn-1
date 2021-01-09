@@ -3816,13 +3816,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ErrorTypeSymbol.UnknownResultType)
         End Function
 
-        'Private Shared ReadOnly  _Global_System_Flags_ As String = GetType(Global.System.FlagsAttribute).FullName.ToLowerInvariant()
-
-        'Private Function IsFlagsEnum(node As BoundExpression) As Boolean
-        '    If node.Type.IsEnumType = False Then Return False
-        '    Return node.Type.OriginalDefinition.GetAttributes.Any(Function(a) a.AttributeClass.Name.ToLowerInvariant() = _Global_System_Flags_)
-        'End Function
-
         Private Const _FlagsAttribute_ = "FlagsAttribute"
         Private Const _System_ = "System"
 
@@ -3846,7 +3839,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                              member As String,
                                        ByRef result As FieldSymbol
                                            ) As Boolean
-            Dim members = thisEnumSymbol.GetMembers(member)
+            Dim members = thisEnumSymbol.GetMembers(member.Trim("["c, "]"c))
             result = DirectCast(members.FirstOrDefault(), FieldSymbol)
             Return result IsNot Nothing
         End Function
@@ -3873,14 +3866,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                                       _compilation.LanguageVersion,
                                                                       InternalSyntax.Feature.FlagsEnumOperations)
 
-            If  _isAvailable = False Then
+            If _isAvailable = False Then
                 Return ReportQualNotObjectRecorrdAndProduceBadExpression(node, left, diagnostics)
 
-            Else If _isFlagsEnum = False Then
+            ElseIf _isFlagsEnum = False Then
                 Return ReportDiagnosticAndProduceBadExpression(diagnostics, node, ERRID.ERR_EnumNotExpression1, original.Name)
 
-            Else 
-               Return BindFlagsEnumOperations(node, left, original, diagnostics)
+            Else
+                Return BindFlagsEnumOperations(node, left, original, diagnostics)
 
             End IF
         End Function
