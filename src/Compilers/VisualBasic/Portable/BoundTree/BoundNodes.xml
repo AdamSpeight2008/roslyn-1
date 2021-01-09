@@ -1931,6 +1931,6 @@
 
     <Node Name="BoundFlagsEnumOperation" Base="BoundExpression">
       <Field Name="Source" Type="BoundExpression" Null="disallow"/>
-      <Field Name="FlagName" Type="FieldSymbol" Null="disallow"/>
+      <Field Name="Flags" Type="BoundExpression" Null="disallow"/>
     </Node>
 </Tree>

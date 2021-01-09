@@ -40,6 +40,7 @@ Module Module1
        Dim s As X = X.A
        System.Console.WriteLine(Check0(s))
        System.Console.WriteLine(Check1(s))
+       System.Console.WriteLine(Check1(s))
     End Sub
     Private Function Check0(s As X) As Boolean
        Return s!A
@@ -47,7 +48,9 @@ Module Module1
     Private Function Check1(s As X) As Boolean
        Return s!B
     End Function
-
+    Private Function Check2(s As X) As Boolean
+       Return s!-A
+    End Function
 End Module
     </file>
 </compilation>

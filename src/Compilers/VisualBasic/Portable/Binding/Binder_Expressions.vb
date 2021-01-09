@@ -3886,10 +3886,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                 ) As BoundExpression
             Dim flagName = node.Name.Identifier.ValueText
             Dim thisFlag As FieldSymbol = Nothing
-            If Not IsMemberOfThisEnum(original, node.Name.Identifier.ValueText, thisFlag) Then
+            If Not IsMemberOfThisEnum(original,flagName, thisFlag) Then
                 Return ReportDiagnosticAndProduceBadExpression(diagnostics, node, ERRID.ERR_NameNotMember2, flagName, original.Name)
             End If
-            Return New BoundFlagsEnumOperation(node, left, thisFlag,
+           
+            Dim arg = New BoundLiteral(node.Name, ConstantValue.Create(flagName),
+                                       GetSpecialType(SpecialType.System_String, node.name, diagnostics))
+
+
+            Return New BoundFlagsEnumOperation(node, left, arg,
                                                GetSpecialType(SpecialType.System_Boolean, node, diagnostics))
         End Function
 

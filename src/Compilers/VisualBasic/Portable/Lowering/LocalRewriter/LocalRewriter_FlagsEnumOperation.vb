@@ -10,10 +10,31 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If _inExpressionLambda THen  Return MyBase.VisitFlagsEnumOperation(node)'
             Dim source = VisitExpression(node.Source).MakeRValue()
             Dim original = node.Source.Type.OriginalDefinition
-            Dim flagPart = Read_Field(node.Syntax, source, node.FlagName, original)
-            Return AllSpecificFlagsAreEnabled(node, source, flagPart.MakeRValue)
+            
+            If TypeOf node.Flags Is BoundLiteral then
+                Dim flagname = node.Flags.ConstantValueOpt.StringValue
+                Dim thisFlag As Symbols.FieldSymbol = Nothing
+                If Not IsMemberOfThisEnum(original,  flagName, thisFlag) Then
+                    Return Nothing
+                else
+                    Dim flagPart = Read_Field(node.Syntax, source, thisFlag, original)
+                    Return AllSpecificFlagsAreEnabled(node, source, flagPart.MakeRValue)
+                End if
+            Else If TypeOf node.Flags Is BoundExpression Then
+                Throw ExceptionUtilities.Unreachable
+            End If
+                Throw ExceptionUtilities.Unreachable
         End Function
 
+        Private Function IsMemberOfThisEnum(
+                                             thisEnumSymbol As Symbols.TypeSymbol,
+                                             member As String,
+                                       ByRef result As Symbols.FieldSymbol
+                                           ) As Boolean
+            Dim members = thisEnumSymbol.GetMembers(member.Trim("["c, "]"c))
+            result = DirectCast(members.FirstOrDefault(), Symbols.FieldSymbol)
+            Return result IsNot Nothing
+        End Function
         Private Function Read_Field _
             ( node        As SyntaxNode,
               reciever    As BoundExpression,

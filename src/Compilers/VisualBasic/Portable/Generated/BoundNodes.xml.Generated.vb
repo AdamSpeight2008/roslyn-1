@@ -9280,14 +9280,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Partial Friend NotInheritable Class BoundFlagsEnumOperation
         Inherits BoundExpression
 
-        Public Sub New(syntax As SyntaxNode, source As BoundExpression, flagName As FieldSymbol, type As TypeSymbol, Optional hasErrors As Boolean = False)
-            MyBase.New(BoundKind.FlagsEnumOperation, syntax, type, hasErrors OrElse source.NonNullAndHasErrors())
+        Public Sub New(syntax As SyntaxNode, source As BoundExpression, flags As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
+            MyBase.New(BoundKind.FlagsEnumOperation, syntax, type, hasErrors OrElse source.NonNullAndHasErrors() OrElse flags.NonNullAndHasErrors())
 
             Debug.Assert(source IsNot Nothing, "Field 'source' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
-            Debug.Assert(flagName IsNot Nothing, "Field 'flagName' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+            Debug.Assert(flags IsNot Nothing, "Field 'flags' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
 
             Me._Source = source
-            Me._FlagName = flagName
+            Me._Flags = flags
         End Sub
 
 
@@ -9298,10 +9298,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Get
         End Property
 
-        Private ReadOnly _FlagName As FieldSymbol
-        Public ReadOnly Property FlagName As FieldSymbol
+        Private ReadOnly _Flags As BoundExpression
+        Public ReadOnly Property Flags As BoundExpression
             Get
-                Return _FlagName
+                Return _Flags
             End Get
         End Property
 
@@ -9310,9 +9310,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return visitor.VisitFlagsEnumOperation(Me)
         End Function
 
-        Public Function Update(source As BoundExpression, flagName As FieldSymbol, type As TypeSymbol) As BoundFlagsEnumOperation
-            If source IsNot Me.Source OrElse flagName IsNot Me.FlagName OrElse type IsNot Me.Type Then
-                Dim result = New BoundFlagsEnumOperation(Me.Syntax, source, flagName, type, Me.HasErrors)
+        Public Function Update(source As BoundExpression, flags As BoundExpression, type As TypeSymbol) As BoundFlagsEnumOperation
+            If source IsNot Me.Source OrElse flags IsNot Me.Flags OrElse type IsNot Me.Type Then
+                Dim result = New BoundFlagsEnumOperation(Me.Syntax, source, flags, type, Me.HasErrors)
                 result.CopyAttributes(Me)
                 Return result
             End If
@@ -12045,6 +12045,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides Function VisitFlagsEnumOperation(node As BoundFlagsEnumOperation) As BoundNode
             Me.Visit(node.Source)
+            Me.Visit(node.Flags)
             Return Nothing
         End Function
 
@@ -13139,8 +13140,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides Function VisitFlagsEnumOperation(node As BoundFlagsEnumOperation) As BoundNode
             Dim source As BoundExpression = DirectCast(Me.Visit(node.Source), BoundExpression)
+            Dim flags As BoundExpression = DirectCast(Me.Visit(node.Flags), BoundExpression)
             Dim type as TypeSymbol = Me.VisitType(node.Type)
-            Return node.Update(source, node.FlagName, type)
+            Return node.Update(source, flags, type)
         End Function
 
     End Class
@@ -14604,7 +14606,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overrides Function VisitFlagsEnumOperation(node As BoundFlagsEnumOperation, arg As Object) As TreeDumperNode
             Return New TreeDumperNode("flagsEnumOperation", Nothing, New TreeDumperNode() {
                 New TreeDumperNode("source", Nothing, new TreeDumperNode() {Visit(node.Source, Nothing)}),
-                New TreeDumperNode("flagName", node.FlagName, Nothing),
+                New TreeDumperNode("flags", Nothing, new TreeDumperNode() {Visit(node.Flags, Nothing)}),
                 New TreeDumperNode("type", node.Type, Nothing)
             })
         End Function
