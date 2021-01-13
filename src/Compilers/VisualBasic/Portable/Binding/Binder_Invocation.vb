@@ -3088,12 +3088,17 @@ ProduceBoundNode:
 
         End Sub
 
+        Private Function HasFeature_OptionalParameterDefaults() As Boolean
+            Return InternalSyntax.FeatureExtensions.GetLanguageVersion(InternalSyntax.Feature.OptionalParameterDefaults) <= Me._compilation.LanguageVersion
+        End Function
+
         Friend Function GetArgumentForParameterDefaultValue(param As ParameterSymbol, syntax As SyntaxNode, diagnostics As DiagnosticBag, callerInfoOpt As SyntaxNode) As BoundExpression
             Dim defaultArgument As BoundExpression = Nothing
 
             ' See Section 3 of §11.8.2 Applicable Methods
             ' Deal with Optional arguments. HasDefaultValue is true if the parameter is optional and has a default value.
-            Dim defaultConstantValue As ConstantValue = If(param.IsOptional, param.ExplicitDefaultConstantValue(DefaultParametersInProgress), Nothing)
+            Dim defaultConstantValue As ConstantValue = If(param.IsOptional, param.ExplicitDefaultConstantValue(DefaultParametersInProgress),
+                If(HasFeature_OptionalParameterDefaults, ConstantValue.Nothing, NOthing))
             If defaultConstantValue IsNot Nothing Then
 
                 If callerInfoOpt IsNot Nothing AndAlso

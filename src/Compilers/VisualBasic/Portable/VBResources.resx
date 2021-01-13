@@ -5611,4 +5611,7 @@
   <data name="WRN_AnalyzerReferencesFramework_Title" xml:space="preserve">
     <value>The loaded assembly references .NET Framework, which is not supported.</value>
   </data>
+  <data name="FEATURE_OptionalParameterDefaults" xml:space="preserve">
+    <value>Optional Parameter Defaults</value>
+  </data>
 </root>

@@ -4709,15 +4709,17 @@ checkNullable:
             If TryGetTokenAndEatNewLine(SyntaxKind.EqualsToken, equals) Then
 
                 If Not (modifiers.Any AndAlso modifiers.Any(SyntaxKind.OptionalKeyword)) Then
-                    equals = ReportSyntaxError(equals, ERRID.ERR_DefaultValueForNonOptionalParam)
+                        equals = ReportSyntaxError(equals, ERRID.ERR_DefaultValueForNonOptionalParam)
                 End If
 
                 value = ParseExpressionCore()
 
             ElseIf modifiers.Any AndAlso modifiers.Any(SyntaxKind.OptionalKeyword) Then
-
-                equals = ReportSyntaxError(InternalSyntaxFactory.MissingPunctuation(SyntaxKind.EqualsToken), ERRID.ERR_ObsoleteOptionalWithoutValue)
-                value = ParseExpressionCore()
+      
+                If Not CheckFeatureAvailability( Feature.OptionalParameterDefaults) Then
+                    equals = ReportSyntaxError(InternalSyntaxFactory.MissingPunctuation(SyntaxKind.EqualsToken), ERRID.ERR_ObsoleteOptionalWithoutValue)
+                    value = ParseExpressionCore()
+                End if
 
             End If
 
