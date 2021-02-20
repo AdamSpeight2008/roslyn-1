@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -210,6 +212,8 @@ namespace Microsoft.CodeAnalysis.Emit
             return this;
         }
 
+        Symbols.ISymbolInternal Cci.IReference.GetInternalSymbol() => null;
+
         public abstract ISourceAssemblySymbolInternal SourceAssemblyOpt { get; }
 
         /// <summary>
@@ -244,7 +248,7 @@ namespace Microsoft.CodeAnalysis.Emit
             Debug.Assert(methodSymbol.ContainingModule == CommonSourceModule);
             Debug.Assert(methodSymbol.IsDefinition);
             Debug.Assert(((IMethodSymbol)methodSymbol.GetISymbol()).PartialDefinitionPart == null); // Must be definition.
-            Debug.Assert(body == null || (object)methodSymbol == body.MethodDefinition);
+            Debug.Assert(body == null || (object)methodSymbol == body.MethodDefinition.GetInternalSymbol());
 
             _methodBodyMap.Add(methodSymbol, body);
         }
@@ -463,8 +467,8 @@ namespace Microsoft.CodeAnalysis.Emit
         where TSourceModuleSymbol : class, IModuleSymbolInternal
         where TAssemblySymbol : class, IAssemblySymbolInternal
         where TTypeSymbol : class, ITypeSymbolInternal
-        where TNamedTypeSymbol : class, TTypeSymbol, INamedTypeSymbolInternal, Cci.INamespaceTypeDefinition
-        where TMethodSymbol : class, Cci.IMethodDefinition
+        where TNamedTypeSymbol : class, TTypeSymbol, INamedTypeSymbolInternal
+        where TMethodSymbol : class, IMethodSymbolInternal
         where TSyntaxNode : SyntaxNode
         where TEmbeddedTypesManager : CommonEmbeddedTypesManager
         where TModuleCompilationState : ModuleCompilationState<TNamedTypeSymbol, TMethodSymbol>
@@ -507,7 +511,6 @@ namespace Microsoft.CodeAnalysis.Emit
         internal override IAssemblySymbolInternal CommonCorLibrary => CorLibrary;
         internal abstract TAssemblySymbol CorLibrary { get; }
 
-        internal abstract Cci.INamedTypeReference GetSystemType(TSyntaxNode syntaxOpt, DiagnosticBag diagnostics);
         internal abstract Cci.INamedTypeReference GetSpecialType(SpecialType specialType, TSyntaxNode syntaxNodeOpt, DiagnosticBag diagnostics);
 
         internal sealed override Cci.ITypeReference EncTranslateType(ITypeSymbolInternal type, DiagnosticBag diagnostics)
@@ -603,14 +606,8 @@ namespace Microsoft.CodeAnalysis.Emit
             }
         }
 
-        public override IEnumerable<Cci.INamespaceTypeDefinition> GetAdditionalTopLevelTypeDefinitions(EmitContext context)
-            => GetAdditionalTopLevelTypes(context.Diagnostics);
-
-        public virtual ImmutableArray<TNamedTypeSymbol> GetAdditionalTopLevelTypes(DiagnosticBag diagnostics)
+        public virtual ImmutableArray<TNamedTypeSymbol> GetAdditionalTopLevelTypes()
             => ImmutableArray<TNamedTypeSymbol>.Empty;
-
-        public override IEnumerable<Cci.INamespaceTypeDefinition> GetEmbeddedTypeDefinitions(EmitContext context)
-            => GetEmbeddedTypes(context.Diagnostics);
 
         public virtual ImmutableArray<TNamedTypeSymbol> GetEmbeddedTypes(DiagnosticBag diagnostics)
             => ImmutableArray<TNamedTypeSymbol>.Empty;
@@ -705,7 +702,7 @@ namespace Microsoft.CodeAnalysis.Emit
                 {
                     foreach (var field in Fields)
                     {
-                        builder.Add((ISymbolInternal)field);
+                        builder.Add(field.GetInternalSymbol());
                     }
                 }
 
@@ -713,7 +710,7 @@ namespace Microsoft.CodeAnalysis.Emit
                 {
                     foreach (var method in Methods)
                     {
-                        builder.Add((ISymbolInternal)method);
+                        builder.Add(method.GetInternalSymbol());
                     }
                 }
 
@@ -721,7 +718,7 @@ namespace Microsoft.CodeAnalysis.Emit
                 {
                     foreach (var property in Properties)
                     {
-                        builder.Add((ISymbolInternal)property);
+                        builder.Add(property.GetInternalSymbol());
                     }
                 }
 
@@ -729,7 +726,7 @@ namespace Microsoft.CodeAnalysis.Emit
                 {
                     foreach (var type in NestedTypes)
                     {
-                        builder.Add((ISymbolInternal)type);
+                        builder.Add(type.GetInternalSymbol());
                     }
                 }
 
@@ -964,7 +961,7 @@ namespace Microsoft.CodeAnalysis.Emit
             switch (platformType)
             {
                 case Cci.PlatformType.SystemType:
-                    return GetSystemType((TSyntaxNode)context.SyntaxNodeOpt, context.Diagnostics);
+                    throw ExceptionUtilities.UnexpectedValue(platformType);
 
                 default:
                     return GetSpecialType((SpecialType)platformType, (TSyntaxNode)context.SyntaxNodeOpt, context.Diagnostics);

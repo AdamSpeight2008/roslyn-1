@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -96,11 +98,11 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Tagging
             using var workspace = TestWorkspace.CreateCSharp("class Program {\r\n\r\n}", composition: EditorTestCompositions.EditorFeaturesWpf);
             WpfTestRunner.RequireWpfFact($"{nameof(AsynchronousTaggerTests)}.{nameof(TestSynchronousOutlining)} creates asynchronous taggers");
 
-            var tagProvider = workspace.ExportProvider.GetExportedValue<VisualStudio14StructureTaggerProvider>();
+            var tagProvider = workspace.ExportProvider.GetExportedValue<AbstractStructureTaggerProvider>();
 
             var document = workspace.Documents.First();
             var textBuffer = document.GetTextBuffer();
-            var tagger = tagProvider.CreateTagger<IOutliningRegionTag>(textBuffer);
+            var tagger = tagProvider.CreateTagger<IStructureTag>(textBuffer);
 
             using var disposable = (IDisposable)tagger;
             // The very first all to get tags should return the single outlining span.

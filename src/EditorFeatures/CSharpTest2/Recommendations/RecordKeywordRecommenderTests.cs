@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.Test.Utilities;
@@ -196,12 +198,35 @@ $$");
         }
 
         [Fact, Trait(Traits.Feature, Traits.Features.KeywordRecommending)]
-        public async Task TestInsideRecord()
+        public async Task TestInsideRecord1()
         {
             // The recommender doesn't work in record in script
             // Tracked by https://github.com/dotnet/roslyn/issues/44865
             await VerifyWorkerAsync(
 @"record C {
+   $$", absent: false, options: TestOptions.RegularPreview);
+        }
+
+        [WorkItem(50783, "https://github.com/dotnet/roslyn/issues/50783")]
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordRecommending)]
+        public async Task TestInsideRecord2()
+        {
+            // The recommender doesn't work in record in script
+            // Tracked by https://github.com/dotnet/roslyn/issues/44865
+            await VerifyWorkerAsync(
+@"record C {
+   public $$", absent: false, options: TestOptions.RegularPreview);
+        }
+
+        [WorkItem(50783, "https://github.com/dotnet/roslyn/issues/50783")]
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordRecommending)]
+        public async Task TestInsideRecord3()
+        {
+            // The recommender doesn't work in record in script
+            // Tracked by https://github.com/dotnet/roslyn/issues/44865
+            await VerifyWorkerAsync(
+@"record C {
+   [X]
    $$", absent: false, options: TestOptions.RegularPreview);
         }
 

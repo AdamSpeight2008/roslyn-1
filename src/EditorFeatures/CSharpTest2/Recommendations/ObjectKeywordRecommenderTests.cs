@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Completion.Providers;
 using Microsoft.CodeAnalysis.Test.Utilities;
@@ -758,6 +760,20 @@ class C
 class C
 {
     delegate*$$");
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordRecommending)]
+        public async Task TestNotInDeclarationDeconstruction()
+        {
+            await VerifyAbsenceAsync(AddInsideMethod(
+@"var (x, $$) = (0, 0);"));
+        }
+
+        [Fact, Trait(Traits.Feature, Traits.Features.KeywordRecommending)]
+        public async Task TestInMixedDeclarationAndAssignmentInDeconstruction()
+        {
+            await VerifyKeywordAsync(AddInsideMethod(
+@"(x, $$) = (0, 0);"));
         }
     }
 }

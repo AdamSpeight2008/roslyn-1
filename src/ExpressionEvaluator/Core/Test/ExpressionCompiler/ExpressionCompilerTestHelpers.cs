@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 extern alias PDB;
 
 using System;
@@ -552,7 +554,7 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator.UnitTests
                     expectedValueSourceLine: expectedValueSourceLine);
             }
 
-            Assert.Equal(((Cci.IMethodDefinition)methodData.Method).CallingConvention, expectedGeneric ? Cci.CallingConvention.Generic : Cci.CallingConvention.Default);
+            Assert.Equal(((Cci.IMethodDefinition)methodData.Method.GetCciAdapter()).CallingConvention, expectedGeneric ? Cci.CallingConvention.Generic : Cci.CallingConvention.Default);
         }
 
         internal static void VerifyResolutionRequests(EEMetadataReferenceResolver resolver, (AssemblyIdentity, AssemblyIdentity, int)[] expectedRequests)
@@ -838,7 +840,9 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator.UnitTests
                         comp.MessageProvider,
                         () => peStream,
                         () => pdbStream,
-                        null, null,
+                        nativePdbWriterOpt: null,
+                        pdbOptionsBlobReader: null,
+                        pdbPathOpt: null,
                         metadataOnly: true,
                         isDeterministic: false,
                         emitTestCoverageData: false,

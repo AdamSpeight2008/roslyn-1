@@ -495,5 +495,18 @@ namespace Microsoft.CodeAnalysis.Internal.Log
         DependentTypeFinder_FindAndCacheImplementingTypesAsync = 432,
 
         RemoteSemanticClassificationCacheService_ExceptionInCacheRead = 440,
+        FeatureNotAvailable = 441,
+
+        LSPCompletion_MissingLSPCompletionTriggerKind = 450,
+        LSPCompletion_MissingLSPCompletionInvokeKind = 451,
+
+        Workspace_Project_CompilationThrownAway = 460,
+
+        CommandHandler_Paste_ImportsOnPaste = 470,
+
+        FindDocumentInWorkspace = 480,
+        RegisterWorkspace = 481,
+
+        LSP_RequestCounter = 482,
     }
 }

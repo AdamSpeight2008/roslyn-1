@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
-
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
@@ -24,12 +22,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         public SynthesizedRecordPrintMembers(
             SourceMemberContainerTypeSymbol containingType,
             int memberOffset,
-            DiagnosticBag diagnostics)
+            BindingDiagnosticBag diagnostics)
             : base(containingType, WellKnownMemberNames.PrintMembersMethodName, hasBody: true, memberOffset, diagnostics)
         {
         }
 
-        protected override DeclarationModifiers MakeDeclarationModifiers(DeclarationModifiers allowedModifiers, DiagnosticBag diagnostics)
+        protected override DeclarationModifiers MakeDeclarationModifiers(DeclarationModifiers allowedModifiers, BindingDiagnosticBag diagnostics)
         {
             var result = (ContainingType.BaseTypeNoUseSiteDiagnostics.IsObjectType() && ContainingType.IsSealed) ?
                 DeclarationModifiers.Private :
@@ -86,7 +84,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #endif
         }
 
-        protected override (TypeWithAnnotations ReturnType, ImmutableArray<ParameterSymbol> Parameters, bool IsVararg, ImmutableArray<TypeParameterConstraintClause> DeclaredConstraintsForOverrideOrImplementation) MakeParametersAndBindReturnType(DiagnosticBag diagnostics)
+        protected override (TypeWithAnnotations ReturnType, ImmutableArray<ParameterSymbol> Parameters, bool IsVararg, ImmutableArray<TypeParameterConstraintClause> DeclaredConstraintsForOverrideOrImplementation) MakeParametersAndBindReturnType(BindingDiagnosticBag diagnostics)
         {
             var compilation = DeclaringCompilation;
             var location = ReturnTypeLocation;
@@ -101,13 +99,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         protected override int GetParameterCountFromSyntax() => 1;
 
-        internal override void GenerateMethodBody(TypeCompilationState compilationState, DiagnosticBag diagnostics)
+        internal override void GenerateMethodBody(TypeCompilationState compilationState, BindingDiagnosticBag diagnostics)
         {
             var F = new SyntheticBoundNodeFactory(this, ContainingType.GetNonNullSyntaxNode(), compilationState, diagnostics);
             try
             {
-                ImmutableArray<Symbol> printableMembers = ContainingType.GetMembers()
-                    .WhereAsArray(m => m.DeclaredAccessibility == Accessibility.Public && (m.Kind is SymbolKind.Field or SymbolKind.Property));
+                ImmutableArray<Symbol> printableMembers = ContainingType.GetMembers().WhereAsArray(m => isPrintable(m));
 
                 if (ReturnType.IsErrorType() ||
                     printableMembers.Any(m => m.GetTypeOrReturnType().Type.IsErrorType()))
@@ -207,6 +204,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 return F.ExpressionStatement(F.Call(receiver: builder, F.WellKnownMethod(WellKnownMember.System_Text_StringBuilder__AppendString), F.StringLiteral(value)));
             }
+
+            static bool isPrintable(Symbol m)
+            {
+                if (m.DeclaredAccessibility != Accessibility.Public || m.IsStatic)
+                {
+                    return false;
+                }
+
+                if (m.Kind is SymbolKind.Field)
+                {
+                    return true;
+                }
+
+                if (m.Kind is SymbolKind.Property)
+                {
+                    var property = (PropertySymbol)m;
+                    return !property.IsIndexer && !property.IsOverride && property.GetMethod is not null;
+                }
+
+                return false;
+            }
         }
 
         internal static MethodSymbol? FindValidPrintMembersMethod(TypeSymbol containingType, CSharpCompilation compilation)
@@ -244,7 +262,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return candidate;
         }
 
-        internal static void VerifyOverridesPrintMembersFromBase(MethodSymbol overriding, DiagnosticBag diagnostics)
+        internal static void VerifyOverridesPrintMembersFromBase(MethodSymbol overriding, BindingDiagnosticBag diagnostics)
         {
             NamedTypeSymbol baseType = overriding.ContainingType.BaseTypeNoUseSiteDiagnostics;
             if (baseType.IsObjectType())

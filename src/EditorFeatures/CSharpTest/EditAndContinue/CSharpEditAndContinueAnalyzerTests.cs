@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -17,6 +19,7 @@ using Microsoft.CodeAnalysis.Editor;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.VisualStudio.Debugger.Contracts.EditAndContinue;
 using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
@@ -173,7 +176,7 @@ namespace Microsoft.CodeAnalysis.CSharp.EditAndContinue.UnitTests
     
 }
 ";
-            TestSpans(source, kind => TopSyntaxComparer.HasLabel(kind));
+            TestSpans(source, kind => SyntaxComparer.TopLevel.HasLabel(kind));
         }
 
         [Fact]
@@ -229,7 +232,7 @@ class C
             // TODO: test
             // /*<span>*/F($$from a in b from c in d select a.x);/*</span>*/
             // /*<span>*/F(from a in b $$from c in d select a.x);/*</span>*/
-            TestSpans(source, StatementSyntaxComparer.IgnoreLabeledChild);
+            TestSpans(source, kind => SyntaxComparer.Statement.HasLabel(kind));
         }
 
         /// <summary>
@@ -238,8 +241,8 @@ class C
         [Fact]
         public void ErrorSpansAllKinds()
         {
-            TestErrorSpansAllKinds(StatementSyntaxComparer.IgnoreLabeledChild);
-            TestErrorSpansAllKinds(kind => TopSyntaxComparer.HasLabel(kind));
+            TestErrorSpansAllKinds(kind => SyntaxComparer.Statement.HasLabel(kind));
+            TestErrorSpansAllKinds(kind => SyntaxComparer.TopLevel.HasLabel(kind));
         }
 
         [Fact]
@@ -286,7 +289,7 @@ class C
             var baseActiveStatements = ImmutableArray.Create(ActiveStatementsDescription.CreateActiveStatement(ActiveStatementFlags.IsLeafFrame, oldStatementSpan, DocumentId.CreateNewId(ProjectId.CreateNewId())));
             var analyzer = new CSharpEditAndContinueAnalyzer();
 
-            var result = await analyzer.AnalyzeDocumentAsync(oldDocument, baseActiveStatements, newDocument, ImmutableArray<TextSpan>.Empty, CancellationToken.None);
+            var result = await analyzer.AnalyzeDocumentAsync(oldProject, baseActiveStatements, newDocument, ImmutableArray<TextSpan>.Empty, CancellationToken.None);
 
             Assert.True(result.HasChanges);
             Assert.True(result.SemanticEdits[0].PreserveLocalVariables);
@@ -332,11 +335,11 @@ class C
             var baseActiveStatements = ImmutableArray.Create<ActiveStatement>();
             var analyzer = new CSharpEditAndContinueAnalyzer();
 
-            var result = await analyzer.AnalyzeDocumentAsync(oldDocument, baseActiveStatements, newSolution.GetDocument(documentId), ImmutableArray<TextSpan>.Empty, CancellationToken.None);
+            var result = await analyzer.AnalyzeDocumentAsync(oldProject, baseActiveStatements, newSolution.GetDocument(documentId), ImmutableArray<TextSpan>.Empty, CancellationToken.None);
 
             Assert.True(result.HasChanges);
             Assert.True(result.HasChangesAndErrors);
-            Assert.True(result.HasChangesAndCompilationErrors);
+            Assert.True(result.HasChangesAndSyntaxErrors);
         }
 
         [Fact]
@@ -358,11 +361,11 @@ class C
             var baseActiveStatements = ImmutableArray.Create<ActiveStatement>();
             var analyzer = new CSharpEditAndContinueAnalyzer();
 
-            var result = await analyzer.AnalyzeDocumentAsync(oldDocument, baseActiveStatements, oldDocument, ImmutableArray<TextSpan>.Empty, CancellationToken.None);
+            var result = await analyzer.AnalyzeDocumentAsync(oldProject, baseActiveStatements, oldDocument, ImmutableArray<TextSpan>.Empty, CancellationToken.None);
 
             Assert.False(result.HasChanges);
             Assert.False(result.HasChangesAndErrors);
-            Assert.False(result.HasChangesAndCompilationErrors);
+            Assert.False(result.HasChangesAndSyntaxErrors);
         }
 
         [Fact]
@@ -399,11 +402,11 @@ class C
             var baseActiveStatements = ImmutableArray.Create<ActiveStatement>();
             var analyzer = new CSharpEditAndContinueAnalyzer();
 
-            var result = await analyzer.AnalyzeDocumentAsync(oldDocument, baseActiveStatements, newSolution.GetDocument(documentId), ImmutableArray<TextSpan>.Empty, CancellationToken.None);
+            var result = await analyzer.AnalyzeDocumentAsync(oldProject, baseActiveStatements, newSolution.GetDocument(documentId), ImmutableArray<TextSpan>.Empty, CancellationToken.None);
 
             Assert.False(result.HasChanges);
             Assert.False(result.HasChangesAndErrors);
-            Assert.False(result.HasChangesAndCompilationErrors);
+            Assert.False(result.HasChangesAndSyntaxErrors);
         }
 
         [Fact]
@@ -432,11 +435,11 @@ class C
             var baseActiveStatements = ImmutableArray.Create<ActiveStatement>();
             var analyzer = new CSharpEditAndContinueAnalyzer();
 
-            var result = await analyzer.AnalyzeDocumentAsync(oldDocument, baseActiveStatements, oldDocument, ImmutableArray<TextSpan>.Empty, CancellationToken.None);
+            var result = await analyzer.AnalyzeDocumentAsync(oldProject, baseActiveStatements, oldDocument, ImmutableArray<TextSpan>.Empty, CancellationToken.None);
 
             Assert.False(result.HasChanges);
             Assert.False(result.HasChangesAndErrors);
-            Assert.False(result.HasChangesAndCompilationErrors);
+            Assert.False(result.HasChangesAndSyntaxErrors);
             Assert.True(result.RudeEditErrors.IsEmpty);
         }
 
@@ -483,11 +486,11 @@ class C
                 var baseActiveStatements = ImmutableArray.Create<ActiveStatement>();
                 var analyzer = new CSharpEditAndContinueAnalyzer();
 
-                var result = await analyzer.AnalyzeDocumentAsync(oldDocument, baseActiveStatements, newSolution.GetDocument(documentId), ImmutableArray<TextSpan>.Empty, CancellationToken.None);
+                var result = await analyzer.AnalyzeDocumentAsync(oldProject, baseActiveStatements, newSolution.GetDocument(documentId), ImmutableArray<TextSpan>.Empty, CancellationToken.None);
 
                 Assert.True(result.HasChanges);
                 Assert.True(result.HasChangesAndErrors);
-                Assert.False(result.HasChangesAndCompilationErrors);
+                Assert.False(result.HasChangesAndSyntaxErrors);
                 Assert.Equal(RudeEditKind.ExperimentalFeaturesEnabled, result.RudeEditErrors.Single().Kind);
             }
         }
@@ -516,11 +519,11 @@ class C
             var baseActiveStatements = ImmutableArray.Create<ActiveStatement>();
             var analyzer = new CSharpEditAndContinueAnalyzer();
 
-            var result = await analyzer.AnalyzeDocumentAsync(oldDocument, baseActiveStatements, oldDocument, ImmutableArray<TextSpan>.Empty, CancellationToken.None);
+            var result = await analyzer.AnalyzeDocumentAsync(oldProject, baseActiveStatements, oldDocument, ImmutableArray<TextSpan>.Empty, CancellationToken.None);
 
             Assert.False(result.HasChanges);
             Assert.False(result.HasChangesAndErrors);
-            Assert.False(result.HasChangesAndCompilationErrors);
+            Assert.False(result.HasChangesAndSyntaxErrors);
         }
 
         [Fact, WorkItem(10683, "https://github.com/dotnet/roslyn/issues/10683")]
@@ -559,13 +562,13 @@ class C
             var baseActiveStatements = ImmutableArray.Create<ActiveStatement>();
             var analyzer = new CSharpEditAndContinueAnalyzer();
 
-            var result = await analyzer.AnalyzeDocumentAsync(oldDocument, baseActiveStatements, newSolution.GetDocument(documentId), ImmutableArray<TextSpan>.Empty, CancellationToken.None);
+            var result = await analyzer.AnalyzeDocumentAsync(oldProject, baseActiveStatements, newSolution.GetDocument(documentId), ImmutableArray<TextSpan>.Empty, CancellationToken.None);
 
             Assert.True(result.HasChanges);
 
             // no declaration errors (error in method body is only reported when emitting):
             Assert.False(result.HasChangesAndErrors);
-            Assert.False(result.HasChangesAndCompilationErrors);
+            Assert.False(result.HasChangesAndSyntaxErrors);
         }
 
         [Fact, WorkItem(10683, "https://github.com/dotnet/roslyn/issues/10683")]
@@ -602,11 +605,14 @@ class C
             var baseActiveStatements = ImmutableArray.Create<ActiveStatement>();
             var analyzer = new CSharpEditAndContinueAnalyzer();
 
-            var result = await analyzer.AnalyzeDocumentAsync(oldDocument, baseActiveStatements, newSolution.GetDocument(documentId), ImmutableArray<TextSpan>.Empty, CancellationToken.None);
+            var result = await analyzer.AnalyzeDocumentAsync(oldProject, baseActiveStatements, newSolution.GetDocument(documentId), ImmutableArray<TextSpan>.Empty, CancellationToken.None);
 
             Assert.True(result.HasChanges);
-            Assert.True(result.HasChangesAndErrors);
-            Assert.True(result.HasChangesAndCompilationErrors);
+
+            // No errors reported: EnC analyzer is resilient against semantic errors.
+            // They will be reported by 1) compiler diagnostic analyzer 2) when emitting delta - if still present.
+            Assert.False(result.HasChangesAndErrors);
+            Assert.False(result.HasChangesAndSyntaxErrors);
         }
 
         [Fact]
@@ -656,7 +662,7 @@ namespace N
 
             foreach (var changedDocumentId in changedDocuments)
             {
-                result.Add(await analyzer.AnalyzeDocumentAsync(oldProject.GetDocument(changedDocumentId), baseActiveStatements, newProject.GetDocument(changedDocumentId), ImmutableArray<TextSpan>.Empty, CancellationToken.None));
+                result.Add(await analyzer.AnalyzeDocumentAsync(oldProject, baseActiveStatements, newProject.GetDocument(changedDocumentId), ImmutableArray<TextSpan>.Empty, CancellationToken.None));
             }
 
             Assert.True(result.IsSingle());
@@ -705,7 +711,7 @@ namespace N
 
             foreach (var changedDocumentId in changedDocuments)
             {
-                result.Add(await analyzer.AnalyzeDocumentAsync(oldProject.GetDocument(changedDocumentId), baseActiveStatements, newProject.GetDocument(changedDocumentId), ImmutableArray<TextSpan>.Empty, CancellationToken.None));
+                result.Add(await analyzer.AnalyzeDocumentAsync(oldProject, baseActiveStatements, newProject.GetDocument(changedDocumentId), ImmutableArray<TextSpan>.Empty, CancellationToken.None));
             }
 
             Assert.True(result.IsSingle());
@@ -740,11 +746,13 @@ namespace N
                 }
             });
 
-            var result = await analyzer.AnalyzeDocumentAsync(oldProject.GetDocument(documentId), baseActiveStatements, newDocument, ImmutableArray<TextSpan>.Empty, CancellationToken.None);
+            var result = await analyzer.AnalyzeDocumentAsync(oldProject, baseActiveStatements, newDocument, ImmutableArray<TextSpan>.Empty, CancellationToken.None);
 
             var expectedDiagnostic = outOfMemory ?
                 $"ENC0089: {string.Format(FeaturesResources.Modifying_source_file_will_prevent_the_debug_session_from_continuing_because_the_file_is_too_big, "src.cs")}" :
-                $"ENC0080: {string.Format(FeaturesResources.Modifying_source_file_will_prevent_the_debug_session_from_continuing_due_to_internal_error, "src.cs", "System.NullReferenceException: NullRef!")}";
+                // Because the error message that is formatted into this template string includes a stacktrace with newlines, we need to replicate that behavior
+                // here so that any trailing punctuation is removed from the translated template string.
+                $"ENC0080: {string.Format(FeaturesResources.Modifying_source_file_will_prevent_the_debug_session_from_continuing_due_to_internal_error, "src.cs", "System.NullReferenceException: NullRef!\n")}".Split('\n').First();
 
             AssertEx.Equal(new[] { expectedDiagnostic }, result.RudeEditErrors.Select(d => d.ToDiagnostic(newSyntaxTree))
                 .Select(d => $"{d.Id}: {d.GetMessage().Split(new[] { Environment.NewLine }, StringSplitOptions.None).First()}"));

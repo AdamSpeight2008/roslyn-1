@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using Roslyn.Test.Utilities;
 using System;
 using System.Text;
@@ -100,10 +102,10 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Emit
         {
             int numberFluentCalls = (ExecutionConditionUtil.Architecture, ExecutionConditionUtil.Configuration) switch
             {
-                (ExecutionArchitecture.x86, ExecutionConfiguration.Debug) => 510,
-                (ExecutionArchitecture.x86, ExecutionConfiguration.Release) => 1310,
-                (ExecutionArchitecture.x64, ExecutionConfiguration.Debug) => 225,
-                (ExecutionArchitecture.x64, ExecutionConfiguration.Release) => 620,
+                (ExecutionArchitecture.x86, ExecutionConfiguration.Debug) => 520, // 510
+                (ExecutionArchitecture.x86, ExecutionConfiguration.Release) => 1400, // 1310
+                (ExecutionArchitecture.x64, ExecutionConfiguration.Debug) => 250, // 225,
+                (ExecutionArchitecture.x64, ExecutionConfiguration.Release) => 700, // 620
                 _ => throw new Exception($"Unexpected configuration {ExecutionConditionUtil.Architecture} {ExecutionConditionUtil.Configuration}")
             };
 
@@ -139,7 +141,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Emit
                 var source = builder.ToString();
                 RunInThread(() =>
                 {
-                    var options = new CSharpCompilationOptions(outputKind: OutputKind.DynamicallyLinkedLibrary, concurrentBuild: false);
+                    var options = TestOptions.DebugDll.WithConcurrentBuild(false);
                     var compilation = CreateCompilation(source, options: options);
                     compilation.VerifyDiagnostics();
                     compilation.EmitToArray();

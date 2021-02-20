@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -9,7 +11,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using Microsoft.CodeAnalysis.CSharp.DocumentationComments;
 using Microsoft.CodeAnalysis.CSharp.Emit;
@@ -252,7 +253,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             public ImmutableArray<string> _lazyConditionalAttributeSymbols;
             public ObsoleteAttributeData _lazyObsoleteAttributeData;
             public UnmanagedCallersOnlyAttributeData _lazyUnmanagedCallersOnlyAttributeData;
-            public DiagnosticInfo _lazyUseSiteDiagnostic;
+            public CachedUseSiteInfo<AssemblySymbol> _lazyCachedUseSiteInfo;
             public ImmutableArray<string> _lazyNotNullMembers;
             public ImmutableArray<string> _lazyNotNullMembersWhenTrue;
             public ImmutableArray<string> _lazyNotNullMembersWhenFalse;
@@ -369,7 +370,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                     _name = string.Empty;
                 }
 
-                InitializeUseSiteDiagnostic(new CSDiagnosticInfo(ErrorCode.ERR_BindToBogus, this));
+                InitializeUseSiteDiagnostic(new UseSiteInfo<AssemblySymbol>(new CSDiagnosticInfo(ErrorCode.ERR_BindToBogus, this)));
             }
 
             Debug.Assert((uint)localflags <= ushort.MaxValue);
@@ -820,7 +821,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 
             if (makeBad || isBadParameter)
             {
-                InitializeUseSiteDiagnostic(new CSDiagnosticInfo(ErrorCode.ERR_BindToBogus, this));
+                InitializeUseSiteDiagnostic(new UseSiteInfo<AssemblySymbol>(new CSDiagnosticInfo(ErrorCode.ERR_BindToBogus, this)));
             }
 
             var signature = new SignatureData(signatureHeader, @params, returnParam);
@@ -836,7 +837,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 var typeParams = EnsureTypeParametersAreLoaded(ref diagnosticInfo);
                 if (diagnosticInfo != null)
                 {
-                    InitializeUseSiteDiagnostic(diagnosticInfo);
+                    InitializeUseSiteDiagnostic(new UseSiteInfo<AssemblySymbol>(diagnosticInfo));
                 }
 
                 return typeParams;
@@ -1192,9 +1193,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 
         public override ImmutableArray<MethodSymbol> ExplicitInterfaceImplementations
         {
-            // Disabling optimization to work around a JIT bug in .NET 5.
-            // See https://github.com/dotnet/roslyn/issues/46575
-            [MethodImpl(MethodImplOptions.NoOptimization)]
             get
             {
                 var explicitInterfaceImplementations = _lazyExplicitMethodImplementations;
@@ -1327,46 +1325,50 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             return PEDocumentationCommentUtils.GetDocumentationComment(this, _containingType.ContainingPEModule, preferredCulture, cancellationToken, ref AccessUncommonFields()._lazyDocComment);
         }
 
-        internal override DiagnosticInfo GetUseSiteDiagnostic()
+        internal override UseSiteInfo<AssemblySymbol> GetUseSiteInfo()
         {
             if (!_packedFlags.IsUseSiteDiagnosticPopulated)
             {
-                DiagnosticInfo result = null;
+                UseSiteInfo<AssemblySymbol> result = new UseSiteInfo<AssemblySymbol>(PrimaryDependency);
                 CalculateUseSiteDiagnostic(ref result);
-                EnsureTypeParametersAreLoaded(ref result);
-                if (result == null && UnmanagedCallersOnlyAttributeData is UnmanagedCallersOnlyAttributeData data)
+
+                var diagnosticInfo = result.DiagnosticInfo;
+                EnsureTypeParametersAreLoaded(ref diagnosticInfo);
+                if (diagnosticInfo == null && GetUnmanagedCallersOnlyAttributeData(forceComplete: true) is UnmanagedCallersOnlyAttributeData data)
                 {
                     Debug.Assert(!ReferenceEquals(data, UnmanagedCallersOnlyAttributeData.Uninitialized));
                     Debug.Assert(!ReferenceEquals(data, UnmanagedCallersOnlyAttributeData.AttributePresentDataNotBound));
-                    if (MethodKind is not (MethodKind.Ordinary or MethodKind.LocalFunction)
-                        || !IsStatic
-                        || !data.IsValid)
+                    if (CheckAndReportValidUnmanagedCallersOnlyTarget(location: null, diagnostics: null))
                     {
-                        result = new CSDiagnosticInfo(ErrorCode.ERR_BindToBogus, this);
+                        diagnosticInfo = new CSDiagnosticInfo(ErrorCode.ERR_BindToBogus, this);
                     }
                 }
 
-                return InitializeUseSiteDiagnostic(result);
+                return InitializeUseSiteDiagnostic(result.AdjustDiagnosticInfo(diagnosticInfo));
             }
 
-            return _uncommonFields?._lazyUseSiteDiagnostic;
+            return GetCachedUseSiteInfo();
         }
 
-        private DiagnosticInfo InitializeUseSiteDiagnostic(DiagnosticInfo diagnostic)
+        private UseSiteInfo<AssemblySymbol> GetCachedUseSiteInfo()
+        {
+            return (_uncommonFields?._lazyCachedUseSiteInfo ?? default).ToUseSiteInfo(PrimaryDependency);
+        }
+
+        private UseSiteInfo<AssemblySymbol> InitializeUseSiteDiagnostic(UseSiteInfo<AssemblySymbol> useSiteInfo)
         {
             if (_packedFlags.IsUseSiteDiagnosticPopulated)
             {
-                return _uncommonFields?._lazyUseSiteDiagnostic;
+                return GetCachedUseSiteInfo();
             }
 
-            if (diagnostic != null)
+            if (useSiteInfo.DiagnosticInfo is object || !useSiteInfo.SecondaryDependencies.IsNullOrEmpty())
             {
-                Debug.Assert(!CSDiagnosticInfo.IsEmpty(diagnostic));
-                diagnostic = InterlockedOperations.Initialize(ref AccessUncommonFields()._lazyUseSiteDiagnostic, diagnostic);
+                useSiteInfo = AccessUncommonFields()._lazyCachedUseSiteInfo.InterlockedInitialize(PrimaryDependency, useSiteInfo);
             }
 
             _packedFlags.SetIsUseSiteDiagnosticPopulated();
-            return diagnostic;
+            return useSiteInfo;
         }
 
         internal override ImmutableArray<string> GetAppliedConditionalSymbols()
@@ -1435,40 +1437,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         }
 
 #nullable enable
-        internal override UnmanagedCallersOnlyAttributeData? UnmanagedCallersOnlyAttributeData
+        internal override UnmanagedCallersOnlyAttributeData? GetUnmanagedCallersOnlyAttributeData(bool forceComplete)
         {
-            get
+            if (!_packedFlags.IsUnmanagedCallersOnlyAttributePopulated)
             {
-                if (!_packedFlags.IsUnmanagedCallersOnlyAttributePopulated)
-                {
-                    var allAttributes = GetAttributes();
+                var containingModule = (PEModuleSymbol)ContainingModule;
+                var unmanagedCallersOnlyData = containingModule.Module.TryGetUnmanagedCallersOnlyAttribute(_handle, new MetadataDecoder(containingModule),
+                    static (name, value, isField) => MethodSymbol.TryDecodeUnmanagedCallersOnlyCallConvsField(name, value, isField, location: null, diagnostics: null));
 
-                    CSharpAttributeData? unmanagedAttribute = null;
-                    foreach (var attribute in allAttributes)
-                    {
-                        if (attribute.IsTargetAttribute(this, AttributeDescription.UnmanagedCallersOnlyAttribute))
-                        {
-                            unmanagedAttribute = attribute;
-                            break;
-                        }
-                    }
+                Debug.Assert(!ReferenceEquals(unmanagedCallersOnlyData, UnmanagedCallersOnlyAttributeData.Uninitialized)
+                             && !ReferenceEquals(unmanagedCallersOnlyData, UnmanagedCallersOnlyAttributeData.AttributePresentDataNotBound));
 
-                    UnmanagedCallersOnlyAttributeData? data = unmanagedAttribute == null
-                        ? null
-                        : DecodeUnmanagedCallersOnlyAttributeData(unmanagedAttribute, location: null, diagnostics: null);
+                var result = InterlockedOperations.Initialize(ref AccessUncommonFields()._lazyUnmanagedCallersOnlyAttributeData,
+                                                              unmanagedCallersOnlyData,
+                                                              UnmanagedCallersOnlyAttributeData.Uninitialized);
 
-                    var result = InterlockedOperations.Initialize(ref AccessUncommonFields()._lazyUnmanagedCallersOnlyAttributeData,
-                                                                  data,
-                                                                  UnmanagedCallersOnlyAttributeData.Uninitialized);
-
-                    _packedFlags.SetIsUnmanagedCallersOnlyAttributePopulated();
-                    return result;
-                }
-
-                return _uncommonFields?._lazyUnmanagedCallersOnlyAttributeData;
+                _packedFlags.SetIsUnmanagedCallersOnlyAttributePopulated();
+                return result;
             }
+
+            return _uncommonFields?._lazyUnmanagedCallersOnlyAttributeData;
         }
-#nullable restore
+#nullable disable
 
         internal override bool GenerateDebugInfo => false;
 
@@ -1522,5 +1512,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 
         // Internal for unit test
         internal bool TestIsExtensionBitTrue => _packedFlags.IsExtensionMethod;
+
+        internal sealed override bool IsNullableAnalysisEnabled() => throw ExceptionUtilities.Unreachable;
     }
 }

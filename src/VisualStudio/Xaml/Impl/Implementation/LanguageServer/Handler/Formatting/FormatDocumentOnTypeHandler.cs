@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
-
 using System;
 using System.Collections.Generic;
 using System.Composition;
@@ -21,15 +19,22 @@ using Microsoft.VisualStudio.LanguageServices.Xaml.Features.Formatting;
 
 namespace Microsoft.VisualStudio.LanguageServices.Xaml.LanguageServer.Handler
 {
-    [Shared]
-    [ExportLspMethod(Methods.TextDocumentOnTypeFormattingName, StringConstants.XamlLanguageName)]
-    internal class FormatDocumentOnTypeHandler : AbstractRequestHandler<DocumentOnTypeFormattingParams, TextEdit[]>
+    [ExportLspRequestHandlerProvider(StringConstants.XamlLanguageName), Shared]
+    [ProvidesMethod(Methods.TextDocumentOnTypeFormattingName)]
+    internal class FormatDocumentOnTypeHandler : AbstractStatelessRequestHandler<DocumentOnTypeFormattingParams, TextEdit[]>
     {
         [ImportingConstructor]
         [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
-        public FormatDocumentOnTypeHandler(ILspSolutionProvider solutionProvider) : base(solutionProvider)
+        public FormatDocumentOnTypeHandler()
         {
         }
+
+        public override string Method => Methods.TextDocumentOnTypeFormattingName;
+
+        public override bool MutatesSolutionState => false;
+        public override bool RequiresLSPSolution => true;
+
+        public override TextDocumentIdentifier? GetTextDocumentIdentifier(DocumentOnTypeFormattingParams request) => request.TextDocument;
 
         public override async Task<TextEdit[]> HandleRequestAsync(DocumentOnTypeFormattingParams request, RequestContext context, CancellationToken cancellationToken)
         {
@@ -39,7 +44,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Xaml.LanguageServer.Handler
                 return edits.ToArrayAndFree();
             }
 
-            var document = SolutionProvider.GetTextDocument(request.TextDocument, context.ClientName);
+            var document = context.Document;
             var formattingService = document?.Project.LanguageServices.GetService<IXamlFormattingService>();
             if (document != null && formattingService != null)
             {

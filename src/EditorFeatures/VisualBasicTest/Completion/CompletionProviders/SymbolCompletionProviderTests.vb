@@ -15,10 +15,6 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.Completion.Complet
 
         Private Const s_unicodeEllipsis = ChrW(&H2026)
 
-        Public Sub New(workspaceFixture As VisualBasicTestWorkspaceFixture)
-            MyBase.New(workspaceFixture)
-        End Sub
-
         Friend Overrides Function GetCompletionProviderType() As Type
             Return GetType(SymbolCompletionProvider)
         End Function
@@ -5758,7 +5754,7 @@ Class C
                              </Project>
                          </Workspace>.ToString().NormalizeLineEndings()
 
-            Dim expectedDescription = $"({FeaturesResources.field}) C.x As Integer" + vbCrLf + vbCrLf + String.Format(FeaturesResources._0_1, "Proj1", FeaturesResources.Available) + vbCrLf + String.Format(FeaturesResources._0_1, "Proj2", FeaturesResources.Not_Available) + vbCrLf + vbCrLf + FeaturesResources.You_can_use_the_navigation_bar_to_switch_context
+            Dim expectedDescription = $"({FeaturesResources.field}) C.x As Integer" + vbCrLf + vbCrLf + String.Format(FeaturesResources._0_1, "Proj1", FeaturesResources.Available) + vbCrLf + String.Format(FeaturesResources._0_1, "Proj2", FeaturesResources.Not_Available) + vbCrLf + vbCrLf + FeaturesResources.You_can_use_the_navigation_bar_to_switch_contexts
             Await VerifyItemInLinkedFilesAsync(markup, "x", expectedDescription)
         End Function
 
@@ -6810,6 +6806,22 @@ Class D
     End Sub
 End Class
 ]]></code>.Value
+
+            Await VerifyItemExistsAsync(text, "Bar")
+        End Function
+
+        <Fact, Trait(Traits.Feature, Traits.Features.Completion)>
+        <WorkItem(46472, "https://github.com/dotnet/roslyn/issues/46472")>
+        Public Async Function TestAllowCompletionInNameOfArgumentContext17() As Task
+            Dim text =
+<code><![CDATA[
+Public Class C
+  Event Bar()
+  
+Public Sub Baz()
+    Dim s = NameOf($$
+  End Sub
+End Class]]></code>.Value
 
             Await VerifyItemExistsAsync(text, "Bar")
         End Function

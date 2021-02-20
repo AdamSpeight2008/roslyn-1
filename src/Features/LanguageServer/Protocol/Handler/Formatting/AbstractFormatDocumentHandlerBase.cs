@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
-
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -15,16 +13,15 @@ using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
 namespace Microsoft.CodeAnalysis.LanguageServer.Handler
 {
-    internal abstract class AbstractFormatDocumentHandlerBase<RequestType, ResponseType> : AbstractRequestHandler<RequestType, ResponseType>
+    internal abstract class AbstractFormatDocumentHandlerBase<RequestType, ResponseType> : AbstractStatelessRequestHandler<RequestType, ResponseType>
     {
-        protected AbstractFormatDocumentHandlerBase(ILspSolutionProvider solutionProvider) : base(solutionProvider)
-        {
-        }
+        public override bool MutatesSolutionState => false;
+        public override bool RequiresLSPSolution => true;
 
-        protected async Task<LSP.TextEdit[]> GetTextEditsAsync(LSP.TextDocumentIdentifier documentIdentifier, RequestContext context, CancellationToken cancellationToken, LSP.Range? range = null)
+        protected async Task<LSP.TextEdit[]> GetTextEditsAsync(RequestContext context, CancellationToken cancellationToken, LSP.Range? range = null)
         {
             var edits = new ArrayBuilder<LSP.TextEdit>();
-            var document = SolutionProvider.GetDocument(documentIdentifier, context.ClientName);
+            var document = context.Document;
 
             if (document != null)
             {

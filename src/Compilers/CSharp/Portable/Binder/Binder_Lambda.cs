@@ -1,7 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-#nullable enable
 
 using System;
 using System.Collections.Immutable;
@@ -35,7 +34,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // then the modifiers array is non-null and not empty.
 
         private UnboundLambda AnalyzeAnonymousFunction(
-            AnonymousFunctionExpressionSyntax syntax, DiagnosticBag diagnostics)
+            AnonymousFunctionExpressionSyntax syntax, BindingDiagnosticBag diagnostics)
         {
             Debug.Assert(syntax != null);
             Debug.Assert(syntax.IsAnonymousFunction());
@@ -193,7 +192,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             namesBuilder.Free();
 
-            return new UnboundLambda(syntax, this, refKinds, types, names, discardsOpt, isAsync, isStatic);
+            return new UnboundLambda(syntax, this, diagnostics.AccumulatesDependencies, refKinds, types, names, discardsOpt, isAsync, isStatic);
 
             static ImmutableArray<bool> computeDiscards(SeparatedSyntaxList<ParameterSyntax> parameters, int underscoresCount)
             {
@@ -214,7 +213,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         private void CheckParenthesizedLambdaParameters(
-            SeparatedSyntaxList<ParameterSyntax> parameterSyntaxList, DiagnosticBag diagnostics)
+            SeparatedSyntaxList<ParameterSyntax> parameterSyntaxList, BindingDiagnosticBag diagnostics)
         {
             if (parameterSyntaxList.Count > 0)
             {
@@ -239,7 +238,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        private UnboundLambda BindAnonymousFunction(AnonymousFunctionExpressionSyntax syntax, DiagnosticBag diagnostics)
+        private UnboundLambda BindAnonymousFunction(AnonymousFunctionExpressionSyntax syntax, BindingDiagnosticBag diagnostics)
         {
             Debug.Assert(syntax != null);
             Debug.Assert(syntax.IsAnonymousFunction());
@@ -262,7 +261,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Parser will only have accepted static/async as allowed modifiers on this construct.
             // However, it may have accepted duplicates of those modifiers.  Ensure that any dupes
             // are reported now.
-            ModifierUtils.ToDeclarationModifiers(syntax.Modifiers, diagnostics);
+            ModifierUtils.ToDeclarationModifiers(syntax.Modifiers, diagnostics.DiagnosticBag ?? new DiagnosticBag());
 
             if (data.HasNames)
             {

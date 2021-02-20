@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.LanguageServices;
@@ -18,6 +20,8 @@ namespace Microsoft.CodeAnalysis.Editing
     internal abstract class SyntaxGeneratorInternal : ILanguageService
     {
         internal abstract ISyntaxFacts SyntaxFacts { get; }
+
+        internal abstract SyntaxTrivia EndOfLine(string text);
 
         /// <summary>
         /// Creates a statement that declares a single local variable with an optional initializer.

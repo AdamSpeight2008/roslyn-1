@@ -27,7 +27,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ' if filterTree and filterSpanWithinTree is not null, limit analysis to types residing within this span in the filterTree.
         Private ReadOnly _filterSpanWithinTree As TextSpan?
 
-        Private ReadOnly _diagnostics As ConcurrentQueue(Of Diagnostic)
+        Private ReadOnly _diagnostics As BindingDiagnosticBag
 
         Private ReadOnly _cancellationToken As CancellationToken
 
@@ -36,7 +36,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <seealso cref="MethodCompiler._compilerTasks"/>
         Private ReadOnly _compilerTasks As ConcurrentStack(Of Task)
 
-        Private Sub New(compilation As VisualBasicCompilation, filterTree As SyntaxTree, filterSpanWithinTree As TextSpan?, diagnostics As ConcurrentQueue(Of Diagnostic), cancellationToken As CancellationToken)
+        Private Sub New(compilation As VisualBasicCompilation, filterTree As SyntaxTree, filterSpanWithinTree As TextSpan?, diagnostics As BindingDiagnosticBag, cancellationToken As CancellationToken)
+            Debug.Assert(TypeOf diagnostics.DependenciesBag Is ConcurrentSet(Of AssemblySymbol))
+
             Me._compilation = compilation
             Me._filterTree = filterTree
             Me._filterSpanWithinTree = filterSpanWithinTree
@@ -66,14 +68,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="cancellationToken">To stop traversing the symbol table early.</param>
         ''' <param name="filterTree">Only report diagnostics from this syntax tree, if non-null.</param>
         ''' <param name="filterSpanWithinTree">If <paramref name="filterTree"/> and <paramref name="filterSpanWithinTree"/> is non-null, report diagnostics within this span in the <paramref name="filterTree"/>.</param>
-        Public Shared Sub CheckCompliance( compilation As VisualBasicCompilation,
-                                           diagnostics As DiagnosticBag,
-                                           cancellationToken As CancellationToken,
-                                  Optional filterTree As SyntaxTree = Nothing,
-                                  Optional filterSpanWithinTree As TextSpan? = Nothing
-                                         )
-            Dim queue As New ConcurrentQueue(Of Diagnostic)()
-            Dim checker As New ClsComplianceChecker(compilation, filterTree, filterSpanWithinTree, queue, cancellationToken)
+        Public Shared Sub CheckCompliance(compilation As VisualBasicCompilation, diagnostics As BindingDiagnosticBag, cancellationToken As CancellationToken, Optional filterTree As SyntaxTree = Nothing, Optional filterSpanWithinTree As TextSpan? = Nothing)
+            Dim queue = New BindingDiagnosticBag(diagnostics.DiagnosticBag, New ConcurrentSet(Of AssemblySymbol))
+            Dim checker = New ClsComplianceChecker(compilation, filterTree, filterSpanWithinTree, queue, cancellationToken)
             checker.Visit(compilation.Assembly)
             checker.WaitForWorkers()
             diagnostics.AddRange(queue)
@@ -115,7 +112,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                             Sub()
                                 Try
                                       VisitModule(m)
-                                Catch e As Exception When FatalError.ReportUnlessCanceled(e)
+                                Catch e As Exception When FatalError.ReportAndPropagateUnlessCanceled(e)
                                       Throw ExceptionUtilities.Unreachable
                                 End Try
                             End Sub),
@@ -157,7 +154,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                             Sub()
                                 Try
                                     Visit(m)
-                                Catch e As Exception When FatalError.ReportUnlessCanceled(e)
+                                Catch e As Exception When FatalError.ReportAndPropagateUnlessCanceled(e)
                                     Throw ExceptionUtilities.Unreachable
                                 End Try
                             End Sub),
@@ -751,12 +748,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 If attributeData.IsTargetAttribute(symbol, AttributeDescription.CLSCompliantAttribute) Then
                     Dim attributeClass = attributeData.AttributeClass
                     If attributeClass IsNot Nothing Then
-                        Dim info = attributeClass.GetUseSiteErrorInfo()
-                        If info IsNot Nothing Then
-                            Dim location = If(symbol.Locations.IsEmpty, NoLocation.Singleton, symbol.Locations(0))
-                            _diagnostics.Enqueue(New VBDiagnostic(info, location))
-                            Continue For
-                        End If
+                        _diagnostics.ReportUseSite(attributeClass, If(symbol.Locations.IsEmpty, NoLocation.Singleton, symbol.Locations(0)))
                     End If
 
                     If Not attributeData.HasErrors Then
@@ -827,7 +819,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Sub AddDiagnostic(symbol As Symbol, code As ERRID, location As Location, ParamArray args As Object())
             Dim info As New BadSymbolDiagnostic(symbol, code, args)
             Dim diag As New VBDiagnostic(info, location)
-            Me._diagnostics.Enqueue(diag)
+            Me._diagnostics.Add(diag)
         End Sub
 
         Private Shared Function IsImplicitClass(symbol As Symbol) As Boolean

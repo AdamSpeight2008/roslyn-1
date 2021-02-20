@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -384,7 +382,9 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.NavigationBar
             }
             else
             {
-                var document = _subjectBuffer.CurrentSnapshot.GetOpenDocumentInCurrentContextWithChanges();
+                // When navigating, just use the partial semantics workspace.  Navigation doesn't need the fully bound
+                // compilations to be created, and it can save us a lot of costly time building skeleton assemblies.
+                var document = _subjectBuffer.CurrentSnapshot.AsText().GetDocumentWithFrozenPartialSemantics(cancellationToken);
                 if (document != null)
                 {
                     var languageService = document.GetRequiredLanguageService<INavigationBarItemService>();

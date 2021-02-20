@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System;
 using System.Linq;
 using System.Threading;
@@ -27,12 +29,12 @@ namespace Microsoft.CodeAnalysis
             return collection.Checksum;
         }
 
-        public Checksum GetParseOptionsChecksum(CancellationToken cancellationToken)
-            => GetParseOptionsChecksum(_solutionServices.Workspace.Services.GetService<ISerializerService>(), cancellationToken);
+        public Checksum GetParseOptionsChecksum()
+            => GetParseOptionsChecksum(_solutionServices.Workspace.Services.GetService<ISerializerService>());
 
-        private Checksum GetParseOptionsChecksum(ISerializerService serializer, CancellationToken cancellationToken)
+        private Checksum GetParseOptionsChecksum(ISerializerService serializer)
             => this.SupportsCompilation
-                ? ChecksumCache.GetOrCreate(this.ParseOptions, _ => serializer.CreateChecksum(this.ParseOptions, cancellationToken))
+                ? ChecksumCache.GetOrCreate(this.ParseOptions, _ => serializer.CreateParseOptionsChecksum(this.ParseOptions))
                 : Checksum.Null;
 
         private async Task<ProjectStateChecksums> ComputeChecksumsAsync(CancellationToken cancellationToken)
@@ -53,7 +55,8 @@ namespace Microsoft.CodeAnalysis
 
                     // these compiler objects doesn't have good place to cache checksum. but rarely ever get changed.
                     var compilationOptionsChecksum = SupportsCompilation ? ChecksumCache.GetOrCreate(CompilationOptions, _ => serializer.CreateChecksum(CompilationOptions, cancellationToken)) : Checksum.Null;
-                    var parseOptionsChecksum = GetParseOptionsChecksum(serializer, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var parseOptionsChecksum = GetParseOptionsChecksum(serializer);
 
                     var projectReferenceChecksums = ChecksumCache.GetOrCreate<ProjectReferenceChecksumCollection>(ProjectReferences, _ => new ProjectReferenceChecksumCollection(ProjectReferences.Select(r => serializer.CreateChecksum(r, cancellationToken)).ToArray()));
                     var metadataReferenceChecksums = ChecksumCache.GetOrCreate<MetadataReferenceChecksumCollection>(MetadataReferences, _ => new MetadataReferenceChecksumCollection(MetadataReferences.Select(r => serializer.CreateChecksum(r, cancellationToken)).ToArray()));
@@ -75,7 +78,7 @@ namespace Microsoft.CodeAnalysis
                         new AnalyzerConfigDocumentChecksumCollection(analyzerConfigDocumentChecksums));
                 }
             }
-            catch (Exception e) when (FatalError.ReportWithoutCrashUnlessCanceledAndPropagate(e))
+            catch (Exception e) when (FatalError.ReportAndPropagateUnlessCanceled(e))
             {
                 throw ExceptionUtilities.Unreachable;
             }

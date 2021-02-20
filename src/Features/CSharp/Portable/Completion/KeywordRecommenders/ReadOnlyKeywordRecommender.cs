@@ -37,7 +37,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.KeywordRecommenders
                     validModifiers: s_validMemberModifiers,
                     validTypeDeclarations: SyntaxKindSet.ClassInterfaceStructRecordTypeDeclarations,
                     canBePartial: false,
-                    cancellationToken: cancellationToken);
+                    cancellationToken: cancellationToken) ||
+                IsStructAccessorContext(context);
         }
 
         private static bool IsRefReadOnlyContext(CSharpSyntaxContext context)
@@ -49,5 +50,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.KeywordRecommenders
             return context.IsTypeDeclarationContext(validModifiers: SyntaxKindSet.AllTypeModifiers,
                 validTypeDeclarations: SyntaxKindSet.ClassInterfaceStructRecordTypeDeclarations, canBePartial: true, cancellationToken);
         }
+
+        private static bool IsStructAccessorContext(CSharpSyntaxContext context)
+            => context.ContainingTypeDeclaration.IsKind(SyntaxKind.StructDeclaration) &&
+                context.TargetToken.IsAnyAccessorDeclarationContext(context.Position, SyntaxKind.ReadOnlyKeyword);
     }
 }

@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -75,7 +77,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
                 return false;
             }
 
-            if (!(token.Parent.Parent is ExpressionSyntax expression))
+            if (token.Parent.Parent is not ExpressionSyntax expression)
             {
                 return false;
             }
@@ -98,10 +100,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
             return true;
         }
 
-        internal override bool IsInsertionTrigger(SourceText text, int characterPosition, OptionSet options)
+        public override bool IsInsertionTrigger(SourceText text, int characterPosition, OptionSet options)
             => CompletionUtilities.IsTriggerCharacter(text, characterPosition, options) || text[characterPosition] == ' ';
 
-        internal override ImmutableHashSet<char> TriggerCharacters { get; } = CompletionUtilities.CommonTriggerCharacters.Add(' ');
+        public override ImmutableHashSet<char> TriggerCharacters { get; } = CompletionUtilities.CommonTriggerCharacters.Add(' ');
 
         protected override Tuple<ITypeSymbol, Location> GetInitializedType(
             Document document, SemanticModel semanticModel, int position, CancellationToken cancellationToken)
@@ -143,20 +145,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
 
         private static ITypeSymbol GetInitializedType(SyntaxToken token, Document document, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            // new Goo { bar = $$
-            if (token.Parent.Parent.IsKind(SyntaxKind.ObjectCreationExpression, out ObjectCreationExpressionSyntax objectCreation))
-            {
-                return semanticModel.GetSymbolInfo(objectCreation.Type, cancellationToken).Symbol as ITypeSymbol;
-            }
+            var parent = token.Parent.Parent;
 
-            // new() { bar = $$
-            if (token.Parent.Parent.IsKind(SyntaxKind.ImplicitObjectCreationExpression, out ImplicitObjectCreationExpressionSyntax implicitObjectCreation))
+            // new() { $$
+            // new Goo { $$
+            if (parent.IsKind(SyntaxKind.ObjectCreationExpression, SyntaxKind.ImplicitObjectCreationExpression))
             {
-                return semanticModel.GetTypeInfo(implicitObjectCreation, cancellationToken).ConvertedType;
+                return semanticModel.GetTypeInfo(parent, cancellationToken).Type;
             }
 
             // Nested: new Goo { bar = { $$
-            if (token.Parent.Parent.IsKind(SyntaxKind.SimpleAssignmentExpression))
+            if (parent.IsKind(SyntaxKind.SimpleAssignmentExpression))
             {
                 // Use the type inferrer to get the type being initialized.
                 var typeInferenceService = document.GetLanguageService<ITypeInferenceService>();
@@ -165,7 +164,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
             }
 
             // expr with { $$
-            if (token.Parent.Parent.IsKind(SyntaxKind.WithExpression, out WithExpressionSyntax withExpression))
+            if (parent.IsKind(SyntaxKind.WithExpression, out WithExpressionSyntax withExpression))
             {
                 return semanticModel.GetTypeInfo(withExpression.Expression, cancellationToken).Type;
             }

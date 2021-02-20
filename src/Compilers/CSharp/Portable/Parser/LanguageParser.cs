@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -1647,7 +1649,7 @@ tryAgain:
             }
         }
 
-#nullable restore
+#nullable disable
 
         private void SkipBadMemberListTokens(ref SyntaxToken openBrace, SyntaxListBuilder members)
         {
@@ -5559,6 +5561,10 @@ tryAgain:
                     // This is useful for parsing expressions in isolation
                     return ScanTypeArgumentListKind.DefiniteTypeArgumentList;
 
+                case SyntaxKind.EqualsGreaterThanToken:  // e.g. `e switch { A<B> => 1 }`
+                    // This token was added to 7.5.4.2 Grammar Ambiguities in C# 9.0
+                    return ScanTypeArgumentListKind.DefiniteTypeArgumentList;
+
                 default:
                     return ScanTypeArgumentListKind.PossibleTypeArgumentList;
             }
@@ -6159,7 +6165,8 @@ tryAgain:
             NonGenericTypeOrExpression,
 
             /// <summary>
-            /// A type name with alias prefix (Alias::Name)
+            /// A type name with alias prefix (Alias::Name).  Note that Alias::Name.X would not fall under this.  This
+            /// only is returned for exactly Alias::Name.
             /// </summary>
             AliasQualifiedName,
 
@@ -6236,31 +6243,57 @@ tryAgain:
                 }
             }
 
-            if (this.CurrentToken.Kind == SyntaxKind.IdentifierToken)
+            // Handle :: as well for error case of an alias used without a preceding identifier.
+            if (this.CurrentToken.Kind is SyntaxKind.IdentifierToken or SyntaxKind.ColonColonToken)
             {
-                result = this.ScanNamedTypePart(out lastTokenOfType);
-                if (result == ScanTypeFlags.NotType)
+                bool isAlias;
+                if (this.CurrentToken.Kind is SyntaxKind.ColonColonToken)
                 {
-                    return ScanTypeFlags.NotType;
+                    result = ScanTypeFlags.NonGenericTypeOrExpression;
+
+                    // Definitely seems like an alias if we're starting with a ::
+                    isAlias = true;
+
+                    // We set this to null to appease the flow checker.  It will always be the case that this will be
+                    // set to an appropriate value inside the `for` loop below.  We'll consume the :: there and then
+                    // call ScanNamedTypePart which will always set this to a valid value.
+                    lastTokenOfType = null;
                 }
-
-                bool isAlias = this.CurrentToken.Kind == SyntaxKind.ColonColonToken;
-
-                // Scan a name
-                for (bool firstLoop = true; IsDotOrColonColon(); firstLoop = false)
+                else
                 {
-                    if (!firstLoop && isAlias)
-                    {
-                        isAlias = false;
-                    }
+                    Debug.Assert(this.CurrentToken.Kind is SyntaxKind.IdentifierToken);
 
-                    lastTokenOfType = this.EatToken();
+                    // We're an alias if we start with an: id::
+                    isAlias = this.PeekToken(1).Kind == SyntaxKind.ColonColonToken;
 
                     result = this.ScanNamedTypePart(out lastTokenOfType);
                     if (result == ScanTypeFlags.NotType)
                     {
                         return ScanTypeFlags.NotType;
                     }
+
+                    Debug.Assert(result is ScanTypeFlags.GenericTypeOrExpression or ScanTypeFlags.GenericTypeOrMethod or ScanTypeFlags.NonGenericTypeOrExpression);
+                }
+
+                // Scan a name
+                for (bool firstLoop = true; IsDotOrColonColon(); firstLoop = false)
+                {
+                    // If we consume any more dots or colons, don't consider us an alias anymore.  For dots, we now have
+                    // x::y.z (which is now back to a normal expr/type, not an alias), and for colons that means we have
+                    // x::y::z or x.y::z both of which are effectively gibberish.
+                    if (!firstLoop)
+                    {
+                        isAlias = false;
+                    }
+
+                    this.EatToken();
+                    result = this.ScanNamedTypePart(out lastTokenOfType);
+                    if (result == ScanTypeFlags.NotType)
+                    {
+                        return ScanTypeFlags.NotType;
+                    }
+
+                    Debug.Assert(result is ScanTypeFlags.GenericTypeOrExpression or ScanTypeFlags.GenericTypeOrMethod or ScanTypeFlags.NonGenericTypeOrExpression);
                 }
 
                 if (isAlias)
@@ -6527,7 +6560,7 @@ done:
                                                      expected: SyntaxKind.CommaToken, trailingTrivia: out _);
             }
         }
-#nullable restore
+#nullable disable
 
         private static bool IsPredefinedType(SyntaxKind keyword)
         {
@@ -6643,7 +6676,7 @@ done:
                             if (this.PeekToken(1).Kind == SyntaxKind.OpenBracketToken)
                                 return true;
                             if (mode == ParseTypeMode.DefinitePattern)
-                                return false;
+                                return true; // Permit nullable type parsing and report while binding for a better error message
                             if (mode == ParseTypeMode.NewExpression && type.Kind == SyntaxKind.TupleType &&
                                 this.PeekToken(1).Kind != SyntaxKind.OpenParenToken && this.PeekToken(1).Kind != SyntaxKind.OpenBraceToken)
                                 return false; // Permit `new (int, int)?(t)` (creation) and `new (int, int) ? x : y` (conditional)
@@ -6918,7 +6951,8 @@ done:;
                 return _syntaxFactory.PredefinedType(token);
             }
 
-            if (IsTrueIdentifier())
+            // The :: case is for error recovery.
+            if (IsTrueIdentifier() || this.CurrentToken.Kind == SyntaxKind.ColonColonToken)
             {
                 return this.ParseQualifiedName(options);
             }
@@ -7107,7 +7141,7 @@ done:;
             // We consider both ( and < to be possible starts, in order to make error recovery more graceful
             // in the scenario where a user accidentally surrounds their function pointer type list with parens.
             => token.Kind == SyntaxKind.LessThanToken || token.Kind == SyntaxKind.OpenParenToken;
-#nullable restore
+#nullable disable
 
         private TypeSyntax ParsePointerTypeMods(TypeSyntax type)
         {
@@ -9778,7 +9812,6 @@ tryAgain:
                 case SyntaxKind.IsPatternExpression:
                     return Precedence.Relational;
                 case SyntaxKind.SwitchExpression:
-                // https://github.com/dotnet/roslyn/issues/44675 Is this the right precedence?
                 case SyntaxKind.WithExpression:
                     return Precedence.Switch;
                 case SyntaxKind.LeftShiftExpression:
@@ -10275,8 +10308,9 @@ tryAgain:
                     return this.ParseRefValueExpression();
                 case SyntaxKind.ColonColonToken:
                     // misplaced ::
-                    // TODO: this should not be a compound name.. (disallow dots)
-                    return this.ParseQualifiedName(NameOptions.InExpression);
+                    // Calling ParseAliasQualifiedName will cause us to create a missing identifier node that then
+                    // properly consumes the :: and the reset of the alias name afterwards.
+                    return this.ParseAliasQualifiedName(NameOptions.InExpression);
                 case SyntaxKind.EqualsGreaterThanToken:
                     return this.ParseLambdaExpression();
                 case SyntaxKind.StaticKeyword:
@@ -10576,6 +10610,18 @@ tryAgain:
             while (true)
             {
                 tk = this.CurrentToken.Kind;
+                // Nullable suppression operators should only be consumed by a conditional access
+                // if there are further conditional operations performed after the suppression
+                if (isOptionalExclamationsFollowedByConditionalOperation())
+                {
+                    while (tk == SyntaxKind.ExclamationToken)
+                    {
+                        expr = _syntaxFactory.PostfixUnaryExpression(SyntaxKind.SuppressNullableWarningExpression, expr, EatToken());
+                        expr = CheckFeatureAvailability(expr, MessageID.IDS_FeatureNullableReferenceTypes);
+                        tk = this.CurrentToken.Kind;
+                    }
+                }
+
                 switch (tk)
                 {
                     case SyntaxKind.OpenParenToken:
@@ -10602,6 +10648,20 @@ tryAgain:
                     default:
                         return expr;
                 }
+            }
+
+            bool isOptionalExclamationsFollowedByConditionalOperation()
+            {
+                var tk = this.CurrentToken.Kind;
+                for (int i = 1; tk == SyntaxKind.ExclamationToken; i++)
+                {
+                    tk = this.PeekToken(i).Kind;
+                }
+                return tk
+                    is SyntaxKind.OpenParenToken
+                    or SyntaxKind.OpenBracketToken
+                    or SyntaxKind.DotToken
+                    or SyntaxKind.QuestionToken;
             }
         }
 
@@ -11554,9 +11614,9 @@ tryAgain:
             TypeSyntax type = null;
             InitializerExpressionSyntax initializer = null;
 
-            if (IsTargetTypedObjectCreation())
+            if (IsImplicitObjectCreation())
             {
-                @new = CheckFeatureAvailability(@new, MessageID.IDS_FeatureTargetTypedObjectCreation);
+                @new = CheckFeatureAvailability(@new, MessageID.IDS_FeatureImplicitObjectCreation);
             }
             else
             {
@@ -11598,7 +11658,7 @@ tryAgain:
                 : (ExpressionSyntax)_syntaxFactory.ObjectCreationExpression(@new, type, argumentList, initializer);
         }
 
-        private bool IsTargetTypedObjectCreation()
+        private bool IsImplicitObjectCreation()
         {
             // The caller is expected to have consumed the new keyword.
             if (this.CurrentToken.Kind != SyntaxKind.OpenParenToken)
@@ -11699,7 +11759,7 @@ tryAgain:
             return result;
         }
 
-#nullable restore
+#nullable disable
 
         private InitializerExpressionSyntax ParseObjectOrCollectionInitializer()
         {

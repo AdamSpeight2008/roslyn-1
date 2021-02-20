@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -2770,13 +2772,13 @@ Block[B2] - Exit
                 });
             verifyFlowGraphs(analyzer.GetControlFlowGraphs());
 
-            void verifyFlowGraphs(ImmutableArray<ControlFlowGraph> flowGraphs)
+            void verifyFlowGraphs(ImmutableArray<(ControlFlowGraph Graph, ISymbol AssociatedSymbol)> flowGraphs)
             {
                 for (int i = 0; i < expectedFlowGraphs.Length; i++)
                 {
                     string expectedFlowGraph = expectedFlowGraphs[i];
-                    ControlFlowGraph actualFlowGraph = flowGraphs[i];
-                    ControlFlowGraphVerifier.VerifyGraph(compilation, expectedFlowGraph, actualFlowGraph);
+                    (ControlFlowGraph actualFlowGraph, ISymbol associatedSymbol) = flowGraphs[i];
+                    ControlFlowGraphVerifier.VerifyGraph(compilation, expectedFlowGraph, actualFlowGraph, associatedSymbol);
                 }
             }
         }
@@ -3466,7 +3468,7 @@ class C
 
             Assert.Equal("A, B", namedTypeAnalyzer.GetSortedSymbolCallbacksString());
 
-            // Verify analyzer diagnostics and callbacks for a single file when supressed globally and un-suppressed for a single file
+            // Verify analyzer diagnostics and callbacks for a single file when suppressed globally and un-suppressed for a single file
             options = TestOptions.DebugDll.WithSyntaxTreeOptionsProvider(
             new TestSyntaxTreeOptionsProvider((NamedTypeAnalyzer.RuleId, ReportDiagnostic.Suppress), (tree1, new[] { (NamedTypeAnalyzer.RuleId, ReportDiagnostic.Default) })));
             compilation = CreateCompilation(new[] { tree1, tree2 }, options: options);

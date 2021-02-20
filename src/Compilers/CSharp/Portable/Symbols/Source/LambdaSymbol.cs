@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -43,8 +45,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             ImmutableArray<TypeWithAnnotations> parameterTypes,
             ImmutableArray<RefKind> parameterRefKinds,
             RefKind refKind,
-            TypeWithAnnotations returnType,
-            DiagnosticBag diagnostics)
+            TypeWithAnnotations returnType)
         {
             _containingSymbol = containingSymbol;
             _messageID = unboundLambda.Data.MessageID;
@@ -55,7 +56,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             _isAsync = unboundLambda.IsAsync;
             _isStatic = unboundLambda.IsStatic;
             // No point in making this lazy. We are always going to need these soon after creation of the symbol.
-            _parameters = MakeParameters(compilation, unboundLambda, parameterTypes, parameterRefKinds, diagnostics);
+            _parameters = MakeParameters(compilation, unboundLambda, parameterTypes, parameterRefKinds);
         }
 
         public MessageID MessageID { get { return _messageID; } }
@@ -102,7 +103,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return null; }
         }
 
-        internal sealed override UnmanagedCallersOnlyAttributeData UnmanagedCallersOnlyAttributeData => null;
+        internal sealed override UnmanagedCallersOnlyAttributeData GetUnmanagedCallersOnlyAttributeData(bool forceComplete) => null;
 
         internal sealed override bool IsMetadataNewSlot(bool ignoreInterfaceImplementationChanges = false)
         {
@@ -318,8 +319,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             CSharpCompilation compilation,
             UnboundLambda unboundLambda,
             ImmutableArray<TypeWithAnnotations> parameterTypes,
-            ImmutableArray<RefKind> parameterRefKinds,
-            DiagnosticBag diagnostics)
+            ImmutableArray<RefKind> parameterRefKinds)
         {
             Debug.Assert(parameterTypes.Length == parameterRefKinds.Length);
 
@@ -415,11 +415,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal override bool IsInitOnly => false;
 
-        public override ImmutableArray<TypeParameterConstraintClause> GetTypeParameterConstraintClauses() => ImmutableArray<TypeParameterConstraintClause>.Empty;
+        public override ImmutableArray<ImmutableArray<TypeWithAnnotations>> GetTypeParameterConstraintTypes() => ImmutableArray<ImmutableArray<TypeWithAnnotations>>.Empty;
+
+        public override ImmutableArray<TypeParameterConstraintKind> GetTypeParameterConstraintKinds() => ImmutableArray<TypeParameterConstraintKind>.Empty;
 
         internal override int CalculateLocalSyntaxOffset(int localPosition, SyntaxTree localTree)
         {
             throw ExceptionUtilities.Unreachable;
         }
+
+        internal override bool IsNullableAnalysisEnabled() => throw ExceptionUtilities.Unreachable;
     }
 }

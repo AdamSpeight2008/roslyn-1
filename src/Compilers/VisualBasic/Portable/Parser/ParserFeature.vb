@@ -40,6 +40,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         PrivateProtected
         UnconstrainedTypeParameterInConditional
         CommentsAfterLineContinuation
+        InitOnlySettersUsage
         TypeOfMany
         IntoVariable
     End Enum

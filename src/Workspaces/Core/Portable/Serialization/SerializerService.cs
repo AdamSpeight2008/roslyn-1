@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
-
 using System;
 using System.Collections.Concurrent;
 using System.Composition;
@@ -46,8 +44,8 @@ namespace Microsoft.CodeAnalysis.Serialization
 
         private readonly ConcurrentDictionary<string, IOptionsSerializationService> _lazyLanguageSerializationService;
 
-        [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
-        private SerializerService(HostWorkspaceServices workspaceServices)
+        [Obsolete(MefConstruction.FactoryMethodMessage, error: true)]
+        private protected SerializerService(HostWorkspaceServices workspaceServices)
         {
             _workspaceServices = workspaceServices;
 
@@ -103,7 +101,7 @@ namespace Microsoft.CodeAnalysis.Serialization
             }
         }
 
-        public void Serialize(object value, ObjectWriter writer, CancellationToken cancellationToken)
+        public void Serialize(object value, ObjectWriter writer, SolutionReplicationContext context, CancellationToken cancellationToken)
         {
             var kind = value.GetWellKnownSynchronizationKind();
 
@@ -134,7 +132,8 @@ namespace Microsoft.CodeAnalysis.Serialization
                         return;
 
                     case WellKnownSynchronizationKind.ParseOptions:
-                        SerializeParseOptions((ParseOptions)value, writer, cancellationToken);
+                        cancellationToken.ThrowIfCancellationRequested();
+                        SerializeParseOptions((ParseOptions)value, writer);
                         return;
 
                     case WellKnownSynchronizationKind.ProjectReference:
@@ -142,7 +141,7 @@ namespace Microsoft.CodeAnalysis.Serialization
                         return;
 
                     case WellKnownSynchronizationKind.MetadataReference:
-                        SerializeMetadataReference((MetadataReference)value, writer, cancellationToken);
+                        SerializeMetadataReference((MetadataReference)value, writer, context, cancellationToken);
                         return;
 
                     case WellKnownSynchronizationKind.AnalyzerReference:
@@ -150,11 +149,11 @@ namespace Microsoft.CodeAnalysis.Serialization
                         return;
 
                     case WellKnownSynchronizationKind.SerializableSourceText:
-                        SerializeSourceText((SerializableSourceText)value, writer, cancellationToken);
+                        SerializeSourceText((SerializableSourceText)value, writer, context, cancellationToken);
                         return;
 
                     case WellKnownSynchronizationKind.SourceText:
-                        SerializeSourceText(new SerializableSourceText((SourceText)value), writer, cancellationToken);
+                        SerializeSourceText(new SerializableSourceText((SourceText)value), writer, context, cancellationToken);
                         return;
 
                     case WellKnownSynchronizationKind.OptionSet:
@@ -223,6 +222,9 @@ namespace Microsoft.CodeAnalysis.Serialization
 
         private IOptionsSerializationService GetOptionsSerializationService(string languageName)
             => _lazyLanguageSerializationService.GetOrAdd(languageName, n => _workspaceServices.GetLanguageServices(n).GetRequiredService<IOptionsSerializationService>());
+
+        public Checksum CreateParseOptionsChecksum(ParseOptions value)
+            => Checksum.Create(WellKnownSynchronizationKind.ParseOptions, value, this);
     }
 
     // TODO: convert this to sub class rather than using enum with if statement.

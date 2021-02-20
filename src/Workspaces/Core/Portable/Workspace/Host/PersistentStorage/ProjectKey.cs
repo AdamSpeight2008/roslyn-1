@@ -2,6 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable disable
+
+using System.Runtime.Serialization;
 using Microsoft.CodeAnalysis.Host;
 
 namespace Microsoft.CodeAnalysis.PersistentStorage
@@ -19,38 +22,55 @@ namespace Microsoft.CodeAnalysis.PersistentStorage
         public readonly ProjectId Id;
         public readonly string FilePath;
         public readonly string Name;
+        public readonly Checksum ParseOptionsChecksum;
 
-        public ProjectKey(SolutionKey solution, ProjectId id, string filePath, string name)
+        public ProjectKey(SolutionKey solution, ProjectId id, string filePath, string name, Checksum parseOptionsChecksum)
         {
             Solution = solution;
             Id = id;
             FilePath = filePath;
             Name = name;
+            ParseOptionsChecksum = parseOptionsChecksum;
         }
 
-        public static explicit operator ProjectKey(Project project)
-            => new ProjectKey((SolutionKey)project.Solution, project.Id, project.FilePath, project.Name);
+        public static ProjectKey ToProjectKey(Project project)
+            => ToProjectKey(project.Solution.State, project.State);
+
+        public static ProjectKey ToProjectKey(SolutionState solutionState, ProjectState projectState)
+            => new(SolutionKey.ToSolutionKey(solutionState), projectState.Id, projectState.FilePath, projectState.Name, projectState.GetParseOptionsChecksum());
 
         public SerializableProjectKey Dehydrate()
-        {
-            return new SerializableProjectKey
-            {
-                Solution = Solution.Dehydrate(),
-                Id = Id,
-                FilePath = FilePath,
-                Name = Name,
-            };
-        }
+            => new(Solution.Dehydrate(), Id, FilePath, Name, ParseOptionsChecksum);
     }
 
-    internal class SerializableProjectKey
+    [DataContract]
+    internal readonly struct SerializableProjectKey
     {
-        public SerializableSolutionKey Solution;
-        public ProjectId Id;
-        public string FilePath;
-        public string Name;
+        [DataMember(Order = 0)]
+        public readonly SerializableSolutionKey Solution;
+
+        [DataMember(Order = 1)]
+        public readonly ProjectId Id;
+
+        [DataMember(Order = 2)]
+        public readonly string FilePath;
+
+        [DataMember(Order = 3)]
+        public readonly string Name;
+
+        [DataMember(Order = 4)]
+        public readonly Checksum ParseOptionsChecksum;
+
+        public SerializableProjectKey(SerializableSolutionKey solution, ProjectId id, string filePath, string name, Checksum parseOptionsChecksum)
+        {
+            Solution = solution;
+            Id = id;
+            FilePath = filePath;
+            Name = name;
+            ParseOptionsChecksum = parseOptionsChecksum;
+        }
 
         public ProjectKey Rehydrate()
-            => new ProjectKey(Solution.Rehydrate(), Id, FilePath, Name);
+            => new(Solution.Rehydrate(), Id, FilePath, Name, ParseOptionsChecksum);
     }
 }
