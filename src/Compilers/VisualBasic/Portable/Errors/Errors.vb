@@ -2037,5 +2037,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_CommentsAfterLineContinuation
         FEATURE_TypeOfMany
         FEATURE_IntoVariable
+        ERR_UnnecessaryNullableType
+        ERR_NoConversion
     End Enum
 End Namespace

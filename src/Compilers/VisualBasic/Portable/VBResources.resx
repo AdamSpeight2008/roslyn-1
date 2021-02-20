@@ -5589,4 +5589,10 @@
   <data name="FEATURE_TypeOfMany" xml:space="preserve">
     <value>TypeOf Many</value>
   </data>
+  <data name="ERR_NoConversion" xml:space="preserve">
+    <value>No conversion exists from {0} to {1}</value>
+  </data>
+  <data name="ERR_UnnecessaryNullableType" xml:space="preserve">
+    <value>Unnecessary Nullable Type</value>
+  </data>
 </root>

@@ -552,7 +552,8 @@
   
     <Node Name="BoundExpressionIntoVariable" Base="BoundExpression">
       <Field Name="Expression" Type="BoundExpression" />
-      <Field Name="Variable" Type="BoundExpression" />
+      <Field Name="Variable" Type="LocalSymbol" />
+      <Field Name="ConditionOpt" Type="BoundExpression" Null="allow" />
     </Node>
   
     <AbstractNode Name="BoundStatement" Base="BoundNode"/>

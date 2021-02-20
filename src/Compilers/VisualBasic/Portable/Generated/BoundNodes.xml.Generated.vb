@@ -2538,14 +2538,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Partial Friend NotInheritable Class BoundExpressionIntoVariable
         Inherits BoundExpression
 
-        Public Sub New(syntax As SyntaxNode, expression As BoundExpression, variable As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
-            MyBase.New(BoundKind.ExpressionIntoVariable, syntax, type, hasErrors OrElse expression.NonNullAndHasErrors() OrElse variable.NonNullAndHasErrors())
+        Public Sub New(syntax As SyntaxNode, expression As BoundExpression, variable As LocalSymbol, conditionOpt As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
+            MyBase.New(BoundKind.ExpressionIntoVariable, syntax, type, hasErrors OrElse expression.NonNullAndHasErrors() OrElse conditionOpt.NonNullAndHasErrors())
 
             Debug.Assert(expression IsNot Nothing, "Field 'expression' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
             Debug.Assert(variable IsNot Nothing, "Field 'variable' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
 
             Me._Expression = expression
             Me._Variable = variable
+            Me._ConditionOpt = conditionOpt
         End Sub
 
 
@@ -2556,10 +2557,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Get
         End Property
 
-        Private ReadOnly _Variable As BoundExpression
-        Public ReadOnly Property Variable As BoundExpression
+        Private ReadOnly _Variable As LocalSymbol
+        Public ReadOnly Property Variable As LocalSymbol
             Get
                 Return _Variable
+            End Get
+        End Property
+
+        Private ReadOnly _ConditionOpt As BoundExpression
+        Public ReadOnly Property ConditionOpt As BoundExpression
+            Get
+                Return _ConditionOpt
             End Get
         End Property
 
@@ -2568,9 +2576,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return visitor.VisitExpressionIntoVariable(Me)
         End Function
 
-        Public Function Update(expression As BoundExpression, variable As BoundExpression, type As TypeSymbol) As BoundExpressionIntoVariable
-            If expression IsNot Me.Expression OrElse variable IsNot Me.Variable OrElse type IsNot Me.Type Then
-                Dim result = New BoundExpressionIntoVariable(Me.Syntax, expression, variable, type, Me.HasErrors)
+        Public Function Update(expression As BoundExpression, variable As LocalSymbol, conditionOpt As BoundExpression, type As TypeSymbol) As BoundExpressionIntoVariable
+            If expression IsNot Me.Expression OrElse variable IsNot Me.Variable OrElse conditionOpt IsNot Me.ConditionOpt OrElse type IsNot Me.Type Then
+                Dim result = New BoundExpressionIntoVariable(Me.Syntax, expression, variable, conditionOpt, type, Me.HasErrors)
                 result.CopyAttributes(Me)
                 Return result
             End If
@@ -11405,7 +11413,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides Function VisitExpressionIntoVariable(node As BoundExpressionIntoVariable) As BoundNode
             Me.Visit(node.Expression)
-            Me.Visit(node.Variable)
+            Me.Visit(node.ConditionOpt)
             Return Nothing
         End Function
 
@@ -12412,9 +12420,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides Function VisitExpressionIntoVariable(node As BoundExpressionIntoVariable) As BoundNode
             Dim expression As BoundExpression = DirectCast(Me.Visit(node.Expression), BoundExpression)
-            Dim variable As BoundExpression = DirectCast(Me.Visit(node.Variable), BoundExpression)
+            Dim conditionOpt As BoundExpression = DirectCast(Me.Visit(node.ConditionOpt), BoundExpression)
             Dim type as TypeSymbol = Me.VisitType(node.Type)
-            Return node.Update(expression, variable, type)
+            Return node.Update(expression, node.Variable, conditionOpt, type)
         End Function
 
         Public Overrides Function VisitSequencePoint(node As BoundSequencePoint) As BoundNode
@@ -13612,7 +13620,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overrides Function VisitExpressionIntoVariable(node As BoundExpressionIntoVariable, arg As Object) As TreeDumperNode
             Return New TreeDumperNode("expressionIntoVariable", Nothing, New TreeDumperNode() {
                 New TreeDumperNode("expression", Nothing, new TreeDumperNode() {Visit(node.Expression, Nothing)}),
-                New TreeDumperNode("variable", Nothing, new TreeDumperNode() {Visit(node.Variable, Nothing)}),
+                New TreeDumperNode("variable", node.Variable, Nothing),
+                New TreeDumperNode("conditionOpt", Nothing, new TreeDumperNode() {Visit(node.ConditionOpt, Nothing)}),
                 New TreeDumperNode("type", node.Type, Nothing)
             })
         End Function

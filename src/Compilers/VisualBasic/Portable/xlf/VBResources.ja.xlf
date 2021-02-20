@@ -22,6 +22,11 @@
         <target state="translated">複数のアナライザー構成ファイルを同じディレクトリに入れることはできません ('{0}')。</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_NoConversion">
+        <source>No conversion exists from {0} to {1}</source>
+        <target state="new">No conversion exists from {0} to {1}</target>
+        <note />
+      </trans-unit>
       <trans-unit id="ERR_ReAbstractionInNoPIAType">
         <source>Type '{0}' cannot be embedded because it has a re-abstraction of a member from base interface. Consider setting the 'Embed Interop Types' property to false.</source>
         <target state="translated">型 '{0}' には基底インターフェイスからのメンバーの再抽象化があるため、この型を埋め込むことはできません。'相互運用型の埋め込み' プロパティを false に設定することをご検討ください。</target>
@@ -40,6 +45,11 @@
       <trans-unit id="ERR_TypeOfIsNotExpressionDoesNotSupportIntoVariable">
         <source>TypeOf expression using IsNot doesn't support feature {0}</source>
         <target state="new">TypeOf expression using IsNot doesn't support feature {0}</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_UnnecessaryNullableType">
+        <source>Unnecessary Nullable Type</source>
+        <target state="new">Unnecessary Nullable Type</target>
         <note />
       </trans-unit>
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">

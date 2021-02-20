@@ -759,21 +759,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim operand = BindRValue(node.Expression, diagnostics, isOperandOfConditionalBranch:=False)
             Dim operandType = operand.Type
-
             Dim operatorIsIsNot = (node.Kind = SyntaxKind.TypeOfIsNotExpression)
             Dim resultType As TypeSymbol = GetSpecialType(SpecialType.System_Boolean, node, diagnostics)
-
             Dim target_type = TryCast(node.Type, TypeSyntax)
             Dim target_types = TryCast(node.Type, TypeArgumentListSyntax)
-            If target_type IsNot Nothing Then
 
-                Return BindTypeOfOneExpression(node, diagnostics, operand, operandType, operatorIsIsNot, resultType, target_type)
-            ElseIf target_types IsNot Nothing Then
-                Return BindTypeOfManyExpression(node, diagnostics, operand, operandType, operatorIsIsNot, resultType, target_types)
-            Else
-                ' Report invald syntax
-                Return ReportDiagnosticAndProduceBadExpression(diagnostics, node.Type, ERRID.ERR_Syntax)
-            End If
+            If target_type IsNot Nothing Then Return BindTypeOfOneExpression(node, diagnostics, operand, operandType, operatorIsIsNot, resultType, target_type)
+            If target_types IsNot Nothing Then Return BindTypeOfManyExpression(node, diagnostics, operand, operandType, operatorIsIsNot, resultType, target_types)
+            ' Report invald syntax
+            Return ReportDiagnosticAndProduceBadExpression(diagnostics, node.Type, ERRID.ERR_Syntax)
         End Function
 
         Private Function BindTypeOfManyExpression(
@@ -841,7 +835,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return New BoundTypeOf(node, targetType, operand, operatorIsIsNot, resultType)
         End Function
 
-        Private function ValidateConversionIsPossible(Of TNode As SyntaxNode)(node As TNode, operandType As TypeSymbol, targetType As TypeSymbol, diagnostics As DiagnosticBag) As TNode
+        Private function ValidateConversionIsPossible(Of TNode As SyntaxNode)( node As TNode,
+                                                                               operandType As TypeSymbol,
+                                                                               targetType As TypeSymbol,
+                                                                               diagnostics As DiagnosticBag
+                                                                             ) As TNode
             Dim useSiteDiagnostics As HashSet(Of DiagnosticInfo) = Nothing
             Dim convKind As ConversionKind = Conversions.ClassifyTryCastConversion(operandType, targetType, useSiteDiagnostics)
             If diagnostics.Add(node, useSiteDiagnostics) Then
@@ -853,28 +851,250 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return node
         End function
 
-        Private Function ApplyPossibleImplicitConversion(node As TypeOfExpressionSyntax, operandType As TypeSymbol, operand As BoundExpression, diagnostics As DiagnosticBag) As BoundExpression
+        Private Function ApplyPossibleImplicitConversion( node As TypeOfExpressionSyntax,
+                                                          operandType As TypeSymbol,
+                                                          operand As BoundExpression,
+                                                          diagnostics As DiagnosticBag
+                                                        ) As BoundExpression
             If operandType.IsTypeParameter() Then
                 operand = ApplyImplicitConversion(node, GetSpecialType(SpecialType.System_Object, node.Expression, diagnostics), operand, diagnostics)
             End If
             return operand
         End Function
+        Function BindIntoVariableExpression( node as IntoVariableExpressionSyntax,
+                                             diagnostics As DiagnosticBag
+                                           ) As BoundExpression
+        '    selectExpression As BoundExpression,
+        '    convertCaseElements As Boolean,
+        '    locals As ArrayBuilder(Of LocalSymbol),
+        '    typeCaseTypes As ArrayBuilder(Of TypeSymbol),
+        '    diagnostics As DiagnosticBag
+        ') As BoundCaseClause
 
-        Friend Function BindIntoVariableExpression(node as IntoVariableExpressionSyntax, diagnostics As DiagnosticBag) As BoundExpression
-            Dim BLExpr = BindExpression(node.Expression, diagnostics)
-            If TypeOf BLExpr Is BoundTypeOf Then
-                Dim BTExpr = DirectCast(BLExpr, BoundTypeOf)
-                Dim BRExpr = BindAssignmentTarget(node.Variable, diagnostics)
-                Return New BoundExpressionIntoVariable(node, BtExpr, BRExpr, GetSpecialType(SpecialType.System_Boolean, node, diagnostics)) ' BTExpr.TargetType)
+            Dim typeofExpr = TryCast(node.Expression, TypeOfExpressionSyntax)
+
+            If typeofexpr Is Nothing Then Return ReportDiagnosticAndProduceBadExpression(diagnostics, node.Expression, ERRID.ERR_Syntax)
+
+            Dim btypeofExpr =DirectCast( BindTypeOfExpression(typeofExpr, diagnostics), BoundTypeOf)
+     
+
+            Dim matchType = btypeofexpr.TargetType
+            Dim ident =node.Variable.Identifier
+            Dim local = GetLocalForDeclaration(ident)
+
+          '  locals.Add(local)
+            VerifyLocalSymbolNameAndSetType(local, matchType, node, ident, diagnostics)
+            Dim boundLocal As New BoundLocal(node, local, matchType)
+
+            Dim condition As BoundExpression
+
+            Dim sourceType As TypeSymbol = btypeofexpr.Operand.Type
+
+            Debug.Assert((sourceType IsNot Nothing AndAlso matchType IsNot Nothing) AndAlso
+                         (sourceType.IsErrorType() OrElse sourceType.IsValueType OrElse sourceType.IsReferenceType OrElse sourceType.IsTypeParameter()) AndAlso
+                         (matchType.IsErrorType() OrElse matchType.IsValueType OrElse matchType.IsReferenceType OrElse matchType.IsTypeParameter()))
+
+            Dim objectType = GetSpecialType(SpecialType.System_Object, node, diagnostics)
+            Dim booleanType = GetSpecialType(SpecialType.System_Boolean, node, diagnostics)
+
+            Dim sourceTypeToTest As TypeSymbol
+
+            Dim hasErrors As Boolean = False
+
+            ' True binding.
+            If sourceType.IsErrorType() OrElse matchType.IsErrorType() Then
+
+                hasErrors = True
+
+            ElseIf matchType.IsNullableType() Then
+
+                ReportDiagnostic(diagnostics, node.Variable, ERRID.ERR_UnnecessaryNullableType)
+                hasErrors = True
+
             Else
-                Return New BoundBadExpression(node,
-                                              LookupResultKind.NotCreatable,
-                                              ImmutableArray(Of Symbol).Empty,
-                                              ImmutableArray(Of BoundExpression).Empty,
-                                              Nothing,
-                                              hasErrors:=True)
+
+                If sourceType.IsReferenceType Then
+                    sourceTypeToTest = sourceType
+                ElseIf sourceType.IsNullableType() Then
+                    sourceTypeToTest = sourceType.GetNullableUnderlyingType()
+                ElseIf sourceType.IsValueType Then
+                    sourceTypeToTest = sourceType
+                ElseIf sourceType.IsTypeParameter() Then
+                    sourceTypeToTest = objectType
+                Else
+                    Throw ExceptionUtilities.Unreachable
+                End If
+
+                Dim useSiteDiagnostics As HashSet(Of DiagnosticInfo) = Nothing
+
+                If Not Conversions.ConversionExists(Conversions.ClassifyDirectCastConversion(sourceTypeToTest, matchType, useSiteDiagnostics)) Then
+                    ReportDiagnostic(diagnostics, node.Variable, ERRID.ERR_NoConversion, matchType, sourceType)
+                    hasErrors = True
+                End If
+
+                If useSiteDiagnostics IsNot Nothing Then
+                    hasErrors = True
+                End If
+
+                diagnostics.Add(node, useSiteDiagnostics)
+
             End If
+
+            '' Warnings.
+            'If Not hasErrors Then
+            '    For Each previousType In typeCaseTypes
+            '        Dim useSiteDiagnostics As HashSet(Of DiagnosticInfo) = Nothing
+
+            '        If matchType.Equals(previousType) Then
+
+            '            ReportDiagnostic(diagnostics, node.AsClause.Type, ERRID.WRN_TypeCaseDuplicateCase, matchType)
+            '            Exit For
+
+            '        ElseIf previousType.IsBaseTypeOrInterfaceOf(matchType, useSiteDiagnostics) OrElse
+            '               (matchType.IsInterfaceType() AndAlso previousType.Equals(objectType)) Then
+
+            '            ReportDiagnostic(diagnostics, node.AsClause.Type, ERRID.WRN_TypeCaseOverlappingCase, matchType, previousType)
+            '            Exit For
+
+            '        End If
+            '    Next
+
+            '    typeCaseTypes.Add(matchType)
+            'End If
+
+            ' Compute condition.
+            If hasErrors Then
+                condition = New BoundBadExpression(node, LookupResultKind.Empty, ImmutableArray(Of Symbol).Empty, ImmutableArray(Of BoundExpression).Empty, ErrorTypeSymbol.UnknownResultType, hasErrors:=True)
+            Else
+
+                If sourceType.IsReferenceType AndAlso matchType.IsReferenceType Then
+
+                    ' condition: (Var v = TryCast(e, T) : v IsNot Nothing)
+                    condition = BindIsExpression(
+                                    BindAssignment(
+                                        node,
+                                        boundLocal,
+                                        ApplyTryCastConversion(node, btypeofexpr.Operand, matchType, diagnostics),
+                                        diagnostics
+                                    ),
+                                    New BoundLiteral(node, ConstantValue.Nothing, Nothing),
+                                    node,
+                                    isNot:=True,
+                                    diagnostics:=diagnostics
+                                )
+
+                ElseIf sourceType.IsNullableType AndAlso matchType.Equals(sourceType.GetNullableUnderlyingType()) Then
+
+                    ' condition = (Var v = e.GetValueOrDefault() : e.HasValue)
+
+                    Dim getValueOrDefaultMethod =
+                    DirectCast(DirectCast(sourceType, SubstitutedNamedType).GetMemberForDefinition(GetSpecialTypeMember(SpecialMember.System_Nullable_T_GetValueOrDefault, node, diagnostics)),
+                               MethodSymbol)
+
+                    condition = New BoundSequence(node,
+                                              ImmutableArray(Of LocalSymbol).Empty,
+                                              ImmutableArray.Create(Of BoundExpression)(
+                                                                 BindAssignment(
+                                                                     node,
+                                                                     boundLocal,
+                                                                     New BoundCall(node,
+                                                                                   getValueOrDefaultMethod,
+                                                                                   Nothing,
+                                                                                   btypeofexpr.Operand,
+                                                                                   ImmutableArray(Of BoundExpression).Empty,
+                                                                                   Nothing,
+                                                                                   matchType,
+                                                                                   suppressObjectClone:=True),
+                                                                     diagnostics
+                                                                 )
+                                                             ),
+                                              BindIsExpression(
+                                                  btypeofexpr.Operand,
+                                                  New BoundLiteral(node, ConstantValue.Nothing, Nothing),
+                                                  node,
+                                                  isNot:=True,
+                                                  diagnostics:=diagnostics),
+                                              booleanType)
+
+                ElseIf sourceType.IsValueType AndAlso matchType.Equals(sourceType) Then
+
+                    ' condition = (Var v = e : True)
+                    condition = New BoundSequence(node,
+                                                  ImmutableArray(Of LocalSymbol).Empty,
+                                                  ImmutableArray.Create(Of BoundExpression)(BindAssignment(
+                                                                                                node,
+                                                                                                boundLocal,
+                                                                                                btypeofexpr.Operand,
+                                                                                                diagnostics
+                                                                                            )),
+                                                  New BoundLiteral(node, ConstantValue.True, GetSpecialType(SpecialType.System_Boolean, node, diagnostics)),
+                                                  booleanType)
+                Else
+                    ' condition: (Var $boxed = CObj(e) : Var $success = TypeOf $boxed Is T : Var v = If($success, DirectCast($boxed, T), Nothing) : $success)
+
+                    ' Dim $boxed As Object
+                    Dim boxedTemp As New SynthesizedLocal(ContainingMember, objectType, SynthesizedLocalKind.LoweringTemp)
+                    Dim boundBoxedTemp As New BoundLocal(node, boxedTemp, objectType)
+                    boundBoxedTemp.SetWasCompilerGenerated()
+
+                    Dim sideEffects = ArrayBuilder(Of BoundExpression).GetInstance()
+
+                    ' $boxed = CObj(e)
+                    sideEffects.Add(BindAssignment(node, boundBoxedTemp, ApplyDirectCastConversion(node, btypeofexpr.Operand, objectType, diagnostics), diagnostics))
+
+                    ' Dim $success As Boolean
+                    Dim successTemp As New SynthesizedLocal(ContainingMember, booleanType, SynthesizedLocalKind.LoweringTemp)
+                    Dim boundSuccessTemp As New BoundLocal(node, successTemp, booleanType)
+                    boundSuccessTemp.SetWasCompilerGenerated()
+
+                    ' $success = TypeOf $boxed Is T
+                    sideEffects.Add(BindAssignment(node, boundSuccessTemp, New BoundTypeOf(node, matchType, boundBoxedTemp, False, booleanType), diagnostics))
+
+                    ' local = If($success, DirectCast($boxed, T), Nothing)
+                    sideEffects.Add(BindAssignment(node,
+                                                   boundLocal,
+                                                   New BoundTernaryConditionalExpression(
+                                                           node,
+                                                           boundSuccessTemp.MakeRValue(),
+                                                           ApplyDirectCastConversion(node, boundBoxedTemp.MakeRValue(), matchType, diagnostics),
+                                                           ApplyImplicitConversion(node, matchType, New BoundLiteral(node, ConstantValue.Nothing, Nothing), diagnostics),
+                                                           Nothing,
+                                                           matchType
+                                                       ),
+                                                   diagnostics))
+
+                    ' $success
+                    condition = New BoundSequence(node,
+                                              ImmutableArray.Create(Of LocalSymbol)(boxedTemp, successTemp),
+                                              sideEffects.ToImmutableAndFree(),
+                                              boundSuccessTemp.MakeRValue(),
+                                              booleanType)
+                End If
+            End If
+
+            condition.SetWasCompilerGenerated()
+
+            Return New BoundExpressionIntoVariable(node, btypeofexpr, local, condition, booleanType)
+
         End Function
+
+        'Friend Function BindIntoVariableExpression( node as IntoVariableExpressionSyntax,
+        '                                            diagnostics As DiagnosticBag
+        '                                          ) As BoundExpression
+            
+        '    Dim BLExpr = BindExpression(node.Expression, diagnostics)
+
+        '    If TypeOf BLExpr IsNot BoundTypeOf Then Return New BoundBadExpression( node,
+        '                                                                              LookupResultKind.NotCreatable,
+        '                                                                              ImmutableArray(Of Symbol).Empty,
+        '                                                                              ImmutableArray(Of BoundExpression).Empty,
+        '                                                                              Nothing,
+        '                                                                              hasErrors:=True)
+
+        '   Dim BTExpr = DirectCast(BLExpr, BoundTypeOf)
+        '   Dim BRExpr = BindAssignmentTarget(node.Variable, diagnostics)
+        '   Return New BoundExpressionIntoVariable(node, BtExpr, BRExpr, GetSpecialType(SpecialType.System_Boolean, node, diagnostics))
+        'End Function
 
         ''' <summary>
         ''' BindValue evaluates the node and returns a BoundExpression.  BindValue snaps expressions to values.  For now that means that method groups
