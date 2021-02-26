@@ -293,6 +293,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Function VisitCatchFilterClause(ByVal node As CatchFilterClauseSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
+        Public Overridable Function VisitSelectCaseFilterClause(ByVal node As SelectCaseFilterClauseSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
         Public Overridable Function VisitFinallyBlock(ByVal node As FinallyBlockSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
@@ -1026,6 +1029,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.DefaultVisit(node) : Return
         End Sub
         Public Overridable Sub VisitCatchFilterClause(ByVal node As CatchFilterClauseSyntax)
+            Me.DefaultVisit(node) : Return
+        End Sub
+        Public Overridable Sub VisitSelectCaseFilterClause(ByVal node As SelectCaseFilterClauseSyntax)
             Me.DefaultVisit(node) : Return
         End Sub
         Public Overridable Sub VisitFinallyBlock(ByVal node As FinallyBlockSyntax)
@@ -3125,6 +3131,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
         End Function
 
+        Public Overrides Function VisitSelectCaseFilterClause(ByVal node As SelectCaseFilterClauseSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newWhenKeyword = DirectCast(VisitToken(node.WhenKeyword).Node, InternalSyntax.KeywordSyntax)
+            If node.WhenKeyword.Node IsNot newWhenKeyword Then anyChanges = True
+            Dim newFilter = DirectCast(Visit(node.Filter), ExpressionSyntax)
+            If node.Filter IsNot newFilter Then anyChanges = True
+
+            If anyChanges Then
+                Return New SelectCaseFilterClauseSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newWhenKeyword, newFilter)
+            Else
+                Return node
+            End If
+        End Function
+
         Public Overrides Function VisitFinallyBlock(ByVal node As FinallyBlockSyntax) As SyntaxNode
             Dim anyChanges As Boolean = False
 
@@ -3249,9 +3270,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If node.CaseKeyword.Node IsNot newCaseKeyword Then anyChanges = True
             Dim newExpression = DirectCast(Visit(node.Expression), ExpressionSyntax)
             If node.Expression IsNot newExpression Then anyChanges = True
+            Dim newWhenClause = DirectCast(Visit(node.WhenClause), SelectCaseFilterClauseSyntax)
+            If node.WhenClause IsNot newWhenClause Then anyChanges = True
 
             If anyChanges Then
-                Return New SelectStatementSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newSelectKeyword, newCaseKeyword, newExpression)
+                Return New SelectStatementSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newSelectKeyword, newCaseKeyword, newExpression, newWhenClause)
             Else
                 Return node
             End If
@@ -14932,6 +14955,148 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
 
         ''' <summary>
+        ''' Represents the "When ..." clause of a "Catch" statement.
+        ''' </summary>
+        ''' <param name="whenKeyword">
+        ''' The "When" keyword.
+        ''' </param>
+        ''' <param name="filter">
+        ''' The filter expression to be evaluated.
+        ''' </param>
+        Public Shared Function SelectCaseFilterClause(whenKeyword As SyntaxToken, filter As ExpressionSyntax) As SelectCaseFilterClauseSyntax
+            Select Case whenKeyword.Kind()
+                Case SyntaxKind.WhenKeyword
+                Case Else
+                    Throw new ArgumentException("whenKeyword")
+            End Select
+            if filter Is Nothing Then
+                Throw New ArgumentNullException(NameOf(filter))
+            End If
+            Select Case filter.Kind()
+                Case SyntaxKind.KeywordEventContainer,
+                     SyntaxKind.WithEventsEventContainer,
+                     SyntaxKind.WithEventsPropertyEventContainer,
+                     SyntaxKind.IdentifierLabel,
+                     SyntaxKind.NumericLabel,
+                     SyntaxKind.NextLabel,
+                     SyntaxKind.MidExpression,
+                     SyntaxKind.CharacterLiteralExpression,
+                     SyntaxKind.TrueLiteralExpression,
+                     SyntaxKind.FalseLiteralExpression,
+                     SyntaxKind.NumericLiteralExpression,
+                     SyntaxKind.DateLiteralExpression,
+                     SyntaxKind.StringLiteralExpression,
+                     SyntaxKind.NothingLiteralExpression,
+                     SyntaxKind.ParenthesizedExpression,
+                     SyntaxKind.TupleExpression,
+                     SyntaxKind.TupleType,
+                     SyntaxKind.MeExpression,
+                     SyntaxKind.MyBaseExpression,
+                     SyntaxKind.MyClassExpression,
+                     SyntaxKind.GetTypeExpression,
+                     SyntaxKind.TypeOfIsExpression,
+                     SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.GetXmlNamespaceExpression,
+                     SyntaxKind.SimpleMemberAccessExpression,
+                     SyntaxKind.DictionaryAccessExpression,
+                     SyntaxKind.XmlElementAccessExpression,
+                     SyntaxKind.XmlDescendantAccessExpression,
+                     SyntaxKind.XmlAttributeAccessExpression,
+                     SyntaxKind.InvocationExpression,
+                     SyntaxKind.ObjectCreationExpression,
+                     SyntaxKind.AnonymousObjectCreationExpression,
+                     SyntaxKind.ArrayCreationExpression,
+                     SyntaxKind.CollectionInitializer,
+                     SyntaxKind.CTypeExpression,
+                     SyntaxKind.DirectCastExpression,
+                     SyntaxKind.TryCastExpression,
+                     SyntaxKind.PredefinedCastExpression,
+                     SyntaxKind.AddExpression,
+                     SyntaxKind.SubtractExpression,
+                     SyntaxKind.MultiplyExpression,
+                     SyntaxKind.DivideExpression,
+                     SyntaxKind.IntegerDivideExpression,
+                     SyntaxKind.ExponentiateExpression,
+                     SyntaxKind.LeftShiftExpression,
+                     SyntaxKind.RightShiftExpression,
+                     SyntaxKind.ConcatenateExpression,
+                     SyntaxKind.ModuloExpression,
+                     SyntaxKind.EqualsExpression,
+                     SyntaxKind.NotEqualsExpression,
+                     SyntaxKind.LessThanExpression,
+                     SyntaxKind.LessThanOrEqualExpression,
+                     SyntaxKind.GreaterThanOrEqualExpression,
+                     SyntaxKind.GreaterThanExpression,
+                     SyntaxKind.IsExpression,
+                     SyntaxKind.IsNotExpression,
+                     SyntaxKind.LikeExpression,
+                     SyntaxKind.OrExpression,
+                     SyntaxKind.ExclusiveOrExpression,
+                     SyntaxKind.AndExpression,
+                     SyntaxKind.OrElseExpression,
+                     SyntaxKind.AndAlsoExpression,
+                     SyntaxKind.UnaryPlusExpression,
+                     SyntaxKind.UnaryMinusExpression,
+                     SyntaxKind.NotExpression,
+                     SyntaxKind.AddressOfExpression,
+                     SyntaxKind.BinaryConditionalExpression,
+                     SyntaxKind.TernaryConditionalExpression,
+                     SyntaxKind.SingleLineFunctionLambdaExpression,
+                     SyntaxKind.SingleLineSubLambdaExpression,
+                     SyntaxKind.MultiLineFunctionLambdaExpression,
+                     SyntaxKind.MultiLineSubLambdaExpression,
+                     SyntaxKind.QueryExpression,
+                     SyntaxKind.FunctionAggregation,
+                     SyntaxKind.GroupAggregation,
+                     SyntaxKind.XmlDocument,
+                     SyntaxKind.XmlElement,
+                     SyntaxKind.XmlText,
+                     SyntaxKind.XmlElementStartTag,
+                     SyntaxKind.XmlElementEndTag,
+                     SyntaxKind.XmlEmptyElement,
+                     SyntaxKind.XmlAttribute,
+                     SyntaxKind.XmlString,
+                     SyntaxKind.XmlPrefixName,
+                     SyntaxKind.XmlName,
+                     SyntaxKind.XmlBracketedName,
+                     SyntaxKind.XmlComment,
+                     SyntaxKind.XmlProcessingInstruction,
+                     SyntaxKind.XmlCDataSection,
+                     SyntaxKind.XmlEmbeddedExpression,
+                     SyntaxKind.ArrayType,
+                     SyntaxKind.NullableType,
+                     SyntaxKind.PredefinedType,
+                     SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference,
+                     SyntaxKind.AwaitExpression,
+                     SyntaxKind.XmlCrefAttribute,
+                     SyntaxKind.XmlNameAttribute,
+                     SyntaxKind.ConditionalAccessExpression,
+                     SyntaxKind.NameOfExpression,
+                     SyntaxKind.InterpolatedStringExpression
+                Case Else
+                    Throw new ArgumentException("filter")
+            End Select
+            Return New SelectCaseFilterClauseSyntax(SyntaxKind.SelectCaseFilterClause, Nothing, Nothing, DirectCast(whenKeyword.Node, InternalSyntax.KeywordSyntax), filter)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents the "When ..." clause of a "Catch" statement.
+        ''' </summary>
+        ''' <param name="filter">
+        ''' The filter expression to be evaluated.
+        ''' </param>
+        Public Shared Function SelectCaseFilterClause(filter As ExpressionSyntax) As SelectCaseFilterClauseSyntax
+            Return SyntaxFactory.SelectCaseFilterClause(SyntaxFactory.Token(SyntaxKind.WhenKeyword), filter)
+        End Function
+
+
+        ''' <summary>
         ''' Represents a "Finally ..." block of a "Try" block.
         ''' </summary>
         ''' <param name="finallyStatement">
@@ -15715,7 +15880,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="expression">
         ''' The value that branching is based on.
         ''' </param>
-        Public Shared Function SelectStatement(selectKeyword As SyntaxToken, caseKeyword As SyntaxToken, expression As ExpressionSyntax) As SelectStatementSyntax
+        ''' <param name="whenClause">
+        ''' A "When" clause to guard the select case block.
+        ''' </param>
+        Public Shared Function SelectStatement(selectKeyword As SyntaxToken, caseKeyword As SyntaxToken, expression As ExpressionSyntax, whenClause As SelectCaseFilterClauseSyntax) As SelectStatementSyntax
             Select Case selectKeyword.Kind()
                 Case SyntaxKind.SelectKeyword
                 Case Else
@@ -15833,7 +16001,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("expression")
             End Select
-            Return New SelectStatementSyntax(SyntaxKind.SelectStatement, Nothing, Nothing, DirectCast(selectKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(caseKeyword.Node, InternalSyntax.KeywordSyntax), expression)
+            Return New SelectStatementSyntax(SyntaxKind.SelectStatement, Nothing, Nothing, DirectCast(selectKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(caseKeyword.Node, InternalSyntax.KeywordSyntax), expression, whenClause)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a Select Case statement. This statement always occurs as the Begin
+        ''' of a SelectBlock.
+        ''' </summary>
+        ''' <param name="expression">
+        ''' The value that branching is based on.
+        ''' </param>
+        ''' <param name="whenClause">
+        ''' A "When" clause to guard the select case block.
+        ''' </param>
+        Public Shared Function SelectStatement(expression As ExpressionSyntax, whenClause As SelectCaseFilterClauseSyntax) As SelectStatementSyntax
+            Return SyntaxFactory.SelectStatement(SyntaxFactory.Token(SyntaxKind.SelectKeyword), Nothing, expression, whenClause)
         End Function
 
 
@@ -15845,7 +16028,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' The value that branching is based on.
         ''' </param>
         Public Shared Function SelectStatement(expression As ExpressionSyntax) As SelectStatementSyntax
-            Return SyntaxFactory.SelectStatement(SyntaxFactory.Token(SyntaxKind.SelectKeyword), Nothing, expression)
+            Return SyntaxFactory.SelectStatement(SyntaxFactory.Token(SyntaxKind.SelectKeyword), Nothing, expression, Nothing)
         End Function
 
 

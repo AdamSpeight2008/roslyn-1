@@ -387,9 +387,39 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 value = ResyncAt(value)
             End If
 
-            Dim statement = SyntaxFactory.SelectStatement(selectKeyword, optionalCaseKeyword, value)
+            Dim optionalWhenClause = ParseSelectCaseFilterClause()
+            Dim statement = SyntaxFactory.SelectStatement(selectKeyword, optionalCaseKeyword, value, optionalWhenClause)
 
             Return statement
+        End Function
+
+        Private Function ParseSelectCaseFilterClause() As SelectCaseFilterClauseSyntax
+            Return DirectCast(ParseWhenFIlterClause(SyntaxKind.SelectCaseFilterClause), SelectCaseFilterClauseSyntax)
+        End Function
+
+        Private Function ParseCatchFilterClause() As CatchFilterClauseSyntax
+            Return DirectCast(ParseWhenFIlterClause(SyntaxKind.CatchFilterClause), CatchFilterClauseSyntax)
+        End Function
+
+        Private Function ParseWhenFIlterClause(kind As SyntaxKind) As FilterClauseSyntax
+            Debug.Assert(kind = SyntaxKind.CatchFilterClause Or
+                         kind = SyntaxKind.SelectCaseFilterClause, NameOf(ParseWhenFIlterClause))
+            Dim optionalWhenClause As FilterClauseSyntax = Nothing
+            Dim whenKeyword As KeywordSyntax = Nothing
+            If TryGetToken(SyntaxKind.WhenKeyword, whenKeyword) Then
+                Dim filter = ParseExpressionCore()
+                #Disable Warning format
+                Select Case kind
+                       Case SyntaxKind.CatchFilterClause
+                            optionalWhenClause = SyntaxFactory.CatchFilterClause(whenKeyword, filter)
+                       Case SyntaxKind.SelectCaseFilterClauseSyntax
+                            optionalWhenClause = SyntaxFactory.SelectCaseFilterClause(whenKeyword, filter)
+                       Case Else
+                            Throw ExceptionUtilities.UnexpectedValue(kind)
+                End Select
+                #Enable Warning format
+            End If
+            Return optionalWhenClause
         End Function
 
         ' ParseIfConstruct handles the parsing of block and line if statements and
@@ -1480,14 +1510,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 End If
             End If
 
-            Dim optionalWhenClause As CatchFilterClauseSyntax = Nothing
-            Dim whenKeyword As KeywordSyntax = Nothing
-            Dim filter As ExpressionSyntax = Nothing
-            If TryGetToken(SyntaxKind.WhenKeyword, whenKeyword) Then
-                filter = ParseExpressionCore()
-
-                optionalWhenClause = SyntaxFactory.CatchFilterClause(whenKeyword, filter)
-            End If
+            Dim optionalWhenClause = ParseCatchFilterClause()
 
             Dim statement = SyntaxFactory.CatchStatement(catchKeyword, optionalName, optionalAsClause, optionalWhenClause)
 

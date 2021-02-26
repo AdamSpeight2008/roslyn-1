@@ -3201,5 +3201,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ConflictMarkerTrivia = 792
 
+        FilterClause = 800
+        SelectCaseFilterClause = 801
+        SelectCaseFilterClauseSyntax = 802
     End Enum
 End Namespace

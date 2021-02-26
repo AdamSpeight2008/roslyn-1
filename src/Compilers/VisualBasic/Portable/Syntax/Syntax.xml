@@ -3512,18 +3512,9 @@ Unify Enum declarations with other block type declarations.
       </child>
 
     </node-structure>
-
-    <!--*********************
-      -  CatchFilterClauseSyntax
-      ***********************-->
-    <node-structure name="CatchFilterClauseSyntax" parent="VisualBasicSyntaxNode">
-      <description>
-        Represents the "When ..." clause of a "Catch" statement.
-      </description>
-
-      <node-kind name="CatchFilterClause" />
-
-      <child name="WhenKeyword" kind="WhenKeyword">
+    
+    <node-structure name="FilterClauseSyntax" abstract="true" parent="VisualBasicSyntaxNode">
+            <child name="WhenKeyword" kind="WhenKeyword">
         <description>The "When" keyword.</description>
         <lm-equiv name="WhenKeyword"></lm-equiv>
         <native-equiv name="When"></native-equiv>
@@ -3534,8 +3525,49 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="Filter"></lm-equiv>
         <native-equiv name="WhenClause"></native-equiv>
       </child>
-    </node-structure>
+    </node-structure >
 
+    <!--*********************
+      -  CatchFilterClauseSyntax
+      ***********************-->
+    <node-structure name="CatchFilterClauseSyntax" parent="FilterClauseSyntax">
+      <description>
+        Represents the "When ..." clause of a "Catch" statement.
+      </description>
+
+      <node-kind name="CatchFilterClause" />
+
+      <!--<child name="WhenKeyword" kind="WhenKeyword">
+        <description>The "When" keyword.</description>
+        <lm-equiv name="WhenKeyword"></lm-equiv>
+        <native-equiv name="When"></native-equiv>
+      </child>
+
+      <child name="Filter" kind="@ExpressionSyntax">
+        <description>The filter expression to be evaluated.</description>
+        <lm-equiv name="Filter"></lm-equiv>
+        <native-equiv name="WhenClause"></native-equiv>
+      </child>-->
+    </node-structure>
+    <node-structure name="SelectCaseFilterClauseSyntax" parent="FilterClauseSyntax">
+      <description>
+        Represents the "When ..." clause of a "Catch" statement.
+      </description>
+
+      <node-kind name="SelectCaseFilterClause" />
+
+      <!--<child name="WhenKeyword" kind="WhenKeyword">
+        <description>The "When" keyword.</description>
+        <lm-equiv name="WhenKeyword"></lm-equiv>
+        <native-equiv name="When"></native-equiv>
+      </child>
+
+      <child name="Filter" kind="@ExpressionSyntax">
+        <description>The filter expression to be evaluated.</description>
+        <lm-equiv name="Filter"></lm-equiv>
+        <native-equiv name="WhenClause"></native-equiv>
+      </child>-->
+    </node-structure>
     <!--****************
       -  FinallyBlock
       ******************-->
@@ -3831,6 +3863,11 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="Value"></lm-equiv>
         <native-equiv name="Operand"></native-equiv>
       </child>
+      
+      <child name="WhenClause" optional="true" kind="SelectCaseFilterClause">
+        <description>A "When" clause to guard the select case block.</description>
+      </child>
+
     </node-structure>
 
     <!--****************

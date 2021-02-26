@@ -15926,6 +15926,64 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
+    Public MustInherit Class FilterClauseSyntax
+        Inherits VisualBasicSyntaxNode
+
+        Friend _filter as ExpressionSyntax
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "When" keyword.
+        ''' </summary>
+        Public ReadOnly Property WhenKeyword As SyntaxToken
+            Get
+                Return Me.GetWhenKeywordCore()
+            End Get
+        End Property
+
+        Friend Overridable Function GetWhenKeywordCore() As SyntaxToken
+            return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.FilterClauseSyntax)._whenKeyword, Me.Position, 0)
+        End Function
+
+        ''' <summary>
+        ''' Returns a copy of this with the WhenKeyword property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Function WithWhenKeyword(whenKeyword As SyntaxToken) As FilterClauseSyntax
+            Return WithWhenKeywordCore(whenKeyword)
+        End Function
+        Friend MustOverride Function WithWhenKeywordCore(whenKeyword As SyntaxToken) As FilterClauseSyntax
+
+        ''' <summary>
+        ''' The filter expression to be evaluated.
+        ''' </summary>
+        Public ReadOnly Property Filter As ExpressionSyntax
+            Get
+                Return Me.GetFilterCore()
+            End Get
+        End Property
+
+        Friend Overridable Function GetFilterCore() As ExpressionSyntax
+            Return GetRed(_filter, 1)
+        End Function
+
+        ''' <summary>
+        ''' Returns a copy of this with the Filter property changed to the specified value.
+        ''' Returns this instance if the specified value is the same as the current value.
+        ''' </summary>
+        Public Function WithFilter(filter As ExpressionSyntax) As FilterClauseSyntax
+            Return WithFilterCore(filter)
+        End Function
+        Friend MustOverride Function WithFilterCore(filter As ExpressionSyntax) As FilterClauseSyntax
+
+    End Class
+
     ''' <summary>
     ''' Represents the "When ..." clause of a "Catch" statement.
     ''' </summary>
@@ -15936,9 +15994,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
     ''' </list>
     ''' </remarks>
     Public NotInheritable Class CatchFilterClauseSyntax
-        Inherits VisualBasicSyntaxNode
+        Inherits FilterClauseSyntax
 
-        Friend _filter as ExpressionSyntax
 
         Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
             MyBase.New(green, parent, startLocation)
@@ -15953,11 +16010,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <summary>
         ''' The "When" keyword.
         ''' </summary>
-        Public ReadOnly Property WhenKeyword As SyntaxToken
+        Public Shadows ReadOnly Property WhenKeyword As SyntaxToken
             Get
                 return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.CatchFilterClauseSyntax)._whenKeyword, Me.Position, 0)
             End Get
         End Property
+
+        Friend Overrides Function GetWhenKeywordCore() As SyntaxToken
+            Return Me.WhenKeyword
+        End Function
+
+        Friend Overrides Function WithWhenKeywordCore(whenKeyword As SyntaxToken) As FilterClauseSyntax
+            Return WithWhenKeyword(whenKeyword)
+        End Function
 
         ''' <summary>
         ''' Returns a copy of this with the WhenKeyword property changed to the specified
@@ -15971,11 +16036,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <summary>
         ''' The filter expression to be evaluated.
         ''' </summary>
-        Public ReadOnly Property Filter As ExpressionSyntax
+        Public Shadows ReadOnly Property Filter As ExpressionSyntax
             Get
                 Return GetRed(_filter, 1)
             End Get
         End Property
+
+        Friend Overrides Function GetFilterCore() As ExpressionSyntax
+            Return Me.Filter
+        End Function
+
+        Friend Overrides Function WithFilterCore(filter As ExpressionSyntax) As FilterClauseSyntax
+            Return WithFilter(filter)
+        End Function
 
         ''' <summary>
         ''' Returns a copy of this with the Filter property changed to the specified value.
@@ -16025,6 +16098,131 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         Public Function Update(whenKeyword As SyntaxToken, filter As ExpressionSyntax) As CatchFilterClauseSyntax
             If whenKeyword <> Me.WhenKeyword OrElse filter IsNot Me.Filter Then
                 Dim newNode = SyntaxFactory.CatchFilterClause(whenKeyword, filter)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    ''' <summary>
+    ''' Represents the "When ..." clause of a "Catch" statement.
+    ''' </summary>
+    ''' <remarks>
+    ''' <para>This node is associated with the following syntax kinds:</para>
+    ''' <list type="bullet">
+    ''' <item><description><see cref="SyntaxKind.SelectCaseFilterClause"/></description></item>
+    ''' </list>
+    ''' </remarks>
+    Public NotInheritable Class SelectCaseFilterClauseSyntax
+        Inherits FilterClauseSyntax
+
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), whenKeyword As InternalSyntax.KeywordSyntax, filter As ExpressionSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectCaseFilterClauseSyntax(kind, errors, annotations, whenKeyword, DirectCast(filter.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "When" keyword.
+        ''' </summary>
+        Public Shadows ReadOnly Property WhenKeyword As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectCaseFilterClauseSyntax)._whenKeyword, Me.Position, 0)
+            End Get
+        End Property
+
+        Friend Overrides Function GetWhenKeywordCore() As SyntaxToken
+            Return Me.WhenKeyword
+        End Function
+
+        Friend Overrides Function WithWhenKeywordCore(whenKeyword As SyntaxToken) As FilterClauseSyntax
+            Return WithWhenKeyword(whenKeyword)
+        End Function
+
+        ''' <summary>
+        ''' Returns a copy of this with the WhenKeyword property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithWhenKeyword(whenKeyword as SyntaxToken) As SelectCaseFilterClauseSyntax
+            return Update(whenKeyword, Me.Filter)
+        End Function
+
+        ''' <summary>
+        ''' The filter expression to be evaluated.
+        ''' </summary>
+        Public Shadows ReadOnly Property Filter As ExpressionSyntax
+            Get
+                Return GetRed(_filter, 1)
+            End Get
+        End Property
+
+        Friend Overrides Function GetFilterCore() As ExpressionSyntax
+            Return Me.Filter
+        End Function
+
+        Friend Overrides Function WithFilterCore(filter As ExpressionSyntax) As FilterClauseSyntax
+            Return WithFilter(filter)
+        End Function
+
+        ''' <summary>
+        ''' Returns a copy of this with the Filter property changed to the specified value.
+        ''' Returns this instance if the specified value is the same as the current value.
+        ''' </summary>
+        Public Shadows Function WithFilter(filter as ExpressionSyntax) As SelectCaseFilterClauseSyntax
+            return Update(Me.WhenKeyword, filter)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me._filter
+                Case Else
+                    Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me.Filter
+                Case Else
+                    Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitSelectCaseFilterClause(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitSelectCaseFilterClause(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="whenKeyword">
+        ''' The value for the WhenKeyword property.
+        ''' </param>
+        ''' <param name="filter">
+        ''' The value for the Filter property.
+        ''' </param>
+        Public Function Update(whenKeyword As SyntaxToken, filter As ExpressionSyntax) As SelectCaseFilterClauseSyntax
+            If whenKeyword <> Me.WhenKeyword OrElse filter IsNot Me.Filter Then
+                Dim newNode = SyntaxFactory.SelectCaseFilterClause(whenKeyword, filter)
                 Dim annotations = Me.GetAnnotations()
                 If annotations IsNot Nothing AndAlso annotations.Length > 0
                     return newNode.WithAnnotations(annotations)
@@ -16973,6 +17171,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         Inherits StatementSyntax
 
         Friend _expression as ExpressionSyntax
+        Friend _whenClause as SelectCaseFilterClauseSyntax
 
         Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
             MyBase.New(green, parent, startLocation)
@@ -16980,8 +17179,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), selectKeyword As InternalSyntax.KeywordSyntax, caseKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax)
-            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectStatementSyntax(kind, errors, annotations, selectKeyword, caseKeyword, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax)), Nothing, 0)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), selectKeyword As InternalSyntax.KeywordSyntax, caseKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, whenClause As SelectCaseFilterClauseSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectStatementSyntax(kind, errors, annotations, selectKeyword, caseKeyword, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), if(whenClause IsNot Nothing, DirectCast(whenClause.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectCaseFilterClauseSyntax), Nothing)), Nothing, 0)
         End Sub
 
         ''' <summary>
@@ -16999,7 +17198,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value.
         ''' </summary>
         Public Shadows Function WithSelectKeyword(selectKeyword as SyntaxToken) As SelectStatementSyntax
-            return Update(selectKeyword, Me.CaseKeyword, Me.Expression)
+            return Update(selectKeyword, Me.CaseKeyword, Me.Expression, Me.WhenClause)
         End Function
 
         ''' <summary>
@@ -17024,7 +17223,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value.
         ''' </summary>
         Public Shadows Function WithCaseKeyword(caseKeyword as SyntaxToken) As SelectStatementSyntax
-            return Update(Me.SelectKeyword, caseKeyword, Me.Expression)
+            return Update(Me.SelectKeyword, caseKeyword, Me.Expression, Me.WhenClause)
         End Function
 
         ''' <summary>
@@ -17042,13 +17241,36 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value.
         ''' </summary>
         Public Shadows Function WithExpression(expression as ExpressionSyntax) As SelectStatementSyntax
-            return Update(Me.SelectKeyword, Me.CaseKeyword, expression)
+            return Update(Me.SelectKeyword, Me.CaseKeyword, expression, Me.WhenClause)
+        End Function
+
+        ''' <summary>
+        ''' A "When" clause to guard the select case block.
+        ''' </summary>
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
+        Public ReadOnly Property WhenClause As SelectCaseFilterClauseSyntax
+            Get
+                Return GetRed(_whenClause, 3)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the WhenClause property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithWhenClause(whenClause as SelectCaseFilterClauseSyntax) As SelectStatementSyntax
+            return Update(Me.SelectKeyword, Me.CaseKeyword, Me.Expression, whenClause)
         End Function
 
         Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
             Select case i
                 Case 2
                     Return Me._expression
+                Case 3
+                    Return Me._whenClause
                 Case Else
                     Return Nothing
             End Select
@@ -17058,6 +17280,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Select case i
                 Case 2
                     Return Me.Expression
+                Case 3
+                    Return Me.WhenClause
                 Case Else
                     Return Nothing
             End Select
@@ -17085,9 +17309,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <param name="expression">
         ''' The value for the Expression property.
         ''' </param>
-        Public Function Update(selectKeyword As SyntaxToken, caseKeyword As SyntaxToken, expression As ExpressionSyntax) As SelectStatementSyntax
-            If selectKeyword <> Me.SelectKeyword OrElse caseKeyword <> Me.CaseKeyword OrElse expression IsNot Me.Expression Then
-                Dim newNode = SyntaxFactory.SelectStatement(selectKeyword, caseKeyword, expression)
+        ''' <param name="whenClause">
+        ''' The value for the WhenClause property.
+        ''' </param>
+        Public Function Update(selectKeyword As SyntaxToken, caseKeyword As SyntaxToken, expression As ExpressionSyntax, whenClause As SelectCaseFilterClauseSyntax) As SelectStatementSyntax
+            If selectKeyword <> Me.SelectKeyword OrElse caseKeyword <> Me.CaseKeyword OrElse expression IsNot Me.Expression OrElse whenClause IsNot Me.WhenClause Then
+                Dim newNode = SyntaxFactory.SelectStatement(selectKeyword, caseKeyword, expression, whenClause)
                 Dim annotations = Me.GetAnnotations()
                 If annotations IsNot Nothing AndAlso annotations.Length > 0
                     return newNode.WithAnnotations(annotations)

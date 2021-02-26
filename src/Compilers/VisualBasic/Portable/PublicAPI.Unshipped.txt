@@ -1,4 +1,30 @@
 Microsoft.CodeAnalysis.VisualBasic.LanguageVersion.VisualBasic16_9 = 1609 -> Microsoft.CodeAnalysis.VisualBasic.LanguageVersion
+Microsoft.CodeAnalysis.VisualBasic.Syntax.FilterClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.FilterClauseSyntax.Filter() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.FilterClauseSyntax.WhenKeyword() -> Microsoft.CodeAnalysis.SyntaxToken
+Microsoft.CodeAnalysis.VisualBasic.Syntax.FilterClauseSyntax.WithFilter(filter As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.FilterClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.FilterClauseSyntax.WithWhenKeyword(whenKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.FilterClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax.Filter() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax.Update(whenKeyword As Microsoft.CodeAnalysis.SyntaxToken, filter As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax.WhenKeyword() -> Microsoft.CodeAnalysis.SyntaxToken
+Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax.WithFilter(filter As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax.WithWhenKeyword(whenKeyword As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectStatementSyntax.Update(selectKeyword As Microsoft.CodeAnalysis.SyntaxToken, caseKeyword As Microsoft.CodeAnalysis.SyntaxToken, expression As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax, whenClause As Microsoft.CodeAnalysis.VisualBasic.Syntax.CatchFilterClauseSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectStatementSyntax.WhenClause() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.CatchFilterClauseSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectStatementSyntax.WithWhenClause(whenClause As Microsoft.CodeAnalysis.VisualBasic.Syntax.CatchFilterClauseSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectStatementSyntax
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FilterClause = 800 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.SelectCaseFilterClause = 801 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.SelectCaseFilterClauseSyntax = 802 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
 Microsoft.CodeAnalysis.VisualBasic.VisualBasicGeneratorDriver
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitSelectCaseFilterClause(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitSelectCaseFilterClause(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitSelectCaseFilterClause(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.SelectCaseFilterClause(filter As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.SelectCaseFilterClause(whenKeyword As Microsoft.CodeAnalysis.SyntaxToken, filter As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.SelectStatement(expression As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax, whenClause As Microsoft.CodeAnalysis.VisualBasic.Syntax.CatchFilterClauseSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.SelectStatement(selectKeyword As Microsoft.CodeAnalysis.SyntaxToken, caseKeyword As Microsoft.CodeAnalysis.SyntaxToken, expression As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax, whenClause As Microsoft.CodeAnalysis.VisualBasic.Syntax.CatchFilterClauseSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectStatementSyntax
 Shared Microsoft.CodeAnalysis.VisualBasic.VisualBasicGeneratorDriver.Create(generators As System.Collections.Immutable.ImmutableArray(Of Microsoft.CodeAnalysis.ISourceGenerator), additionalTexts As System.Collections.Immutable.ImmutableArray(Of Microsoft.CodeAnalysis.AdditionalText) = Nothing, parseOptions As Microsoft.CodeAnalysis.VisualBasic.VisualBasicParseOptions = Nothing, analyzerConfigOptionsProvider As Microsoft.CodeAnalysis.Diagnostics.AnalyzerConfigOptionsProvider = Nothing) -> Microsoft.CodeAnalysis.VisualBasic.VisualBasicGeneratorDriver
 Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.GetUsedAssemblyReferences(cancellationToken As System.Threading.CancellationToken = Nothing) -> System.Collections.Immutable.ImmutableArray(Of Microsoft.CodeAnalysis.MetadataReference)

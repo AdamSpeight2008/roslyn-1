@@ -14310,10 +14310,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     End Class
 
-    ''' <summary>
-    ''' Represents the "When ..." clause of a "Catch" statement.
-    ''' </summary>
-    Friend NotInheritable Class CatchFilterClauseSyntax
+    Friend MustInherit Class FilterClauseSyntax
         Inherits VisualBasicSyntaxNode
 
         Friend ReadOnly _whenKeyword as KeywordSyntax
@@ -14321,7 +14318,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend Sub New(ByVal kind As SyntaxKind, whenKeyword As InternalSyntax.KeywordSyntax, filter As ExpressionSyntax)
             MyBase.New(kind)
-            MyBase._slotCount = 2
 
             AdjustFlagsAndWidth(whenKeyword)
             Me._whenKeyword = whenKeyword
@@ -14332,7 +14328,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend Sub New(ByVal kind As SyntaxKind, whenKeyword As InternalSyntax.KeywordSyntax, filter As ExpressionSyntax, context As ISyntaxFactoryContext)
             MyBase.New(kind)
-            MyBase._slotCount = 2
             Me.SetFactoryContext(context)
 
             AdjustFlagsAndWidth(whenKeyword)
@@ -14344,7 +14339,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), whenKeyword As InternalSyntax.KeywordSyntax, filter As ExpressionSyntax)
             MyBase.New(kind, errors, annotations)
-            MyBase._slotCount = 2
 
             AdjustFlagsAndWidth(whenKeyword)
             Me._whenKeyword = whenKeyword
@@ -14355,7 +14349,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend Sub New(reader as ObjectReader)
             MyBase.New(reader)
-            MyBase._slotCount = 2
             Dim _whenKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
             If _whenKeyword isnot Nothing
                 AdjustFlagsAndWidth(_whenKeyword)
@@ -14367,22 +14360,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Me._filter = _filter
             End If
         End Sub
-        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New CatchFilterClauseSyntax(o)
-
 
         Friend Overrides Sub WriteTo(writer as ObjectWriter)
             MyBase.WriteTo(writer)
             writer.WriteValue(Me._whenKeyword)
             writer.WriteValue(Me._filter)
         End Sub
-
-        Shared Sub New()
-            ObjectBinder.RegisterTypeReader(GetType(CatchFilterClauseSyntax), Function(r) New CatchFilterClauseSyntax(r))
-        End Sub
-
-        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
-            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.CatchFilterClauseSyntax(Me, parent, startLocation)
-        End Function
 
         ''' <summary>
         ''' The "When" keyword.
@@ -14401,6 +14384,46 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Return Me._filter
             End Get
         End Property
+
+    End Class
+
+    ''' <summary>
+    ''' Represents the "When ..." clause of a "Catch" statement.
+    ''' </summary>
+    Friend NotInheritable Class CatchFilterClauseSyntax
+        Inherits FilterClauseSyntax
+
+
+        Friend Sub New(ByVal kind As SyntaxKind, whenKeyword As InternalSyntax.KeywordSyntax, filter As ExpressionSyntax)
+            MyBase.New(kind, whenKeyword, filter)
+            MyBase._slotCount = 2
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, whenKeyword As InternalSyntax.KeywordSyntax, filter As ExpressionSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind, whenKeyword, filter)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), whenKeyword As InternalSyntax.KeywordSyntax, filter As ExpressionSyntax)
+            MyBase.New(kind, errors, annotations, whenKeyword, filter)
+            MyBase._slotCount = 2
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+            MyBase.New(reader)
+            MyBase._slotCount = 2
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New CatchFilterClauseSyntax(o)
+
+
+        Shared Sub New()
+            ObjectBinder.RegisterTypeReader(GetType(CatchFilterClauseSyntax), Function(r) New CatchFilterClauseSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.CatchFilterClauseSyntax(Me, parent, startLocation)
+        End Function
 
         Friend Overrides Function GetSlot(i as Integer) as GreenNode
             Select case i
@@ -14425,6 +14448,71 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
             Return visitor.VisitCatchFilterClause(Me)
+        End Function
+
+    End Class
+
+    ''' <summary>
+    ''' Represents the "When ..." clause of a "Catch" statement.
+    ''' </summary>
+    Friend NotInheritable Class SelectCaseFilterClauseSyntax
+        Inherits FilterClauseSyntax
+
+
+        Friend Sub New(ByVal kind As SyntaxKind, whenKeyword As InternalSyntax.KeywordSyntax, filter As ExpressionSyntax)
+            MyBase.New(kind, whenKeyword, filter)
+            MyBase._slotCount = 2
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, whenKeyword As InternalSyntax.KeywordSyntax, filter As ExpressionSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind, whenKeyword, filter)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), whenKeyword As InternalSyntax.KeywordSyntax, filter As ExpressionSyntax)
+            MyBase.New(kind, errors, annotations, whenKeyword, filter)
+            MyBase._slotCount = 2
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+            MyBase.New(reader)
+            MyBase._slotCount = 2
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New SelectCaseFilterClauseSyntax(o)
+
+
+        Shared Sub New()
+            ObjectBinder.RegisterTypeReader(GetType(SelectCaseFilterClauseSyntax), Function(r) New SelectCaseFilterClauseSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax(Me, parent, startLocation)
+        End Function
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._whenKeyword
+                Case 1
+                    Return Me._filter
+                Case Else
+                    Debug.Assert(false, "child index out of range")
+                    Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new SelectCaseFilterClauseSyntax(Me.Kind, newErrors, GetAnnotations, _whenKeyword, _filter)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new SelectCaseFilterClauseSyntax(Me.Kind, GetDiagnostics, annotations, _whenKeyword, _filter)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitSelectCaseFilterClause(Me)
         End Function
 
     End Class
@@ -15432,10 +15520,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Friend ReadOnly _selectKeyword as KeywordSyntax
         Friend ReadOnly _caseKeyword as KeywordSyntax
         Friend ReadOnly _expression as ExpressionSyntax
+        Friend ReadOnly _whenClause as SelectCaseFilterClauseSyntax
 
-        Friend Sub New(ByVal kind As SyntaxKind, selectKeyword As InternalSyntax.KeywordSyntax, caseKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax)
+        Friend Sub New(ByVal kind As SyntaxKind, selectKeyword As InternalSyntax.KeywordSyntax, caseKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, whenClause As SelectCaseFilterClauseSyntax)
             MyBase.New(kind)
-            MyBase._slotCount = 3
+            MyBase._slotCount = 4
 
             AdjustFlagsAndWidth(selectKeyword)
             Me._selectKeyword = selectKeyword
@@ -15445,12 +15534,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
             AdjustFlagsAndWidth(expression)
             Me._expression = expression
+            If whenClause IsNot Nothing Then
+                AdjustFlagsAndWidth(whenClause)
+                Me._whenClause = whenClause
+            End If
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, selectKeyword As InternalSyntax.KeywordSyntax, caseKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, context As ISyntaxFactoryContext)
+        Friend Sub New(ByVal kind As SyntaxKind, selectKeyword As InternalSyntax.KeywordSyntax, caseKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, whenClause As SelectCaseFilterClauseSyntax, context As ISyntaxFactoryContext)
             MyBase.New(kind)
-            MyBase._slotCount = 3
+            MyBase._slotCount = 4
             Me.SetFactoryContext(context)
 
             AdjustFlagsAndWidth(selectKeyword)
@@ -15461,12 +15554,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
             AdjustFlagsAndWidth(expression)
             Me._expression = expression
+            If whenClause IsNot Nothing Then
+                AdjustFlagsAndWidth(whenClause)
+                Me._whenClause = whenClause
+            End If
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), selectKeyword As InternalSyntax.KeywordSyntax, caseKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), selectKeyword As InternalSyntax.KeywordSyntax, caseKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, whenClause As SelectCaseFilterClauseSyntax)
             MyBase.New(kind, errors, annotations)
-            MyBase._slotCount = 3
+            MyBase._slotCount = 4
 
             AdjustFlagsAndWidth(selectKeyword)
             Me._selectKeyword = selectKeyword
@@ -15476,12 +15573,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
             AdjustFlagsAndWidth(expression)
             Me._expression = expression
+            If whenClause IsNot Nothing Then
+                AdjustFlagsAndWidth(whenClause)
+                Me._whenClause = whenClause
+            End If
 
         End Sub
 
         Friend Sub New(reader as ObjectReader)
             MyBase.New(reader)
-            MyBase._slotCount = 3
+            MyBase._slotCount = 4
             Dim _selectKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
             If _selectKeyword isnot Nothing
                 AdjustFlagsAndWidth(_selectKeyword)
@@ -15497,6 +15598,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 AdjustFlagsAndWidth(_expression)
                 Me._expression = _expression
             End If
+            Dim _whenClause = DirectCast(reader.ReadValue(), SelectCaseFilterClauseSyntax)
+            If _whenClause isnot Nothing
+                AdjustFlagsAndWidth(_whenClause)
+                Me._whenClause = _whenClause
+            End If
         End Sub
         Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New SelectStatementSyntax(o)
 
@@ -15506,6 +15612,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             writer.WriteValue(Me._selectKeyword)
             writer.WriteValue(Me._caseKeyword)
             writer.WriteValue(Me._expression)
+            writer.WriteValue(Me._whenClause)
         End Sub
 
         Shared Sub New()
@@ -15546,6 +15653,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
+        ''' <summary>
+        ''' A "When" clause to guard the select case block.
+        ''' </summary>
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
+        Friend ReadOnly Property WhenClause As InternalSyntax.SelectCaseFilterClauseSyntax
+            Get
+                Return Me._whenClause
+            End Get
+        End Property
+
         Friend Overrides Function GetSlot(i as Integer) as GreenNode
             Select case i
                 Case 0
@@ -15554,6 +15673,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return Me._caseKeyword
                 Case 2
                     Return Me._expression
+                Case 3
+                    Return Me._whenClause
                 Case Else
                     Debug.Assert(false, "child index out of range")
                     Return Nothing
@@ -15562,11 +15683,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 
         Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
-            Return new SelectStatementSyntax(Me.Kind, newErrors, GetAnnotations, _selectKeyword, _caseKeyword, _expression)
+            Return new SelectStatementSyntax(Me.Kind, newErrors, GetAnnotations, _selectKeyword, _caseKeyword, _expression, _whenClause)
         End Function
 
         Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
-            Return new SelectStatementSyntax(Me.Kind, GetDiagnostics, annotations, _selectKeyword, _caseKeyword, _expression)
+            Return new SelectStatementSyntax(Me.Kind, GetDiagnostics, annotations, _selectKeyword, _caseKeyword, _expression, _whenClause)
         End Function
 
         Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
@@ -37045,9 +37166,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(node IsNot Nothing)
             Return VisitStatement(node)
         End Function
-        Public Overridable Function VisitCatchFilterClause(ByVal node As CatchFilterClauseSyntax) As VisualBasicSyntaxNode
+        Public Overridable Function VisitFilterClause(ByVal node As FilterClauseSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
             Return VisitVisualBasicSyntaxNode(node)
+        End Function
+        Public Overridable Function VisitCatchFilterClause(ByVal node As CatchFilterClauseSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitFilterClause(node)
+        End Function
+        Public Overridable Function VisitSelectCaseFilterClause(ByVal node As SelectCaseFilterClauseSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitFilterClause(node)
         End Function
         Public Overridable Function VisitFinallyBlock(ByVal node As FinallyBlockSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
@@ -39380,6 +39509,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
         End Function
 
+        Public Overrides Function VisitSelectCaseFilterClause(ByVal node As SelectCaseFilterClauseSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newWhenKeyword = DirectCast(Visit(node.WhenKeyword), KeywordSyntax)
+            If node._whenKeyword IsNot newWhenKeyword Then anyChanges = True
+            Dim newFilter = DirectCast(Visit(node._filter), ExpressionSyntax)
+            If node._filter IsNot newFilter Then anyChanges = True
+
+            If anyChanges Then
+                Return New SelectCaseFilterClauseSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newWhenKeyword, newFilter)
+            Else
+                Return node
+            End If
+        End Function
+
         Public Overrides Function VisitFinallyBlock(ByVal node As FinallyBlockSyntax) As VisualBasicSyntaxNode
             Dim anyChanges As Boolean = False
 
@@ -39504,9 +39648,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             If node._caseKeyword IsNot newCaseKeyword Then anyChanges = True
             Dim newExpression = DirectCast(Visit(node._expression), ExpressionSyntax)
             If node._expression IsNot newExpression Then anyChanges = True
+            Dim newWhenClause = DirectCast(Visit(node._whenClause), SelectCaseFilterClauseSyntax)
+            If node._whenClause IsNot newWhenClause Then anyChanges = True
 
             If anyChanges Then
-                Return New SelectStatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newSelectKeyword, newCaseKeyword, newExpression)
+                Return New SelectStatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newSelectKeyword, newCaseKeyword, newExpression, newWhenClause)
             Else
                 Return node
             End If
@@ -42047,7 +42193,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
               GetType(TryStatementSyntax),
               GetType(CatchBlockSyntax),
               GetType(CatchStatementSyntax),
+              GetType(FilterClauseSyntax),
               GetType(CatchFilterClauseSyntax),
+              GetType(SelectCaseFilterClauseSyntax),
               GetType(FinallyBlockSyntax),
               GetType(FinallyStatementSyntax),
               GetType(ErrorStatementSyntax),
@@ -47077,6 +47225,34 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 
         ''' <summary>
+        ''' Represents the "When ..." clause of a "Catch" statement.
+        ''' </summary>
+        ''' <param name="whenKeyword">
+        ''' The "When" keyword.
+        ''' </param>
+        ''' <param name="filter">
+        ''' The filter expression to be evaluated.
+        ''' </param>
+        Friend Shared Function SelectCaseFilterClause(whenKeyword As KeywordSyntax, filter As ExpressionSyntax) As SelectCaseFilterClauseSyntax
+            Debug.Assert(whenKeyword IsNot Nothing AndAlso whenKeyword.Kind = SyntaxKind.WhenKeyword)
+            Debug.Assert(filter IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.SelectCaseFilterClause, whenKeyword, filter, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, SelectCaseFilterClauseSyntax)
+            End If
+
+            Dim result = New SelectCaseFilterClauseSyntax(SyntaxKind.SelectCaseFilterClause, whenKeyword, filter)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
         ''' Represents a "Finally ..." block of a "Try" block.
         ''' </summary>
         ''' <param name="finallyStatement">
@@ -47432,22 +47608,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="expression">
         ''' The value that branching is based on.
         ''' </param>
-        Friend Shared Function SelectStatement(selectKeyword As KeywordSyntax, caseKeyword As KeywordSyntax, expression As ExpressionSyntax) As SelectStatementSyntax
+        ''' <param name="whenClause">
+        ''' A "When" clause to guard the select case block.
+        ''' </param>
+        Friend Shared Function SelectStatement(selectKeyword As KeywordSyntax, caseKeyword As KeywordSyntax, expression As ExpressionSyntax, whenClause As SelectCaseFilterClauseSyntax) As SelectStatementSyntax
             Debug.Assert(selectKeyword IsNot Nothing AndAlso selectKeyword.Kind = SyntaxKind.SelectKeyword)
             Debug.Assert(expression IsNot Nothing)
-
-            Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.SelectStatement, selectKeyword, caseKeyword, expression, hash)
-            If cached IsNot Nothing Then
-                Return DirectCast(cached, SelectStatementSyntax)
-            End If
-
-            Dim result = New SelectStatementSyntax(SyntaxKind.SelectStatement, selectKeyword, caseKeyword, expression)
-            If hash >= 0 Then
-                SyntaxNodeCache.AddNode(result, hash)
-            End If
-
-            Return result
+            Return New SelectStatementSyntax(SyntaxKind.SelectStatement, selectKeyword, caseKeyword, expression, whenClause)
         End Function
 
 
@@ -59153,6 +59320,34 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 
         ''' <summary>
+        ''' Represents the "When ..." clause of a "Catch" statement.
+        ''' </summary>
+        ''' <param name="whenKeyword">
+        ''' The "When" keyword.
+        ''' </param>
+        ''' <param name="filter">
+        ''' The filter expression to be evaluated.
+        ''' </param>
+        Friend Function SelectCaseFilterClause(whenKeyword As KeywordSyntax, filter As ExpressionSyntax) As SelectCaseFilterClauseSyntax
+            Debug.Assert(whenKeyword IsNot Nothing AndAlso whenKeyword.Kind = SyntaxKind.WhenKeyword)
+            Debug.Assert(filter IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.SelectCaseFilterClause, whenKeyword, filter, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, SelectCaseFilterClauseSyntax)
+            End If
+
+            Dim result = New SelectCaseFilterClauseSyntax(SyntaxKind.SelectCaseFilterClause, whenKeyword, filter, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
         ''' Represents a "Finally ..." block of a "Try" block.
         ''' </summary>
         ''' <param name="finallyStatement">
@@ -59508,22 +59703,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="expression">
         ''' The value that branching is based on.
         ''' </param>
-        Friend Function SelectStatement(selectKeyword As KeywordSyntax, caseKeyword As KeywordSyntax, expression As ExpressionSyntax) As SelectStatementSyntax
+        ''' <param name="whenClause">
+        ''' A "When" clause to guard the select case block.
+        ''' </param>
+        Friend Function SelectStatement(selectKeyword As KeywordSyntax, caseKeyword As KeywordSyntax, expression As ExpressionSyntax, whenClause As SelectCaseFilterClauseSyntax) As SelectStatementSyntax
             Debug.Assert(selectKeyword IsNot Nothing AndAlso selectKeyword.Kind = SyntaxKind.SelectKeyword)
             Debug.Assert(expression IsNot Nothing)
-
-            Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.SelectStatement, selectKeyword, caseKeyword, expression, _factoryContext, hash)
-            If cached IsNot Nothing Then
-                Return DirectCast(cached, SelectStatementSyntax)
-            End If
-
-            Dim result = New SelectStatementSyntax(SyntaxKind.SelectStatement, selectKeyword, caseKeyword, expression, _factoryContext)
-            If hash >= 0 Then
-                SyntaxNodeCache.AddNode(result, hash)
-            End If
-
-            Return result
+            Return New SelectStatementSyntax(SyntaxKind.SelectStatement, selectKeyword, caseKeyword, expression, whenClause, _factoryContext)
         End Function
 
 

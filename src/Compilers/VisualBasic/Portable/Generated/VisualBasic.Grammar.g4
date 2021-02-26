@@ -1071,7 +1071,11 @@ select_block
   ;
 
 select_statement
-  : 'Select' 'Case'? expression
+  : 'Select' 'Case'? expression select_case_filter_clause?
+  ;
+
+select_case_filter_clause
+  : 'When' expression
   ;
 
 case_block
@@ -2001,6 +2005,11 @@ date_literal_token
 
 decimal_literal_token
   : /* see lexical specification */
+  ;
+
+filter_clause
+  : catch_filter_clause
+  | select_case_filter_clause
   ;
 
 floating_literal_token

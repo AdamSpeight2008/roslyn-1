@@ -588,6 +588,10 @@ Partial Public Class GeneratedTests
             return InternalSyntax.SyntaxFactory.CatchFilterClause(new InternalSyntax.KeywordSyntax(SyntaxKind.WhenKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer())
         End Function
 
+        Private Shared Function GenerateGreenSelectCaseFilterClause() As InternalSyntax.SelectCaseFilterClauseSyntax
+            return InternalSyntax.SyntaxFactory.SelectCaseFilterClause(new InternalSyntax.KeywordSyntax(SyntaxKind.WhenKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer())
+        End Function
+
         Private Shared Function GenerateGreenFinallyBlock() As InternalSyntax.FinallyBlockSyntax
             return InternalSyntax.SyntaxFactory.FinallyBlock(GenerateGreenFinallyStatement(), Nothing)
         End Function
@@ -633,7 +637,7 @@ Partial Public Class GeneratedTests
         End Function
 
         Private Shared Function GenerateGreenSelectStatement() As InternalSyntax.SelectStatementSyntax
-            return InternalSyntax.SyntaxFactory.SelectStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.SelectKeyword, String.Empty, Nothing, Nothing), Nothing, GenerateGreenKeywordEventContainer())
+            return InternalSyntax.SyntaxFactory.SelectStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.SelectKeyword, String.Empty, Nothing, Nothing), Nothing, GenerateGreenKeywordEventContainer(), Nothing)
         End Function
 
         Private Shared Function GenerateGreenCaseBlock() As InternalSyntax.CaseBlockSyntax
@@ -2406,6 +2410,12 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenCatchFilterClause()
             dim objectUnderTest = GenerateGreenCatchFilterClause()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenSelectCaseFilterClause()
+            dim objectUnderTest = GenerateGreenSelectCaseFilterClause()
             AttachAndCheckDiagnostics(objectUnderTest)
         End Sub
 
@@ -4991,6 +5001,14 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenCatchFilterClauseRewriter()
             dim oldNode = GenerateGreenCatchFilterClause()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenSelectCaseFilterClauseRewriter()
+            dim oldNode = GenerateGreenSelectCaseFilterClause()
             Dim rewriter = New GreenIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)
@@ -7780,6 +7798,13 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenCatchFilterClauseVisitor()
             Dim oldNode = GenerateGreenCatchFilterClause()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenSelectCaseFilterClauseVisitor()
+            Dim oldNode = GenerateGreenSelectCaseFilterClause()
             Dim visitor = New GreenNodeVisitor()
             visitor.Visit(oldNode)
         End Sub
@@ -12526,6 +12551,27 @@ Partial Public Class GeneratedTests
             return SyntaxFactory.CatchFilterClause(SyntaxFactory.Token(SyntaxKind.WhenKeyword), GenerateRedKeywordEventContainer())
         End Function
 
+        Private Shared Function GenerateRedSelectCaseFilterClause() As SelectCaseFilterClauseSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.SelectCaseFilterClause(SyntaxFactory.Token(SyntaxKind.WhenKeyword), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.SelectCaseFilterClause(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedKeywordEventContainer())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.SelectCaseFilterClause(SyntaxFactory.Token(SyntaxKind.WhenKeyword), GenerateRedKeywordEventContainer())
+        End Function
+
         Private Shared Function GenerateRedFinallyBlock() As FinallyBlockSyntax
             Dim exceptionTest as boolean = false
             Try
@@ -12784,7 +12830,7 @@ Partial Public Class GeneratedTests
         Private Shared Function GenerateRedSelectStatement() As SelectStatementSyntax
             Dim exceptionTest as boolean = false
             Try
-            SyntaxFactory.SelectStatement(SyntaxFactory.Token(SyntaxKind.SelectKeyword), Nothing, Nothing)
+            SyntaxFactory.SelectStatement(SyntaxFactory.Token(SyntaxKind.SelectKeyword), Nothing, Nothing, Nothing)
             catch e as ArgumentNullException
             exceptionTest = true
             End Try
@@ -12792,14 +12838,14 @@ Partial Public Class GeneratedTests
             exceptionTest = false
 
             Try
-            SyntaxFactory.SelectStatement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), Nothing, GenerateRedKeywordEventContainer())
+            SyntaxFactory.SelectStatement(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), Nothing, GenerateRedKeywordEventContainer(), Nothing)
             catch e as ArgumentException
             exceptionTest = true
             End Try
             Debug.Assert(exceptionTest)
             exceptionTest = false
 
-            return SyntaxFactory.SelectStatement(SyntaxFactory.Token(SyntaxKind.SelectKeyword), Nothing, GenerateRedKeywordEventContainer())
+            return SyntaxFactory.SelectStatement(SyntaxFactory.Token(SyntaxKind.SelectKeyword), Nothing, GenerateRedKeywordEventContainer(), Nothing)
         End Function
 
         Private Shared Function GenerateRedCaseBlock() As CaseBlockSyntax
@@ -19724,6 +19770,15 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestRedSelectCaseFilterClause()
+            dim objectUnderTest = GenerateRedSelectCaseFilterClause()
+            Assert.NotNull(objectUnderTest.whenKeyword)
+            Assert.NotNull(objectUnderTest.filter)
+            Dim withObj = objectUnderTest.WithWhenKeyword(objectUnderTest.WhenKeyword).WithFilter(objectUnderTest.Filter)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
         Public Sub TestRedFinallyBlock()
             dim objectUnderTest = GenerateRedFinallyBlock()
             Assert.NotNull(objectUnderTest.finallyStatement)
@@ -19830,7 +19885,7 @@ Partial Public Class GeneratedTests
             dim objectUnderTest = GenerateRedSelectStatement()
             Assert.NotNull(objectUnderTest.selectKeyword)
             Assert.NotNull(objectUnderTest.expression)
-            Dim withObj = objectUnderTest.WithSelectKeyword(objectUnderTest.SelectKeyword).WithCaseKeyword(objectUnderTest.CaseKeyword).WithExpression(objectUnderTest.Expression)
+            Dim withObj = objectUnderTest.WithSelectKeyword(objectUnderTest.SelectKeyword).WithCaseKeyword(objectUnderTest.CaseKeyword).WithExpression(objectUnderTest.Expression).WithWhenClause(objectUnderTest.WhenClause)
             Assert.Equal(withobj, objectUnderTest)
         End Sub
 
@@ -23051,6 +23106,14 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestRedCatchFilterClauseRewriter()
             dim oldNode = GenerateRedCatchFilterClause()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedSelectCaseFilterClauseRewriter()
+            dim oldNode = GenerateRedSelectCaseFilterClause()
             Dim rewriter = New RedIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)
