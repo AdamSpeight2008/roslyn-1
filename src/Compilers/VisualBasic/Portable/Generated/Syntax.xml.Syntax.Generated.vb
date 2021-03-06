@@ -15122,6 +15122,74 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
     ''' <summary>
     ''' Represents an "Else ..." block.
     ''' </summary>
+    Public MustInherit Class AbstractElseBlockSyntax
+        Inherits VisualBasicSyntaxNode
+
+        Friend _elseStatement as ElseStatementSyntax
+        Friend _statements as SyntaxNode
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "Else" statement that begins the "Else" block.
+        ''' </summary>
+        Public ReadOnly Property ElseStatement As ElseStatementSyntax
+            Get
+                Return Me.GetElseStatementCore()
+            End Get
+        End Property
+
+        Friend Overridable Function GetElseStatementCore() As ElseStatementSyntax
+            Return GetRedAtZero(_elseStatement)
+        End Function
+
+        ''' <summary>
+        ''' Returns a copy of this with the ElseStatement property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Function WithElseStatement(elseStatement As ElseStatementSyntax) As AbstractElseBlockSyntax
+            Return WithElseStatementCore(elseStatement)
+        End Function
+        Friend MustOverride Function WithElseStatementCore(elseStatement As ElseStatementSyntax) As AbstractElseBlockSyntax
+
+        ''' <summary>
+        ''' A list of statements to be executed.
+        ''' </summary>
+        ''' <remarks>
+        ''' If nothing is present, an empty list is returned.
+        ''' </remarks>
+        Public ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
+            Get
+                Return Me.GetStatementsCore()
+            End Get
+        End Property
+
+        Friend Overridable Function GetStatementsCore() As SyntaxList(Of StatementSyntax)
+            Dim listNode = GetRed(_statements, 1)
+            Return new SyntaxList(Of StatementSyntax)(listNode)
+        End Function
+
+        ''' <summary>
+        ''' Returns a copy of this with the Statements property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Function WithStatements(statements As SyntaxList(Of StatementSyntax)) As AbstractElseBlockSyntax
+            Return WithStatementsCore(statements)
+        End Function
+        Friend MustOverride Function WithStatementsCore(statements As SyntaxList(Of StatementSyntax)) As AbstractElseBlockSyntax
+
+        Public Shadows Function AddStatements(ParamArray items As StatementSyntax()) As AbstractElseBlockSyntax
+            Return AddStatementsCore(items)
+        End Function
+        Friend MustOverride Function AddStatementsCore(ParamArray items As StatementSyntax()) As AbstractElseBlockSyntax
+    End Class
+
     ''' <remarks>
     ''' <para>This node is associated with the following syntax kinds:</para>
     ''' <list type="bullet">
@@ -15129,10 +15197,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
     ''' </list>
     ''' </remarks>
     Public NotInheritable Class ElseBlockSyntax
-        Inherits VisualBasicSyntaxNode
+        Inherits AbstractElseBlockSyntax
 
-        Friend _elseStatement as ElseStatementSyntax
-        Friend _statements as SyntaxNode
 
         Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
             MyBase.New(green, parent, startLocation)
@@ -15147,11 +15213,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <summary>
         ''' The "Else" statement that begins the "Else" block.
         ''' </summary>
-        Public ReadOnly Property ElseStatement As ElseStatementSyntax
+        Public Shadows ReadOnly Property ElseStatement As ElseStatementSyntax
             Get
                 Return GetRedAtZero(_elseStatement)
             End Get
         End Property
+
+        Friend Overrides Function GetElseStatementCore() As ElseStatementSyntax
+            Return Me.ElseStatement
+        End Function
+
+        Friend Overrides Function WithElseStatementCore(elseStatement As ElseStatementSyntax) As AbstractElseBlockSyntax
+            Return WithElseStatement(elseStatement)
+        End Function
 
         ''' <summary>
         ''' Returns a copy of this with the ElseStatement property changed to the specified
@@ -15168,12 +15242,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <remarks>
         ''' If nothing is present, an empty list is returned.
         ''' </remarks>
-        Public ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
+        Public Shadows ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
             Get
                 Dim listNode = GetRed(_statements, 1)
                 Return new SyntaxList(Of StatementSyntax)(listNode)
             End Get
         End Property
+
+        Friend Overrides Function GetStatementsCore() As SyntaxList(Of StatementSyntax)
+            Return Me.Statements
+        End Function
+
+        Friend Overrides Function WithStatementsCore(statements As SyntaxList(Of StatementSyntax)) As AbstractElseBlockSyntax
+            Return WithStatements(statements)
+        End Function
 
         ''' <summary>
         ''' Returns a copy of this with the Statements property changed to the specified
@@ -15186,6 +15268,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
         Public Shadows Function AddStatements(ParamArray items As StatementSyntax()) As ElseBlockSyntax
             Return Me.WithStatements(Me.Statements.AddRange(items))
+        End Function
+
+        Friend Overrides Function AddStatementsCore(ParamArray items As StatementSyntax()) As AbstractElseBlockSyntax
+            Return AddStatements(items)
         End Function
 
         Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
@@ -15232,6 +15318,145 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         Public Function Update(elseStatement As ElseStatementSyntax, statements As SyntaxList(of StatementSyntax)) As ElseBlockSyntax
             If elseStatement IsNot Me.ElseStatement OrElse statements <> Me.Statements Then
                 Dim newNode = SyntaxFactory.ElseBlock(elseStatement, statements)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    ''' <remarks>
+    ''' <para>This node is associated with the following syntax kinds:</para>
+    ''' <list type="bullet">
+    ''' <item><description><see cref="SyntaxKind.SelectElseBlock"/></description></item>
+    ''' </list>
+    ''' </remarks>
+    Public NotInheritable Class SelectElseBlockSyntax
+        Inherits AbstractElseBlockSyntax
+
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), elseStatement As ElseStatementSyntax, statements As SyntaxNode)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectElseBlockSyntax(kind, errors, annotations, DirectCast(elseStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ElseStatementSyntax), if(statements IsNot Nothing, statements.Green, Nothing)), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "Else" statement that begins the "Else" block.
+        ''' </summary>
+        Public Shadows ReadOnly Property ElseStatement As ElseStatementSyntax
+            Get
+                Return GetRedAtZero(_elseStatement)
+            End Get
+        End Property
+
+        Friend Overrides Function GetElseStatementCore() As ElseStatementSyntax
+            Return Me.ElseStatement
+        End Function
+
+        Friend Overrides Function WithElseStatementCore(elseStatement As ElseStatementSyntax) As AbstractElseBlockSyntax
+            Return WithElseStatement(elseStatement)
+        End Function
+
+        ''' <summary>
+        ''' Returns a copy of this with the ElseStatement property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithElseStatement(elseStatement as ElseStatementSyntax) As SelectElseBlockSyntax
+            return Update(elseStatement, Me.Statements)
+        End Function
+
+        ''' <summary>
+        ''' A list of statements to be executed.
+        ''' </summary>
+        ''' <remarks>
+        ''' If nothing is present, an empty list is returned.
+        ''' </remarks>
+        Public Shadows ReadOnly Property Statements As SyntaxList(Of StatementSyntax)
+            Get
+                Dim listNode = GetRed(_statements, 1)
+                Return new SyntaxList(Of StatementSyntax)(listNode)
+            End Get
+        End Property
+
+        Friend Overrides Function GetStatementsCore() As SyntaxList(Of StatementSyntax)
+            Return Me.Statements
+        End Function
+
+        Friend Overrides Function WithStatementsCore(statements As SyntaxList(Of StatementSyntax)) As AbstractElseBlockSyntax
+            Return WithStatements(statements)
+        End Function
+
+        ''' <summary>
+        ''' Returns a copy of this with the Statements property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithStatements(statements as SyntaxList(Of StatementSyntax)) As SelectElseBlockSyntax
+            return Update(Me.ElseStatement, statements)
+        End Function
+
+        Public Shadows Function AddStatements(ParamArray items As StatementSyntax()) As SelectElseBlockSyntax
+            Return Me.WithStatements(Me.Statements.AddRange(items))
+        End Function
+
+        Friend Overrides Function AddStatementsCore(ParamArray items As StatementSyntax()) As AbstractElseBlockSyntax
+            Return AddStatements(items)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me._elseStatement
+                Case 1
+                    Return Me._statements
+                Case Else
+                    Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 0
+                    Return Me.ElseStatement
+                Case 1
+                    Return GetRed(_statements, 1)
+                Case Else
+                    Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitSelectElseBlock(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitSelectElseBlock(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="elseStatement">
+        ''' The value for the ElseStatement property.
+        ''' </param>
+        ''' <param name="statements">
+        ''' The value for the Statements property.
+        ''' </param>
+        Public Function Update(elseStatement As ElseStatementSyntax, statements As SyntaxList(of StatementSyntax)) As SelectElseBlockSyntax
+            If elseStatement IsNot Me.ElseStatement OrElse statements <> Me.Statements Then
+                Dim newNode = SyntaxFactory.SelectElseBlock(elseStatement, statements)
                 Dim annotations = Me.GetAnnotations()
                 If annotations IsNot Nothing AndAlso annotations.Length > 0
                     return newNode.WithAnnotations(annotations)
@@ -17021,6 +17246,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
         Friend _selectStatement as SelectStatementSyntax
         Friend _caseBlocks as SyntaxNode
+        Friend _elseBlock as ElseBlockSyntax
         Friend _endSelectStatement as EndBlockStatementSyntax
 
         Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
@@ -17029,8 +17255,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), selectStatement As SelectStatementSyntax, caseBlocks As SyntaxNode, endSelectStatement As EndBlockStatementSyntax)
-            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectBlockSyntax(kind, errors, annotations, DirectCast(selectStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectStatementSyntax), if(caseBlocks IsNot Nothing, caseBlocks.Green, Nothing), DirectCast(endSelectStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), selectStatement As SelectStatementSyntax, caseBlocks As SyntaxNode, elseBlock As ElseBlockSyntax, endSelectStatement As EndBlockStatementSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectBlockSyntax(kind, errors, annotations, DirectCast(selectStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SelectStatementSyntax), if(caseBlocks IsNot Nothing, caseBlocks.Green, Nothing), if(elseBlock IsNot Nothing, DirectCast(elseBlock.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ElseBlockSyntax), Nothing), DirectCast(endSelectStatement.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.EndBlockStatementSyntax)), Nothing, 0)
         End Sub
 
         ''' <summary>
@@ -17048,7 +17274,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' the current value.
         ''' </summary>
         Public Shadows Function WithSelectStatement(selectStatement as SelectStatementSyntax) As SelectBlockSyntax
-            return Update(selectStatement, Me.CaseBlocks, Me.EndSelectStatement)
+            return Update(selectStatement, Me.CaseBlocks, Me.ElseBlock, Me.EndSelectStatement)
         End Function
 
         ''' <summary>
@@ -17070,11 +17296,34 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value.
         ''' </summary>
         Public Shadows Function WithCaseBlocks(caseBlocks as SyntaxList(Of CaseBlockSyntax)) As SelectBlockSyntax
-            return Update(Me.SelectStatement, caseBlocks, Me.EndSelectStatement)
+            return Update(Me.SelectStatement, caseBlocks, Me.ElseBlock, Me.EndSelectStatement)
         End Function
 
         Public Shadows Function AddCaseBlocks(ParamArray items As CaseBlockSyntax()) As SelectBlockSyntax
             Return Me.WithCaseBlocks(Me.CaseBlocks.AddRange(items))
+        End Function
+
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
+        Public ReadOnly Property ElseBlock As ElseBlockSyntax
+            Get
+                Return GetRed(_elseBlock, 2)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the ElseBlock property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithElseBlock(elseBlock as ElseBlockSyntax) As SelectBlockSyntax
+            return Update(Me.SelectStatement, Me.CaseBlocks, elseBlock, Me.EndSelectStatement)
+        End Function
+
+        Public Shadows Function AddElseBlockStatements(ParamArray items As StatementSyntax()) As SelectBlockSyntax
+            Dim _child = If(Me.ElseBlock IsNot Nothing, Me.ElseBlock, SyntaxFactory.ElseBlock())
+            Return Me.WithElseBlock(_child.AddStatements(items))
         End Function
 
         ''' <summary>
@@ -17082,7 +17331,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' </summary>
         Public ReadOnly Property EndSelectStatement As EndBlockStatementSyntax
             Get
-                Return GetRed(_endSelectStatement, 2)
+                Return GetRed(_endSelectStatement, 3)
             End Get
         End Property
 
@@ -17092,7 +17341,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' the current value.
         ''' </summary>
         Public Shadows Function WithEndSelectStatement(endSelectStatement as EndBlockStatementSyntax) As SelectBlockSyntax
-            return Update(Me.SelectStatement, Me.CaseBlocks, endSelectStatement)
+            return Update(Me.SelectStatement, Me.CaseBlocks, Me.ElseBlock, endSelectStatement)
         End Function
 
         Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
@@ -17102,6 +17351,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
                 Case 1
                     Return Me._caseBlocks
                 Case 2
+                    Return Me._elseBlock
+                Case 3
                     Return Me._endSelectStatement
                 Case Else
                     Return Nothing
@@ -17115,6 +17366,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
                 Case 1
                     Return GetRed(_caseBlocks, 1)
                 Case 2
+                    Return Me.ElseBlock
+                Case 3
                     Return Me.EndSelectStatement
                 Case Else
                     Return Nothing
@@ -17140,12 +17393,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <param name="caseBlocks">
         ''' The value for the CaseBlocks property.
         ''' </param>
+        ''' <param name="elseBlock">
+        ''' The value for the ElseBlock property.
+        ''' </param>
         ''' <param name="endSelectStatement">
         ''' The value for the EndSelectStatement property.
         ''' </param>
-        Public Function Update(selectStatement As SelectStatementSyntax, caseBlocks As SyntaxList(of CaseBlockSyntax), endSelectStatement As EndBlockStatementSyntax) As SelectBlockSyntax
-            If selectStatement IsNot Me.SelectStatement OrElse caseBlocks <> Me.CaseBlocks OrElse endSelectStatement IsNot Me.EndSelectStatement Then
-                Dim newNode = SyntaxFactory.SelectBlock(selectStatement, caseBlocks, endSelectStatement)
+        Public Function Update(selectStatement As SelectStatementSyntax, caseBlocks As SyntaxList(of CaseBlockSyntax), elseBlock As ElseBlockSyntax, endSelectStatement As EndBlockStatementSyntax) As SelectBlockSyntax
+            If selectStatement IsNot Me.SelectStatement OrElse caseBlocks <> Me.CaseBlocks OrElse elseBlock IsNot Me.ElseBlock OrElse endSelectStatement IsNot Me.EndSelectStatement Then
+                Dim newNode = SyntaxFactory.SelectBlock(selectStatement, caseBlocks, elseBlock, endSelectStatement)
                 Dim annotations = Me.GetAnnotations()
                 If annotations IsNot Nothing AndAlso annotations.Length > 0
                     return newNode.WithAnnotations(annotations)

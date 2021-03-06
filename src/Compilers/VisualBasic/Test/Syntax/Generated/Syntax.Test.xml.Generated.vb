@@ -564,6 +564,10 @@ Partial Public Class GeneratedTests
             return InternalSyntax.SyntaxFactory.ElseBlock(GenerateGreenElseStatement(), Nothing)
         End Function
 
+        Private Shared Function GenerateGreenSelectElseBlock() As InternalSyntax.SelectElseBlockSyntax
+            return InternalSyntax.SyntaxFactory.SelectElseBlock(GenerateGreenElseStatement(), Nothing)
+        End Function
+
         Private Shared Function GenerateGreenElseStatement() As InternalSyntax.ElseStatementSyntax
             return InternalSyntax.SyntaxFactory.ElseStatement(new InternalSyntax.KeywordSyntax(SyntaxKind.ElseKeyword, String.Empty, Nothing, Nothing))
         End Function
@@ -633,7 +637,7 @@ Partial Public Class GeneratedTests
         End Function
 
         Private Shared Function GenerateGreenSelectBlock() As InternalSyntax.SelectBlockSyntax
-            return InternalSyntax.SyntaxFactory.SelectBlock(GenerateGreenSelectStatement(), Nothing, GenerateGreenEndSelectStatement())
+            return InternalSyntax.SyntaxFactory.SelectBlock(GenerateGreenSelectStatement(), Nothing, Nothing, GenerateGreenEndSelectStatement())
         End Function
 
         Private Shared Function GenerateGreenSelectStatement() As InternalSyntax.SelectStatementSyntax
@@ -2374,6 +2378,12 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenElseBlock()
             dim objectUnderTest = GenerateGreenElseBlock()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenSelectElseBlock()
+            dim objectUnderTest = GenerateGreenSelectElseBlock()
             AttachAndCheckDiagnostics(objectUnderTest)
         End Sub
 
@@ -4953,6 +4963,14 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenElseBlockRewriter()
             dim oldNode = GenerateGreenElseBlock()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenSelectElseBlockRewriter()
+            dim oldNode = GenerateGreenSelectElseBlock()
             Dim rewriter = New GreenIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)
@@ -7756,6 +7774,13 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenElseBlockVisitor()
             Dim oldNode = GenerateGreenElseBlock()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenSelectElseBlockVisitor()
+            Dim oldNode = GenerateGreenSelectElseBlock()
             Dim visitor = New GreenNodeVisitor()
             visitor.Visit(oldNode)
         End Sub
@@ -12457,6 +12482,19 @@ Partial Public Class GeneratedTests
             return SyntaxFactory.ElseBlock(GenerateRedElseStatement(), Nothing)
         End Function
 
+        Private Shared Function GenerateRedSelectElseBlock() As SelectElseBlockSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.SelectElseBlock(Nothing, Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.SelectElseBlock(GenerateRedElseStatement(), Nothing)
+        End Function
+
         Private Shared Function GenerateRedElseStatement() As ElseStatementSyntax
             Dim exceptionTest as boolean = false
             Try
@@ -12809,7 +12847,7 @@ Partial Public Class GeneratedTests
         Private Shared Function GenerateRedSelectBlock() As SelectBlockSyntax
             Dim exceptionTest as boolean = false
             Try
-            SyntaxFactory.SelectBlock(Nothing, Nothing, GenerateRedEndSelectStatement())
+            SyntaxFactory.SelectBlock(Nothing, Nothing, Nothing, GenerateRedEndSelectStatement())
             catch e as ArgumentNullException
             exceptionTest = true
             End Try
@@ -12817,14 +12855,14 @@ Partial Public Class GeneratedTests
             exceptionTest = false
 
             Try
-            SyntaxFactory.SelectBlock(GenerateRedSelectStatement(), Nothing, Nothing)
+            SyntaxFactory.SelectBlock(GenerateRedSelectStatement(), Nothing, Nothing, Nothing)
             catch e as ArgumentNullException
             exceptionTest = true
             End Try
             Debug.Assert(exceptionTest)
             exceptionTest = false
 
-            return SyntaxFactory.SelectBlock(GenerateRedSelectStatement(), Nothing, GenerateRedEndSelectStatement())
+            return SyntaxFactory.SelectBlock(GenerateRedSelectStatement(), Nothing, Nothing, GenerateRedEndSelectStatement())
         End Function
 
         Private Shared Function GenerateRedSelectStatement() As SelectStatementSyntax
@@ -19720,6 +19758,14 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestRedSelectElseBlock()
+            dim objectUnderTest = GenerateRedSelectElseBlock()
+            Assert.NotNull(objectUnderTest.elseStatement)
+            Dim withObj = objectUnderTest.WithElseStatement(objectUnderTest.ElseStatement).WithStatements(objectUnderTest.Statements)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
         Public Sub TestRedElseStatement()
             dim objectUnderTest = GenerateRedElseStatement()
             Assert.NotNull(objectUnderTest.elseKeyword)
@@ -19876,7 +19922,7 @@ Partial Public Class GeneratedTests
             dim objectUnderTest = GenerateRedSelectBlock()
             Assert.NotNull(objectUnderTest.selectStatement)
             Assert.NotNull(objectUnderTest.endSelectStatement)
-            Dim withObj = objectUnderTest.WithSelectStatement(objectUnderTest.SelectStatement).WithCaseBlocks(objectUnderTest.CaseBlocks).WithEndSelectStatement(objectUnderTest.EndSelectStatement)
+            Dim withObj = objectUnderTest.WithSelectStatement(objectUnderTest.SelectStatement).WithCaseBlocks(objectUnderTest.CaseBlocks).WithElseBlock(objectUnderTest.ElseBlock).WithEndSelectStatement(objectUnderTest.EndSelectStatement)
             Assert.Equal(withobj, objectUnderTest)
         End Sub
 
@@ -23058,6 +23104,14 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestRedElseBlockRewriter()
             dim oldNode = GenerateRedElseBlock()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedSelectElseBlockRewriter()
+            dim oldNode = GenerateRedSelectElseBlock()
             Dim rewriter = New RedIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)

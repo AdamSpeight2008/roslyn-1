@@ -17,6 +17,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Inherits ExecutableStatementContext
 
         Private ReadOnly _caseBlocks As SyntaxListBuilder(Of CaseBlockSyntax)
+        Private _elseBlock As ElseBlockSyntax
 
         Friend Sub New(statement As StatementSyntax, prevContext As BlockContext)
             MyBase.New(SyntaxKind.SelectBlock, statement, prevContext)
@@ -34,24 +35,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Case SyntaxKind.CaseElseStatement
                     Return New CaseBlockContext(SyntaxKind.CaseElseBlock, DirectCast(node, StatementSyntax), Me)
-
-                Case SyntaxKind.CaseBlock,
-                    SyntaxKind.CaseElseBlock
+                Case SyntaxKind.ElseStatement
+                    Return New SelectElseBlockContext(DirectCast(node, StatementSyntax), Me)
+                Case SyntaxKind.CaseBlock
                     _caseBlocks.Add(DirectCast(node, CaseBlockSyntax))
-
+                Case SyntaxKind.ElseBlock
+                    _elseBlock = DirectCast(node, ElseBlockSyntax)
                 Case Else
-                    ' TODO - davidsch
-                    ' 1. Dev10 the error is reported on the keyword that introduces the statement.  If the error is
-                    ' reported here it is easier to mark the whole statement and much harder to just mark the keyword.
-                    ' 2. The bad statement is going into an empty case block.  Is this the correct error model.  Do we need
-                    ' a BadCaseStatement? Compile a list of all uses of missing statements.
+                    Return MyBase.ProcessSyntax(node)
 
-                    node = Parser.ReportSyntaxError(node, ERRID.ERR_ExpectedCase)
-                    Dim caseStmt = SyntaxFactory.CaseStatement(InternalSyntaxFactory.MissingKeyword(SyntaxKind.CaseKeyword), New CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of CaseClauseSyntax)())
-                    Dim context = New CaseBlockContext(SyntaxKind.CaseBlock, caseStmt, Me)
-                    ' Previously we explicitly added a missing terminator.  Now, missing terminators are added automatically if a statement
-                    ' is added next to a statement.
-                    Return context.ProcessSyntax(node)
             End Select
 
             Return Me
@@ -68,7 +60,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Case _
                     SyntaxKind.CaseStatement,
-                    SyntaxKind.CaseElseStatement
+                    SyntaxKind.CaseElseStatement,
+                    SyntaxKind.ElseStatement
                     Return UseSyntax(node, newContext)
 
                 ' Reuse SyntaxKind.CaseBlock but do not reuse CaseElseBlock.  These need to be crumbled so that the 
@@ -76,6 +69,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case SyntaxKind.CaseBlock
                     Return UseSyntax(node, newContext) Or LinkResult.SkipTerminator
 
+                Case SyntaxKind.ElseBlock
+                    Return UseSyntax(node, newContext) Or LinkResult.SkipTerminator
                 Case Else
                     ' Don't reuse other statements.  It is always an error and if a block statement is reused then the error is attached to the
                     ' block instead of the statement.
@@ -90,9 +85,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim endBlockStmt As EndBlockStatementSyntax = DirectCast(endStmt, EndBlockStatementSyntax)
             GetBeginEndStatements(beginBlockStmt, endBlockStmt)
 
-            Dim result = SyntaxFactory.SelectBlock(beginBlockStmt, _caseBlocks.ToList, endBlockStmt)
+            Dim cb= _caseBlocks.ToList
+            Dim result = SyntaxFactory.SelectBlock(beginBlockStmt, cb, _elseBlock, endBlockStmt)
             _parser._pool.Free(_caseBlocks)
             FreeStatements()
+
             Return result
         End Function
 

@@ -275,6 +275,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Function VisitElseBlock(ByVal node As ElseBlockSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
+        Public Overridable Function VisitSelectElseBlock(ByVal node As SelectElseBlockSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
         Public Overridable Function VisitElseStatement(ByVal node As ElseStatementSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
@@ -1011,6 +1014,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.DefaultVisit(node) : Return
         End Sub
         Public Overridable Sub VisitElseBlock(ByVal node As ElseBlockSyntax)
+            Me.DefaultVisit(node) : Return
+        End Sub
+        Public Overridable Sub VisitSelectElseBlock(ByVal node As SelectElseBlockSyntax)
             Me.DefaultVisit(node) : Return
         End Sub
         Public Overridable Sub VisitElseStatement(ByVal node As ElseStatementSyntax)
@@ -3035,6 +3041,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
         End Function
 
+        Public Overrides Function VisitSelectElseBlock(ByVal node As SelectElseBlockSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newElseStatement = DirectCast(Visit(node.ElseStatement), ElseStatementSyntax)
+            If node.ElseStatement IsNot newElseStatement Then anyChanges = True
+            Dim newStatements = VisitList(node.Statements)
+            If node._statements IsNot newStatements.Node Then anyChanges = True
+
+            If anyChanges Then
+                Return New SelectElseBlockSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newElseStatement, newStatements.Node)
+            Else
+                Return node
+            End If
+        End Function
+
         Public Overrides Function VisitElseStatement(ByVal node As ElseStatementSyntax) As SyntaxNode
             Dim anyChanges As Boolean = False
 
@@ -3251,11 +3272,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If node.SelectStatement IsNot newSelectStatement Then anyChanges = True
             Dim newCaseBlocks = VisitList(node.CaseBlocks)
             If node._caseBlocks IsNot newCaseBlocks.Node Then anyChanges = True
+            Dim newElseBlock = DirectCast(Visit(node.ElseBlock), ElseBlockSyntax)
+            If node.ElseBlock IsNot newElseBlock Then anyChanges = True
             Dim newEndSelectStatement = DirectCast(Visit(node.EndSelectStatement), EndBlockStatementSyntax)
             If node.EndSelectStatement IsNot newEndSelectStatement Then anyChanges = True
 
             If anyChanges Then
-                Return New SelectBlockSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newSelectStatement, newCaseBlocks.Node, newEndSelectStatement)
+                Return New SelectBlockSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newSelectStatement, newCaseBlocks.Node, newElseBlock, newEndSelectStatement)
             Else
                 Return node
             End If
@@ -14571,9 +14594,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "Else ..." block.
-        ''' </summary>
         ''' <param name="elseStatement">
         ''' The "Else" statement that begins the "Else" block.
         ''' </param>
@@ -14593,9 +14613,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "Else ..." block.
-        ''' </summary>
         ''' <param name="statements">
         ''' A list of statements to be executed.
         ''' </param>
@@ -14604,11 +14621,40 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "Else ..." block.
-        ''' </summary>
         Public Shared Function ElseBlock() As ElseBlockSyntax
             Return SyntaxFactory.ElseBlock(SyntaxFactory.ElseStatement(), Nothing)
+        End Function
+
+
+        ''' <param name="elseStatement">
+        ''' The "Else" statement that begins the "Else" block.
+        ''' </param>
+        ''' <param name="statements">
+        ''' A list of statements to be executed.
+        ''' </param>
+        Public Shared Function SelectElseBlock(elseStatement As ElseStatementSyntax, statements As SyntaxList(of StatementSyntax)) As SelectElseBlockSyntax
+            if elseStatement Is Nothing Then
+                Throw New ArgumentNullException(NameOf(elseStatement))
+            End If
+            Select Case elseStatement.Kind()
+                Case SyntaxKind.ElseStatement
+                Case Else
+                    Throw new ArgumentException("elseStatement")
+            End Select
+            Return New SelectElseBlockSyntax(SyntaxKind.SelectElseBlock, Nothing, Nothing, elseStatement, statements.Node)
+        End Function
+
+
+        ''' <param name="statements">
+        ''' A list of statements to be executed.
+        ''' </param>
+        Public Shared Function SelectElseBlock(statements As SyntaxList(of StatementSyntax)) As SelectElseBlockSyntax
+            Return SyntaxFactory.SelectElseBlock(SyntaxFactory.ElseStatement(), statements)
+        End Function
+
+
+        Public Shared Function SelectElseBlock() As SelectElseBlockSyntax
+            Return SyntaxFactory.SelectElseBlock(SyntaxFactory.ElseStatement(), Nothing)
         End Function
 
 
@@ -15819,7 +15865,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="endSelectStatement">
         ''' The End Select statement that ends the block.
         ''' </param>
-        Public Shared Function SelectBlock(selectStatement As SelectStatementSyntax, caseBlocks As SyntaxList(of CaseBlockSyntax), endSelectStatement As EndBlockStatementSyntax) As SelectBlockSyntax
+        Public Shared Function SelectBlock(selectStatement As SelectStatementSyntax, caseBlocks As SyntaxList(of CaseBlockSyntax), elseBlock As ElseBlockSyntax, endSelectStatement As EndBlockStatementSyntax) As SelectBlockSyntax
             if selectStatement Is Nothing Then
                 Throw New ArgumentNullException(NameOf(selectStatement))
             End If
@@ -15836,7 +15882,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("endSelectStatement")
             End Select
-            Return New SelectBlockSyntax(SyntaxKind.SelectBlock, Nothing, Nothing, selectStatement, caseBlocks.Node, endSelectStatement)
+            Return New SelectBlockSyntax(SyntaxKind.SelectBlock, Nothing, Nothing, selectStatement, caseBlocks.Node, elseBlock, endSelectStatement)
         End Function
 
 
@@ -15850,8 +15896,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="caseBlocks">
         ''' A list of the contained Case blocks.
         ''' </param>
-        Public Shared Function SelectBlock(selectStatement As SelectStatementSyntax, caseBlocks As SyntaxList(of CaseBlockSyntax)) As SelectBlockSyntax
-            Return SyntaxFactory.SelectBlock(selectStatement, caseBlocks, SyntaxFactory.EndSelectStatement())
+        Public Shared Function SelectBlock(selectStatement As SelectStatementSyntax, caseBlocks As SyntaxList(of CaseBlockSyntax), elseBlock As ElseBlockSyntax) As SelectBlockSyntax
+            Return SyntaxFactory.SelectBlock(selectStatement, caseBlocks, elseBlock, SyntaxFactory.EndSelectStatement())
         End Function
 
 
@@ -15863,7 +15909,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' The Select Case statement that begins the block.
         ''' </param>
         Public Shared Function SelectBlock(selectStatement As SelectStatementSyntax) As SelectBlockSyntax
-            Return SyntaxFactory.SelectBlock(selectStatement, Nothing, SyntaxFactory.EndSelectStatement())
+            Return SyntaxFactory.SelectBlock(selectStatement, Nothing, Nothing, SyntaxFactory.EndSelectStatement())
         End Function
 
 

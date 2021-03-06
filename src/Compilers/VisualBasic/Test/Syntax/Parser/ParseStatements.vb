@@ -133,6 +133,20 @@ Public Class ParseStatements
             ]]>)
     End Sub
 
+        <Fact>
+        Public Sub ParseSelect_WithFilter()
+        ParseAndVerify(<![CDATA[
+                Module Module1
+                    Sub Goo()
+                        select i When c
+                            case 0
+                        else
+                        end select
+                    end sub
+               End Module
+            ]]>)
+    End Sub
+
     <Fact>
     Public Sub ParseTry()
         ParseAndVerify(<![CDATA[

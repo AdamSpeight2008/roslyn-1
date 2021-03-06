@@ -1067,7 +1067,7 @@ return_statement
   ;
 
 select_block
-  : select_statement case_block* end_select_statement
+  : select_statement case_block* else_block? end_select_statement
   ;
 
 select_statement
@@ -1993,6 +1993,15 @@ punctuation
 
 empty_token
   : /* see lexical specification */
+  ;
+
+abstract_else_block
+  : else_block
+  | select_else_block
+  ;
+
+select_else_block
+  : else_statement statement*
   ;
 
 character_literal_token

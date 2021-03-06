@@ -239,13 +239,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         End Function
 
+
         Private Function ParseCaseStatement() As CaseStatementSyntax
             Debug.Assert(CurrentToken.Kind = SyntaxKind.CaseKeyword, "ParseCaseStatement called on wrong token.")
+            Dim caseClauses = _pool.AllocateSeparated(Of CaseClauseSyntax)()
 
             Dim caseKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             GetNextToken()
 
-            Dim caseClauses = _pool.AllocateSeparated(Of CaseClauseSyntax)()
             Dim elseKeyword As KeywordSyntax = Nothing
 
             If CurrentToken.Kind = SyntaxKind.ElseKeyword Then
@@ -323,7 +324,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                     caseClauses.AddSeparator(comma)
                 Loop
-
             End If
 
             Dim separatedCaseClauses = caseClauses.ToList()
@@ -338,7 +338,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Return statement
-
         End Function
 
         Private Shared Function RelationalOperatorKindToCaseKind(kind As SyntaxKind) As SyntaxKind
@@ -402,22 +401,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseWhenFIlterClause(kind As SyntaxKind) As FilterClauseSyntax
-            Debug.Assert(kind = SyntaxKind.CatchFilterClause Or
-                         kind = SyntaxKind.SelectCaseFilterClause, NameOf(ParseWhenFIlterClause))
+            Debug.Assert(kind = SyntaxKind.CatchFilterClause OrElse kind = SyntaxKind.SelectCaseFilterClause,
+                         $"{NameOf(ParseWhenFIlterClause)} was expecting a kind of SyntaxKind.CatchFilterClause or SyntaxKind.SelectCaseFilterClause.")
             Dim optionalWhenClause As FilterClauseSyntax = Nothing
             Dim whenKeyword As KeywordSyntax = Nothing
             If TryGetToken(SyntaxKind.WhenKeyword, whenKeyword) Then
                 Dim filter = ParseExpressionCore()
-                #Disable Warning format
+#Disable Warning format
                 Select Case kind
-                       Case SyntaxKind.CatchFilterClause
-                            optionalWhenClause = SyntaxFactory.CatchFilterClause(whenKeyword, filter)
-                       Case SyntaxKind.SelectCaseFilterClauseSyntax
-                            optionalWhenClause = SyntaxFactory.SelectCaseFilterClause(whenKeyword, filter)
-                       Case Else
-                            Throw ExceptionUtilities.UnexpectedValue(kind)
+                    Case SyntaxKind.CatchFilterClause
+                        optionalWhenClause = SyntaxFactory.CatchFilterClause(whenKeyword, filter)
+                    Case SyntaxKind.SelectCaseFilterClause
+                        optionalWhenClause = SyntaxFactory.SelectCaseFilterClause(whenKeyword, filter)
+                    Case Else
+                        Throw ExceptionUtilities.UnexpectedValue(kind)
                 End Select
-                #Enable Warning format
+#Enable Warning format
             End If
             Return optionalWhenClause
         End Function

@@ -3204,5 +3204,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FilterClause = 800
         SelectCaseFilterClause = 801
         SelectCaseFilterClauseSyntax = 802
+        SelectElseBlock = 803
     End Enum
 End Namespace

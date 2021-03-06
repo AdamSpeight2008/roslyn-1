@@ -49,6 +49,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Friend Overrides Function CreateBlockSyntax(statement As StatementSyntax) As VisualBasicSyntaxNode
+
             Debug.Assert(statement Is Nothing)
 
             Debug.Assert(BeginStatement IsNot Nothing)

@@ -16,6 +16,7 @@ Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectStatementSyntax.WithWhenClause(w
 Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FilterClause = 800 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
 Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.SelectCaseFilterClause = 801 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
 Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.SelectCaseFilterClauseSyntax = 802 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.SelectElseBlock = 803 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
 Microsoft.CodeAnalysis.VisualBasic.VisualBasicGeneratorDriver
 Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitSelectCaseFilterClause(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax) -> TResult
 Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitSelectCaseFilterClause(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectCaseFilterClauseSyntax) -> Void

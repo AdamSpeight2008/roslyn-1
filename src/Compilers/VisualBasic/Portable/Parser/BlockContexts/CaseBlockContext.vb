@@ -18,12 +18,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             MyBase.New(contextKind, statement, prevContext)
 
             Debug.Assert((contextKind = SyntaxKind.CaseBlock AndAlso statement.Kind = SyntaxKind.CaseStatement) OrElse
-                              (contextKind = SyntaxKind.CaseElseBlock AndAlso statement.Kind = SyntaxKind.CaseElseStatement))
+                         (contextKind = SyntaxKind.CaseElseBlock AndAlso statement.Kind = SyntaxKind.CaseElseStatement))
         End Sub
+
+        Friend Overrides Function KindEndsBlock(kind As SyntaxKind) As Boolean
+            Return kind=SyntaxKind.ElseStatement OrElse MyBase.KindEndsBlock(kind)
+        End Function
 
         Friend Overrides Function ProcessSyntax(node As VisualBasicSyntaxNode) As BlockContext
 
             Select Case node.Kind
+                Case SyntaxKind.ElseStatement
+                    Dim context = PrevBlock.ProcessSyntax(CreateBlockSyntax(Nothing))
+                    Return context.ProcessSyntax(node)
                 Case SyntaxKind.CaseStatement, SyntaxKind.CaseElseStatement
                     'TODO - In Dev11 this error is reported on the case keyword and not the whole statement
                     If BlockKind = SyntaxKind.CaseElseBlock Then
@@ -31,7 +38,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     End If
                     Dim context = PrevBlock.ProcessSyntax(CreateBlockSyntax(Nothing))
                     Debug.Assert(context Is PrevBlock)
-                    Return context.ProcessSyntax(node)
+                    Return context.ProcessSyntax(node)  
             End Select
 
             Return MyBase.ProcessSyntax(node)
@@ -39,14 +46,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend Overrides Function TryLinkSyntax(node As VisualBasicSyntaxNode, ByRef newContext As BlockContext) As LinkResult
             newContext = Nothing
-            Select Case node.Kind
+               If KindEndsBlock(node.Kind) Then
+                Return UseSyntax(node, newContext)
+            End If
+         Select Case node.Kind
 
                 Case _
                     SyntaxKind.CaseStatement,
                     SyntaxKind.CaseElseStatement
-
                     Return UseSyntax(node, newContext)
-
+                'Case SyntaxKind.ElseStatement
+                '    newContext = New SelectElseBlockContext(DirectCast(node, ElseStatementSyntax), newContext)'
+                '    Return UseSyntax(node, newContext) Or LinkResult.Used                                                                                    'Or LinkResult.Used ' SkipTerminator 
                 Case Else
                     Return MyBase.TryLinkSyntax(node, newContext)
             End Select
@@ -57,7 +68,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(BeginStatement IsNot Nothing)
 
             Dim result As VisualBasicSyntaxNode
-            If BlockKind = SyntaxKind.CaseBlock Then
+            If BlockKind = SyntaxKind.ElseBlock Then
+                result = SyntaxFactory.ElseBlock(DirectCast(BeginStatement, ElseStatementSyntax), Me.Body)
+            ElseIf BlockKind = SyntaxKind.CaseBlock Then
                 result = SyntaxFactory.CaseBlock(DirectCast(BeginStatement, CaseStatementSyntax), Me.Body())
             Else
                 result = SyntaxFactory.CaseElseBlock(DirectCast(BeginStatement, CaseStatementSyntax), Me.Body())

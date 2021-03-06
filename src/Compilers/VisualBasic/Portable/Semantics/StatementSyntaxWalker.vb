@@ -181,6 +181,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overrides Sub VisitSelectBlock(ByVal node As SelectBlockSyntax)
             Visit(node.SelectStatement)
             VisitList(node.CaseBlocks)
+            Visit(node._elseBlock)
             Visit(node.EndSelectStatement)
         End Sub
 
@@ -204,5 +205,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Visit(node.ForEachStatement)
             VisitList(node.Statements)
         End Sub
+
+        Public Overrides Sub VisitSelectStatement(node As SelectStatementSyntax)
+            Visit(node.WhenClause.Filter)
+            Visit(node.Expression)
+        End Sub
+
     End Class
 End Namespace

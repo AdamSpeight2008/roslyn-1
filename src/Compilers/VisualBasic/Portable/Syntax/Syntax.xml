@@ -3329,7 +3329,7 @@ Unify Enum declarations with other block type declarations.
     <!--****************
       -  ElseBlock
       ******************-->
-    <node-structure name="ElseBlockSyntax" parent="VisualBasicSyntaxNode">
+    <node-structure name="AbstractElseBlockSyntax" parent="VisualBasicSyntaxNode" abstract="true">
       <description>
         Represents an "Else ..." block.
       </description>
@@ -3337,11 +3337,6 @@ Unify Enum declarations with other block type declarations.
       <native-equiv name="ElseStatement">An ElseBlock exactly corresponds to an ElseStatement -- the Else statement and its following body.</native-equiv>
       <spec-section>10.8.1</spec-section>
       <grammar>ElseStatement</grammar>
-
-      <node-kind name="ElseBlock">
-        <lm-equiv name="Else" />
-        <native-equiv name="Statement.Opcodes.BlockElse" />
-      </node-kind>
 
       <child name="ElseStatement" kind="ElseStatement">
         <description>The "Else" statement that begins the "Else" block.</description>
@@ -3353,7 +3348,18 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name="BlockStatement.Children"></native-equiv>
       </child>
     </node-structure>
+    
+    <node-structure name="ElseBlockSyntax" parent="AbstractElseBlockSyntax">
 
+      <node-kind name="ElseBlock">
+        <lm-equiv name="Else" />
+        <native-equiv name="Statement.Opcodes.BlockElse" />
+      </node-kind>
+    </node-structure>
+
+    <node-structure name="SelectElseBlockSyntax" parent="AbstractElseBlockSyntax">
+      <node-kind name="SelectElseBlock" />
+    </node-structure>
     <!--****************
       -  Else
       ******************-->
@@ -3818,6 +3824,10 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="BlockNode.Contents"></lm-equiv>
         <native-equiv name="BlockStatement.Children"></native-equiv>
       </child>
+      
+      <child name="ElseBlock" optional="true" kind="@ElseBlockSyntax">
+        
+      </child>
 
       <child name="EndSelectStatement" kind="EndSelectStatement">
         <description>
@@ -3881,15 +3891,8 @@ Unify Enum declarations with other block type declarations.
       <grammar>CaseStatement</grammar>
       <grammar>CaseElseStatement</grammar>
 
-      <node-kind name="CaseBlock">
-        <lm-equiv name="CaseBranch" />
-        <native-equiv name="Statement.Opcodes.Case" />
-      </node-kind>
-
-      <node-kind name="CaseElseBlock">
-        <lm-equiv name="CaseElseBranch" />
-        <native-equiv name="Statement.Opcodes.CaseElse" />
-      </node-kind>
+      <node-kind name="CaseBlock"><lm-equiv name="CaseBranch" /><native-equiv name="Statement.Opcodes.Case" /></node-kind>
+      <node-kind name="CaseElseBlock"><lm-equiv name="CaseElseBranch" /><native-equiv name="Statement.Opcodes.CaseElse" /></node-kind>
 
       <child name="CaseStatement" kind="CaseStatement|CaseElseStatement">
         <description>The statement that begins the case block. </description>
@@ -3902,11 +3905,13 @@ Unify Enum declarations with other block type declarations.
       </child>
     </node-structure>
 
-    <!--****************
+
+        <!--****************
       -  CaseStatement
       ******************-->
-    <node-structure name="CaseStatementSyntax" parent="StatementSyntax">
-      <description>
+    
+    <node-structure name="CaseStatementSyntax" parent ="StatementSyntax">
+            <description>
         Represents a Case or Case Else statement. This statement is always the Begin of a CaseBlock. If this is a Case Else
         statement, the Kind=CaseElse, otherwise the Kind=Case.
       </description>
@@ -3925,7 +3930,7 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="CaseElseBranch" />
         <native-equiv name="Statement.Opcodes.CaseElse" />
       </node-kind>
-
+      
       <child name="CaseKeyword" kind="CaseKeyword">
         <description>The "Case" keyword</description>
         <lm-equiv name="CaseKeyword"></lm-equiv>
@@ -3941,6 +3946,8 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name="Cases"></native-equiv>
       </child>
     </node-structure>
+    
+
 
     <!--****************
       -  CaseClause

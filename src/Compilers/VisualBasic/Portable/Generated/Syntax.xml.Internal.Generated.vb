@@ -13454,7 +13454,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     ''' <summary>
     ''' Represents an "Else ..." block.
     ''' </summary>
-    Friend NotInheritable Class ElseBlockSyntax
+    Friend MustInherit Class AbstractElseBlockSyntax
         Inherits VisualBasicSyntaxNode
 
         Friend ReadOnly _elseStatement as ElseStatementSyntax
@@ -13462,7 +13462,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend Sub New(ByVal kind As SyntaxKind, elseStatement As ElseStatementSyntax, statements As GreenNode)
             MyBase.New(kind)
-            MyBase._slotCount = 2
 
             AdjustFlagsAndWidth(elseStatement)
             Me._elseStatement = elseStatement
@@ -13475,7 +13474,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend Sub New(ByVal kind As SyntaxKind, elseStatement As ElseStatementSyntax, statements As GreenNode, context As ISyntaxFactoryContext)
             MyBase.New(kind)
-            MyBase._slotCount = 2
             Me.SetFactoryContext(context)
 
             AdjustFlagsAndWidth(elseStatement)
@@ -13489,7 +13487,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), elseStatement As ElseStatementSyntax, statements As GreenNode)
             MyBase.New(kind, errors, annotations)
-            MyBase._slotCount = 2
 
             AdjustFlagsAndWidth(elseStatement)
             Me._elseStatement = elseStatement
@@ -13502,7 +13499,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend Sub New(reader as ObjectReader)
             MyBase.New(reader)
-            MyBase._slotCount = 2
             Dim _elseStatement = DirectCast(reader.ReadValue(), ElseStatementSyntax)
             If _elseStatement isnot Nothing
                 AdjustFlagsAndWidth(_elseStatement)
@@ -13514,22 +13510,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Me._statements = _statements
             End If
         End Sub
-        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New ElseBlockSyntax(o)
-
 
         Friend Overrides Sub WriteTo(writer as ObjectWriter)
             MyBase.WriteTo(writer)
             writer.WriteValue(Me._elseStatement)
             writer.WriteValue(Me._statements)
         End Sub
-
-        Shared Sub New()
-            ObjectBinder.RegisterTypeReader(GetType(ElseBlockSyntax), Function(r) New ElseBlockSyntax(r))
-        End Sub
-
-        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
-            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ElseBlockSyntax(Me, parent, startLocation)
-        End Function
 
         ''' <summary>
         ''' The "Else" statement that begins the "Else" block.
@@ -13551,6 +13537,43 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Return new Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of StatementSyntax)(Me._statements)
             End Get
         End Property
+
+    End Class
+
+    Friend NotInheritable Class ElseBlockSyntax
+        Inherits AbstractElseBlockSyntax
+
+
+        Friend Sub New(ByVal kind As SyntaxKind, elseStatement As ElseStatementSyntax, statements As GreenNode)
+            MyBase.New(kind, elseStatement, statements)
+            MyBase._slotCount = 2
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, elseStatement As ElseStatementSyntax, statements As GreenNode, context As ISyntaxFactoryContext)
+            MyBase.New(kind, elseStatement, statements)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), elseStatement As ElseStatementSyntax, statements As GreenNode)
+            MyBase.New(kind, errors, annotations, elseStatement, statements)
+            MyBase._slotCount = 2
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+            MyBase.New(reader)
+            MyBase._slotCount = 2
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New ElseBlockSyntax(o)
+
+
+        Shared Sub New()
+            ObjectBinder.RegisterTypeReader(GetType(ElseBlockSyntax), Function(r) New ElseBlockSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.ElseBlockSyntax(Me, parent, startLocation)
+        End Function
 
         Friend Overrides Function GetSlot(i as Integer) as GreenNode
             Select case i
@@ -13575,6 +13598,68 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
             Return visitor.VisitElseBlock(Me)
+        End Function
+
+    End Class
+
+    Friend NotInheritable Class SelectElseBlockSyntax
+        Inherits AbstractElseBlockSyntax
+
+
+        Friend Sub New(ByVal kind As SyntaxKind, elseStatement As ElseStatementSyntax, statements As GreenNode)
+            MyBase.New(kind, elseStatement, statements)
+            MyBase._slotCount = 2
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, elseStatement As ElseStatementSyntax, statements As GreenNode, context As ISyntaxFactoryContext)
+            MyBase.New(kind, elseStatement, statements)
+            MyBase._slotCount = 2
+            Me.SetFactoryContext(context)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), elseStatement As ElseStatementSyntax, statements As GreenNode)
+            MyBase.New(kind, errors, annotations, elseStatement, statements)
+            MyBase._slotCount = 2
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+            MyBase.New(reader)
+            MyBase._slotCount = 2
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New SelectElseBlockSyntax(o)
+
+
+        Shared Sub New()
+            ObjectBinder.RegisterTypeReader(GetType(SelectElseBlockSyntax), Function(r) New SelectElseBlockSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectElseBlockSyntax(Me, parent, startLocation)
+        End Function
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._elseStatement
+                Case 1
+                    Return Me._statements
+                Case Else
+                    Debug.Assert(false, "child index out of range")
+                    Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new SelectElseBlockSyntax(Me.Kind, newErrors, GetAnnotations, _elseStatement, _statements)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new SelectElseBlockSyntax(Me.Kind, GetDiagnostics, annotations, _elseStatement, _statements)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitSelectElseBlock(Me)
         End Function
 
     End Class
@@ -15366,11 +15451,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend ReadOnly _selectStatement as SelectStatementSyntax
         Friend ReadOnly _caseBlocks as GreenNode
+        Friend ReadOnly _elseBlock as ElseBlockSyntax
         Friend ReadOnly _endSelectStatement as EndBlockStatementSyntax
 
-        Friend Sub New(ByVal kind As SyntaxKind, selectStatement As SelectStatementSyntax, caseBlocks As GreenNode, endSelectStatement As EndBlockStatementSyntax)
+        Friend Sub New(ByVal kind As SyntaxKind, selectStatement As SelectStatementSyntax, caseBlocks As GreenNode, elseBlock As ElseBlockSyntax, endSelectStatement As EndBlockStatementSyntax)
             MyBase.New(kind)
-            MyBase._slotCount = 3
+            MyBase._slotCount = 4
 
             AdjustFlagsAndWidth(selectStatement)
             Me._selectStatement = selectStatement
@@ -15378,14 +15464,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 AdjustFlagsAndWidth(caseBlocks)
                 Me._caseBlocks = caseBlocks
             End If
+            If elseBlock IsNot Nothing Then
+                AdjustFlagsAndWidth(elseBlock)
+                Me._elseBlock = elseBlock
+            End If
             AdjustFlagsAndWidth(endSelectStatement)
             Me._endSelectStatement = endSelectStatement
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, selectStatement As SelectStatementSyntax, caseBlocks As GreenNode, endSelectStatement As EndBlockStatementSyntax, context As ISyntaxFactoryContext)
+        Friend Sub New(ByVal kind As SyntaxKind, selectStatement As SelectStatementSyntax, caseBlocks As GreenNode, elseBlock As ElseBlockSyntax, endSelectStatement As EndBlockStatementSyntax, context As ISyntaxFactoryContext)
             MyBase.New(kind)
-            MyBase._slotCount = 3
+            MyBase._slotCount = 4
             Me.SetFactoryContext(context)
 
             AdjustFlagsAndWidth(selectStatement)
@@ -15394,20 +15484,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 AdjustFlagsAndWidth(caseBlocks)
                 Me._caseBlocks = caseBlocks
             End If
+            If elseBlock IsNot Nothing Then
+                AdjustFlagsAndWidth(elseBlock)
+                Me._elseBlock = elseBlock
+            End If
             AdjustFlagsAndWidth(endSelectStatement)
             Me._endSelectStatement = endSelectStatement
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), selectStatement As SelectStatementSyntax, caseBlocks As GreenNode, endSelectStatement As EndBlockStatementSyntax)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), selectStatement As SelectStatementSyntax, caseBlocks As GreenNode, elseBlock As ElseBlockSyntax, endSelectStatement As EndBlockStatementSyntax)
             MyBase.New(kind, errors, annotations)
-            MyBase._slotCount = 3
+            MyBase._slotCount = 4
 
             AdjustFlagsAndWidth(selectStatement)
             Me._selectStatement = selectStatement
             If caseBlocks IsNot Nothing Then
                 AdjustFlagsAndWidth(caseBlocks)
                 Me._caseBlocks = caseBlocks
+            End If
+            If elseBlock IsNot Nothing Then
+                AdjustFlagsAndWidth(elseBlock)
+                Me._elseBlock = elseBlock
             End If
             AdjustFlagsAndWidth(endSelectStatement)
             Me._endSelectStatement = endSelectStatement
@@ -15416,7 +15514,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend Sub New(reader as ObjectReader)
             MyBase.New(reader)
-            MyBase._slotCount = 3
+            MyBase._slotCount = 4
             Dim _selectStatement = DirectCast(reader.ReadValue(), SelectStatementSyntax)
             If _selectStatement isnot Nothing
                 AdjustFlagsAndWidth(_selectStatement)
@@ -15426,6 +15524,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             If _caseBlocks isnot Nothing
                 AdjustFlagsAndWidth(_caseBlocks)
                 Me._caseBlocks = _caseBlocks
+            End If
+            Dim _elseBlock = DirectCast(reader.ReadValue(), ElseBlockSyntax)
+            If _elseBlock isnot Nothing
+                AdjustFlagsAndWidth(_elseBlock)
+                Me._elseBlock = _elseBlock
             End If
             Dim _endSelectStatement = DirectCast(reader.ReadValue(), EndBlockStatementSyntax)
             If _endSelectStatement isnot Nothing
@@ -15440,6 +15543,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             MyBase.WriteTo(writer)
             writer.WriteValue(Me._selectStatement)
             writer.WriteValue(Me._caseBlocks)
+            writer.WriteValue(Me._elseBlock)
             writer.WriteValue(Me._endSelectStatement)
         End Sub
 
@@ -15472,6 +15576,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
+        Friend ReadOnly Property ElseBlock As InternalSyntax.ElseBlockSyntax
+            Get
+                Return Me._elseBlock
+            End Get
+        End Property
+
         ''' <summary>
         ''' The End Select statement that ends the block.
         ''' </summary>
@@ -15488,6 +15601,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case 1
                     Return Me._caseBlocks
                 Case 2
+                    Return Me._elseBlock
+                Case 3
                     Return Me._endSelectStatement
                 Case Else
                     Debug.Assert(false, "child index out of range")
@@ -15497,11 +15612,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 
         Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
-            Return new SelectBlockSyntax(Me.Kind, newErrors, GetAnnotations, _selectStatement, _caseBlocks, _endSelectStatement)
+            Return new SelectBlockSyntax(Me.Kind, newErrors, GetAnnotations, _selectStatement, _caseBlocks, _elseBlock, _endSelectStatement)
         End Function
 
         Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
-            Return new SelectBlockSyntax(Me.Kind, GetDiagnostics, annotations, _selectStatement, _caseBlocks, _endSelectStatement)
+            Return new SelectBlockSyntax(Me.Kind, GetDiagnostics, annotations, _selectStatement, _caseBlocks, _elseBlock, _endSelectStatement)
         End Function
 
         Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
@@ -37142,9 +37257,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(node IsNot Nothing)
             Return VisitStatement(node)
         End Function
-        Public Overridable Function VisitElseBlock(ByVal node As ElseBlockSyntax) As VisualBasicSyntaxNode
+        Public Overridable Function VisitAbstractElseBlock(ByVal node As AbstractElseBlockSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
             Return VisitVisualBasicSyntaxNode(node)
+        End Function
+        Public Overridable Function VisitElseBlock(ByVal node As ElseBlockSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitAbstractElseBlock(node)
+        End Function
+        Public Overridable Function VisitSelectElseBlock(ByVal node As SelectElseBlockSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitAbstractElseBlock(node)
         End Function
         Public Overridable Function VisitElseStatement(ByVal node As ElseStatementSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
@@ -39413,6 +39536,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
         End Function
 
+        Public Overrides Function VisitSelectElseBlock(ByVal node As SelectElseBlockSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newElseStatement = DirectCast(Visit(node._elseStatement), ElseStatementSyntax)
+            If node._elseStatement IsNot newElseStatement Then anyChanges = True
+            Dim newStatements = VisitList(node.Statements)
+            If node._statements IsNot newStatements.Node Then anyChanges = True
+
+            If anyChanges Then
+                Return New SelectElseBlockSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newElseStatement, newStatements.Node)
+            Else
+                Return node
+            End If
+        End Function
+
         Public Overrides Function VisitElseStatement(ByVal node As ElseStatementSyntax) As VisualBasicSyntaxNode
             Dim anyChanges As Boolean = False
 
@@ -39629,11 +39767,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             If node._selectStatement IsNot newSelectStatement Then anyChanges = True
             Dim newCaseBlocks = VisitList(node.CaseBlocks)
             If node._caseBlocks IsNot newCaseBlocks.Node Then anyChanges = True
+            Dim newElseBlock = DirectCast(Visit(node._elseBlock), ElseBlockSyntax)
+            If node._elseBlock IsNot newElseBlock Then anyChanges = True
             Dim newEndSelectStatement = DirectCast(Visit(node._endSelectStatement), EndBlockStatementSyntax)
             If node._endSelectStatement IsNot newEndSelectStatement Then anyChanges = True
 
             If anyChanges Then
-                Return New SelectBlockSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newSelectStatement, newCaseBlocks.Node, newEndSelectStatement)
+                Return New SelectBlockSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newSelectStatement, newCaseBlocks.Node, newElseBlock, newEndSelectStatement)
             Else
                 Return node
             End If
@@ -42187,7 +42327,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
               GetType(IfStatementSyntax),
               GetType(ElseIfBlockSyntax),
               GetType(ElseIfStatementSyntax),
+              GetType(AbstractElseBlockSyntax),
               GetType(ElseBlockSyntax),
+              GetType(SelectElseBlockSyntax),
               GetType(ElseStatementSyntax),
               GetType(TryBlockSyntax),
               GetType(TryStatementSyntax),
@@ -47045,9 +47187,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "Else ..." block.
-        ''' </summary>
         ''' <param name="elseStatement">
         ''' The "Else" statement that begins the "Else" block.
         ''' </param>
@@ -47064,6 +47203,30 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim result = New ElseBlockSyntax(SyntaxKind.ElseBlock, elseStatement, statements.Node)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <param name="elseStatement">
+        ''' The "Else" statement that begins the "Else" block.
+        ''' </param>
+        ''' <param name="statements">
+        ''' A list of statements to be executed.
+        ''' </param>
+        Friend Shared Function SelectElseBlock(elseStatement As ElseStatementSyntax, statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)) As SelectElseBlockSyntax
+            Debug.Assert(elseStatement IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.SelectElseBlock, elseStatement, statements.Node, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, SelectElseBlockSyntax)
+            End If
+
+            Dim result = New SelectElseBlockSyntax(SyntaxKind.SelectElseBlock, elseStatement, statements.Node)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -47576,22 +47739,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="endSelectStatement">
         ''' The End Select statement that ends the block.
         ''' </param>
-        Friend Shared Function SelectBlock(selectStatement As SelectStatementSyntax, caseBlocks As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), endSelectStatement As EndBlockStatementSyntax) As SelectBlockSyntax
+        Friend Shared Function SelectBlock(selectStatement As SelectStatementSyntax, caseBlocks As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), elseBlock As ElseBlockSyntax, endSelectStatement As EndBlockStatementSyntax) As SelectBlockSyntax
             Debug.Assert(selectStatement IsNot Nothing)
             Debug.Assert(endSelectStatement IsNot Nothing)
-
-            Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.SelectBlock, selectStatement, caseBlocks.Node, endSelectStatement, hash)
-            If cached IsNot Nothing Then
-                Return DirectCast(cached, SelectBlockSyntax)
-            End If
-
-            Dim result = New SelectBlockSyntax(SyntaxKind.SelectBlock, selectStatement, caseBlocks.Node, endSelectStatement)
-            If hash >= 0 Then
-                SyntaxNodeCache.AddNode(result, hash)
-            End If
-
-            Return result
+            Return New SelectBlockSyntax(SyntaxKind.SelectBlock, selectStatement, caseBlocks.Node, elseBlock, endSelectStatement)
         End Function
 
 
@@ -59140,9 +59291,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
 
-        ''' <summary>
-        ''' Represents an "Else ..." block.
-        ''' </summary>
         ''' <param name="elseStatement">
         ''' The "Else" statement that begins the "Else" block.
         ''' </param>
@@ -59159,6 +59307,30 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim result = New ElseBlockSyntax(SyntaxKind.ElseBlock, elseStatement, statements.Node, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <param name="elseStatement">
+        ''' The "Else" statement that begins the "Else" block.
+        ''' </param>
+        ''' <param name="statements">
+        ''' A list of statements to be executed.
+        ''' </param>
+        Friend Function SelectElseBlock(elseStatement As ElseStatementSyntax, statements As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)) As SelectElseBlockSyntax
+            Debug.Assert(elseStatement IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.SelectElseBlock, elseStatement, statements.Node, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, SelectElseBlockSyntax)
+            End If
+
+            Dim result = New SelectElseBlockSyntax(SyntaxKind.SelectElseBlock, elseStatement, statements.Node, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -59671,22 +59843,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="endSelectStatement">
         ''' The End Select statement that ends the block.
         ''' </param>
-        Friend Function SelectBlock(selectStatement As SelectStatementSyntax, caseBlocks As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), endSelectStatement As EndBlockStatementSyntax) As SelectBlockSyntax
+        Friend Function SelectBlock(selectStatement As SelectStatementSyntax, caseBlocks As Global.Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode), elseBlock As ElseBlockSyntax, endSelectStatement As EndBlockStatementSyntax) As SelectBlockSyntax
             Debug.Assert(selectStatement IsNot Nothing)
             Debug.Assert(endSelectStatement IsNot Nothing)
-
-            Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.SelectBlock, selectStatement, caseBlocks.Node, endSelectStatement, _factoryContext, hash)
-            If cached IsNot Nothing Then
-                Return DirectCast(cached, SelectBlockSyntax)
-            End If
-
-            Dim result = New SelectBlockSyntax(SyntaxKind.SelectBlock, selectStatement, caseBlocks.Node, endSelectStatement, _factoryContext)
-            If hash >= 0 Then
-                SyntaxNodeCache.AddNode(result, hash)
-            End If
-
-            Return result
+            Return New SelectBlockSyntax(SyntaxKind.SelectBlock, selectStatement, caseBlocks.Node, elseBlock, endSelectStatement, _factoryContext)
         End Function
 
 

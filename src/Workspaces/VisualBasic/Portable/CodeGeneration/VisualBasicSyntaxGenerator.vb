@@ -501,7 +501,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGeneration
         Public Overloads Overrides Function SwitchStatement(expression As SyntaxNode, caseClauses As IEnumerable(Of SyntaxNode)) As SyntaxNode
             Return SyntaxFactory.SelectBlock(
                 SyntaxFactory.SelectStatement(DirectCast(expression, ExpressionSyntax)),
-                SyntaxFactory.List(caseClauses.Cast(Of CaseBlockSyntax)))
+                SyntaxFactory.List(caseClauses.Cast(Of CaseBlockSyntax)), elseBlock:= Nothing)
         End Function
 
         Public Overloads Overrides Function SwitchSection(expressions As IEnumerable(Of SyntaxNode), statements As IEnumerable(Of SyntaxNode)) As SyntaxNode

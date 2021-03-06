@@ -11,25 +11,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     Partial Public Class CaseBlockSyntax
 
-        <EditorBrowsable(EditorBrowsableState.Never)>
-        <Obsolete("This member is obsolete. Use CaseStatement instead.", True)>
-        Public ReadOnly Property Begin As CaseStatementSyntax
-            Get
-                Return CaseStatement
-            End Get
-        End Property
+        '<EditorBrowsable(EditorBrowsableState.Never)>
+        '<Obsolete("This member is obsolete. Use CaseStatement instead.", True)>
+        'Public ReadOnly Property Begin As AbstractCaseStatementSyntax
+        '    Get
+        '        Return CaseStatement
+        '    End Get
+        'End Property
 
-        <EditorBrowsable(EditorBrowsableState.Never)>
-        <Obsolete("This member is obsolete. Use WithCaseStatement instead.", True)>
-        Public Function WithBegin(begin As CaseStatementSyntax) As CaseBlockSyntax
-            Return WithCaseStatement(begin)
-        End Function
+        '<EditorBrowsable(EditorBrowsableState.Never)>
+        '<Obsolete("This member is obsolete. Use WithCaseStatement instead.", True)>
+        'Public Function WithBegin(begin As CaseStatementSyntax) As AbstractCaseStatementSyntax
+        '    Return WithCaseStatement(begin)
+        'End Function
 
-        <EditorBrowsable(EditorBrowsableState.Never)>
-        <Obsolete("This member is obsolete. Use AddCaseStatementCases instead.", True)>
-        Public Function AddBeginCases(ParamArray items As CaseClauseSyntax()) As CaseBlockSyntax
-            Return AddCaseStatementCases(items)
-        End Function
+        '<EditorBrowsable(EditorBrowsableState.Never)>
+        '<Obsolete("This member is obsolete. Use AddCaseStatementCases instead.", True)>
+        'Public Function AddBeginCases(ParamArray items As AbstractCaseStatementSyntax()) As CaseBlockSyntax
+        '    Return AddCaseStatementCases(items)
+        'End Function
 
     End Class
 
