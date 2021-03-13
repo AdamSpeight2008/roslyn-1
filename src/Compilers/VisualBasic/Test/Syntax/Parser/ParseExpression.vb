@@ -263,6 +263,16 @@ Public Class ParseExpressionTest
     End Sub
 
     <Fact>
+    Public Sub ParseTypeOf_Many()
+        Dim E0 = ParseExpression("TypeOf a is (Of T0, T1)")
+        ParseExpression(<Text>TypeOf a is 
+                                       (Of T0, T1)</Text>)
+        ParseExpression("TypeOf a isnot (Of T0, T1)")
+        ParseExpression(<Text>TypeOf a isnot 
+                                       (Of T0, T1)</Text>)
+    End Sub
+
+    <Fact>
     Public Sub ParseTypeOf_AS()
       ' Against single type.
       Dim E0 = ParseExpression("TypeOf a is x As b")

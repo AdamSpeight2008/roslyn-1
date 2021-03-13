@@ -934,6 +934,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return True
          End Function
 
+        Private Function IsAtStartOfArgumentTypeList() As Boolean
+            Return CurrentToken.Kind = SyntaxKind.OpenParenToken AndAlso PeekNextToken.Kind = SyntaxKind.OfKeyword
+        End Function
         ''' <summary>
         ''' Parse TypeOf ... Is ... or TypeOf ... IsNot ...
         ''' TypeOfExpression -> "TypeOf" Expression "Is|IsNot" LineTerminator? TypeName
@@ -960,10 +963,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 operatorToken = DirectCast(HandleUnexpectedToken(SyntaxKind.IsKeyword), KeywordSyntax)
             End If
 
-            Dim optional_NameAs = Parse_NameAs()
+            Dim optional_NameAs As NameAsSyntax = Nothing
+            TryParse_Optional_NameAs(optional_NameAs)
  
             Dim targetType As VisualBasicSyntaxNode
-            If CurrentToken.Kind = SyntaxKind.OpenBraceToken AndAlso PeekNextToken.Kind = SyntaxKind.OfKeyword THen
+            If IsAtStartOfArgumentTypeList THen
                 targetType = ParseGenericArguments(True, true)
                 targetType = CheckFeatureAvailability( Feature.TypeOfMany, targetType)
             Else
@@ -986,13 +990,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return SyntaxFactory.TypeOfExpression(kind, [typeOf], operand, operatorToken, optional_NameAs, targetType)
         End Function
 
-        Private Function Parse_NameAs() As NameAsSyntax
+        Private Function IsPossible_NameAs() As Boolean
+            Return PeekNextToken.Kind = SyntaxKind.AsKeyword
+        End Function
+
+        Private Function TryParse_Optional_NameAs(Byref optional_NameAs As NameAsSyntax) As Boolean
+            optional_NameAs = NOthing
             ' Peek at next token to see if it is AS keyword.
-            If PeekNextToken.Kind <> SyntaxKind.AsKeyword Then Return Nothing
+            If Not IsPossible_NameAs Then Return False
             Dim identifer = ParseIdentifierAllowingKeyword()
             Dim as_keyword = Parse_Keyword(SyntaxKind.AsKeyword, eatLine:= True)
-            Dim optional_NameAs =  SyntaxFactory.NameAs(identifer, as_keyword)
-            Return CheckFeatureAvailability(Feature.TypeOfAs, optional_NameAs)
+            optional_NameAs =  SyntaxFactory.NameAs(identifer, as_keyword)
+            optional_NameAs = CheckFeatureAvailability(Feature.TypeOfAs, optional_NameAs)
+            Return true
         End Function
 
         ' /*********************************************************************
