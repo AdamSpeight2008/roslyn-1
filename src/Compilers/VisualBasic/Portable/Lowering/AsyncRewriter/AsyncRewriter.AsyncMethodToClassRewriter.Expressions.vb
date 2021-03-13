@@ -863,7 +863,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Debug.Assert(operand.Kind = BoundKind.SpillSequence)
                 Dim spill = DirectCast(operand, BoundSpillSequence)
                 Return SpillSequenceWithNewValue(spill,
-                                                 rewritten.Update(rewritten.TargetType,
+                                                 rewritten.Update(rewritten.Local,
+                                                                  rewritten.ConditionOpt,
+                                                                  rewritten.TargetType,
                                                                   spill.ValueOpt,
                                                                   rewritten.IsTypeOfIsNotExpression,
                                                                   rewritten.Type))

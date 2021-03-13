@@ -545,8 +545,9 @@
     </AbstractNode>
 
     <Node Name="BoundTypeOf" Base="BoundAbstractTypeOf">
-      <!--<Field Name="Type" Type="TypeSymbol" Overload="true" Null="disallow"/>-->
-      <!--<Field Name="Update" Overload="true" />-->
+      <!-- The following are use for the assignment aspect of the expression -->
+      <Field Name="Local" Type="LocalSymbol" />
+      <Field Name="ConditionOpt" Type="BoundExpression" Null="allow" />
     </Node>
     <Node Name="BoundTypeOfMany" Base="BoundBaseTypeOf">
       <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>

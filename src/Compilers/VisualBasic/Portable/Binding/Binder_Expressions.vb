@@ -824,10 +824,51 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim targetSymbol As Symbol = BindTypeOrAliasSyntax(target_type, diagnostics)
             Dim targetType = DirectCast(If(TryCast(targetSymbol, TypeSymbol), DirectCast(targetSymbol, AliasSymbol).Target), TypeSymbol)
 
+            Dim local As LocalSymbol = nothing
+            Dim condition As BoundExpression = Nothing
+            'If node.OptionalNameAs.IsMissing = False Then
+            '    Dim objectType = GetSpecialType(SpecialType.System_Object, node, diagnostics)
+            '    Dim booleanType = GetSpecialType(SpecialType.System_Boolean, node, diagnostics)
+            '    Dim ident = node.OptionalNameAs.Identifer.Node.CreateRed
+
+            '    local = GetLocalForDeclaration(node.OptionalNameAs.Identifer)
+            '    VerifyLocalSymbolNameAndSetType(local, targetType, node, node.OptionalNameAs.Identifer, diagnostics)
+            '    Dim boundLocal As New BoundLocal(ident, local, targetType)
+            '    Dim getValueOrDefaultMethod = DirectCast(DirectCast(operandType, SubstitutedNamedType).
+            '                                                GetMemberForDefinition(GetSpecialTypeMember(SpecialMember.System_Nullable_T_GetValueOrDefault, ident, diagnostics)),
+            '                   MethodSymbol)
+            '    condition = New BoundSequence(node,
+            '                                  ImmutableArray(Of LocalSymbol).Empty,
+            '                                  ImmutableArray.Create(Of BoundExpression)(
+            '                                    BindAssignment( node,
+            '                                                    boundLocal,
+            '                                                    New BoundCall( node,
+            '                                                                   getValueOrDefaultMethod,
+            '                                                                   Nothing,
+            '                                                                   operand,
+            '                                                                   ImmutableArray(Of BoundExpression).Empty,
+            '                                                                   Nothing,
+            '                                                                   targetType,
+            '                                                                   suppressObjectClone:=True),
+            '                                                     diagnostics
+            '                                                   )
+            '                                                 ),
+            '                                  BindIsExpression(
+            '                                      operand,
+            '                                      New BoundLiteral(node, ConstantValue.Nothing, Nothing),
+            '                                      node,
+            '                                      isNot:=True,
+            '                                      diagnostics:=diagnostics),
+            '                                  booleanType)
+
+            'End If
+
+
             If operand.HasErrors OrElse operandType.IsErrorType() OrElse targetType.IsErrorType() Then
                 ' If operand is bad or either the source or target types have errors, bail out preventing more cascading errors.
-                Return New BoundTypeOf(node, targetType, operand, operatorIsIsNot, resultType)
+                Return New BoundTypeOf(node, NOthing ,Nothing,targetType, operand, operatorIsIsNot, resultType)
             End If
+
 
             If Not operandType.IsReferenceType AndAlso
                Not operandType.IsTypeParameter() Then
@@ -840,7 +881,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             operand = ApplyPossibleImplicitConversion(node, operandType, operand, diagnostics)
 
-            Return New BoundTypeOf(node, targetType, operand, operatorIsIsNot, resultType)
+            Return New BoundTypeOf(node, local, condition, targetType, operand, operatorIsIsNot, resultType)
         End Function
 
         Private function ValidateConversionIsPossible(Of TNode As SyntaxNode)( node As TNode,

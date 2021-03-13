@@ -2482,24 +2482,41 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Partial Friend NotInheritable Class BoundTypeOf
         Inherits BoundAbstractTypeOf
 
-        Public Sub New(syntax As SyntaxNode, targetType As TypeSymbol, operand As BoundExpression, isTypeOfIsNotExpression As Boolean, type As TypeSymbol, Optional hasErrors As Boolean = False)
-            MyBase.New(BoundKind.TypeOf, syntax, targetType, operand, isTypeOfIsNotExpression, type, hasErrors OrElse operand.NonNullAndHasErrors())
+        Public Sub New(syntax As SyntaxNode, local As LocalSymbol, conditionOpt As BoundExpression, targetType As TypeSymbol, operand As BoundExpression, isTypeOfIsNotExpression As Boolean, type As TypeSymbol, Optional hasErrors As Boolean = False)
+            MyBase.New(BoundKind.TypeOf, syntax, targetType, operand, isTypeOfIsNotExpression, type, hasErrors OrElse conditionOpt.NonNullAndHasErrors() OrElse operand.NonNullAndHasErrors())
 
+            Debug.Assert(local IsNot Nothing, "Field 'local' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
             Debug.Assert(targetType IsNot Nothing, "Field 'targetType' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
             Debug.Assert(operand IsNot Nothing, "Field 'operand' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
             Debug.Assert(type IsNot Nothing, "Field 'type' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
 
+            Me._Local = local
+            Me._ConditionOpt = conditionOpt
         End Sub
 
+
+        Private ReadOnly _Local As LocalSymbol
+        Public ReadOnly Property Local As LocalSymbol
+            Get
+                Return _Local
+            End Get
+        End Property
+
+        Private ReadOnly _ConditionOpt As BoundExpression
+        Public ReadOnly Property ConditionOpt As BoundExpression
+            Get
+                Return _ConditionOpt
+            End Get
+        End Property
 
         <DebuggerStepThrough>
         Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
             Return visitor.VisitTypeOf(Me)
         End Function
 
-        Public Function Update(targetType As TypeSymbol, operand As BoundExpression, isTypeOfIsNotExpression As Boolean, type As TypeSymbol) As BoundTypeOf
-            If targetType IsNot Me.TargetType OrElse operand IsNot Me.Operand OrElse isTypeOfIsNotExpression <> Me.IsTypeOfIsNotExpression OrElse type IsNot Me.Type Then
-                Dim result = New BoundTypeOf(Me.Syntax, targetType, operand, isTypeOfIsNotExpression, type, Me.HasErrors)
+        Public Function Update(local As LocalSymbol, conditionOpt As BoundExpression, targetType As TypeSymbol, operand As BoundExpression, isTypeOfIsNotExpression As Boolean, type As TypeSymbol) As BoundTypeOf
+            If local IsNot Me.Local OrElse conditionOpt IsNot Me.ConditionOpt OrElse targetType IsNot Me.TargetType OrElse operand IsNot Me.Operand OrElse isTypeOfIsNotExpression <> Me.IsTypeOfIsNotExpression OrElse type IsNot Me.Type Then
+                Dim result = New BoundTypeOf(Me.Syntax, local, conditionOpt, targetType, operand, isTypeOfIsNotExpression, type, Me.HasErrors)
                 result.CopyAttributes(Me)
                 Return result
             End If
@@ -11347,6 +11364,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overrides Function VisitTypeOf(node As BoundTypeOf) As BoundNode
+            Me.Visit(node.ConditionOpt)
             Me.Visit(node.Operand)
             Return Nothing
         End Function
@@ -12345,10 +12363,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overrides Function VisitTypeOf(node As BoundTypeOf) As BoundNode
+            Dim conditionOpt As BoundExpression = DirectCast(Me.Visit(node.ConditionOpt), BoundExpression)
             Dim operand As BoundExpression = DirectCast(Me.Visit(node.Operand), BoundExpression)
             Dim targetType as TypeSymbol = Me.VisitType(node.TargetType)
             Dim type as TypeSymbol = Me.VisitType(node.Type)
-            Return node.Update(targetType, operand, node.IsTypeOfIsNotExpression, type)
+            Return node.Update(node.Local, conditionOpt, targetType, operand, node.IsTypeOfIsNotExpression, type)
         End Function
 
         Public Overrides Function VisitTypeOfMany(node As BoundTypeOfMany) As BoundNode
@@ -13535,6 +13554,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides Function VisitTypeOf(node As BoundTypeOf, arg As Object) As TreeDumperNode
             Return New TreeDumperNode("[typeOf]", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("local", node.Local, Nothing),
+                New TreeDumperNode("conditionOpt", Nothing, new TreeDumperNode() {Visit(node.ConditionOpt, Nothing)}),
                 New TreeDumperNode("targetType", node.TargetType, Nothing),
                 New TreeDumperNode("operand", Nothing, new TreeDumperNode() {Visit(node.Operand, Nothing)}),
                 New TreeDumperNode("isTypeOfIsNotExpression", node.IsTypeOfIsNotExpression, Nothing),
