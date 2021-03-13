@@ -72,6 +72,16 @@
         <target state="translated">se asigna a propiedades "ByRef" o se pasa a estas con establecedores de solo inicio</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_TypeOfAs">
+        <source>TypeOfAs</source>
+        <target state="new">TypeOfAs</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_TypeOfMany">
+        <source>TypeOfMany</source>
+        <target state="new">TypeOfMany</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_UnconstrainedTypeParameterInConditional">
         <source>unconstrained type parameters in binary conditional expressions</source>
         <target state="translated">parámetros de tipo sin restricciones en expresiones condicionales binarias</target>

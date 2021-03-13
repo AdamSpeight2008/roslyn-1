@@ -71,6 +71,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UseIsNotExpression
                     typeOfIsExpression.TypeOfKeyword,
                     typeOfIsExpression.Expression,
                     SyntaxFactory.Token(SyntaxKind.IsNotKeyword).WithTriviaFrom(typeOfIsExpression.OperatorToken),
+                    typeOfIsExpression.OptionalNameAs,
                     typeOfIsExpression.Type)
             End If
 

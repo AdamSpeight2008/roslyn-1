@@ -929,11 +929,15 @@ Partial Public Class GeneratedTests
         End Function
 
         Private Shared Function GenerateGreenTypeOfIsExpression() As InternalSyntax.TypeOfExpressionSyntax
-            return InternalSyntax.SyntaxFactory.TypeOfIsExpression(new InternalSyntax.KeywordSyntax(SyntaxKind.TypeOfKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer(), new InternalSyntax.KeywordSyntax(SyntaxKind.IsKeyword, String.Empty, Nothing, Nothing), GenerateGreenTupleType())
+            return InternalSyntax.SyntaxFactory.TypeOfIsExpression(new InternalSyntax.KeywordSyntax(SyntaxKind.TypeOfKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer(), new InternalSyntax.KeywordSyntax(SyntaxKind.IsKeyword, String.Empty, Nothing, Nothing), Nothing, GenerateGreenTupleType())
         End Function
 
         Private Shared Function GenerateGreenTypeOfIsNotExpression() As InternalSyntax.TypeOfExpressionSyntax
-            return InternalSyntax.SyntaxFactory.TypeOfIsNotExpression(new InternalSyntax.KeywordSyntax(SyntaxKind.TypeOfKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer(), new InternalSyntax.KeywordSyntax(SyntaxKind.IsNotKeyword, String.Empty, Nothing, Nothing), GenerateGreenTupleType())
+            return InternalSyntax.SyntaxFactory.TypeOfIsNotExpression(new InternalSyntax.KeywordSyntax(SyntaxKind.TypeOfKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer(), new InternalSyntax.KeywordSyntax(SyntaxKind.IsNotKeyword, String.Empty, Nothing, Nothing), Nothing, GenerateGreenTupleType())
+        End Function
+
+        Private Shared Function GenerateGreenNameAs() As InternalSyntax.NameAsSyntax
+            return InternalSyntax.SyntaxFactory.NameAs(GenerateGreenIdentifierToken(), new InternalSyntax.KeywordSyntax(SyntaxKind.AsKeyword, String.Empty, Nothing, Nothing))
         End Function
 
         Private Shared Function GenerateGreenGetXmlNamespaceExpression() As InternalSyntax.GetXmlNamespaceExpressionSyntax
@@ -2928,6 +2932,12 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenTypeOfIsNotExpression()
             dim objectUnderTest = GenerateGreenTypeOfIsNotExpression()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenNameAs()
+            dim objectUnderTest = GenerateGreenNameAs()
             AttachAndCheckDiagnostics(objectUnderTest)
         End Sub
 
@@ -5693,6 +5703,14 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestGreenNameAsRewriter()
+            dim oldNode = GenerateGreenNameAs()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
         Public Sub TestGreenGetXmlNamespaceExpressionRewriter()
             dim oldNode = GenerateGreenGetXmlNamespaceExpression()
             Dim rewriter = New GreenIdentityRewriter()
@@ -8389,6 +8407,13 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenTypeOfIsNotExpressionVisitor()
             Dim oldNode = GenerateGreenTypeOfIsNotExpression()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenNameAsVisitor()
+            Dim oldNode = GenerateGreenNameAs()
             Dim visitor = New GreenNodeVisitor()
             visitor.Visit(oldNode)
         End Sub
@@ -14464,7 +14489,7 @@ Partial Public Class GeneratedTests
         Private Shared Function GenerateRedTypeOfIsExpression() As TypeOfExpressionSyntax
             Dim exceptionTest as boolean = false
             Try
-            SyntaxFactory.TypeOfIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), Nothing, SyntaxFactory.Token(SyntaxKind.IsKeyword), GenerateRedTupleType())
+            SyntaxFactory.TypeOfIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), Nothing, SyntaxFactory.Token(SyntaxKind.IsKeyword), Nothing, GenerateRedTupleType())
             catch e as ArgumentNullException
             exceptionTest = true
             End Try
@@ -14472,7 +14497,7 @@ Partial Public Class GeneratedTests
             exceptionTest = false
 
             Try
-            SyntaxFactory.TypeOfIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsKeyword), Nothing)
+            SyntaxFactory.TypeOfIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsKeyword), Nothing, Nothing)
             catch e as ArgumentNullException
             exceptionTest = true
             End Try
@@ -14480,7 +14505,7 @@ Partial Public Class GeneratedTests
             exceptionTest = false
 
             Try
-            SyntaxFactory.TypeOfIsExpression(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsKeyword), GenerateRedTupleType())
+            SyntaxFactory.TypeOfIsExpression(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsKeyword), Nothing, GenerateRedTupleType())
             catch e as ArgumentException
             exceptionTest = true
             End Try
@@ -14488,7 +14513,7 @@ Partial Public Class GeneratedTests
             exceptionTest = false
 
             Try
-            SyntaxFactory.TypeOfIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedTupleType())
+            SyntaxFactory.TypeOfIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), Nothing, GenerateRedTupleType())
             catch e as ArgumentException
             exceptionTest = true
             End Try
@@ -14496,20 +14521,20 @@ Partial Public Class GeneratedTests
             exceptionTest = false
 
             Try
-            SyntaxFactory.TypeOfIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedTupleType())
+            SyntaxFactory.TypeOfIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), Nothing, GenerateRedTupleType())
             catch e as ArgumentException
             exceptionTest = true
             End Try
             Debug.Assert(exceptionTest)
             exceptionTest = false
 
-            return SyntaxFactory.TypeOfIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsKeyword), GenerateRedTupleType())
+            return SyntaxFactory.TypeOfIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsKeyword), Nothing, GenerateRedTupleType())
         End Function
 
         Private Shared Function GenerateRedTypeOfIsNotExpression() As TypeOfExpressionSyntax
             Dim exceptionTest as boolean = false
             Try
-            SyntaxFactory.TypeOfIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), Nothing, SyntaxFactory.Token(SyntaxKind.IsNotKeyword), GenerateRedTupleType())
+            SyntaxFactory.TypeOfIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), Nothing, SyntaxFactory.Token(SyntaxKind.IsNotKeyword), Nothing, GenerateRedTupleType())
             catch e as ArgumentNullException
             exceptionTest = true
             End Try
@@ -14517,7 +14542,7 @@ Partial Public Class GeneratedTests
             exceptionTest = false
 
             Try
-            SyntaxFactory.TypeOfIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsNotKeyword), Nothing)
+            SyntaxFactory.TypeOfIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsNotKeyword), Nothing, Nothing)
             catch e as ArgumentNullException
             exceptionTest = true
             End Try
@@ -14525,7 +14550,7 @@ Partial Public Class GeneratedTests
             exceptionTest = false
 
             Try
-            SyntaxFactory.TypeOfIsNotExpression(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsNotKeyword), GenerateRedTupleType())
+            SyntaxFactory.TypeOfIsNotExpression(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsNotKeyword), Nothing, GenerateRedTupleType())
             catch e as ArgumentException
             exceptionTest = true
             End Try
@@ -14533,7 +14558,7 @@ Partial Public Class GeneratedTests
             exceptionTest = false
 
             Try
-            SyntaxFactory.TypeOfIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedTupleType())
+            SyntaxFactory.TypeOfIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), Nothing, GenerateRedTupleType())
             catch e as ArgumentException
             exceptionTest = true
             End Try
@@ -14541,14 +14566,35 @@ Partial Public Class GeneratedTests
             exceptionTest = false
 
             Try
-            SyntaxFactory.TypeOfIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedTupleType())
+            SyntaxFactory.TypeOfIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), Nothing, GenerateRedTupleType())
             catch e as ArgumentException
             exceptionTest = true
             End Try
             Debug.Assert(exceptionTest)
             exceptionTest = false
 
-            return SyntaxFactory.TypeOfIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsNotKeyword), GenerateRedTupleType())
+            return SyntaxFactory.TypeOfIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsNotKeyword), Nothing, GenerateRedTupleType())
+        End Function
+
+        Private Shared Function GenerateRedNameAs() As NameAsSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.NameAs(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), SyntaxFactory.Token(SyntaxKind.AsKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.NameAs(GenerateRedIdentifierToken(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword))
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.NameAs(GenerateRedIdentifierToken(), SyntaxFactory.Token(SyntaxKind.AsKeyword))
         End Function
 
         Private Shared Function GenerateRedGetXmlNamespaceExpression() As GetXmlNamespaceExpressionSyntax
@@ -20499,7 +20545,7 @@ Partial Public Class GeneratedTests
             Assert.NotNull(objectUnderTest.expression)
             Assert.NotNull(objectUnderTest.operatorToken)
             Assert.NotNull(objectUnderTest.type)
-            Dim withObj = objectUnderTest.WithTypeOfKeyword(objectUnderTest.TypeOfKeyword).WithExpression(objectUnderTest.Expression).WithOperatorToken(objectUnderTest.OperatorToken).WithType(objectUnderTest.Type)
+            Dim withObj = objectUnderTest.WithTypeOfKeyword(objectUnderTest.TypeOfKeyword).WithExpression(objectUnderTest.Expression).WithOperatorToken(objectUnderTest.OperatorToken).WithOptionalNameAs(objectUnderTest.OptionalNameAs).WithType(objectUnderTest.Type)
             Assert.Equal(withobj, objectUnderTest)
         End Sub
 
@@ -20510,7 +20556,16 @@ Partial Public Class GeneratedTests
             Assert.NotNull(objectUnderTest.expression)
             Assert.NotNull(objectUnderTest.operatorToken)
             Assert.NotNull(objectUnderTest.type)
-            Dim withObj = objectUnderTest.WithTypeOfKeyword(objectUnderTest.TypeOfKeyword).WithExpression(objectUnderTest.Expression).WithOperatorToken(objectUnderTest.OperatorToken).WithType(objectUnderTest.Type)
+            Dim withObj = objectUnderTest.WithTypeOfKeyword(objectUnderTest.TypeOfKeyword).WithExpression(objectUnderTest.Expression).WithOperatorToken(objectUnderTest.OperatorToken).WithOptionalNameAs(objectUnderTest.OptionalNameAs).WithType(objectUnderTest.Type)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedNameAs()
+            dim objectUnderTest = GenerateRedNameAs()
+            Assert.NotNull(objectUnderTest.identifer)
+            Assert.NotNull(objectUnderTest.asKeyword)
+            Dim withObj = objectUnderTest.WithIdentifer(objectUnderTest.Identifer).WithAsKeyword(objectUnderTest.AsKeyword)
             Assert.Equal(withobj, objectUnderTest)
         End Sub
 
@@ -23747,6 +23802,14 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestRedTypeOfIsNotExpressionRewriter()
             dim oldNode = GenerateRedTypeOfIsNotExpression()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedNameAsRewriter()
+            dim oldNode = GenerateRedNameAs()
             Dim rewriter = New RedIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)

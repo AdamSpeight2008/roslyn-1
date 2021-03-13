@@ -1633,11 +1633,15 @@ type_of_expression
   ;
 
 type_of_is_expression
-  : 'TypeOf' expression 'Is' type
+  : 'TypeOf' expression 'Is' name_as? (expression | type_argument_list)
+  ;
+
+name_as
+  : identifier_token 'As'
   ;
 
 type_of_is_not_expression
-  : 'TypeOf' expression 'IsNot' type
+  : 'TypeOf' expression 'IsNot' name_as? (expression | type_argument_list)
   ;
 
 unary_expression

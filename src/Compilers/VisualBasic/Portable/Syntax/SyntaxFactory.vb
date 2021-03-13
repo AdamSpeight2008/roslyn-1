@@ -1122,5 +1122,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ' By default mark submissions as invalid since there's at least one error.
             Return True
         End Function
+
     End Class
 End Namespace

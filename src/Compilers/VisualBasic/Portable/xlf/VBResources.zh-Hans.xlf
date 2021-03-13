@@ -72,6 +72,16 @@
         <target state="translated">通过 init-only 资源库分配或传递 "ByRef" 属性</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_TypeOfAs">
+        <source>TypeOfAs</source>
+        <target state="new">TypeOfAs</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_TypeOfMany">
+        <source>TypeOfMany</source>
+        <target state="new">TypeOfMany</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_UnconstrainedTypeParameterInConditional">
         <source>unconstrained type parameters in binary conditional expressions</source>
         <target state="translated">二进制条件表达式中的无约束类型参数</target>

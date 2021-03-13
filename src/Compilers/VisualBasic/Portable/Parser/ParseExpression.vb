@@ -914,6 +914,26 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return SyntaxFactory.ObjectCreationExpression(NewKeyword, Nothing, Type, Arguments, Nothing)
         End Function
 
+        Private Function Parse_Keyword(kind As SyntaxKind, Optional eatLine As Boolean = False) As KeywordSyntax
+            Debug.Assert(CurrentToken.Kind = kind)
+            Dim kw = DirectCast(CurrentToken, KeywordSyntax)
+            GetNextToken()
+            IF eatLine Then TryEatNewLine()
+            Return kw
+        End Function
+
+        Private Function TryParse_Keyword(kind As SyntaxKind, ByRef kw As KeywordSyntax, Optional eatLine As Boolean = True) As Boolean
+            kw = TryCast(CurrentToken, KeywordSyntax)
+            If kw Is Nothing Then Return False
+            If kw.Kind <> kind Then
+                kw = Nothing
+                Return False
+            End If
+            GetNextToken()
+            If eatLine Then TryEatNewLine(ScannerState.VB)
+            Return True
+         End Function
+
         ''' <summary>
         ''' Parse TypeOf ... Is ... or TypeOf ... IsNot ...
         ''' TypeOfExpression -> "TypeOf" Expression "Is|IsNot" LineTerminator? TypeName
@@ -922,44 +942,57 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <remarks></remarks>
         Private Function ParseTypeOf() As TypeOfExpressionSyntax
             Debug.Assert(CurrentToken.Kind = SyntaxKind.TypeOfKeyword, "must be at TypeOf.")
-            Dim [typeOf] As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
-            ' Consume 'TypeOf'.
-            GetNextToken()
+            Dim [typeOf] = Parse_Keyword(SyntaxKind.TypeOfKeyword) ' Consume 'TypeOf'.
+            Dim operand  = ParseExpressionCore(OperatorPrecedence.PrecedenceRelational) 'Dev10 uses ParseVariable
+            If operand.ContainsDiagnostics Then operand = ResyncAt(operand, SyntaxKind.IsKeyword, SyntaxKind.IsNotKeyword)
 
-            Dim exp As ExpressionSyntax = ParseExpressionCore(OperatorPrecedence.PrecedenceRelational) 'Dev10 uses ParseVariable
-
-            If exp.ContainsDiagnostics Then
-                exp = ResyncAt(exp, SyntaxKind.IsKeyword, SyntaxKind.IsNotKeyword)
-            End If
-
+            ' Presume that operator is going to be IS and thus the expression kind is TypeOfIsExpression, until we know otherwise.
+            Dim kind = SyntaxKind.TypeOfIsExpression
             Dim operatorToken As KeywordSyntax = Nothing
-
-            Dim current As SyntaxToken = CurrentToken
-
-            If current.Kind = SyntaxKind.IsKeyword OrElse
-               current.Kind = SyntaxKind.IsNotKeyword Then
-
-                operatorToken = DirectCast(current, KeywordSyntax)
-
-                If operatorToken.Kind = SyntaxKind.IsNotKeyword Then
-                    operatorToken = CheckFeatureAvailability(Feature.TypeOfIsNot, operatorToken)
-                End If
-
-                GetNextToken()
-
-                TryEatNewLine(ScannerState.VB)
+            If TryParse_Keyword(SyntaxKind.IsKeyword, operatorToken) Then
+                ' IS  is supported
+            ElseIf TryParse_Keyword(SyntaxKind.IsNotKeyword, operatorToken) Then
+                ' ISNOT  is conditionally supported 
+                operatorToken = CheckFeatureAvailability(Feature.TypeOfIsNot, operatorToken)
+                kind = SyntaxKind.TypeOfIsNotExpression
             Else
                 operatorToken = DirectCast(HandleUnexpectedToken(SyntaxKind.IsKeyword), KeywordSyntax)
             End If
 
-            Dim typeName = ParseGeneralType()
+            Dim optional_NameAs = Parse_NameAs()
+ 
+            Dim targetType As VisualBasicSyntaxNode
+            If CurrentToken.Kind = SyntaxKind.OpenBraceToken AndAlso PeekNextToken.Kind = SyntaxKind.OfKeyword THen
+                targetType = ParseGenericArguments(True, true)
+                targetType = CheckFeatureAvailability( Feature.TypeOfMany, targetType)
+            Else
+                targetType = ParseGeneralType()
+            End If
 
-            Dim kind As SyntaxKind = If(operatorToken.Kind = SyntaxKind.IsNotKeyword,
-                                        SyntaxKind.TypeOfIsNotExpression,
-                                        SyntaxKind.TypeOfIsExpression)
+            ' Check for invalid forms of the TypeOf expression
+            If optional_NameAs IsNot Nothing Then
+                If targetType.Kind = SyntaxKind.TypeArgumentList Then
+                    ' TypeOf expr Is|IsNot x As (OF T0..,Tx)
+                    ' Does not support this form.
+                     optional_NameAs =ReportSyntaxError(optional_NameAs, ERRID.Unknown)
+                ElseIf operatorToken.Kind = SyntaxKind.IsNotKeyword Then
+                    ' TypeOf expr IsNot x As T
+                    ' Does not support this form.
+                    optional_NameAs =ReportSyntaxError(optional_NameAs, ERRID.Unknown)
+                End If
+            End If
 
-            Return SyntaxFactory.TypeOfExpression(kind, [typeOf], exp, operatorToken, typeName)
+            Return SyntaxFactory.TypeOfExpression(kind, [typeOf], operand, operatorToken, optional_NameAs, targetType)
+        End Function
+
+        Private Function Parse_NameAs() As NameAsSyntax
+            ' Peek at next token to see if it is AS keyword.
+            If PeekNextToken.Kind <> SyntaxKind.AsKeyword Then Return Nothing
+            Dim identifer = ParseIdentifierAllowingKeyword()
+            Dim as_keyword = Parse_Keyword(SyntaxKind.AsKeyword, eatLine:= True)
+            Dim optional_NameAs =  SyntaxFactory.NameAs(identifer, as_keyword)
+            Return CheckFeatureAvailability(Feature.TypeOfAs, optional_NameAs)
         End Function
 
         ' /*********************************************************************

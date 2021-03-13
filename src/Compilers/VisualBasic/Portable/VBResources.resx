@@ -5629,4 +5629,10 @@
   <data name="ERR_UnmanagedCallersOnlyNotSupported" xml:space="preserve">
     <value>'UnmanagedCallersOnly' attribute is not supported.</value>
   </data>
+  <data name="FEATURE_TypeOfAs" xml:space="preserve">
+    <value>TypeOfAs</value>
+  </data>
+  <data name="FEATURE_TypeOfMany" xml:space="preserve">
+    <value>TypeOfMany</value>
+  </data>
 </root>

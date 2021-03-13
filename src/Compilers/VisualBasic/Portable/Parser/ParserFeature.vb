@@ -41,6 +41,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         UnconstrainedTypeParameterInConditional
         CommentsAfterLineContinuation
         InitOnlySettersUsage
+        TypeOfAs
+        TypeOfMany
     End Enum
 
     Friend Module FeatureExtensions
@@ -105,6 +107,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Case Feature.InitOnlySettersUsage
                     Return LanguageVersion.VisualBasic16_9
+
+                Case Feature.TypeOfAs,      ' PROTOTYPE
+                     Feature.TypeOfMany     ' PROTOTYPE
+                    Return LanguageVersion.VisualBasic16
 
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(feature)
@@ -179,6 +185,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return ERRID.FEATURE_CommentsAfterLineContinuation
                 Case Feature.InitOnlySettersUsage
                     Return ERRID.FEATURE_InitOnlySettersUsage
+                Case Feature.TypeOfAs
+                    Return ERRID.FEATURE_TypeOfAs
+                Case Feature.TypeOfMany
+                    Return ERRID.FEATURE_TypeOfMany
+
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(feature)
             End Select

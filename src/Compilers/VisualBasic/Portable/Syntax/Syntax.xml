@@ -5243,48 +5243,43 @@ Unify Enum declarations with other block type declarations.
     <!--****************
       -  TypeOf ... Is/IsNot
       ******************-->
-    <node-structure name="TypeOfExpressionSyntax" parent="ExpressionSyntax">
-      <description>Represents a TypeOf...Is or IsNot expression.</description>
-      <lm-equiv name="IsTypeNode"></lm-equiv>
-      <native-equiv name="TypeValueExpression"></native-equiv>
-      <spec-section>11.5.2</spec-section>
+    <node-structure name="TypeOfExpressionSyntax" parent="ExpressionSyntax"><description>Represents a TypeOf...Is or IsNot expression.</description>
+      <lm-equiv name="IsTypeNode" /><native-equiv name="TypeValueExpression" />
+      <spec section="11.5.2" />
       <grammar>TypeOfIsExpression</grammar>
 
-      <node-kind name="TypeOfIsExpression">
-        <lm-equiv name="IsType" />
-        <native-equiv name="Expression.Opcodes.IsType" />
-      </node-kind>
-
+      <node-kind name="TypeOfIsExpression"><lm-equiv name="IsType" /><native-equiv name="Expression.Opcodes.IsType" /></node-kind>
       <node-kind name="TypeOfIsNotExpression" />
 
-      <child name="TypeOfKeyword" kind="TypeOfKeyword">
-        <description>The "TypeOf" keyword.</description>
-        <lm-equiv name="TypeOfKeyword"></lm-equiv>
-        <native-equiv name=""></native-equiv>
+      <child name="TypeOfKeyword" kind="TypeOfKeyword"><description>The "TypeOf" keyword.</description>
+        <lm-equiv name="TypeOfKeyword" /><native-equiv name="" />
+      </child>
+      
+      <child name="Expression"    kind="@ExpressionSyntax"><description>The expression being tested.</description>
+        <lm-equiv name="Value" /><native-equiv name="Value" />
       </child>
 
-      <child name="Expression" kind="@ExpressionSyntax">
-        <description>The expression being tested.</description>
-        <lm-equiv name="Value"></lm-equiv>
-        <native-equiv name="Value"></native-equiv>
-      </child>
-
-      <child name="OperatorToken">
-        <description>The "Is" or "IsNot" keyword.</description>
-        <lm-equiv name="IsKeyword"></lm-equiv>
-        <native-equiv name="HasIs"></native-equiv>
-
-        <kind name="IsKeyword" node-kind="TypeOfIsExpression" />
+      <child name="OperatorToken"><description>The "Is" or "IsNot" keyword.</description>
+        <lm-equiv name="IsKeyword" /><native-equiv name="HasIs" />
+        <kind name="IsKeyword"    node-kind="TypeOfIsExpression" />
         <kind name="IsNotKeyword" node-kind="TypeOfIsNotExpression" />
       </child>
+      
+      <child name="OptionalNameAs" optional="true" kind="NameAs" />
 
-      <child name="Type" kind="@TypeSyntax">
-        <description>The name of the type being tested against.</description>
-        <lm-equiv name="TargetType"></lm-equiv>
-        <native-equiv name="TargetType"></native-equiv>
+      <child name="Type" kind="@TypeSyntax|TypeArgumentList"><description>The name of the type (or the list of types) being tested against.</description>
+        <lm-equiv name="TargetType" /><native-equiv name="TargetType" />
       </child>
+    
     </node-structure>
 
+    <node-structure name="NameAsSyntax" parent="VisualBasicSyntaxNode" >
+      <node-kind name="NameAs" />
+      
+      <child name="Identifer" kind="IdentifierToken" />
+      <child name="AsKeyword" kind="AsKeyword" />
+    </node-structure>
+    
     <!--****************
       -  GetXmlNamespaceExpression
       ******************-->

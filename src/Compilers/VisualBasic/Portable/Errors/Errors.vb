@@ -2044,5 +2044,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_UnconstrainedTypeParameterInConditional
         FEATURE_CommentsAfterLineContinuation
         FEATURE_InitOnlySettersUsage
+        FEATURE_TypeOfAs
+        FEATURE_TypeOfMany
     End Enum
 End Namespace
