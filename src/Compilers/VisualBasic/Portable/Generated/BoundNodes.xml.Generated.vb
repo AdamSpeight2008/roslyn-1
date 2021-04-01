@@ -2485,7 +2485,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Sub New(syntax As SyntaxNode, local As LocalSymbol, conditionOpt As BoundExpression, targetType As TypeSymbol, operand As BoundExpression, isTypeOfIsNotExpression As Boolean, type As TypeSymbol, Optional hasErrors As Boolean = False)
             MyBase.New(BoundKind.TypeOf, syntax, targetType, operand, isTypeOfIsNotExpression, type, hasErrors OrElse conditionOpt.NonNullAndHasErrors() OrElse operand.NonNullAndHasErrors())
 
-            Debug.Assert(local IsNot Nothing, "Field 'local' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
             Debug.Assert(targetType IsNot Nothing, "Field 'targetType' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
             Debug.Assert(operand IsNot Nothing, "Field 'operand' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
             Debug.Assert(type IsNot Nothing, "Field 'type' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
