@@ -521,7 +521,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Extensions.ContextQuery
                token.IsChildToken(Of ObjectCreationExpressionSyntax)(Function(objectCreation) objectCreation.NewKeyword) OrElse
                token.IsChildToken(Of TypeArgumentListSyntax)(Function(typeArgumentList) typeArgumentList.OfKeyword) OrElse
                token.IsChildSeparatorToken(Of TypeArgumentListSyntax, TypeSyntax)(Function(typeArgumentList) typeArgumentList.Arguments) OrElse
-               token.IsChildToken(Of TypeOfExpressionSyntax)(Function(typeOfIs) typeOfIs.OperatorToken) OrElse
+               token.IsChildToken(Of TypeOfExpressionSyntax)(Function(typeOfIs) typeOfIs.IsTypeClause.OperatorToken) OrElse
                token.IsChildToken(Of TypeParameterSingleConstraintClauseSyntax)(Function(constraint) constraint.AsKeyword) OrElse
                token.IsChildToken(Of TypeParameterMultipleConstraintClauseSyntax)(Function(constraint) constraint.OpenBraceToken) OrElse
                token.IsChildSeparatorToken(Of TypeParameterMultipleConstraintClauseSyntax, ConstraintSyntax)(Function(constraint) constraint.Constraints) Then

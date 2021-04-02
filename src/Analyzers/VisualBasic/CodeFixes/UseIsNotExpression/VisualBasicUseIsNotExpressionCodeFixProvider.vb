@@ -70,9 +70,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UseIsNotExpression
                 replacement = SyntaxFactory.TypeOfIsNotExpression(
                     typeOfIsExpression.TypeOfKeyword,
                     typeOfIsExpression.Expression,
-                    SyntaxFactory.Token(SyntaxKind.IsNotKeyword).WithTriviaFrom(typeOfIsExpression.OperatorToken),
-                    typeOfIsExpression.OptionalNameAs,
-                    typeOfIsExpression.Type)
+                    SyntaxFactory.IsTypeClause(
+                    SyntaxFactory.Token(SyntaxKind.IsNotKeyword).WithTriviaFrom(typeOfIsExpression.IsTypeClause.OperatorToken),
+                    typeOfIsExpression.IsTypeClause.OptionalNameAs,
+                    typeOfIsExpression.IsTypeClause.Type))
             End If
 
             editor.ReplaceNode(

@@ -1633,15 +1633,28 @@ type_of_expression
   ;
 
 type_of_is_expression
-  : 'TypeOf' expression 'Is' name_as? (expression | type_argument_list)
+  : 'TypeOf' expression is_type_clause
   ;
 
-name_as
+is_type_clause
+  : is_not_type_clause
+  | is_type_clause
+  ;
+
+is_not_type_clause
+  : 'IsNot' declaration_clause? (expression | type_argument_list)
+  ;
+
+declaration_clause
   : identifier_token 'As'
   ;
 
+is_type_clause
+  : 'Is' declaration_clause? (expression | type_argument_list)
+  ;
+
 type_of_is_not_expression
-  : 'TypeOf' expression 'IsNot' name_as? (expression | type_argument_list)
+  : 'TypeOf' expression is_type_clause
   ;
 
 unary_expression

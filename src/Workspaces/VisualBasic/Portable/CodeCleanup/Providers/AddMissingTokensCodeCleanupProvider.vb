@@ -98,7 +98,7 @@ Namespace Microsoft.CodeAnalysis.CodeCleanup.Providers
                    name.CheckParent(Of SimpleAsClauseSyntax)(Function(p) p.Type Is name) OrElse
                    name.CheckParent(Of TypeConstraintSyntax)(Function(p) p.Type Is name) OrElse
                    name.CheckParent(Of GetTypeExpressionSyntax)(Function(p) p.Type Is name) OrElse
-                   name.CheckParent(Of TypeOfExpressionSyntax)(Function(p) p.Type Is name) OrElse
+                   name.CheckParent(Of TypeOfExpressionSyntax)(Function(p) p.IsTypeClause.Type Is name) OrElse
                    name.CheckParent(Of CastExpressionSyntax)(Function(p) p.Type Is name) OrElse
                    name.CheckParent(Of ForEachStatementSyntax)(Function(p) p.ControlVariable Is name) OrElse
                    name.CheckParent(Of ForStatementSyntax)(Function(p) p.ControlVariable Is name) OrElse

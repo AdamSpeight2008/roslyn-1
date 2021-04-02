@@ -437,7 +437,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Function VisitTypeOfExpression(ByVal node As TypeOfExpressionSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
-        Public Overridable Function VisitNameAs(ByVal node As NameAsSyntax) As TResult
+        Public Overridable Function VisitIsTypeClause(ByVal node As IsTypeClauseSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
+        Public Overridable Function VisitDeclarationClause(ByVal node As DeclarationClauseSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
         Public Overridable Function VisitGetXmlNamespaceExpression(ByVal node As GetXmlNamespaceExpressionSyntax) As TResult
@@ -1175,7 +1178,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Sub VisitTypeOfExpression(ByVal node As TypeOfExpressionSyntax)
             Me.DefaultVisit(node) : Return
         End Sub
-        Public Overridable Sub VisitNameAs(ByVal node As NameAsSyntax)
+        Public Overridable Sub VisitIsTypeClause(ByVal node As IsTypeClauseSyntax)
+            Me.DefaultVisit(node) : Return
+        End Sub
+        Public Overridable Sub VisitDeclarationClause(ByVal node As DeclarationClauseSyntax)
             Me.DefaultVisit(node) : Return
         End Sub
         Public Overridable Sub VisitGetXmlNamespaceExpression(ByVal node As GetXmlNamespaceExpressionSyntax)
@@ -3889,21 +3895,34 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If node.TypeOfKeyword.Node IsNot newTypeOfKeyword Then anyChanges = True
             Dim newExpression = DirectCast(Visit(node.Expression), ExpressionSyntax)
             If node.Expression IsNot newExpression Then anyChanges = True
-            Dim newOperatorToken = DirectCast(VisitToken(node.OperatorToken).Node, InternalSyntax.KeywordSyntax)
-            If node.OperatorToken.Node IsNot newOperatorToken Then anyChanges = True
-            Dim newOptionalNameAs = DirectCast(Visit(node.OptionalNameAs), NameAsSyntax)
-            If node.OptionalNameAs IsNot newOptionalNameAs Then anyChanges = True
-            Dim newType = DirectCast(Visit(node.Type), VisualBasicSyntaxNode)
-            If node.Type IsNot newType Then anyChanges = True
+            Dim newIsTypeClause = DirectCast(Visit(node.IsTypeClause), IsTypeClauseSyntax)
+            If node.IsTypeClause IsNot newIsTypeClause Then anyChanges = True
 
             If anyChanges Then
-                Return New TypeOfExpressionSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newTypeOfKeyword, newExpression, newOperatorToken, newOptionalNameAs, newType)
+                Return New TypeOfExpressionSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newTypeOfKeyword, newExpression, newIsTypeClause)
             Else
                 Return node
             End If
         End Function
 
-        Public Overrides Function VisitNameAs(ByVal node As NameAsSyntax) As SyntaxNode
+        Public Overrides Function VisitIsTypeClause(ByVal node As IsTypeClauseSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newOperatorToken = DirectCast(VisitToken(node.OperatorToken).Node, InternalSyntax.KeywordSyntax)
+            If node.OperatorToken.Node IsNot newOperatorToken Then anyChanges = True
+            Dim newOptionalNameAs = DirectCast(Visit(node.OptionalNameAs), DeclarationClauseSyntax)
+            If node.OptionalNameAs IsNot newOptionalNameAs Then anyChanges = True
+            Dim newType = DirectCast(Visit(node.Type), VisualBasicSyntaxNode)
+            If node.Type IsNot newType Then anyChanges = True
+
+            If anyChanges Then
+                Return New IsTypeClauseSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newOperatorToken, newOptionalNameAs, newType)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitDeclarationClause(ByVal node As DeclarationClauseSyntax) As SyntaxNode
             Dim anyChanges As Boolean = False
 
             Dim newIdentifer = DirectCast(VisitToken(node.Identifer).Node, InternalSyntax.IdentifierTokenSyntax)
@@ -3912,7 +3931,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If node.AsKeyword.Node IsNot newAsKeyword Then anyChanges = True
 
             If anyChanges Then
-                Return New NameAsSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newIdentifer, newAsKeyword)
+                Return New DeclarationClauseSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newIdentifer, newAsKeyword)
             Else
                 Return node
             End If
@@ -25552,13 +25571,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="expression">
         ''' The expression being tested.
         ''' </param>
-        ''' <param name="operatorToken">
-        ''' The "Is" or "IsNot" keyword.
-        ''' </param>
-        ''' <param name="type">
-        ''' The name of the type (or the list of types) being tested against.
-        ''' </param>
-        Public Shared Function TypeOfIsExpression(typeOfKeyword As SyntaxToken, expression As ExpressionSyntax, operatorToken As SyntaxToken, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode) As TypeOfExpressionSyntax
+        Public Shared Function TypeOfIsExpression(typeOfKeyword As SyntaxToken, expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax) As TypeOfExpressionSyntax
             Select Case typeOfKeyword.Kind()
                 Case SyntaxKind.TypeOfKeyword
                 Case Else
@@ -25676,31 +25689,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("expression")
             End Select
-            Select Case operatorToken.Kind()
-                Case SyntaxKind.IsKeyword :
-                Case SyntaxKind.IsNotKeyword
-                Case Else
-                    Throw new ArgumentException("operatorToken")
-            End Select
-            if type Is Nothing Then
-                Throw New ArgumentNullException(NameOf(type))
+            if isTypeClause Is Nothing Then
+                Throw New ArgumentNullException(NameOf(isTypeClause))
             End If
-            Select Case type.Kind()
-                Case SyntaxKind.TupleType,
-                     SyntaxKind.ArrayType,
-                     SyntaxKind.NullableType,
-                     SyntaxKind.PredefinedType,
-                     SyntaxKind.IdentifierName,
-                     SyntaxKind.GenericName,
-                     SyntaxKind.QualifiedName,
-                     SyntaxKind.GlobalName,
-                     SyntaxKind.CrefOperatorReference,
-                     SyntaxKind.QualifiedCrefOperatorReference,
-                     SyntaxKind.TypeArgumentList
+            Select Case isTypeClause.Kind()
+                Case SyntaxKind.IsTypeClause,
+                     SyntaxKind.IsNotTypeClause
                 Case Else
-                    Throw new ArgumentException("type")
+                    Throw new ArgumentException("isTypeClause")
             End Select
-            Return New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsExpression, Nothing, Nothing, DirectCast(typeOfKeyword.Node, InternalSyntax.KeywordSyntax), expression, DirectCast(operatorToken.Node, InternalSyntax.KeywordSyntax), optionalNameAs, type)
+            Return New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsExpression, Nothing, Nothing, DirectCast(typeOfKeyword.Node, InternalSyntax.KeywordSyntax), expression, isTypeClause)
         End Function
 
 
@@ -25710,25 +25708,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="expression">
         ''' The expression being tested.
         ''' </param>
-        ''' <param name="type">
-        ''' The name of the type (or the list of types) being tested against.
-        ''' </param>
-        Public Shared Function TypeOfIsExpression(expression As ExpressionSyntax, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode) As TypeOfExpressionSyntax
-            Return SyntaxFactory.TypeOfIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), expression, SyntaxFactory.Token(SyntaxKind.IsKeyword), optionalNameAs, type)
-        End Function
-
-
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
-        ''' <param name="expression">
-        ''' The expression being tested.
-        ''' </param>
-        ''' <param name="type">
-        ''' The name of the type (or the list of types) being tested against.
-        ''' </param>
-        Public Shared Function TypeOfIsExpression(expression As ExpressionSyntax, type As VisualBasicSyntaxNode) As TypeOfExpressionSyntax
-            Return SyntaxFactory.TypeOfIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), expression, SyntaxFactory.Token(SyntaxKind.IsKeyword), Nothing, type)
+        Public Shared Function TypeOfIsExpression(expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax) As TypeOfExpressionSyntax
+            Return SyntaxFactory.TypeOfIsExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), expression, isTypeClause)
         End Function
 
 
@@ -25741,13 +25722,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="expression">
         ''' The expression being tested.
         ''' </param>
-        ''' <param name="operatorToken">
-        ''' The "Is" or "IsNot" keyword.
-        ''' </param>
-        ''' <param name="type">
-        ''' The name of the type (or the list of types) being tested against.
-        ''' </param>
-        Public Shared Function TypeOfIsNotExpression(typeOfKeyword As SyntaxToken, expression As ExpressionSyntax, operatorToken As SyntaxToken, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode) As TypeOfExpressionSyntax
+        Public Shared Function TypeOfIsNotExpression(typeOfKeyword As SyntaxToken, expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax) As TypeOfExpressionSyntax
             Select Case typeOfKeyword.Kind()
                 Case SyntaxKind.TypeOfKeyword
                 Case Else
@@ -25865,30 +25840,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("expression")
             End Select
-            Select Case operatorToken.Kind()
-                Case SyntaxKind.IsNotKeyword
-                Case Else
-                    Throw new ArgumentException("operatorToken")
-            End Select
-            if type Is Nothing Then
-                Throw New ArgumentNullException(NameOf(type))
+            if isTypeClause Is Nothing Then
+                Throw New ArgumentNullException(NameOf(isTypeClause))
             End If
-            Select Case type.Kind()
-                Case SyntaxKind.TupleType,
-                     SyntaxKind.ArrayType,
-                     SyntaxKind.NullableType,
-                     SyntaxKind.PredefinedType,
-                     SyntaxKind.IdentifierName,
-                     SyntaxKind.GenericName,
-                     SyntaxKind.QualifiedName,
-                     SyntaxKind.GlobalName,
-                     SyntaxKind.CrefOperatorReference,
-                     SyntaxKind.QualifiedCrefOperatorReference,
-                     SyntaxKind.TypeArgumentList
+            Select Case isTypeClause.Kind()
+                Case SyntaxKind.IsTypeClause,
+                     SyntaxKind.IsNotTypeClause
                 Case Else
-                    Throw new ArgumentException("type")
+                    Throw new ArgumentException("isTypeClause")
             End Select
-            Return New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsNotExpression, Nothing, Nothing, DirectCast(typeOfKeyword.Node, InternalSyntax.KeywordSyntax), expression, DirectCast(operatorToken.Node, InternalSyntax.KeywordSyntax), optionalNameAs, type)
+            Return New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsNotExpression, Nothing, Nothing, DirectCast(typeOfKeyword.Node, InternalSyntax.KeywordSyntax), expression, isTypeClause)
         End Function
 
 
@@ -25898,25 +25859,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="expression">
         ''' The expression being tested.
         ''' </param>
-        ''' <param name="type">
-        ''' The name of the type (or the list of types) being tested against.
-        ''' </param>
-        Public Shared Function TypeOfIsNotExpression(expression As ExpressionSyntax, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode) As TypeOfExpressionSyntax
-            Return SyntaxFactory.TypeOfIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), expression, SyntaxFactory.Token(SyntaxKind.IsNotKeyword), optionalNameAs, type)
-        End Function
-
-
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
-        ''' <param name="expression">
-        ''' The expression being tested.
-        ''' </param>
-        ''' <param name="type">
-        ''' The name of the type (or the list of types) being tested against.
-        ''' </param>
-        Public Shared Function TypeOfIsNotExpression(expression As ExpressionSyntax, type As VisualBasicSyntaxNode) As TypeOfExpressionSyntax
-            Return SyntaxFactory.TypeOfIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), expression, SyntaxFactory.Token(SyntaxKind.IsNotKeyword), Nothing, type)
+        Public Shared Function TypeOfIsNotExpression(expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax) As TypeOfExpressionSyntax
+            Return SyntaxFactory.TypeOfIsNotExpression(SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), expression, isTypeClause)
         End Function
 
 
@@ -25933,13 +25877,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="expression">
         ''' The expression being tested.
         ''' </param>
-        ''' <param name="operatorToken">
-        ''' The "Is" or "IsNot" keyword.
-        ''' </param>
-        ''' <param name="type">
-        ''' The name of the type (or the list of types) being tested against.
-        ''' </param>
-        Public Shared Function TypeOfExpression(ByVal kind As SyntaxKind, typeOfKeyword As SyntaxToken, expression As ExpressionSyntax, operatorToken As SyntaxToken, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode) As TypeOfExpressionSyntax
+        Public Shared Function TypeOfExpression(ByVal kind As SyntaxKind, typeOfKeyword As SyntaxToken, expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax) As TypeOfExpressionSyntax
             If Not SyntaxFacts.IsTypeOfExpression(kind) Then
                 Throw New ArgumentException("kind")
             End If
@@ -26060,7 +25998,150 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("expression")
             End Select
-            If (Not operatorToken.IsKind(GetTypeOfExpressionOperatorTokenKind(kind))) Then
+            if isTypeClause Is Nothing Then
+                Throw New ArgumentNullException(NameOf(isTypeClause))
+            End If
+            Select Case isTypeClause.Kind()
+                Case SyntaxKind.IsTypeClause,
+                     SyntaxKind.IsNotTypeClause
+                Case Else
+                    Throw new ArgumentException("isTypeClause")
+            End Select
+            Return New TypeOfExpressionSyntax(kind, Nothing, Nothing, DirectCast(typeOfKeyword.Node, InternalSyntax.KeywordSyntax), expression, isTypeClause)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a TypeOf...Is or IsNot expression.
+        ''' </summary>
+        ''' <param name="kind">
+        ''' A <cref c="SyntaxKind"/> representing the specific kind of
+        ''' TypeOfExpressionSyntax. One of TypeOfIsExpression, TypeOfIsNotExpression.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The expression being tested.
+        ''' </param>
+        Public Shared Function TypeOfExpression(ByVal kind As SyntaxKind, expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax) As TypeOfExpressionSyntax
+            Return SyntaxFactory.TypeOfExpression(kind, SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), expression, isTypeClause)
+        End Function
+
+
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="type">
+        ''' The name of the type (or the list of types) being tested against.
+        ''' </param>
+        Public Shared Function IsTypeClause(operatorToken As SyntaxToken, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+            Select Case operatorToken.Kind()
+                Case SyntaxKind.IsKeyword :
+                Case SyntaxKind.IsNotKeyword
+                Case Else
+                    Throw new ArgumentException("operatorToken")
+            End Select
+            if type Is Nothing Then
+                Throw New ArgumentNullException(NameOf(type))
+            End If
+            Select Case type.Kind()
+                Case SyntaxKind.TupleType,
+                     SyntaxKind.ArrayType,
+                     SyntaxKind.NullableType,
+                     SyntaxKind.PredefinedType,
+                     SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference,
+                     SyntaxKind.TypeArgumentList
+                Case Else
+                    Throw new ArgumentException("type")
+            End Select
+            Return New IsTypeClauseSyntax(SyntaxKind.IsTypeClause, Nothing, Nothing, DirectCast(operatorToken.Node, InternalSyntax.KeywordSyntax), optionalNameAs, type)
+        End Function
+
+
+        ''' <param name="type">
+        ''' The name of the type (or the list of types) being tested against.
+        ''' </param>
+        Public Shared Function IsTypeClause(optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+            Return SyntaxFactory.IsTypeClause(SyntaxKind.IsTypeClause, SyntaxFactory.Token(SyntaxKind.IsKeyword), optionalNameAs, type)
+        End Function
+
+
+        ''' <param name="type">
+        ''' The name of the type (or the list of types) being tested against.
+        ''' </param>
+        Public Shared Function IsTypeClause(type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+            Return SyntaxFactory.IsTypeClause(SyntaxKind.IsTypeClause, SyntaxFactory.Token(SyntaxKind.IsKeyword), Nothing, type)
+        End Function
+
+
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="type">
+        ''' The name of the type (or the list of types) being tested against.
+        ''' </param>
+        Public Shared Function IsNotTypeClause(operatorToken As SyntaxToken, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+            Select Case operatorToken.Kind()
+                Case SyntaxKind.IsNotKeyword
+                Case Else
+                    Throw new ArgumentException("operatorToken")
+            End Select
+            if type Is Nothing Then
+                Throw New ArgumentNullException(NameOf(type))
+            End If
+            Select Case type.Kind()
+                Case SyntaxKind.TupleType,
+                     SyntaxKind.ArrayType,
+                     SyntaxKind.NullableType,
+                     SyntaxKind.PredefinedType,
+                     SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference,
+                     SyntaxKind.TypeArgumentList
+                Case Else
+                    Throw new ArgumentException("type")
+            End Select
+            Return New IsTypeClauseSyntax(SyntaxKind.IsNotTypeClause, Nothing, Nothing, DirectCast(operatorToken.Node, InternalSyntax.KeywordSyntax), optionalNameAs, type)
+        End Function
+
+
+        ''' <param name="type">
+        ''' The name of the type (or the list of types) being tested against.
+        ''' </param>
+        Public Shared Function IsNotTypeClause(optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+            Return SyntaxFactory.IsNotTypeClause(SyntaxFactory.Token(SyntaxKind.IsNotKeyword), optionalNameAs, type)
+        End Function
+
+
+        ''' <param name="type">
+        ''' The name of the type (or the list of types) being tested against.
+        ''' </param>
+        Public Shared Function IsNotTypeClause(type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+            Return SyntaxFactory.IsNotTypeClause(SyntaxFactory.Token(SyntaxKind.IsNotKeyword), Nothing, type)
+        End Function
+
+
+        ''' <param name="kind">
+        ''' A <cref c="SyntaxKind"/> representing the specific kind of IsTypeClauseSyntax.
+        ''' One of IsTypeClause, IsNotTypeClause.
+        ''' </param>
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="type">
+        ''' The name of the type (or the list of types) being tested against.
+        ''' </param>
+        Public Shared Function IsTypeClause(ByVal kind As SyntaxKind, operatorToken As SyntaxToken, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+            If Not SyntaxFacts.IsIsTypeClause(kind) Then
+                Throw New ArgumentException("kind")
+            End If
+            If (Not operatorToken.IsKind(GetIsTypeClauseOperatorTokenKind(kind))) Then
                 Throw new ArgumentException("operatorToken")
             End If
             if type Is Nothing Then
@@ -26081,29 +26162,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("type")
             End Select
-            Return New TypeOfExpressionSyntax(kind, Nothing, Nothing, DirectCast(typeOfKeyword.Node, InternalSyntax.KeywordSyntax), expression, DirectCast(operatorToken.Node, InternalSyntax.KeywordSyntax), optionalNameAs, type)
+            Return New IsTypeClauseSyntax(kind, Nothing, Nothing, DirectCast(operatorToken.Node, InternalSyntax.KeywordSyntax), optionalNameAs, type)
         End Function
 
-        Private Shared Function GetTypeOfExpressionOperatorTokenKind(kind As SyntaxKind) As SyntaxKind
+        Private Shared Function GetIsTypeClauseOperatorTokenKind(kind As SyntaxKind) As SyntaxKind
             Select Case kind
-                Case SyntaxKind.TypeOfIsExpression
+                Case SyntaxKind.IsTypeClause
                     Return SyntaxKind.IsKeyword
-                Case SyntaxKind.TypeOfIsNotExpression
+                Case SyntaxKind.IsNotTypeClause
                     Return SyntaxKind.IsNotKeyword
                 Case Else
                     Throw New ArgumentException("OperatorToken")
             End Select
         End Function
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
         ''' <param name="kind">
-        ''' A <cref c="SyntaxKind"/> representing the specific kind of
-        ''' TypeOfExpressionSyntax. One of TypeOfIsExpression, TypeOfIsNotExpression.
-        ''' </param>
-        ''' <param name="expression">
-        ''' The expression being tested.
+        ''' A <cref c="SyntaxKind"/> representing the specific kind of IsTypeClauseSyntax.
+        ''' One of IsTypeClause, IsNotTypeClause.
         ''' </param>
         ''' <param name="operatorToken">
         ''' The "Is" or "IsNot" keyword.
@@ -26111,33 +26186,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="type">
         ''' The name of the type (or the list of types) being tested against.
         ''' </param>
-        Public Shared Function TypeOfExpression(ByVal kind As SyntaxKind, expression As ExpressionSyntax, operatorToken As SyntaxToken, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode) As TypeOfExpressionSyntax
-            Return SyntaxFactory.TypeOfExpression(kind, SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), expression, operatorToken, optionalNameAs, type)
+        Public Shared Function IsTypeClause(ByVal kind As SyntaxKind, operatorToken As SyntaxToken, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+            Return SyntaxFactory.IsTypeClause(kind, operatorToken, Nothing, type)
         End Function
 
 
-        ''' <summary>
-        ''' Represents a TypeOf...Is or IsNot expression.
-        ''' </summary>
-        ''' <param name="kind">
-        ''' A <cref c="SyntaxKind"/> representing the specific kind of
-        ''' TypeOfExpressionSyntax. One of TypeOfIsExpression, TypeOfIsNotExpression.
-        ''' </param>
-        ''' <param name="expression">
-        ''' The expression being tested.
-        ''' </param>
-        ''' <param name="operatorToken">
-        ''' The "Is" or "IsNot" keyword.
-        ''' </param>
-        ''' <param name="type">
-        ''' The name of the type (or the list of types) being tested against.
-        ''' </param>
-        Public Shared Function TypeOfExpression(ByVal kind As SyntaxKind, expression As ExpressionSyntax, operatorToken As SyntaxToken, type As VisualBasicSyntaxNode) As TypeOfExpressionSyntax
-            Return SyntaxFactory.TypeOfExpression(kind, SyntaxFactory.Token(SyntaxKind.TypeOfKeyword), expression, operatorToken, Nothing, type)
-        End Function
-
-
-        Public Shared Function NameAs(identifer As SyntaxToken, asKeyword As SyntaxToken) As NameAsSyntax
+        Public Shared Function DeclarationClause(identifer As SyntaxToken, asKeyword As SyntaxToken) As DeclarationClauseSyntax
             Select Case identifer.Kind()
                 Case SyntaxKind.IdentifierToken
                 Case Else
@@ -26148,17 +26202,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("asKeyword")
             End Select
-            Return New NameAsSyntax(SyntaxKind.NameAs, Nothing, Nothing, DirectCast(identifer.Node, InternalSyntax.IdentifierTokenSyntax), DirectCast(asKeyword.Node, InternalSyntax.KeywordSyntax))
+            Return New DeclarationClauseSyntax(SyntaxKind.DeclarationClause, Nothing, Nothing, DirectCast(identifer.Node, InternalSyntax.IdentifierTokenSyntax), DirectCast(asKeyword.Node, InternalSyntax.KeywordSyntax))
         End Function
 
 
-        Public Shared Function NameAs(identifer As SyntaxToken) As NameAsSyntax
-            Return SyntaxFactory.NameAs(identifer, SyntaxFactory.Token(SyntaxKind.AsKeyword))
+        Public Shared Function DeclarationClause(identifer As SyntaxToken) As DeclarationClauseSyntax
+            Return SyntaxFactory.DeclarationClause(identifer, SyntaxFactory.Token(SyntaxKind.AsKeyword))
         End Function
 
 
-        Public Shared Function NameAs(identifer As String) As NameAsSyntax
-            Return SyntaxFactory.NameAs(SyntaxFactory.Identifier(identifer), SyntaxFactory.Token(SyntaxKind.AsKeyword))
+        Public Shared Function DeclarationClause(identifer As String) As DeclarationClauseSyntax
+            Return SyntaxFactory.DeclarationClause(SyntaxFactory.Identifier(identifer), SyntaxFactory.Token(SyntaxKind.AsKeyword))
         End Function
 
 
@@ -44734,7 +44788,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return False
         End Function
 
-        Public Shared Function IsTypeOfExpressionOperatorToken(kind As SyntaxKind) As Boolean
+        Public Shared Function IsIsTypeClause(kind As SyntaxKind) As Boolean
+            Select Case kind
+                Case _
+                SyntaxKind.IsTypeClause,
+                SyntaxKind.IsNotTypeClause
+                    Return True
+            End Select
+            Return False
+        End Function
+
+        Public Shared Function IsIsTypeClauseOperatorToken(kind As SyntaxKind) As Boolean
             Select Case kind
                 Case _
                 SyntaxKind.IsKeyword,

@@ -5259,22 +5259,31 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="Value" /><native-equiv name="Value" />
       </child>
 
+      <child name="IsTypeClause" kind="@IsTypeClauseSyntax" />
+    
+    </node-structure>
+    
+    <node-structure name="IsTypeClauseSyntax" parent="VisualBasicSyntaxNode">
+
+      <node-kind name="IsTypeClause" />
+      <node-kind name="IsNotTypeClause" />
+
       <child name="OperatorToken"><description>The "Is" or "IsNot" keyword.</description>
         <lm-equiv name="IsKeyword" /><native-equiv name="HasIs" />
-        <kind name="IsKeyword"    node-kind="TypeOfIsExpression" />
-        <kind name="IsNotKeyword" node-kind="TypeOfIsNotExpression" />
+        <kind name="IsKeyword"    node-kind="IsTypeClause" />
+        <kind name="IsNotKeyword" node-kind="IsNotTypeClause" />
       </child>
       
-      <child name="OptionalNameAs" optional="true" kind="NameAs" />
+      <child name="OptionalNameAs" optional="true" kind="@DeclarationClauseSyntax" />
 
       <child name="Type" kind="@TypeSyntax|TypeArgumentList"><description>The name of the type (or the list of types) being tested against.</description>
         <lm-equiv name="TargetType" /><native-equiv name="TargetType" />
       </child>
-    
-    </node-structure>
+      
+    </node-structure>"
 
-    <node-structure name="NameAsSyntax" parent="VisualBasicSyntaxNode" >
-      <node-kind name="NameAs" />
+    <node-structure name="DeclarationClauseSyntax" parent="VisualBasicSyntaxNode" >
+      <node-kind name="DeclarationClause" />
       
       <child name="Identifer" kind="IdentifierToken" />
       <child name="AsKeyword" kind="AsKeyword" />

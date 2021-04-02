@@ -42,15 +42,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If expr Is Nothing Then Return f.BadExpression()
 
             ' Validate that the operation is valid, either an IsExpression or IsNot Expression.
-            Dim is___Operand = expr.OperatorToken.Kind = SyntaxKind.IsExpression
-            Dim isNotOperand = expr.OperatorToken.Kind = SyntaxKind.IsNotExpression
+            Dim is___Operand = expr.IsTypeClause.OperatorToken.Kind = SyntaxKind.IsExpression
+            Dim isNotOperand = expr.IsTypeClause.OperatorToken.Kind = SyntaxKind.IsNotExpression
             If Not (is___Operand Xor isNotOperand) Then
                 ' If both are false or both are true, something has gone wrong.
-                _diagnostics.Add(ERRID.ERR_ArgumentSyntax, expr.OperatorToken.GetLocation())
+                _diagnostics.Add(ERRID.ERR_ArgumentSyntax, expr.IsTypeClause.OperatorToken.GetLocation())
                 Return MyBase.VisitTypeOfMany(node)
             End If
 
-            Dim types = TryCast(expr.Type, TypeArgumentListSyntax)
+            Dim types = TryCast(expr.IsTypeClause.Type, TypeArgumentListSyntax)
             if types Is Nothing Then Return f.BadExpression()
 
             Dim numberOfTypes = node.TypeArguments.Arguments.Length

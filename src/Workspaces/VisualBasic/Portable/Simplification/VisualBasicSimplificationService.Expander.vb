@@ -791,7 +791,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Simplification
 
             Private Function IsTypeOfUnboundGenericType(semanticModel As SemanticModel, typeOfExpression As TypeOfExpressionSyntax) As Boolean
                 If typeOfExpression IsNot Nothing Then
-                    Dim type = TryCast(semanticModel.GetTypeInfo(typeOfExpression.Type, _cancellationToken).Type, INamedTypeSymbol)
+                    Dim type = TryCast(semanticModel.GetTypeInfo(typeOfExpression.IsTypeClause.Type, _cancellationToken).Type, INamedTypeSymbol)
 
                     ' It's possible the immediate type might not be an unbound type, such as typeof(A<>.B). So walk through
                     ' parent types too

@@ -69,7 +69,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UseIsNotExpression
 
             Dim isKeyword = If(operand.IsKind(SyntaxKind.IsExpression),
                 DirectCast(operand, BinaryExpressionSyntax).OperatorToken,
-                DirectCast(operand, TypeOfExpressionSyntax).OperatorToken)
+                DirectCast(operand, TypeOfExpressionSyntax).IsTypeClause.OperatorToken)
 
             ' Put a diagnostic with the appropriate severity on `is` keyword.
             syntaxContext.ReportDiagnostic(DiagnosticHelper.Create(

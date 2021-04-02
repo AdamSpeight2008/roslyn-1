@@ -22459,8 +22459,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         Inherits ExpressionSyntax
 
         Friend _expression as ExpressionSyntax
-        Friend _optionalNameAs as NameAsSyntax
-        Friend _type as VisualBasicSyntaxNode
+        Friend _isTypeClause as IsTypeClauseSyntax
 
         Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
             MyBase.New(green, parent, startLocation)
@@ -22468,8 +22467,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode)
-            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfExpressionSyntax(kind, errors, annotations, typeOfKeyword, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), operatorToken, if(optionalNameAs IsNot Nothing, DirectCast(optionalNameAs.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameAsSyntax), Nothing), DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.VisualBasicSyntaxNode)), Nothing, 0)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfExpressionSyntax(kind, errors, annotations, typeOfKeyword, DirectCast(expression.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExpressionSyntax), DirectCast(isTypeClause.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IsTypeClauseSyntax)), Nothing, 0)
         End Sub
 
         ''' <summary>
@@ -22487,7 +22486,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value.
         ''' </summary>
         Public Shadows Function WithTypeOfKeyword(typeOfKeyword as SyntaxToken) As TypeOfExpressionSyntax
-            return Update(Me.Kind, typeOfKeyword, Me.Expression, Me.OperatorToken, Me.OptionalNameAs, Me.Type)
+            return Update(Me.Kind, typeOfKeyword, Me.Expression, Me.IsTypeClause)
         End Function
 
         ''' <summary>
@@ -22505,70 +22504,30 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value.
         ''' </summary>
         Public Shadows Function WithExpression(expression as ExpressionSyntax) As TypeOfExpressionSyntax
-            return Update(Me.Kind, Me.TypeOfKeyword, expression, Me.OperatorToken, Me.OptionalNameAs, Me.Type)
+            return Update(Me.Kind, Me.TypeOfKeyword, expression, Me.IsTypeClause)
         End Function
 
-        ''' <summary>
-        ''' The "Is" or "IsNot" keyword.
-        ''' </summary>
-        Public ReadOnly Property OperatorToken As SyntaxToken
+        Public ReadOnly Property IsTypeClause As IsTypeClauseSyntax
             Get
-                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.TypeOfExpressionSyntax)._operatorToken, Me.GetChildPosition(2), Me.GetChildIndex(2))
+                Return GetRed(_isTypeClause, 2)
             End Get
         End Property
 
         ''' <summary>
-        ''' Returns a copy of this with the OperatorToken property changed to the specified
+        ''' Returns a copy of this with the IsTypeClause property changed to the specified
         ''' value. Returns this instance if the specified value is the same as the current
         ''' value.
         ''' </summary>
-        Public Shadows Function WithOperatorToken(operatorToken as SyntaxToken) As TypeOfExpressionSyntax
-            return Update(Me.Kind, Me.TypeOfKeyword, Me.Expression, operatorToken, Me.OptionalNameAs, Me.Type)
-        End Function
-
-        ''' <remarks>
-        ''' This child is optional. If it is not present, then Nothing is returned.
-        ''' </remarks>
-        Public ReadOnly Property OptionalNameAs As NameAsSyntax
-            Get
-                Return GetRed(_optionalNameAs, 3)
-            End Get
-        End Property
-
-        ''' <summary>
-        ''' Returns a copy of this with the OptionalNameAs property changed to the
-        ''' specified value. Returns this instance if the specified value is the same as
-        ''' the current value.
-        ''' </summary>
-        Public Shadows Function WithOptionalNameAs(optionalNameAs as NameAsSyntax) As TypeOfExpressionSyntax
-            return Update(Me.Kind, Me.TypeOfKeyword, Me.Expression, Me.OperatorToken, optionalNameAs, Me.Type)
-        End Function
-
-        ''' <summary>
-        ''' The name of the type (or the list of types) being tested against.
-        ''' </summary>
-        Public ReadOnly Property Type As VisualBasicSyntaxNode
-            Get
-                Return GetRed(_type, 4)
-            End Get
-        End Property
-
-        ''' <summary>
-        ''' Returns a copy of this with the Type property changed to the specified value.
-        ''' Returns this instance if the specified value is the same as the current value.
-        ''' </summary>
-        Public Shadows Function WithType(type as VisualBasicSyntaxNode) As TypeOfExpressionSyntax
-            return Update(Me.Kind, Me.TypeOfKeyword, Me.Expression, Me.OperatorToken, Me.OptionalNameAs, type)
+        Public Shadows Function WithIsTypeClause(isTypeClause as IsTypeClauseSyntax) As TypeOfExpressionSyntax
+            return Update(Me.Kind, Me.TypeOfKeyword, Me.Expression, isTypeClause)
         End Function
 
         Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
             Select case i
                 Case 1
                     Return Me._expression
-                Case 3
-                    Return Me._optionalNameAs
-                Case 4
-                    Return Me._type
+                Case 2
+                    Return Me._isTypeClause
                 Case Else
                     Return Nothing
             End Select
@@ -22578,10 +22537,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Select case i
                 Case 1
                     Return Me.Expression
-                Case 3
-                    Return Me.OptionalNameAs
-                Case 4
-                    Return Me.Type
+                Case 2
+                    Return Me.IsTypeClause
                 Case Else
                     Return Nothing
             End Select
@@ -22609,18 +22566,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <param name="expression">
         ''' The value for the Expression property.
         ''' </param>
-        ''' <param name="operatorToken">
-        ''' The value for the OperatorToken property.
+        ''' <param name="isTypeClause">
+        ''' The value for the IsTypeClause property.
         ''' </param>
-        ''' <param name="optionalNameAs">
-        ''' The value for the OptionalNameAs property.
-        ''' </param>
-        ''' <param name="type">
-        ''' The value for the Type property.
-        ''' </param>
-        Public Function Update(kind As SyntaxKind, typeOfKeyword As SyntaxToken, expression As ExpressionSyntax, operatorToken As SyntaxToken, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode) As TypeOfExpressionSyntax
-            If kind <> Me.Kind OrElse typeOfKeyword <> Me.TypeOfKeyword OrElse expression IsNot Me.Expression OrElse operatorToken <> Me.OperatorToken OrElse optionalNameAs IsNot Me.OptionalNameAs OrElse type IsNot Me.Type Then
-                Dim newNode = SyntaxFactory.TypeOfExpression(kind, typeOfKeyword, expression, operatorToken, optionalNameAs, type)
+        Public Function Update(kind As SyntaxKind, typeOfKeyword As SyntaxToken, expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax) As TypeOfExpressionSyntax
+            If kind <> Me.Kind OrElse typeOfKeyword <> Me.TypeOfKeyword OrElse expression IsNot Me.Expression OrElse isTypeClause IsNot Me.IsTypeClause Then
+                Dim newNode = SyntaxFactory.TypeOfExpression(kind, typeOfKeyword, expression, isTypeClause)
                 Dim annotations = Me.GetAnnotations()
                 If annotations IsNot Nothing AndAlso annotations.Length > 0
                     return newNode.WithAnnotations(annotations)
@@ -22635,10 +22586,147 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
     ''' <remarks>
     ''' <para>This node is associated with the following syntax kinds:</para>
     ''' <list type="bullet">
-    ''' <item><description><see cref="SyntaxKind.NameAs"/></description></item>
+    ''' <item><description><see cref="SyntaxKind.IsTypeClause"/></description></item>
+    ''' <item><description><see cref="SyntaxKind.IsNotTypeClause"/></description></item>
     ''' </list>
     ''' </remarks>
-    Public NotInheritable Class NameAsSyntax
+    Public NotInheritable Class IsTypeClauseSyntax
+        Inherits VisualBasicSyntaxNode
+
+        Friend _optionalNameAs as DeclarationClauseSyntax
+        Friend _type as VisualBasicSyntaxNode
+
+        Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
+            MyBase.New(green, parent, startLocation)
+            Debug.Assert(green IsNot Nothing)
+            Debug.Assert(startLocation >= 0)
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), operatorToken As InternalSyntax.KeywordSyntax, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IsTypeClauseSyntax(kind, errors, annotations, operatorToken, if(optionalNameAs IsNot Nothing, DirectCast(optionalNameAs.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclarationClauseSyntax), Nothing), DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.VisualBasicSyntaxNode)), Nothing, 0)
+        End Sub
+
+        ''' <summary>
+        ''' The "Is" or "IsNot" keyword.
+        ''' </summary>
+        Public ReadOnly Property OperatorToken As SyntaxToken
+            Get
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IsTypeClauseSyntax)._operatorToken, Me.Position, 0)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the OperatorToken property changed to the specified
+        ''' value. Returns this instance if the specified value is the same as the current
+        ''' value.
+        ''' </summary>
+        Public Shadows Function WithOperatorToken(operatorToken as SyntaxToken) As IsTypeClauseSyntax
+            return Update(Me.Kind, operatorToken, Me.OptionalNameAs, Me.Type)
+        End Function
+
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
+        Public ReadOnly Property OptionalNameAs As DeclarationClauseSyntax
+            Get
+                Return GetRed(_optionalNameAs, 1)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the OptionalNameAs property changed to the
+        ''' specified value. Returns this instance if the specified value is the same as
+        ''' the current value.
+        ''' </summary>
+        Public Shadows Function WithOptionalNameAs(optionalNameAs as DeclarationClauseSyntax) As IsTypeClauseSyntax
+            return Update(Me.Kind, Me.OperatorToken, optionalNameAs, Me.Type)
+        End Function
+
+        ''' <summary>
+        ''' The name of the type (or the list of types) being tested against.
+        ''' </summary>
+        Public ReadOnly Property Type As VisualBasicSyntaxNode
+            Get
+                Return GetRed(_type, 2)
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns a copy of this with the Type property changed to the specified value.
+        ''' Returns this instance if the specified value is the same as the current value.
+        ''' </summary>
+        Public Shadows Function WithType(type as VisualBasicSyntaxNode) As IsTypeClauseSyntax
+            return Update(Me.Kind, Me.OperatorToken, Me.OptionalNameAs, type)
+        End Function
+
+        Friend Overrides Function GetCachedSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me._optionalNameAs
+                Case 2
+                    Return Me._type
+                Case Else
+                    Return Nothing
+            End Select
+        End Function
+
+        Friend Overrides Function GetNodeSlot(i as Integer) as SyntaxNode
+            Select case i
+                Case 1
+                    Return Me.OptionalNameAs
+                Case 2
+                    Return Me.Type
+                Case Else
+                    Return Nothing
+            End Select
+        End Function
+
+        Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
+            Return visitor.VisitIsTypeClause(Me)
+        End Function
+
+        Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
+            visitor.VisitIsTypeClause(Me)
+        End Sub
+
+
+        ''' <summary>
+        ''' Returns a copy of this with the specified changes. Returns this instance if
+        ''' there are no actual changes.
+        ''' </summary>
+        ''' <param name="kind">
+        ''' The new kind.
+        ''' </param>
+        ''' <param name="operatorToken">
+        ''' The value for the OperatorToken property.
+        ''' </param>
+        ''' <param name="optionalNameAs">
+        ''' The value for the OptionalNameAs property.
+        ''' </param>
+        ''' <param name="type">
+        ''' The value for the Type property.
+        ''' </param>
+        Public Function Update(kind As SyntaxKind, operatorToken As SyntaxToken, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+            If kind <> Me.Kind OrElse operatorToken <> Me.OperatorToken OrElse optionalNameAs IsNot Me.OptionalNameAs OrElse type IsNot Me.Type Then
+                Dim newNode = SyntaxFactory.IsTypeClause(kind, operatorToken, optionalNameAs, type)
+                Dim annotations = Me.GetAnnotations()
+                If annotations IsNot Nothing AndAlso annotations.Length > 0
+                    return newNode.WithAnnotations(annotations)
+                End If
+                Return newNode
+            End If
+            Return Me
+        End Function
+
+    End Class
+
+    ''' <remarks>
+    ''' <para>This node is associated with the following syntax kinds:</para>
+    ''' <list type="bullet">
+    ''' <item><description><see cref="SyntaxKind.DeclarationClause"/></description></item>
+    ''' </list>
+    ''' </remarks>
+    Public NotInheritable Class DeclarationClauseSyntax
         Inherits VisualBasicSyntaxNode
 
 
@@ -22649,12 +22737,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         End Sub
 
         Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), identifer As InternalSyntax.IdentifierTokenSyntax, asKeyword As InternalSyntax.KeywordSyntax)
-            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameAsSyntax(kind, errors, annotations, identifer, asKeyword), Nothing, 0)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclarationClauseSyntax(kind, errors, annotations, identifer, asKeyword), Nothing, 0)
         End Sub
 
         Public ReadOnly Property Identifer As SyntaxToken
             Get
-                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameAsSyntax)._identifer, Me.Position, 0)
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclarationClauseSyntax)._identifer, Me.Position, 0)
             End Get
         End Property
 
@@ -22663,13 +22751,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value. Returns this instance if the specified value is the same as the current
         ''' value.
         ''' </summary>
-        Public Shadows Function WithIdentifer(identifer as SyntaxToken) As NameAsSyntax
+        Public Shadows Function WithIdentifer(identifer as SyntaxToken) As DeclarationClauseSyntax
             return Update(identifer, Me.AsKeyword)
         End Function
 
         Public ReadOnly Property AsKeyword As SyntaxToken
             Get
-                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.NameAsSyntax)._asKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclarationClauseSyntax)._asKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
             End Get
         End Property
 
@@ -22678,7 +22766,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value. Returns this instance if the specified value is the same as the current
         ''' value.
         ''' </summary>
-        Public Shadows Function WithAsKeyword(asKeyword as SyntaxToken) As NameAsSyntax
+        Public Shadows Function WithAsKeyword(asKeyword as SyntaxToken) As DeclarationClauseSyntax
             return Update(Me.Identifer, asKeyword)
         End Function
 
@@ -22697,11 +22785,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         End Function
 
         Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
-            Return visitor.VisitNameAs(Me)
+            Return visitor.VisitDeclarationClause(Me)
         End Function
 
         Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
-            visitor.VisitNameAs(Me)
+            visitor.VisitDeclarationClause(Me)
         End Sub
 
 
@@ -22715,9 +22803,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <param name="asKeyword">
         ''' The value for the AsKeyword property.
         ''' </param>
-        Public Function Update(identifer As SyntaxToken, asKeyword As SyntaxToken) As NameAsSyntax
+        Public Function Update(identifer As SyntaxToken, asKeyword As SyntaxToken) As DeclarationClauseSyntax
             If identifer <> Me.Identifer OrElse asKeyword <> Me.AsKeyword Then
-                Dim newNode = SyntaxFactory.NameAs(identifer, asKeyword)
+                Dim newNode = SyntaxFactory.DeclarationClause(identifer, asKeyword)
                 Dim annotations = Me.GetAnnotations()
                 If annotations IsNot Nothing AndAlso annotations.Length > 0
                     return newNode.WithAnnotations(annotations)

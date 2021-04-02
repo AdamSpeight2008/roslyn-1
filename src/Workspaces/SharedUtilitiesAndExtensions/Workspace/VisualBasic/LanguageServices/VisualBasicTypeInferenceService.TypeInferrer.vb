@@ -100,7 +100,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Function
 
             Private Function InferTypeInTypeOfExpressionSyntax(typeOfExpression As TypeOfExpressionSyntax) As IEnumerable(Of TypeInferenceInfo)
-                Dim expressionType = typeOfExpression.Type
+                Dim expressionType = typeOfExpression.IsTypeClause.Type
                 If expressionType Is Nothing Then
                     Return SpecializedCollections.EmptyEnumerable(Of TypeInferenceInfo)()
                 End If

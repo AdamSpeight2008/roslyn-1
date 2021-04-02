@@ -767,13 +767,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim operandType = operand.Type
             Dim operatorIsIsNot = (node.Kind = SyntaxKind.TypeOfIsNotExpression)
             Dim resultType As TypeSymbol = GetSpecialType(SpecialType.System_Boolean, node, diagnostics)
-            Dim target_type = TryCast(node.Type, TypeSyntax)
-            Dim target_types = TryCast(node.Type, TypeArgumentListSyntax)
+            Dim target_type = TryCast(node.IsTypeClause.Type, TypeSyntax)
+            Dim target_types = TryCast(node.IsTypeClause.Type, TypeArgumentListSyntax)
 
             If target_type IsNot Nothing Then Return BindTypeOfOneExpression(node, diagnostics, operand, operandType, operatorIsIsNot, resultType, target_type)
             If target_types IsNot Nothing Then Return BindTypeOfManyExpression(node, diagnostics, operand, operandType, operatorIsIsNot, resultType, target_types)
             ' Report invald syntax
-            Return ReportDiagnosticAndProduceBadExpression(diagnostics, node.Type, ERRID.ERR_Syntax)
+            Return ReportDiagnosticAndProduceBadExpression(diagnostics, node.IsTypeClause.Type, ERRID.ERR_Syntax)
         End Function
 
         Private Function BindTypeOfManyExpression(

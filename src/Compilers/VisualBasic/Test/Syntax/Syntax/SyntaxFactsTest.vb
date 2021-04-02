@@ -905,10 +905,10 @@ End Namespace
     <Fact>
     Public Sub IsTypeOfExpressionOperatorToken()
         For Each item As SyntaxKind In {SyntaxKind.IsKeyword, SyntaxKind.IsNotKeyword}
-            Assert.True(SyntaxFacts.IsTypeOfExpressionOperatorToken(item))
+            Assert.True(SyntaxFacts.IsIsTypeClauseOperatorToken(item))
         Next
-        Assert.False(SyntaxFacts.IsTypeOfExpressionOperatorToken(SyntaxKind.ExitKeyword))
-        Assert.False(SyntaxFacts.IsTypeOfExpressionOperatorToken(SyntaxKind.None))
+        Assert.False(SyntaxFacts.IsIsTypeClauseOperatorToken(SyntaxKind.ExitKeyword))
+        Assert.False(SyntaxFacts.IsIsTypeClauseOperatorToken(SyntaxKind.None))
     End Sub
 
     <Fact>

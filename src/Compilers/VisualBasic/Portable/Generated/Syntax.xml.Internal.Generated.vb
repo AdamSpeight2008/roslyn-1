@@ -20874,71 +20874,51 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend ReadOnly _typeOfKeyword as KeywordSyntax
         Friend ReadOnly _expression as ExpressionSyntax
-        Friend ReadOnly _operatorToken as KeywordSyntax
-        Friend ReadOnly _optionalNameAs as NameAsSyntax
-        Friend ReadOnly _type as VisualBasicSyntaxNode
+        Friend ReadOnly _isTypeClause as IsTypeClauseSyntax
 
-        Friend Sub New(ByVal kind As SyntaxKind, typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode)
+        Friend Sub New(ByVal kind As SyntaxKind, typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax)
             MyBase.New(kind)
-            MyBase._slotCount = 5
+            MyBase._slotCount = 3
 
             AdjustFlagsAndWidth(typeOfKeyword)
             Me._typeOfKeyword = typeOfKeyword
             AdjustFlagsAndWidth(expression)
             Me._expression = expression
-            AdjustFlagsAndWidth(operatorToken)
-            Me._operatorToken = operatorToken
-            If optionalNameAs IsNot Nothing Then
-                AdjustFlagsAndWidth(optionalNameAs)
-                Me._optionalNameAs = optionalNameAs
-            End If
-            AdjustFlagsAndWidth(type)
-            Me._type = type
+            AdjustFlagsAndWidth(isTypeClause)
+            Me._isTypeClause = isTypeClause
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode, context As ISyntaxFactoryContext)
+        Friend Sub New(ByVal kind As SyntaxKind, typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax, context As ISyntaxFactoryContext)
             MyBase.New(kind)
-            MyBase._slotCount = 5
+            MyBase._slotCount = 3
             Me.SetFactoryContext(context)
 
             AdjustFlagsAndWidth(typeOfKeyword)
             Me._typeOfKeyword = typeOfKeyword
             AdjustFlagsAndWidth(expression)
             Me._expression = expression
-            AdjustFlagsAndWidth(operatorToken)
-            Me._operatorToken = operatorToken
-            If optionalNameAs IsNot Nothing Then
-                AdjustFlagsAndWidth(optionalNameAs)
-                Me._optionalNameAs = optionalNameAs
-            End If
-            AdjustFlagsAndWidth(type)
-            Me._type = type
+            AdjustFlagsAndWidth(isTypeClause)
+            Me._isTypeClause = isTypeClause
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, operatorToken As InternalSyntax.KeywordSyntax, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), typeOfKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax)
             MyBase.New(kind, errors, annotations)
-            MyBase._slotCount = 5
+            MyBase._slotCount = 3
 
             AdjustFlagsAndWidth(typeOfKeyword)
             Me._typeOfKeyword = typeOfKeyword
             AdjustFlagsAndWidth(expression)
             Me._expression = expression
-            AdjustFlagsAndWidth(operatorToken)
-            Me._operatorToken = operatorToken
-            If optionalNameAs IsNot Nothing Then
-                AdjustFlagsAndWidth(optionalNameAs)
-                Me._optionalNameAs = optionalNameAs
-            End If
-            AdjustFlagsAndWidth(type)
-            Me._type = type
+            AdjustFlagsAndWidth(isTypeClause)
+            Me._isTypeClause = isTypeClause
 
         End Sub
 
         Friend Sub New(reader as ObjectReader)
             MyBase.New(reader)
-            MyBase._slotCount = 5
+            MyBase._slotCount = 3
             Dim _typeOfKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
             If _typeOfKeyword isnot Nothing
                 AdjustFlagsAndWidth(_typeOfKeyword)
@@ -20949,20 +20929,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 AdjustFlagsAndWidth(_expression)
                 Me._expression = _expression
             End If
-            Dim _operatorToken = DirectCast(reader.ReadValue(), KeywordSyntax)
-            If _operatorToken isnot Nothing
-                AdjustFlagsAndWidth(_operatorToken)
-                Me._operatorToken = _operatorToken
-            End If
-            Dim _optionalNameAs = DirectCast(reader.ReadValue(), NameAsSyntax)
-            If _optionalNameAs isnot Nothing
-                AdjustFlagsAndWidth(_optionalNameAs)
-                Me._optionalNameAs = _optionalNameAs
-            End If
-            Dim _type = DirectCast(reader.ReadValue(), VisualBasicSyntaxNode)
-            If _type isnot Nothing
-                AdjustFlagsAndWidth(_type)
-                Me._type = _type
+            Dim _isTypeClause = DirectCast(reader.ReadValue(), IsTypeClauseSyntax)
+            If _isTypeClause isnot Nothing
+                AdjustFlagsAndWidth(_isTypeClause)
+                Me._isTypeClause = _isTypeClause
             End If
         End Sub
         Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New TypeOfExpressionSyntax(o)
@@ -20972,9 +20942,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             MyBase.WriteTo(writer)
             writer.WriteValue(Me._typeOfKeyword)
             writer.WriteValue(Me._expression)
-            writer.WriteValue(Me._operatorToken)
-            writer.WriteValue(Me._optionalNameAs)
-            writer.WriteValue(Me._type)
+            writer.WriteValue(Me._isTypeClause)
         End Sub
 
         Shared Sub New()
@@ -21003,6 +20971,131 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
+        Friend ReadOnly Property IsTypeClause As InternalSyntax.IsTypeClauseSyntax
+            Get
+                Return Me._isTypeClause
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._typeOfKeyword
+                Case 1
+                    Return Me._expression
+                Case 2
+                    Return Me._isTypeClause
+                Case Else
+                    Debug.Assert(false, "child index out of range")
+                    Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new TypeOfExpressionSyntax(Me.Kind, newErrors, GetAnnotations, _typeOfKeyword, _expression, _isTypeClause)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new TypeOfExpressionSyntax(Me.Kind, GetDiagnostics, annotations, _typeOfKeyword, _expression, _isTypeClause)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitTypeOfExpression(Me)
+        End Function
+
+    End Class
+
+    Friend NotInheritable Class IsTypeClauseSyntax
+        Inherits VisualBasicSyntaxNode
+
+        Friend ReadOnly _operatorToken as KeywordSyntax
+        Friend ReadOnly _optionalNameAs as DeclarationClauseSyntax
+        Friend ReadOnly _type as VisualBasicSyntaxNode
+
+        Friend Sub New(ByVal kind As SyntaxKind, operatorToken As InternalSyntax.KeywordSyntax, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode)
+            MyBase.New(kind)
+            MyBase._slotCount = 3
+
+            AdjustFlagsAndWidth(operatorToken)
+            Me._operatorToken = operatorToken
+            If optionalNameAs IsNot Nothing Then
+                AdjustFlagsAndWidth(optionalNameAs)
+                Me._optionalNameAs = optionalNameAs
+            End If
+            AdjustFlagsAndWidth(type)
+            Me._type = type
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, operatorToken As InternalSyntax.KeywordSyntax, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 3
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(operatorToken)
+            Me._operatorToken = operatorToken
+            If optionalNameAs IsNot Nothing Then
+                AdjustFlagsAndWidth(optionalNameAs)
+                Me._optionalNameAs = optionalNameAs
+            End If
+            AdjustFlagsAndWidth(type)
+            Me._type = type
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), operatorToken As InternalSyntax.KeywordSyntax, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 3
+
+            AdjustFlagsAndWidth(operatorToken)
+            Me._operatorToken = operatorToken
+            If optionalNameAs IsNot Nothing Then
+                AdjustFlagsAndWidth(optionalNameAs)
+                Me._optionalNameAs = optionalNameAs
+            End If
+            AdjustFlagsAndWidth(type)
+            Me._type = type
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+            MyBase.New(reader)
+            MyBase._slotCount = 3
+            Dim _operatorToken = DirectCast(reader.ReadValue(), KeywordSyntax)
+            If _operatorToken isnot Nothing
+                AdjustFlagsAndWidth(_operatorToken)
+                Me._operatorToken = _operatorToken
+            End If
+            Dim _optionalNameAs = DirectCast(reader.ReadValue(), DeclarationClauseSyntax)
+            If _optionalNameAs isnot Nothing
+                AdjustFlagsAndWidth(_optionalNameAs)
+                Me._optionalNameAs = _optionalNameAs
+            End If
+            Dim _type = DirectCast(reader.ReadValue(), VisualBasicSyntaxNode)
+            If _type isnot Nothing
+                AdjustFlagsAndWidth(_type)
+                Me._type = _type
+            End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New IsTypeClauseSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+            MyBase.WriteTo(writer)
+            writer.WriteValue(Me._operatorToken)
+            writer.WriteValue(Me._optionalNameAs)
+            writer.WriteValue(Me._type)
+        End Sub
+
+        Shared Sub New()
+            ObjectBinder.RegisterTypeReader(GetType(IsTypeClauseSyntax), Function(r) New IsTypeClauseSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.IsTypeClauseSyntax(Me, parent, startLocation)
+        End Function
+
         ''' <summary>
         ''' The "Is" or "IsNot" keyword.
         ''' </summary>
@@ -21015,7 +21108,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <remarks>
         ''' This child is optional. If it is not present, then Nothing is returned.
         ''' </remarks>
-        Friend ReadOnly Property OptionalNameAs As InternalSyntax.NameAsSyntax
+        Friend ReadOnly Property OptionalNameAs As InternalSyntax.DeclarationClauseSyntax
             Get
                 Return Me._optionalNameAs
             End Get
@@ -21033,14 +21126,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Friend Overrides Function GetSlot(i as Integer) as GreenNode
             Select case i
                 Case 0
-                    Return Me._typeOfKeyword
-                Case 1
-                    Return Me._expression
-                Case 2
                     Return Me._operatorToken
-                Case 3
+                Case 1
                     Return Me._optionalNameAs
-                Case 4
+                Case 2
                     Return Me._type
                 Case Else
                     Debug.Assert(false, "child index out of range")
@@ -21050,20 +21139,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 
         Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
-            Return new TypeOfExpressionSyntax(Me.Kind, newErrors, GetAnnotations, _typeOfKeyword, _expression, _operatorToken, _optionalNameAs, _type)
+            Return new IsTypeClauseSyntax(Me.Kind, newErrors, GetAnnotations, _operatorToken, _optionalNameAs, _type)
         End Function
 
         Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
-            Return new TypeOfExpressionSyntax(Me.Kind, GetDiagnostics, annotations, _typeOfKeyword, _expression, _operatorToken, _optionalNameAs, _type)
+            Return new IsTypeClauseSyntax(Me.Kind, GetDiagnostics, annotations, _operatorToken, _optionalNameAs, _type)
         End Function
 
         Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
-            Return visitor.VisitTypeOfExpression(Me)
+            Return visitor.VisitIsTypeClause(Me)
         End Function
 
     End Class
 
-    Friend NotInheritable Class NameAsSyntax
+    Friend NotInheritable Class DeclarationClauseSyntax
         Inherits VisualBasicSyntaxNode
 
         Friend ReadOnly _identifer as IdentifierTokenSyntax
@@ -21117,7 +21206,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Me._asKeyword = _asKeyword
             End If
         End Sub
-        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New NameAsSyntax(o)
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New DeclarationClauseSyntax(o)
 
 
         Friend Overrides Sub WriteTo(writer as ObjectWriter)
@@ -21127,11 +21216,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Sub
 
         Shared Sub New()
-            ObjectBinder.RegisterTypeReader(GetType(NameAsSyntax), Function(r) New NameAsSyntax(r))
+            ObjectBinder.RegisterTypeReader(GetType(DeclarationClauseSyntax), Function(r) New DeclarationClauseSyntax(r))
         End Sub
 
         Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
-            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.NameAsSyntax(Me, parent, startLocation)
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.DeclarationClauseSyntax(Me, parent, startLocation)
         End Function
 
         Friend ReadOnly Property Identifer As InternalSyntax.IdentifierTokenSyntax
@@ -21160,15 +21249,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 
         Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
-            Return new NameAsSyntax(Me.Kind, newErrors, GetAnnotations, _identifer, _asKeyword)
+            Return new DeclarationClauseSyntax(Me.Kind, newErrors, GetAnnotations, _identifer, _asKeyword)
         End Function
 
         Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
-            Return new NameAsSyntax(Me.Kind, GetDiagnostics, annotations, _identifer, _asKeyword)
+            Return new DeclarationClauseSyntax(Me.Kind, GetDiagnostics, annotations, _identifer, _asKeyword)
         End Function
 
         Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
-            Return visitor.VisitNameAs(Me)
+            Return visitor.VisitDeclarationClause(Me)
         End Function
 
     End Class
@@ -37405,7 +37494,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(node IsNot Nothing)
             Return VisitExpression(node)
         End Function
-        Public Overridable Function VisitNameAs(ByVal node As NameAsSyntax) As VisualBasicSyntaxNode
+        Public Overridable Function VisitIsTypeClause(ByVal node As IsTypeClauseSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitVisualBasicSyntaxNode(node)
+        End Function
+        Public Overridable Function VisitDeclarationClause(ByVal node As DeclarationClauseSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
             Return VisitVisualBasicSyntaxNode(node)
         End Function
@@ -40282,21 +40375,34 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             If node._typeOfKeyword IsNot newTypeOfKeyword Then anyChanges = True
             Dim newExpression = DirectCast(Visit(node._expression), ExpressionSyntax)
             If node._expression IsNot newExpression Then anyChanges = True
-            Dim newOperatorToken = DirectCast(Visit(node.OperatorToken), KeywordSyntax)
-            If node._operatorToken IsNot newOperatorToken Then anyChanges = True
-            Dim newOptionalNameAs = DirectCast(Visit(node._optionalNameAs), NameAsSyntax)
-            If node._optionalNameAs IsNot newOptionalNameAs Then anyChanges = True
-            Dim newType = DirectCast(Visit(node._type), VisualBasicSyntaxNode)
-            If node._type IsNot newType Then anyChanges = True
+            Dim newIsTypeClause = DirectCast(Visit(node._isTypeClause), IsTypeClauseSyntax)
+            If node._isTypeClause IsNot newIsTypeClause Then anyChanges = True
 
             If anyChanges Then
-                Return New TypeOfExpressionSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newTypeOfKeyword, newExpression, newOperatorToken, newOptionalNameAs, newType)
+                Return New TypeOfExpressionSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newTypeOfKeyword, newExpression, newIsTypeClause)
             Else
                 Return node
             End If
         End Function
 
-        Public Overrides Function VisitNameAs(ByVal node As NameAsSyntax) As VisualBasicSyntaxNode
+        Public Overrides Function VisitIsTypeClause(ByVal node As IsTypeClauseSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newOperatorToken = DirectCast(Visit(node.OperatorToken), KeywordSyntax)
+            If node._operatorToken IsNot newOperatorToken Then anyChanges = True
+            Dim newOptionalNameAs = DirectCast(Visit(node._optionalNameAs), DeclarationClauseSyntax)
+            If node._optionalNameAs IsNot newOptionalNameAs Then anyChanges = True
+            Dim newType = DirectCast(Visit(node._type), VisualBasicSyntaxNode)
+            If node._type IsNot newType Then anyChanges = True
+
+            If anyChanges Then
+                Return New IsTypeClauseSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newOperatorToken, newOptionalNameAs, newType)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitDeclarationClause(ByVal node As DeclarationClauseSyntax) As VisualBasicSyntaxNode
             Dim anyChanges As Boolean = False
 
             Dim newIdentifer = DirectCast(Visit(node.Identifer), IdentifierTokenSyntax)
@@ -40305,7 +40411,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             If node._asKeyword IsNot newAsKeyword Then anyChanges = True
 
             If anyChanges Then
-                Return New NameAsSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newIdentifer, newAsKeyword)
+                Return New DeclarationClauseSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newIdentifer, newAsKeyword)
             Else
                 Return node
             End If
@@ -42263,7 +42369,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
               GetType(MyClassExpressionSyntax),
               GetType(GetTypeExpressionSyntax),
               GetType(TypeOfExpressionSyntax),
-              GetType(NameAsSyntax),
+              GetType(IsTypeClauseSyntax),
+              GetType(DeclarationClauseSyntax),
               GetType(GetXmlNamespaceExpressionSyntax),
               GetType(MemberAccessExpressionSyntax),
               GetType(XmlMemberAccessExpressionSyntax),
@@ -50170,18 +50277,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="expression">
         ''' The expression being tested.
         ''' </param>
-        ''' <param name="operatorToken">
-        ''' The "Is" or "IsNot" keyword.
-        ''' </param>
-        ''' <param name="type">
-        ''' The name of the type (or the list of types) being tested against.
-        ''' </param>
-        Friend Shared Function TypeOfIsExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode) As TypeOfExpressionSyntax
+        Friend Shared Function TypeOfIsExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax) As TypeOfExpressionSyntax
             Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
             Debug.Assert(expression IsNot Nothing)
-            Debug.Assert(operatorToken IsNot Nothing AndAlso operatorToken.Kind = SyntaxKind.IsKeyword)
-            Debug.Assert(type IsNot Nothing)
-            Return New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsExpression, typeOfKeyword, expression, operatorToken, optionalNameAs, type)
+            Debug.Assert(isTypeClause IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.TypeOfIsExpression, typeOfKeyword, expression, isTypeClause, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, TypeOfExpressionSyntax)
+            End If
+
+            Dim result = New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsExpression, typeOfKeyword, expression, isTypeClause)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
         End Function
 
 
@@ -50194,18 +50306,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="expression">
         ''' The expression being tested.
         ''' </param>
-        ''' <param name="operatorToken">
-        ''' The "Is" or "IsNot" keyword.
-        ''' </param>
-        ''' <param name="type">
-        ''' The name of the type (or the list of types) being tested against.
-        ''' </param>
-        Friend Shared Function TypeOfIsNotExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode) As TypeOfExpressionSyntax
+        Friend Shared Function TypeOfIsNotExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax) As TypeOfExpressionSyntax
             Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
             Debug.Assert(expression IsNot Nothing)
-            Debug.Assert(operatorToken IsNot Nothing AndAlso operatorToken.Kind = SyntaxKind.IsNotKeyword)
-            Debug.Assert(type IsNot Nothing)
-            Return New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsNotExpression, typeOfKeyword, expression, operatorToken, optionalNameAs, type)
+            Debug.Assert(isTypeClause IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.TypeOfIsNotExpression, typeOfKeyword, expression, isTypeClause, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, TypeOfExpressionSyntax)
+            End If
+
+            Dim result = New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsNotExpression, typeOfKeyword, expression, isTypeClause)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
         End Function
 
 
@@ -50222,33 +50339,88 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="expression">
         ''' The expression being tested.
         ''' </param>
+        Friend Shared Function TypeOfExpression(kind As SyntaxKind, typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax) As TypeOfExpressionSyntax
+            Debug.Assert(SyntaxFacts.IsTypeOfExpression(kind))
+            Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
+            Debug.Assert(expression IsNot Nothing)
+            Debug.Assert(isTypeClause IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(kind, typeOfKeyword, expression, isTypeClause, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, TypeOfExpressionSyntax)
+            End If
+
+            Dim result = New TypeOfExpressionSyntax(kind, typeOfKeyword, expression, isTypeClause)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
         ''' <param name="operatorToken">
         ''' The "Is" or "IsNot" keyword.
         ''' </param>
         ''' <param name="type">
         ''' The name of the type (or the list of types) being tested against.
         ''' </param>
-        Friend Shared Function TypeOfExpression(kind As SyntaxKind, typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode) As TypeOfExpressionSyntax
-            Debug.Assert(SyntaxFacts.IsTypeOfExpression(kind))
-            Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
-            Debug.Assert(expression IsNot Nothing)
-            Debug.Assert(operatorToken IsNot Nothing AndAlso SyntaxFacts.IsTypeOfExpressionOperatorToken(operatorToken.Kind))
+        Friend Shared Function IsTypeClause(operatorToken As KeywordSyntax, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+            Debug.Assert(operatorToken IsNot Nothing AndAlso operatorToken.Kind = SyntaxKind.IsKeyword)
             Debug.Assert(type IsNot Nothing)
-            Return New TypeOfExpressionSyntax(kind, typeOfKeyword, expression, operatorToken, optionalNameAs, type)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.IsTypeClause, operatorToken, optionalNameAs, type, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, IsTypeClauseSyntax)
+            End If
+
+            Dim result = New IsTypeClauseSyntax(SyntaxKind.IsTypeClause, operatorToken, optionalNameAs, type)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
         End Function
 
 
-        Friend Shared Function NameAs(identifer As IdentifierTokenSyntax, asKeyword As KeywordSyntax) As NameAsSyntax
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="type">
+        ''' The name of the type (or the list of types) being tested against.
+        ''' </param>
+        Friend Shared Function IsNotTypeClause(operatorToken As KeywordSyntax, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+            Debug.Assert(operatorToken IsNot Nothing AndAlso operatorToken.Kind = SyntaxKind.IsNotKeyword)
+            Debug.Assert(type IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.IsNotTypeClause, operatorToken, optionalNameAs, type, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, IsTypeClauseSyntax)
+            End If
+
+            Dim result = New IsTypeClauseSyntax(SyntaxKind.IsNotTypeClause, operatorToken, optionalNameAs, type)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        Friend Shared Function DeclarationClause(identifer As IdentifierTokenSyntax, asKeyword As KeywordSyntax) As DeclarationClauseSyntax
             Debug.Assert(identifer IsNot Nothing AndAlso identifer.Kind = SyntaxKind.IdentifierToken)
             Debug.Assert(asKeyword IsNot Nothing AndAlso asKeyword.Kind = SyntaxKind.AsKeyword)
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.NameAs, identifer, asKeyword, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.DeclarationClause, identifer, asKeyword, hash)
             If cached IsNot Nothing Then
-                Return DirectCast(cached, NameAsSyntax)
+                Return DirectCast(cached, DeclarationClauseSyntax)
             End If
 
-            Dim result = New NameAsSyntax(SyntaxKind.NameAs, identifer, asKeyword)
+            Dim result = New DeclarationClauseSyntax(SyntaxKind.DeclarationClause, identifer, asKeyword)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -62265,18 +62437,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="expression">
         ''' The expression being tested.
         ''' </param>
-        ''' <param name="operatorToken">
-        ''' The "Is" or "IsNot" keyword.
-        ''' </param>
-        ''' <param name="type">
-        ''' The name of the type (or the list of types) being tested against.
-        ''' </param>
-        Friend Function TypeOfIsExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode) As TypeOfExpressionSyntax
+        Friend Function TypeOfIsExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax) As TypeOfExpressionSyntax
             Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
             Debug.Assert(expression IsNot Nothing)
-            Debug.Assert(operatorToken IsNot Nothing AndAlso operatorToken.Kind = SyntaxKind.IsKeyword)
-            Debug.Assert(type IsNot Nothing)
-            Return New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsExpression, typeOfKeyword, expression, operatorToken, optionalNameAs, type, _factoryContext)
+            Debug.Assert(isTypeClause IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.TypeOfIsExpression, typeOfKeyword, expression, isTypeClause, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, TypeOfExpressionSyntax)
+            End If
+
+            Dim result = New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsExpression, typeOfKeyword, expression, isTypeClause, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
         End Function
 
 
@@ -62289,18 +62466,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="expression">
         ''' The expression being tested.
         ''' </param>
-        ''' <param name="operatorToken">
-        ''' The "Is" or "IsNot" keyword.
-        ''' </param>
-        ''' <param name="type">
-        ''' The name of the type (or the list of types) being tested against.
-        ''' </param>
-        Friend Function TypeOfIsNotExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode) As TypeOfExpressionSyntax
+        Friend Function TypeOfIsNotExpression(typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax) As TypeOfExpressionSyntax
             Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
             Debug.Assert(expression IsNot Nothing)
-            Debug.Assert(operatorToken IsNot Nothing AndAlso operatorToken.Kind = SyntaxKind.IsNotKeyword)
-            Debug.Assert(type IsNot Nothing)
-            Return New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsNotExpression, typeOfKeyword, expression, operatorToken, optionalNameAs, type, _factoryContext)
+            Debug.Assert(isTypeClause IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.TypeOfIsNotExpression, typeOfKeyword, expression, isTypeClause, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, TypeOfExpressionSyntax)
+            End If
+
+            Dim result = New TypeOfExpressionSyntax(SyntaxKind.TypeOfIsNotExpression, typeOfKeyword, expression, isTypeClause, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
         End Function
 
 
@@ -62317,33 +62499,88 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="expression">
         ''' The expression being tested.
         ''' </param>
+        Friend Function TypeOfExpression(kind As SyntaxKind, typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, isTypeClause As IsTypeClauseSyntax) As TypeOfExpressionSyntax
+            Debug.Assert(SyntaxFacts.IsTypeOfExpression(kind))
+            Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
+            Debug.Assert(expression IsNot Nothing)
+            Debug.Assert(isTypeClause IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(kind, typeOfKeyword, expression, isTypeClause, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, TypeOfExpressionSyntax)
+            End If
+
+            Dim result = New TypeOfExpressionSyntax(kind, typeOfKeyword, expression, isTypeClause, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
         ''' <param name="operatorToken">
         ''' The "Is" or "IsNot" keyword.
         ''' </param>
         ''' <param name="type">
         ''' The name of the type (or the list of types) being tested against.
         ''' </param>
-        Friend Function TypeOfExpression(kind As SyntaxKind, typeOfKeyword As KeywordSyntax, expression As ExpressionSyntax, operatorToken As KeywordSyntax, optionalNameAs As NameAsSyntax, type As VisualBasicSyntaxNode) As TypeOfExpressionSyntax
-            Debug.Assert(SyntaxFacts.IsTypeOfExpression(kind))
-            Debug.Assert(typeOfKeyword IsNot Nothing AndAlso typeOfKeyword.Kind = SyntaxKind.TypeOfKeyword)
-            Debug.Assert(expression IsNot Nothing)
-            Debug.Assert(operatorToken IsNot Nothing AndAlso SyntaxFacts.IsTypeOfExpressionOperatorToken(operatorToken.Kind))
+        Friend Function IsTypeClause(operatorToken As KeywordSyntax, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+            Debug.Assert(operatorToken IsNot Nothing AndAlso operatorToken.Kind = SyntaxKind.IsKeyword)
             Debug.Assert(type IsNot Nothing)
-            Return New TypeOfExpressionSyntax(kind, typeOfKeyword, expression, operatorToken, optionalNameAs, type, _factoryContext)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.IsTypeClause, operatorToken, optionalNameAs, type, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, IsTypeClauseSyntax)
+            End If
+
+            Dim result = New IsTypeClauseSyntax(SyntaxKind.IsTypeClause, operatorToken, optionalNameAs, type, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
         End Function
 
 
-        Friend Function NameAs(identifer As IdentifierTokenSyntax, asKeyword As KeywordSyntax) As NameAsSyntax
+        ''' <param name="operatorToken">
+        ''' The "Is" or "IsNot" keyword.
+        ''' </param>
+        ''' <param name="type">
+        ''' The name of the type (or the list of types) being tested against.
+        ''' </param>
+        Friend Function IsNotTypeClause(operatorToken As KeywordSyntax, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+            Debug.Assert(operatorToken IsNot Nothing AndAlso operatorToken.Kind = SyntaxKind.IsNotKeyword)
+            Debug.Assert(type IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.IsNotTypeClause, operatorToken, optionalNameAs, type, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, IsTypeClauseSyntax)
+            End If
+
+            Dim result = New IsTypeClauseSyntax(SyntaxKind.IsNotTypeClause, operatorToken, optionalNameAs, type, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        Friend Function DeclarationClause(identifer As IdentifierTokenSyntax, asKeyword As KeywordSyntax) As DeclarationClauseSyntax
             Debug.Assert(identifer IsNot Nothing AndAlso identifer.Kind = SyntaxKind.IdentifierToken)
             Debug.Assert(asKeyword IsNot Nothing AndAlso asKeyword.Kind = SyntaxKind.AsKeyword)
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.NameAs, identifer, asKeyword, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.DeclarationClause, identifer, asKeyword, _factoryContext, hash)
             If cached IsNot Nothing Then
-                Return DirectCast(cached, NameAsSyntax)
+                Return DirectCast(cached, DeclarationClauseSyntax)
             End If
 
-            Dim result = New NameAsSyntax(SyntaxKind.NameAs, identifer, asKeyword, _factoryContext)
+            Dim result = New DeclarationClauseSyntax(SyntaxKind.DeclarationClause, identifer, asKeyword, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If

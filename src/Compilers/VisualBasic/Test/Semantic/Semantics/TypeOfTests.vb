@@ -744,17 +744,17 @@ End Module
 
             ' Dim isString = TypeOf o Is CharacterSequence '0
             Assert.Equal("System.Boolean", semantics.GetTypeInfo(typeOfExpressions(0)).Type.ToDisplayString(SymbolDisplayFormat.TestFormat))
-            Assert.Equal("System.String", semantics.GetSymbolInfo(typeOfExpressions(0).Type).Symbol.ToDisplayString(SymbolDisplayFormat.TestFormat))
+            Assert.Equal("System.String", semantics.GetSymbolInfo(typeOfExpressions(0).IsTypeClause.Type).Symbol.ToDisplayString(SymbolDisplayFormat.TestFormat))
 
             ' Dim isInteger = TypeOf o Is HRESULT '1
-            Dim aliasSymbol = semantics.GetAliasInfo(CType(typeOfExpressions(1).Type, IdentifierNameSyntax))
+            Dim aliasSymbol = semantics.GetAliasInfo(CType(typeOfExpressions(1).IsTypeClause.Type, IdentifierNameSyntax))
             Assert.Equal(SymbolKind.Alias, aliasSymbol.Kind)
             Assert.Equal("HRESULT", aliasSymbol.Name)
-            Assert.Equal("System.Int32", semantics.GetSymbolInfo(typeOfExpressions(1).Type).Symbol.ToDisplayString(SymbolDisplayFormat.TestFormat))
+            Assert.Equal("System.Int32", semantics.GetSymbolInfo(typeOfExpressions(1).IsTypeClause.Type).Symbol.ToDisplayString(SymbolDisplayFormat.TestFormat))
 
             ' Dim isNotString = TypeOf o IsNot String '2
             Assert.Equal("System.Boolean", semantics.GetTypeInfo(typeOfExpressions(2)).Type.ToDisplayString(SymbolDisplayFormat.TestFormat))
-            Assert.Equal("System.String", semantics.GetSymbolInfo(typeOfExpressions(2).Type).Symbol.ToDisplayString(SymbolDisplayFormat.TestFormat))
+            Assert.Equal("System.String", semantics.GetSymbolInfo(typeOfExpressions(2).IsTypeClause.Type).Symbol.ToDisplayString(SymbolDisplayFormat.TestFormat))
 
             ' Dim isNotInteger As Object = TypeOf o IsNot Integer '3
             Dim typeInfo = semantics.GetTypeInfo(typeOfExpressions(3))

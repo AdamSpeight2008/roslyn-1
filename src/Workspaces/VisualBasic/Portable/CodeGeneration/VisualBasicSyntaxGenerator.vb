@@ -269,7 +269,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGeneration
         End Function
 
         Public Overrides Function IsTypeExpression(expression As SyntaxNode, type As SyntaxNode) As SyntaxNode
-            Return SyntaxFactory.TypeOfIsExpression(Parenthesize(expression), DirectCast(type, TypeSyntax))
+            Return SyntaxFactory.TypeOfIsExpression(Parenthesize(expression), DirectCast(type, IsTypeClauseSyntax))
         End Function
 
         Public Overrides Function TypeOfExpression(type As SyntaxNode) As SyntaxNode
