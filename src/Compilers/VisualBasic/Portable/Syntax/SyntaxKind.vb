@@ -3201,5 +3201,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ConflictMarkerTrivia = 792
 
+        IsOfKeyword = 800
+        IsNotOfKeyword = 801
+        IsOfExpression = 802
+        IsNotOfExpression = 803
     End Enum
 End Namespace

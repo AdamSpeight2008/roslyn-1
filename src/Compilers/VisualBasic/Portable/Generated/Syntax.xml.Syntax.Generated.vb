@@ -25177,6 +25177,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
     ''' <item><description><see cref="SyntaxKind.AndExpression"/></description></item>
     ''' <item><description><see cref="SyntaxKind.OrElseExpression"/></description></item>
     ''' <item><description><see cref="SyntaxKind.AndAlsoExpression"/></description></item>
+    ''' <item><description><see cref="SyntaxKind.IsOfExpression"/></description></item>
+    ''' <item><description><see cref="SyntaxKind.IsNotOfExpression"/></description></item>
     ''' </list>
     ''' </remarks>
     Public NotInheritable Class BinaryExpressionSyntax

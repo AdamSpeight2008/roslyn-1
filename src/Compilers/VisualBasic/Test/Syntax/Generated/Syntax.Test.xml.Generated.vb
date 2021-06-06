@@ -1092,6 +1092,14 @@ Partial Public Class GeneratedTests
             return InternalSyntax.SyntaxFactory.AndAlsoExpression(GenerateGreenKeywordEventContainer(), new InternalSyntax.KeywordSyntax(SyntaxKind.AndAlsoKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer())
         End Function
 
+        Private Shared Function GenerateGreenIsOfExpression() As InternalSyntax.BinaryExpressionSyntax
+            return InternalSyntax.SyntaxFactory.IsOfExpression(GenerateGreenKeywordEventContainer(), new InternalSyntax.KeywordSyntax(SyntaxKind.IsOfKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer())
+        End Function
+
+        Private Shared Function GenerateGreenIsNotOfExpression() As InternalSyntax.BinaryExpressionSyntax
+            return InternalSyntax.SyntaxFactory.IsNotOfExpression(GenerateGreenKeywordEventContainer(), new InternalSyntax.KeywordSyntax(SyntaxKind.IsNotOfKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer())
+        End Function
+
         Private Shared Function GenerateGreenUnaryPlusExpression() As InternalSyntax.UnaryExpressionSyntax
             return InternalSyntax.SyntaxFactory.UnaryPlusExpression(new InternalSyntax.PunctuationSyntax(SyntaxKind.PlusToken, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer())
         End Function
@@ -3162,6 +3170,18 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenAndAlsoExpression()
             dim objectUnderTest = GenerateGreenAndAlsoExpression()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenIsOfExpression()
+            dim objectUnderTest = GenerateGreenIsOfExpression()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenIsNotOfExpression()
+            dim objectUnderTest = GenerateGreenIsNotOfExpression()
             AttachAndCheckDiagnostics(objectUnderTest)
         End Sub
 
@@ -6005,6 +6025,22 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestGreenIsOfExpressionRewriter()
+            dim oldNode = GenerateGreenIsOfExpression()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenIsNotOfExpressionRewriter()
+            dim oldNode = GenerateGreenIsNotOfExpression()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
         Public Sub TestGreenUnaryPlusExpressionRewriter()
             dim oldNode = GenerateGreenUnaryPlusExpression()
             Dim rewriter = New GreenIdentityRewriter()
@@ -8662,6 +8698,20 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenAndAlsoExpressionVisitor()
             Dim oldNode = GenerateGreenAndAlsoExpression()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenIsOfExpressionVisitor()
+            Dim oldNode = GenerateGreenIsOfExpression()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenIsNotOfExpressionVisitor()
+            Dim oldNode = GenerateGreenIsNotOfExpression()
             Dim visitor = New GreenNodeVisitor()
             visitor.Visit(oldNode)
         End Sub
@@ -15914,6 +15964,80 @@ Partial Public Class GeneratedTests
             return SyntaxFactory.AndAlsoExpression(GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.AndAlsoKeyword), GenerateRedKeywordEventContainer())
         End Function
 
+        Private Shared Function GenerateRedIsOfExpression() As BinaryExpressionSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.IsOfExpression(Nothing, SyntaxFactory.Token(SyntaxKind.IsOfKeyword), GenerateRedKeywordEventContainer())
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.IsOfExpression(GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsOfKeyword), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.IsOfExpression(GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedKeywordEventContainer())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.IsOfExpression(GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedKeywordEventContainer())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.IsOfExpression(GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsOfKeyword), GenerateRedKeywordEventContainer())
+        End Function
+
+        Private Shared Function GenerateRedIsNotOfExpression() As BinaryExpressionSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.IsNotOfExpression(Nothing, SyntaxFactory.Token(SyntaxKind.IsNotOfKeyword), GenerateRedKeywordEventContainer())
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.IsNotOfExpression(GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsNotOfKeyword), Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.IsNotOfExpression(GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedKeywordEventContainer())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.IsNotOfExpression(GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedKeywordEventContainer())
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.IsNotOfExpression(GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.IsNotOfKeyword), GenerateRedKeywordEventContainer())
+        End Function
+
         Private Shared Function GenerateRedUnaryPlusExpression() As UnaryExpressionSyntax
             Dim exceptionTest as boolean = false
             Try
@@ -20904,6 +21028,26 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestRedIsOfExpression()
+            dim objectUnderTest = GenerateRedIsOfExpression()
+            Assert.NotNull(objectUnderTest.left)
+            Assert.NotNull(objectUnderTest.operatorToken)
+            Assert.NotNull(objectUnderTest.right)
+            Dim withObj = objectUnderTest.WithLeft(objectUnderTest.Left).WithOperatorToken(objectUnderTest.OperatorToken).WithRight(objectUnderTest.Right)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedIsNotOfExpression()
+            dim objectUnderTest = GenerateRedIsNotOfExpression()
+            Assert.NotNull(objectUnderTest.left)
+            Assert.NotNull(objectUnderTest.operatorToken)
+            Assert.NotNull(objectUnderTest.right)
+            Dim withObj = objectUnderTest.WithLeft(objectUnderTest.Left).WithOperatorToken(objectUnderTest.OperatorToken).WithRight(objectUnderTest.Right)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
         Public Sub TestRedUnaryPlusExpression()
             dim objectUnderTest = GenerateRedUnaryPlusExpression()
             Assert.NotNull(objectUnderTest.operatorToken)
@@ -24059,6 +24203,22 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestRedAndAlsoExpressionRewriter()
             dim oldNode = GenerateRedAndAlsoExpression()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedIsOfExpressionRewriter()
+            dim oldNode = GenerateRedIsOfExpression()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedIsNotOfExpressionRewriter()
+            dim oldNode = GenerateRedIsNotOfExpression()
             Dim rewriter = New RedIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)

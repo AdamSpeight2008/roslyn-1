@@ -760,6 +760,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 Case SyntaxKind.GreaterThanGreaterThanToken
                     Return SyntaxKind.RightShiftExpression
+                    
+                    Case SyntaxKind.IsOfKeyword : Return SyntaxKind.IsOfExpression
+                    Case SyntaxKind.IsNotOfKeyword : Return SyntaxKind.IsNotOfExpression
 
                 Case Else
                     Return SyntaxKind.None

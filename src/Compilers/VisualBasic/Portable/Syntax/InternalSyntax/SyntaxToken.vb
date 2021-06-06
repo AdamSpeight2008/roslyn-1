@@ -374,7 +374,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     SyntaxKind.GreaterThanToken,
                     SyntaxKind.GreaterThanEqualsToken,
                     SyntaxKind.IsKeyword,
-                    SyntaxKind.IsNotKeyword
+                    SyntaxKind.IsNotKeyword,
+                    SyntaxKind.IsOfKeyword,
+                    SyntaxKind.IsNotOfKeyword
                     Return True
             End Select
 

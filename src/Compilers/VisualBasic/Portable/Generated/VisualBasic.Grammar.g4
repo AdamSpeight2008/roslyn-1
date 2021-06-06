@@ -1241,6 +1241,8 @@ binary_expression
   | integer_divide_expression
   | is_expression
   | is_not_expression
+  | is_not_of_expression
+  | is_of_expression
   | left_shift_expression
   | less_than_expression
   | less_than_or_equal_expression
@@ -1304,6 +1306,14 @@ is_expression
 
 is_not_expression
   : expression 'IsNot' expression
+  ;
+
+is_not_of_expression
+  : expression 'IsNotOf' expression
+  ;
+
+is_of_expression
+  : expression 'IsOf' expression
   ;
 
 left_shift_expression

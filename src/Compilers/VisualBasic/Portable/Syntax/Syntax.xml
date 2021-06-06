@@ -5849,6 +5849,9 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="BinaryOperator" />
         <native-equiv name="Expression.Opcodes.AndAlso" />
       </node-kind>
+<!-- Protype -->
+        <node-kind name="IsOfExpression" />
+        <node-kind name="IsNotOfExpression" />
 
       <child name="Left" kind="@ExpressionSyntax">
         <description>The left operand.</description>
@@ -5884,6 +5887,9 @@ Unify Enum declarations with other block type declarations.
         <kind name="AndKeyword" node-kind="AndExpression"/>
         <kind name="OrElseKeyword" node-kind="OrElseExpression"/>
         <kind name="AndAlsoKeyword" node-kind="AndAlsoExpression"/>
+        <kind name="IsOfKeyword" node-kind="IsOfExpression"/>
+        <kind name="IsNotOfKeyword" node-kind="IsNotOfExpression"/>
+      
       </child>
 
       <child name="Right" kind="@ExpressionSyntax">
@@ -8589,7 +8595,14 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="YieldKeyword" />
         <native-equiv name="" />
       </node-kind>
-
+      <node-kind name="IsOfKeyword" token-text="IsOf">
+        <lm-equiv name="IsOfKeyword" />
+        <native-equiv name="" />
+      </node-kind>
+      <node-kind name="IsNotOfKeyword" token-text="IsNotOf">
+        <lm-equiv name="IsNotOfKeyword" />
+        <native-equiv name="" />
+      </node-kind>
     </node-structure>
 
     <!--********************

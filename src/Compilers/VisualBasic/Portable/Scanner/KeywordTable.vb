@@ -251,7 +251,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
                 SyntaxKind.GreaterThanGreaterThanToken, PrecedenceShift,
                 SyntaxKind.LessThanLessThanEqualsToken, PrecedenceShift,
                 SyntaxKind.GreaterThanGreaterThanEqualsToken, PrecedenceShift,
-                SyntaxKind.PercentGreaterThanToken, CanFollowExpr
+                SyntaxKind.PercentGreaterThanToken, CanFollowExpr,
+                SyntaxKind.IsOfKeyword, PrecedenceRelational Or New7to8 Or CanFollowExpr,
+                SyntaxKind.IsNotOfKeyword, PrecedenceRelational Or New7to8 Or CanFollowExpr
                 }
 
             For i As Integer = 0 To keywordInitData.Length - 1 Step 2

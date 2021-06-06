@@ -94,6 +94,17 @@ Public Class ParseExpressionTest
         ParseExpression("AddressOf 3")
     End Sub
 
+    <fact>
+    Public Sub Parse_IsOfExpression()
+        Dim r0 = ParseExpression("item IsOf oollecyion")
+        Dim r1 = ParseExpression("A IsOf {T0, T1, T2}")
+    End Sub
+
+    <fact>
+    Public Sub Parse_IsNotOfExpression()
+        Dim r0 = ParseExpression("item IsNotOf oollecyion")
+        Dim r1 = ParseExpression("A IsNotOf {T0, T1, T2}")
+    End Sub
 #Region "Literal Test"
 
     <Fact, Trait("IntegerLiteral_Prefix", "Hex")>
