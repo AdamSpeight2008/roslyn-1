@@ -5243,10 +5243,10 @@ Unify Enum declarations with other block type declarations.
     <!--****************
       -  TypeOf ... Is/IsNot
       ******************-->
-    <node-structure name="TypeOfExpressionSyntax" parent="ExpressionSyntax"><description>Represents a TypeOf...Is or IsNot expression.</description>
+    <node-structure name="TypeOfExpressionSyntax" parent="ExpressionSyntax">
+      <description>Represents a TypeOf...Is or IsNot expression.</description>
       <lm-equiv name="IsTypeNode" /><native-equiv name="TypeValueExpression" />
-      <spec section="11.5.2" />
-      <grammar>TypeOfIsExpression</grammar>
+      <spec section="11.5.2" /> <grammar>TypeOfIsExpression</grammar>
 
       <node-kind name="TypeOfIsExpression"><lm-equiv name="IsType" /><native-equiv name="Expression.Opcodes.IsType" /></node-kind>
       <node-kind name="TypeOfIsNotExpression" />
@@ -5255,11 +5255,15 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="TypeOfKeyword" /><native-equiv name="" />
       </child>
       
-      <child name="Expression"    kind="@ExpressionSyntax"><description>The expression being tested.</description>
+      <child name="Expression" kind="@ExpressionSyntax">
+        <description>The expression being tested.</description>
         <lm-equiv name="Value" /><native-equiv name="Value" />
       </child>
 
-      <child name="IsTypeClause" kind="@IsTypeClauseSyntax" />
+      <child name="IsTypeClause" >
+        <kind name="IsTypeClause"    node-kind="TypeOfIsExpression" />
+        <kind name="IsNotTypeClause" node-kind="TypeOfIsNotExpression" />
+        </child>
     
     </node-structure>
     
@@ -5268,13 +5272,13 @@ Unify Enum declarations with other block type declarations.
       <node-kind name="IsTypeClause" />
       <node-kind name="IsNotTypeClause" />
 
-      <child name="OperatorToken"><description>The "Is" or "IsNot" keyword.</description>
+      <child name="OperatorToken" ><description>The "Is" or "IsNot" keyword.</description>
         <lm-equiv name="IsKeyword" /><native-equiv name="HasIs" />
         <kind name="IsKeyword"    node-kind="IsTypeClause" />
         <kind name="IsNotKeyword" node-kind="IsNotTypeClause" />
       </child>
       
-      <child name="OptionalNameAs" optional="true" kind="@DeclarationClauseSyntax" />
+      <child name="OptionalNameAs" optional="true" kind="@DeclarationAsClauseSyntax" />
 
       <child name="Type" kind="@TypeSyntax|TypeArgumentList"><description>The name of the type (or the list of types) being tested against.</description>
         <lm-equiv name="TargetType" /><native-equiv name="TargetType" />
@@ -5282,8 +5286,8 @@ Unify Enum declarations with other block type declarations.
       
     </node-structure>"
 
-    <node-structure name="DeclarationClauseSyntax" parent="VisualBasicSyntaxNode" >
-      <node-kind name="DeclarationClause" />
+    <node-structure name="DeclarationAsClauseSyntax" parent="VisualBasicSyntaxNode" >
+      <node-kind name="DeclarationAsClause" />
       
       <child name="Identifer" kind="IdentifierToken" />
       <child name="AsKeyword" kind="AsKeyword" />

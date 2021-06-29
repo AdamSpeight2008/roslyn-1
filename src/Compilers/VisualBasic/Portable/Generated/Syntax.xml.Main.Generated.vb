@@ -440,7 +440,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Function VisitIsTypeClause(ByVal node As IsTypeClauseSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
-        Public Overridable Function VisitDeclarationClause(ByVal node As DeclarationClauseSyntax) As TResult
+        Public Overridable Function VisitDeclarationAsClause(ByVal node As DeclarationAsClauseSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
         Public Overridable Function VisitGetXmlNamespaceExpression(ByVal node As GetXmlNamespaceExpressionSyntax) As TResult
@@ -1181,7 +1181,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Sub VisitIsTypeClause(ByVal node As IsTypeClauseSyntax)
             Me.DefaultVisit(node) : Return
         End Sub
-        Public Overridable Sub VisitDeclarationClause(ByVal node As DeclarationClauseSyntax)
+        Public Overridable Sub VisitDeclarationAsClause(ByVal node As DeclarationAsClauseSyntax)
             Me.DefaultVisit(node) : Return
         End Sub
         Public Overridable Sub VisitGetXmlNamespaceExpression(ByVal node As GetXmlNamespaceExpressionSyntax)
@@ -3910,7 +3910,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim newOperatorToken = DirectCast(VisitToken(node.OperatorToken).Node, InternalSyntax.KeywordSyntax)
             If node.OperatorToken.Node IsNot newOperatorToken Then anyChanges = True
-            Dim newOptionalNameAs = DirectCast(Visit(node.OptionalNameAs), DeclarationClauseSyntax)
+            Dim newOptionalNameAs = DirectCast(Visit(node.OptionalNameAs), DeclarationAsClauseSyntax)
             If node.OptionalNameAs IsNot newOptionalNameAs Then anyChanges = True
             Dim newType = DirectCast(Visit(node.Type), VisualBasicSyntaxNode)
             If node.Type IsNot newType Then anyChanges = True
@@ -3922,7 +3922,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
         End Function
 
-        Public Overrides Function VisitDeclarationClause(ByVal node As DeclarationClauseSyntax) As SyntaxNode
+        Public Overrides Function VisitDeclarationAsClause(ByVal node As DeclarationAsClauseSyntax) As SyntaxNode
             Dim anyChanges As Boolean = False
 
             Dim newIdentifer = DirectCast(VisitToken(node.Identifer).Node, InternalSyntax.IdentifierTokenSyntax)
@@ -3931,7 +3931,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If node.AsKeyword.Node IsNot newAsKeyword Then anyChanges = True
 
             If anyChanges Then
-                Return New DeclarationClauseSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newIdentifer, newAsKeyword)
+                Return New DeclarationAsClauseSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newIdentifer, newAsKeyword)
             Else
                 Return node
             End If
@@ -25844,8 +25844,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Throw New ArgumentNullException(NameOf(isTypeClause))
             End If
             Select Case isTypeClause.Kind()
-                Case SyntaxKind.IsTypeClause,
-                     SyntaxKind.IsNotTypeClause
+                Case SyntaxKind.IsNotTypeClause
                 Case Else
                     Throw new ArgumentException("isTypeClause")
             End Select
@@ -26001,15 +26000,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             if isTypeClause Is Nothing Then
                 Throw New ArgumentNullException(NameOf(isTypeClause))
             End If
-            Select Case isTypeClause.Kind()
-                Case SyntaxKind.IsTypeClause,
-                     SyntaxKind.IsNotTypeClause
-                Case Else
-                    Throw new ArgumentException("isTypeClause")
-            End Select
+            If (Not isTypeClause.IsKind(GetTypeOfExpressionIsTypeClauseKind(kind))) Then
+                Throw new ArgumentException("isTypeClause")
+            End If
             Return New TypeOfExpressionSyntax(kind, Nothing, Nothing, DirectCast(typeOfKeyword.Node, InternalSyntax.KeywordSyntax), expression, isTypeClause)
         End Function
 
+        Private Shared Function GetTypeOfExpressionIsTypeClauseKind(kind As SyntaxKind) As SyntaxKind
+            Select Case kind
+                Case SyntaxKind.TypeOfIsExpression
+                    Return SyntaxKind.IsTypeClause
+                Case SyntaxKind.TypeOfIsNotExpression
+                    Return SyntaxKind.IsNotTypeClause
+                Case Else
+                    Throw New ArgumentException("IsTypeClause")
+            End Select
+        End Function
 
         ''' <summary>
         ''' Represents a TypeOf...Is or IsNot expression.
@@ -26032,10 +26038,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="type">
         ''' The name of the type (or the list of types) being tested against.
         ''' </param>
-        Public Shared Function IsTypeClause(operatorToken As SyntaxToken, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+        Public Shared Function IsTypeClause(operatorToken As SyntaxToken, optionalNameAs As DeclarationAsClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
             Select Case operatorToken.Kind()
-                Case SyntaxKind.IsKeyword :
-                Case SyntaxKind.IsNotKeyword
+                Case SyntaxKind.IsKeyword
                 Case Else
                     Throw new ArgumentException("operatorToken")
             End Select
@@ -26064,7 +26069,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="type">
         ''' The name of the type (or the list of types) being tested against.
         ''' </param>
-        Public Shared Function IsTypeClause(optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+        Public Shared Function IsTypeClause(optionalNameAs As DeclarationAsClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
             Return SyntaxFactory.IsTypeClause(SyntaxKind.IsTypeClause, SyntaxFactory.Token(SyntaxKind.IsKeyword), optionalNameAs, type)
         End Function
 
@@ -26083,7 +26088,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="type">
         ''' The name of the type (or the list of types) being tested against.
         ''' </param>
-        Public Shared Function IsNotTypeClause(operatorToken As SyntaxToken, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+        Public Shared Function IsNotTypeClause(operatorToken As SyntaxToken, optionalNameAs As DeclarationAsClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
             Select Case operatorToken.Kind()
                 Case SyntaxKind.IsNotKeyword
                 Case Else
@@ -26114,7 +26119,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="type">
         ''' The name of the type (or the list of types) being tested against.
         ''' </param>
-        Public Shared Function IsNotTypeClause(optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+        Public Shared Function IsNotTypeClause(optionalNameAs As DeclarationAsClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
             Return SyntaxFactory.IsNotTypeClause(SyntaxFactory.Token(SyntaxKind.IsNotKeyword), optionalNameAs, type)
         End Function
 
@@ -26137,7 +26142,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="type">
         ''' The name of the type (or the list of types) being tested against.
         ''' </param>
-        Public Shared Function IsTypeClause(ByVal kind As SyntaxKind, operatorToken As SyntaxToken, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+        Public Shared Function IsTypeClause(ByVal kind As SyntaxKind, operatorToken As SyntaxToken, optionalNameAs As DeclarationAsClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
             If Not SyntaxFacts.IsIsTypeClause(kind) Then
                 Throw New ArgumentException("kind")
             End If
@@ -26191,7 +26196,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
 
-        Public Shared Function DeclarationClause(identifer As SyntaxToken, asKeyword As SyntaxToken) As DeclarationClauseSyntax
+        Public Shared Function DeclarationAsClause(identifer As SyntaxToken, asKeyword As SyntaxToken) As DeclarationAsClauseSyntax
             Select Case identifer.Kind()
                 Case SyntaxKind.IdentifierToken
                 Case Else
@@ -26202,17 +26207,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("asKeyword")
             End Select
-            Return New DeclarationClauseSyntax(SyntaxKind.DeclarationClause, Nothing, Nothing, DirectCast(identifer.Node, InternalSyntax.IdentifierTokenSyntax), DirectCast(asKeyword.Node, InternalSyntax.KeywordSyntax))
+            Return New DeclarationAsClauseSyntax(SyntaxKind.DeclarationAsClause, Nothing, Nothing, DirectCast(identifer.Node, InternalSyntax.IdentifierTokenSyntax), DirectCast(asKeyword.Node, InternalSyntax.KeywordSyntax))
         End Function
 
 
-        Public Shared Function DeclarationClause(identifer As SyntaxToken) As DeclarationClauseSyntax
-            Return SyntaxFactory.DeclarationClause(identifer, SyntaxFactory.Token(SyntaxKind.AsKeyword))
+        Public Shared Function DeclarationAsClause(identifer As SyntaxToken) As DeclarationAsClauseSyntax
+            Return SyntaxFactory.DeclarationAsClause(identifer, SyntaxFactory.Token(SyntaxKind.AsKeyword))
         End Function
 
 
-        Public Shared Function DeclarationClause(identifer As String) As DeclarationClauseSyntax
-            Return SyntaxFactory.DeclarationClause(SyntaxFactory.Identifier(identifer), SyntaxFactory.Token(SyntaxKind.AsKeyword))
+        Public Shared Function DeclarationAsClause(identifer As String) As DeclarationAsClauseSyntax
+            Return SyntaxFactory.DeclarationAsClause(SyntaxFactory.Identifier(identifer), SyntaxFactory.Token(SyntaxKind.AsKeyword))
         End Function
 
 

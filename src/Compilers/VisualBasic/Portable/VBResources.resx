@@ -5635,4 +5635,10 @@
   <data name="FEATURE_TypeOfMany" xml:space="preserve">
     <value>TypeOfMany</value>
   </data>
+  <data name="ERR_DeclarationAsClauseDoesNotSupportIsNotOperator" xml:space="preserve">
+    <value>Declaration As Clause does not support IsNot operator.</value>
+  </data>
+  <data name="ERR_DeclarationAsClauseDoesNotSupportTypeArgumentList" xml:space="preserve">
+    <value>Declaration As Clause does not support Type Argument List.</value>
+  </data>
 </root>

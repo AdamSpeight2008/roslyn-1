@@ -1642,15 +1642,15 @@ is_type_clause
   ;
 
 is_not_type_clause
-  : 'IsNot' declaration_clause? (expression | type_argument_list)
+  : 'IsNot' declaration_as_clause? (expression | type_argument_list)
   ;
 
-declaration_clause
+declaration_as_clause
   : identifier_token 'As'
   ;
 
 is_type_clause
-  : 'Is' declaration_clause? (expression | type_argument_list)
+  : 'Is' declaration_as_clause? (expression | type_argument_list)
   ;
 
 type_of_is_not_expression

@@ -934,74 +934,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return True
          End Function
 
+        Private Function TryParse(Of T As VisualBasicSyntaxNode)(subParser As Func(Of T), ByRef output As T) As Boolean
+            output = subParser()
+            Dim isValid = output IsNot Nothing
+            Return isValid
+        End Function
+
         Private Function IsAtStartOfArgumentTypeList() As Boolean
             Return CurrentToken.Kind = SyntaxKind.OpenParenToken AndAlso PeekNextToken.Kind = SyntaxKind.OfKeyword
         End Function
-        ''' <summary>
-        ''' Parse TypeOf ... Is ... or TypeOf ... IsNot ...
-        ''' TypeOfExpression -> "TypeOf" Expression "Is|IsNot" LineTerminator? TypeName
-        ''' </summary>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Private Function ParseTypeOf() As TypeOfExpressionSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.TypeOfKeyword, "must be at TypeOf.")
 
-            Dim [typeOf] = Parse_Keyword(SyntaxKind.TypeOfKeyword) ' Consume 'TypeOf'.
-            Dim operand  = ParseExpressionCore(OperatorPrecedence.PrecedenceRelational) 'Dev10 uses ParseVariable
-            If operand.ContainsDiagnostics Then operand = ResyncAt(operand, SyntaxKind.IsKeyword, SyntaxKind.IsNotKeyword)
 
-            Dim kind As SyntaxKind = Nothing
-            Dim isTypeClause = Parse_IsTypeClause(kind)
-            Select Case kind
-                   Case SyntaxKind.IsTypeClause : kind = SyntaxKind.TypeOfIsExpression
-                   Case SyntaxKind.IsTypeClause : kind = SyntaxKind.TypeOfIsExpression
-                   Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(kind)
-            End Select
-
-            Return SyntaxFactory.TypeOfExpression(kind, [typeOf], operand, isTypeClause)
-        End Function
-
-        Private Function Parse_IsTypeClause(ByRef Kind As SyntaxKind) As IsTypeClauseSyntax
-            Kind = SyntaxKind.IsTypeClause
-            Dim operatorToken As KeywordSyntax = Nothing
-            If TryParse_Keyword(SyntaxKind.IsKeyword, operatorToken) Then
-                ' IS  is supported
-            ElseIf TryParse_Keyword(SyntaxKind.IsNotKeyword, operatorToken) Then
-                ' ISNOT  is conditionally supported 
-                operatorToken = CheckFeatureAvailability(Feature.TypeOfIsNot, operatorToken)
-                kind =  SyntaxKind.IsNotTypeClause
-            Else
-                operatorToken = DirectCast(HandleUnexpectedToken(SyntaxKind.IsKeyword), KeywordSyntax)
-            End If
-
-            Dim optionalDeclarationClause As DeclarationClauseSyntax = Nothing
-            TryParse_Optional_NameAs(optionalDeclarationClause)
- 
-            Dim targetType As VisualBasicSyntaxNode
-            If IsAtStartOfArgumentTypeList THen
-                targetType = ParseGenericArguments(True, true)
-                targetType = CheckFeatureAvailability( Feature.TypeOfMany, targetType)
-            Else
-                targetType = ParseGeneralType()
-            End If
-            Return SyntaxFactory.IsTypeClause(operatorToken, optionalDeclarationClause, targetType)
-        End Function
-
-        Private Function IsPossible_NameAs() As Boolean
-            Return PeekNextToken.Kind = SyntaxKind.AsKeyword
-        End Function
-
-        Private Function TryParse_Optional_NameAs(Byref optionalDeclarationClause As DeclarationClauseSyntax) As Boolean
-            optionalDeclarationClause = NOthing
-            ' Peek at next token to see if it is AS keyword.
-            If Not IsPossible_NameAs Then Return False
-            Dim identifer = ParseIdentifierAllowingKeyword()
-            Dim as_keyword = Parse_Keyword(SyntaxKind.AsKeyword, eatLine:= True)
-            optionalDeclarationClause =  SyntaxFactory.DeclarationClause(identifer, as_keyword)
-            optionalDeclarationClause = CheckFeatureAvailability(Feature.TypeOfAs, optionalDeclarationClause)
-            Return true
-        End Function
 
         ' /*********************************************************************
         ' *

@@ -2046,5 +2046,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_InitOnlySettersUsage
         FEATURE_TypeOfAs
         FEATURE_TypeOfMany
+        ERR_DeclarationAsClauseDoesNotSupportTypeArgumentList
+        ERR_DeclarationAsClauseDoesNotSupportIsNotOperator
     End Enum
 End Namespace

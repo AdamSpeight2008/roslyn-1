@@ -8,10 +8,10 @@ Microsoft.CodeAnalysis.VisualBasic.Syntax.NameAsSyntax.WithIdentifer(identifer A
 Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeOfExpressionSyntax.OptionalNameAs() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.NameAsSyntax
 Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeOfExpressionSyntax.Update(kind As Microsoft.CodeAnalysis.VisualBasic.SyntaxKind, typeOfKeyword As Microsoft.CodeAnalysis.SyntaxToken, expression As Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionSyntax, operatorToken As Microsoft.CodeAnalysis.SyntaxToken, optionalNameAs As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameAsSyntax, type As Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeOfExpressionSyntax
 Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeOfExpressionSyntax.WithOptionalNameAs(optionalNameAs As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameAsSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeOfExpressionSyntax
-Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.DeclarationClause = 800 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.DeclarationAsClause = 800 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
 Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.IsNotTypeClause = 802 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
 Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.IsTypeClause = 801 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
-Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.IsTypeClause = 803 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.TypeOfExpression = 803 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
 Microsoft.CodeAnalysis.VisualBasic.VisualBasicGeneratorDriver
 Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitNameAs(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameAsSyntax) -> TResult
 Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitNameAs(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.NameAsSyntax) -> Void

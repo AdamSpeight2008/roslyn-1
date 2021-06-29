@@ -22593,7 +22593,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
     Public NotInheritable Class IsTypeClauseSyntax
         Inherits VisualBasicSyntaxNode
 
-        Friend _optionalNameAs as DeclarationClauseSyntax
+        Friend _optionalNameAs as DeclarationAsClauseSyntax
         Friend _type as VisualBasicSyntaxNode
 
         Friend Sub New(ByVal green As GreenNode, ByVal parent as SyntaxNode, ByVal startLocation As Integer)
@@ -22602,8 +22602,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             Debug.Assert(startLocation >= 0)
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), operatorToken As InternalSyntax.KeywordSyntax, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode)
-            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IsTypeClauseSyntax(kind, errors, annotations, operatorToken, if(optionalNameAs IsNot Nothing, DirectCast(optionalNameAs.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclarationClauseSyntax), Nothing), DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.VisualBasicSyntaxNode)), Nothing, 0)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), operatorToken As InternalSyntax.KeywordSyntax, optionalNameAs As DeclarationAsClauseSyntax, type As VisualBasicSyntaxNode)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.IsTypeClauseSyntax(kind, errors, annotations, operatorToken, if(optionalNameAs IsNot Nothing, DirectCast(optionalNameAs.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclarationAsClauseSyntax), Nothing), DirectCast(type.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.VisualBasicSyntaxNode)), Nothing, 0)
         End Sub
 
         ''' <summary>
@@ -22627,7 +22627,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <remarks>
         ''' This child is optional. If it is not present, then Nothing is returned.
         ''' </remarks>
-        Public ReadOnly Property OptionalNameAs As DeclarationClauseSyntax
+        Public ReadOnly Property OptionalNameAs As DeclarationAsClauseSyntax
             Get
                 Return GetRed(_optionalNameAs, 1)
             End Get
@@ -22638,7 +22638,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' specified value. Returns this instance if the specified value is the same as
         ''' the current value.
         ''' </summary>
-        Public Shadows Function WithOptionalNameAs(optionalNameAs as DeclarationClauseSyntax) As IsTypeClauseSyntax
+        Public Shadows Function WithOptionalNameAs(optionalNameAs as DeclarationAsClauseSyntax) As IsTypeClauseSyntax
             return Update(Me.Kind, Me.OperatorToken, optionalNameAs, Me.Type)
         End Function
 
@@ -22706,7 +22706,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <param name="type">
         ''' The value for the Type property.
         ''' </param>
-        Public Function Update(kind As SyntaxKind, operatorToken As SyntaxToken, optionalNameAs As DeclarationClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
+        Public Function Update(kind As SyntaxKind, operatorToken As SyntaxToken, optionalNameAs As DeclarationAsClauseSyntax, type As VisualBasicSyntaxNode) As IsTypeClauseSyntax
             If kind <> Me.Kind OrElse operatorToken <> Me.OperatorToken OrElse optionalNameAs IsNot Me.OptionalNameAs OrElse type IsNot Me.Type Then
                 Dim newNode = SyntaxFactory.IsTypeClause(kind, operatorToken, optionalNameAs, type)
                 Dim annotations = Me.GetAnnotations()
@@ -22723,10 +22723,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
     ''' <remarks>
     ''' <para>This node is associated with the following syntax kinds:</para>
     ''' <list type="bullet">
-    ''' <item><description><see cref="SyntaxKind.DeclarationClause"/></description></item>
+    ''' <item><description><see cref="SyntaxKind.DeclarationAsClause"/></description></item>
     ''' </list>
     ''' </remarks>
-    Public NotInheritable Class DeclarationClauseSyntax
+    Public NotInheritable Class DeclarationAsClauseSyntax
         Inherits VisualBasicSyntaxNode
 
 
@@ -22737,12 +22737,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         End Sub
 
         Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), identifer As InternalSyntax.IdentifierTokenSyntax, asKeyword As InternalSyntax.KeywordSyntax)
-            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclarationClauseSyntax(kind, errors, annotations, identifer, asKeyword), Nothing, 0)
+            Me.New(New Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclarationAsClauseSyntax(kind, errors, annotations, identifer, asKeyword), Nothing, 0)
         End Sub
 
         Public ReadOnly Property Identifer As SyntaxToken
             Get
-                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclarationClauseSyntax)._identifer, Me.Position, 0)
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclarationAsClauseSyntax)._identifer, Me.Position, 0)
             End Get
         End Property
 
@@ -22751,13 +22751,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value. Returns this instance if the specified value is the same as the current
         ''' value.
         ''' </summary>
-        Public Shadows Function WithIdentifer(identifer as SyntaxToken) As DeclarationClauseSyntax
+        Public Shadows Function WithIdentifer(identifer as SyntaxToken) As DeclarationAsClauseSyntax
             return Update(identifer, Me.AsKeyword)
         End Function
 
         Public ReadOnly Property AsKeyword As SyntaxToken
             Get
-                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclarationClauseSyntax)._asKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
+                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.DeclarationAsClauseSyntax)._asKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
             End Get
         End Property
 
@@ -22766,7 +22766,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' value. Returns this instance if the specified value is the same as the current
         ''' value.
         ''' </summary>
-        Public Shadows Function WithAsKeyword(asKeyword as SyntaxToken) As DeclarationClauseSyntax
+        Public Shadows Function WithAsKeyword(asKeyword as SyntaxToken) As DeclarationAsClauseSyntax
             return Update(Me.Identifer, asKeyword)
         End Function
 
@@ -22785,11 +22785,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         End Function
 
         Public Overrides Function Accept(Of TResult)(ByVal visitor As VisualBasicSyntaxVisitor(Of TResult)) As TResult
-            Return visitor.VisitDeclarationClause(Me)
+            Return visitor.VisitDeclarationAsClause(Me)
         End Function
 
         Public Overrides Sub Accept(ByVal visitor As VisualBasicSyntaxVisitor)
-            visitor.VisitDeclarationClause(Me)
+            visitor.VisitDeclarationAsClause(Me)
         End Sub
 
 
@@ -22803,9 +22803,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <param name="asKeyword">
         ''' The value for the AsKeyword property.
         ''' </param>
-        Public Function Update(identifer As SyntaxToken, asKeyword As SyntaxToken) As DeclarationClauseSyntax
+        Public Function Update(identifer As SyntaxToken, asKeyword As SyntaxToken) As DeclarationAsClauseSyntax
             If identifer <> Me.Identifer OrElse asKeyword <> Me.AsKeyword Then
-                Dim newNode = SyntaxFactory.DeclarationClause(identifer, asKeyword)
+                Dim newNode = SyntaxFactory.DeclarationAsClause(identifer, asKeyword)
                 Dim annotations = Me.GetAnnotations()
                 If annotations IsNot Nothing AndAlso annotations.Length > 0
                     return newNode.WithAnnotations(annotations)

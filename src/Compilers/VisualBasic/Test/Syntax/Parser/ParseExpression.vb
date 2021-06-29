@@ -276,16 +276,16 @@ Public Class ParseExpressionTest
     Public Sub ParseTypeOf_AS()
       ' Against single type.
       Dim E0 = ParseExpression("TypeOf a is x As b")
-      Dim E1 = ParseExpression("TypeOf a isnot x As B", True)
+      Dim E1 = ParseExpression("TypeOf a isnot x As B", expectsErrors:= True)
       ' Against multiple types
-      Dim E2 = ParseExpression("TypeOf a is x As (Of T0, T1)", True)
-      Dim E3 = ParseExpression("TypeOf a isnot x As (Of T0, T1)", True)
+      Dim E2 = ParseExpression("TypeOf a is x As (Of T0, T1)", expectsErrors:= True)
+      Dim E3 = ParseExpression("TypeOf a isnot x As (Of T0, T1)", expectsErrors:= True)
       Dim E4 = ParseExpression("TypeOf a is
                                             x As
                                                  b")
       Dim E5 = ParseExpression("TypeOf a isnot
                                                x As
-                                                    B", True)
+                                                    B", expectsErrors:= True)
     End Sub
 
     <Fact>
