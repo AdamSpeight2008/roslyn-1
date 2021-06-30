@@ -4873,7 +4873,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
 
         Private Function BindExitStatement(node As ExitStatementSyntax, diagnostics As BindingDiagnosticBag) As BoundStatement
-            Dim targetLabel As LabelSymbol = GetExitLabel(node.Kind)
+            ' This needs to bind to correct loop identifier, potentially in a higher context
+            Dim targetLabel As LabelSymbol = Nothing
+
+            ' Does this exit statement, have a loop identifier?
+            ' eg:= Exit For i
+            Dim hasControlVariable = node.OptLoopID IsNot Nothing
+            If hasControlVariable Then
+                ' Retrieve the name used by the loop identifier.
+                Dim exitName = node.OptLoopID.ToString()
+                ' Try and find the corrisponding label used to mark the exit label for that loop.
+                targetLabel = GetExitLabel(node.Kind, exitName)
+                ' If it not found within the nestings of loops.
+                If targetLabel Is Nothing Then
+                    ' report an error that the usage is invalid.
+                    ReportDiagnostic(diagnostics, node.OptLoopID, ERRID.ERR_InvalidExitStatement, exitName)
+                End If
+            Else
+                targetLabel = GetExitLabel(node.Kind)
+            End If
 
             If targetLabel Is Nothing Then
                 Dim id As ERRID
@@ -4899,7 +4917,24 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Private Function BindContinueStatement(node As ContinueStatementSyntax, diagnostics As BindingDiagnosticBag) As BoundStatement
-            Dim targetLabel As LabelSymbol = GetContinueLabel(node.Kind)
+            ' This needs to bind to correct continue label, potentially in a higher context
+            Dim targetLabel As LabelSymbol = Nothing
+            ' Does this continue statement, have a loop identifier?
+            ' eg:= Continue For i
+            Dim hasControlVariable = node.OptLoopID IsNot Nothing
+            If hasControlVariable Then
+                ' Retrieve the name used by the loop identifier.
+                Dim continueName = node.OptLoopID.ToString()
+                ' Try and find the corrisponding label used to mark the conitune label for that loop.
+                targetLabel = GetContinueLabel(node.Kind, continueName)
+                ' If it not found within the nestings of loops.
+                If targetLabel Is Nothing Then
+                    ' report an error that the usage is invalid.
+                    ReportDiagnostic(diagnostics, node.OptLoopID, ERRID.ERR_InvalidContinueStatement, continueName)
+                End If
+            Else
+                targetLabel = GetContinueLabel(node.Kind)
+            End If
 
             If targetLabel Is Nothing Then
                 Dim id As ERRID

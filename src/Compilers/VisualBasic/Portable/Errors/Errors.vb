@@ -2044,5 +2044,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_UnconstrainedTypeParameterInConditional
         FEATURE_CommentsAfterLineContinuation
         FEATURE_InitOnlySettersUsage
+        FEATURE_ContinueExitWithIdentifier
+        ERR_InvalidContinueStatement
+        ERR_InvalidExitStatement
     End Enum
 End Namespace

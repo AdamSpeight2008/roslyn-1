@@ -22,6 +22,16 @@
         <target state="translated">因為類型 '{0}' 有非抽象成員，所以無法內嵌。請考慮將 [內嵌 Interop 類型] 屬性設為 false。</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_InvalidContinueStatement">
+        <source>Continue statement has an invalid loop identifier {0}</source>
+        <target state="new">Continue statement has an invalid loop identifier {0}</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_InvalidExitStatement">
+        <source>Exit statement has an invalid loop identifier {0}</source>
+        <target state="new">Exit statement has an invalid loop identifier {0}</target>
+        <note />
+      </trans-unit>
       <trans-unit id="ERR_MultipleAnalyzerConfigsInSameDir">
         <source>Multiple analyzer config files cannot be in the same directory ('{0}').</source>
         <target state="translated">多個分析器組態檔無法處於相同目錄 ('{0}') 中。</target>
@@ -65,6 +75,11 @@
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">
         <source>comments after line continuation</source>
         <target state="translated">行接續符號後註解</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_ContinueExitWithIdentifier">
+        <source>Continue Exit With Loop Identifier</source>
+        <target state="new">Continue Exit With Loop Identifier</target>
         <note />
       </trans-unit>
       <trans-unit id="FEATURE_InitOnlySettersUsage">

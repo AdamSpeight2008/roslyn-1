@@ -21,8 +21,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private _locals As ImmutableArray(Of LocalSymbol) = Nothing
 
         Public Sub New(enclosing As Binder, syntax As ForOrForEachBlockSyntax)
-            MyBase.New(enclosing, SyntaxKind.ContinueForStatement, SyntaxKind.ExitForStatement)
-
+            MyBase.New(enclosing, SyntaxKind.ContinueForStatement, SyntaxKind.ExitForStatement, syntax?.ForOrForEachStatement.ControlVariable.GetText().ToString)
             Debug.Assert(syntax IsNot Nothing)
             _syntax = syntax
         End Sub

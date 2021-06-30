@@ -12097,44 +12097,57 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend ReadOnly _exitKeyword as KeywordSyntax
         Friend ReadOnly _blockKeyword as KeywordSyntax
+        Friend ReadOnly _optLoopID as IdentifierNameSyntax
 
-        Friend Sub New(ByVal kind As SyntaxKind, exitKeyword As InternalSyntax.KeywordSyntax, blockKeyword As InternalSyntax.KeywordSyntax)
+        Friend Sub New(ByVal kind As SyntaxKind, exitKeyword As InternalSyntax.KeywordSyntax, blockKeyword As InternalSyntax.KeywordSyntax, optLoopID As IdentifierNameSyntax)
             MyBase.New(kind)
-            MyBase._slotCount = 2
+            MyBase._slotCount = 3
 
             AdjustFlagsAndWidth(exitKeyword)
             Me._exitKeyword = exitKeyword
             AdjustFlagsAndWidth(blockKeyword)
             Me._blockKeyword = blockKeyword
+            If optLoopID IsNot Nothing Then
+                AdjustFlagsAndWidth(optLoopID)
+                Me._optLoopID = optLoopID
+            End If
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, exitKeyword As InternalSyntax.KeywordSyntax, blockKeyword As InternalSyntax.KeywordSyntax, context As ISyntaxFactoryContext)
+        Friend Sub New(ByVal kind As SyntaxKind, exitKeyword As InternalSyntax.KeywordSyntax, blockKeyword As InternalSyntax.KeywordSyntax, optLoopID As IdentifierNameSyntax, context As ISyntaxFactoryContext)
             MyBase.New(kind)
-            MyBase._slotCount = 2
+            MyBase._slotCount = 3
             Me.SetFactoryContext(context)
 
             AdjustFlagsAndWidth(exitKeyword)
             Me._exitKeyword = exitKeyword
             AdjustFlagsAndWidth(blockKeyword)
             Me._blockKeyword = blockKeyword
+            If optLoopID IsNot Nothing Then
+                AdjustFlagsAndWidth(optLoopID)
+                Me._optLoopID = optLoopID
+            End If
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), exitKeyword As InternalSyntax.KeywordSyntax, blockKeyword As InternalSyntax.KeywordSyntax)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), exitKeyword As InternalSyntax.KeywordSyntax, blockKeyword As InternalSyntax.KeywordSyntax, optLoopID As IdentifierNameSyntax)
             MyBase.New(kind, errors, annotations)
-            MyBase._slotCount = 2
+            MyBase._slotCount = 3
 
             AdjustFlagsAndWidth(exitKeyword)
             Me._exitKeyword = exitKeyword
             AdjustFlagsAndWidth(blockKeyword)
             Me._blockKeyword = blockKeyword
+            If optLoopID IsNot Nothing Then
+                AdjustFlagsAndWidth(optLoopID)
+                Me._optLoopID = optLoopID
+            End If
 
         End Sub
 
         Friend Sub New(reader as ObjectReader)
             MyBase.New(reader)
-            MyBase._slotCount = 2
+            MyBase._slotCount = 3
             Dim _exitKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
             If _exitKeyword isnot Nothing
                 AdjustFlagsAndWidth(_exitKeyword)
@@ -12145,6 +12158,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 AdjustFlagsAndWidth(_blockKeyword)
                 Me._blockKeyword = _blockKeyword
             End If
+            Dim _optLoopID = DirectCast(reader.ReadValue(), IdentifierNameSyntax)
+            If _optLoopID isnot Nothing
+                AdjustFlagsAndWidth(_optLoopID)
+                Me._optLoopID = _optLoopID
+            End If
         End Sub
         Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New ExitStatementSyntax(o)
 
@@ -12153,6 +12171,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             MyBase.WriteTo(writer)
             writer.WriteValue(Me._exitKeyword)
             writer.WriteValue(Me._blockKeyword)
+            writer.WriteValue(Me._optLoopID)
         End Sub
 
         Shared Sub New()
@@ -12181,12 +12200,27 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
+        ''' <summary>
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </summary>
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
+        Friend ReadOnly Property OptLoopID As InternalSyntax.IdentifierNameSyntax
+            Get
+                Return Me._optLoopID
+            End Get
+        End Property
+
         Friend Overrides Function GetSlot(i as Integer) as GreenNode
             Select case i
                 Case 0
                     Return Me._exitKeyword
                 Case 1
                     Return Me._blockKeyword
+                Case 2
+                    Return Me._optLoopID
                 Case Else
                     Debug.Assert(false, "child index out of range")
                     Return Nothing
@@ -12195,11 +12229,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 
         Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
-            Return new ExitStatementSyntax(Me.Kind, newErrors, GetAnnotations, _exitKeyword, _blockKeyword)
+            Return new ExitStatementSyntax(Me.Kind, newErrors, GetAnnotations, _exitKeyword, _blockKeyword, _optLoopID)
         End Function
 
         Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
-            Return new ExitStatementSyntax(Me.Kind, GetDiagnostics, annotations, _exitKeyword, _blockKeyword)
+            Return new ExitStatementSyntax(Me.Kind, GetDiagnostics, annotations, _exitKeyword, _blockKeyword, _optLoopID)
         End Function
 
         Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
@@ -12217,44 +12251,57 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend ReadOnly _continueKeyword as KeywordSyntax
         Friend ReadOnly _blockKeyword as KeywordSyntax
+        Friend ReadOnly _optLoopID as IdentifierNameSyntax
 
-        Friend Sub New(ByVal kind As SyntaxKind, continueKeyword As InternalSyntax.KeywordSyntax, blockKeyword As InternalSyntax.KeywordSyntax)
+        Friend Sub New(ByVal kind As SyntaxKind, continueKeyword As InternalSyntax.KeywordSyntax, blockKeyword As InternalSyntax.KeywordSyntax, optLoopID As IdentifierNameSyntax)
             MyBase.New(kind)
-            MyBase._slotCount = 2
+            MyBase._slotCount = 3
 
             AdjustFlagsAndWidth(continueKeyword)
             Me._continueKeyword = continueKeyword
             AdjustFlagsAndWidth(blockKeyword)
             Me._blockKeyword = blockKeyword
+            If optLoopID IsNot Nothing Then
+                AdjustFlagsAndWidth(optLoopID)
+                Me._optLoopID = optLoopID
+            End If
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, continueKeyword As InternalSyntax.KeywordSyntax, blockKeyword As InternalSyntax.KeywordSyntax, context As ISyntaxFactoryContext)
+        Friend Sub New(ByVal kind As SyntaxKind, continueKeyword As InternalSyntax.KeywordSyntax, blockKeyword As InternalSyntax.KeywordSyntax, optLoopID As IdentifierNameSyntax, context As ISyntaxFactoryContext)
             MyBase.New(kind)
-            MyBase._slotCount = 2
+            MyBase._slotCount = 3
             Me.SetFactoryContext(context)
 
             AdjustFlagsAndWidth(continueKeyword)
             Me._continueKeyword = continueKeyword
             AdjustFlagsAndWidth(blockKeyword)
             Me._blockKeyword = blockKeyword
+            If optLoopID IsNot Nothing Then
+                AdjustFlagsAndWidth(optLoopID)
+                Me._optLoopID = optLoopID
+            End If
 
         End Sub
 
-        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), continueKeyword As InternalSyntax.KeywordSyntax, blockKeyword As InternalSyntax.KeywordSyntax)
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), continueKeyword As InternalSyntax.KeywordSyntax, blockKeyword As InternalSyntax.KeywordSyntax, optLoopID As IdentifierNameSyntax)
             MyBase.New(kind, errors, annotations)
-            MyBase._slotCount = 2
+            MyBase._slotCount = 3
 
             AdjustFlagsAndWidth(continueKeyword)
             Me._continueKeyword = continueKeyword
             AdjustFlagsAndWidth(blockKeyword)
             Me._blockKeyword = blockKeyword
+            If optLoopID IsNot Nothing Then
+                AdjustFlagsAndWidth(optLoopID)
+                Me._optLoopID = optLoopID
+            End If
 
         End Sub
 
         Friend Sub New(reader as ObjectReader)
             MyBase.New(reader)
-            MyBase._slotCount = 2
+            MyBase._slotCount = 3
             Dim _continueKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
             If _continueKeyword isnot Nothing
                 AdjustFlagsAndWidth(_continueKeyword)
@@ -12265,6 +12312,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 AdjustFlagsAndWidth(_blockKeyword)
                 Me._blockKeyword = _blockKeyword
             End If
+            Dim _optLoopID = DirectCast(reader.ReadValue(), IdentifierNameSyntax)
+            If _optLoopID isnot Nothing
+                AdjustFlagsAndWidth(_optLoopID)
+                Me._optLoopID = _optLoopID
+            End If
         End Sub
         Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New ContinueStatementSyntax(o)
 
@@ -12273,6 +12325,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             MyBase.WriteTo(writer)
             writer.WriteValue(Me._continueKeyword)
             writer.WriteValue(Me._blockKeyword)
+            writer.WriteValue(Me._optLoopID)
         End Sub
 
         Shared Sub New()
@@ -12302,12 +12355,27 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End Get
         End Property
 
+        ''' <summary>
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </summary>
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
+        Friend ReadOnly Property OptLoopID As InternalSyntax.IdentifierNameSyntax
+            Get
+                Return Me._optLoopID
+            End Get
+        End Property
+
         Friend Overrides Function GetSlot(i as Integer) as GreenNode
             Select case i
                 Case 0
                     Return Me._continueKeyword
                 Case 1
                     Return Me._blockKeyword
+                Case 2
+                    Return Me._optLoopID
                 Case Else
                     Debug.Assert(false, "child index out of range")
                     Return Nothing
@@ -12316,11 +12384,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 
         Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
-            Return new ContinueStatementSyntax(Me.Kind, newErrors, GetAnnotations, _continueKeyword, _blockKeyword)
+            Return new ContinueStatementSyntax(Me.Kind, newErrors, GetAnnotations, _continueKeyword, _blockKeyword, _optLoopID)
         End Function
 
         Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
-            Return new ContinueStatementSyntax(Me.Kind, GetDiagnostics, annotations, _continueKeyword, _blockKeyword)
+            Return new ContinueStatementSyntax(Me.Kind, GetDiagnostics, annotations, _continueKeyword, _blockKeyword, _optLoopID)
         End Function
 
         Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
@@ -39125,9 +39193,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             If node._exitKeyword IsNot newExitKeyword Then anyChanges = True
             Dim newBlockKeyword = DirectCast(Visit(node.BlockKeyword), KeywordSyntax)
             If node._blockKeyword IsNot newBlockKeyword Then anyChanges = True
+            Dim newOptLoopID = DirectCast(Visit(node._optLoopID), IdentifierNameSyntax)
+            If node._optLoopID IsNot newOptLoopID Then anyChanges = True
 
             If anyChanges Then
-                Return New ExitStatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newExitKeyword, newBlockKeyword)
+                Return New ExitStatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newExitKeyword, newBlockKeyword, newOptLoopID)
             Else
                 Return node
             End If
@@ -39140,9 +39210,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             If node._continueKeyword IsNot newContinueKeyword Then anyChanges = True
             Dim newBlockKeyword = DirectCast(Visit(node.BlockKeyword), KeywordSyntax)
             If node._blockKeyword IsNot newBlockKeyword Then anyChanges = True
+            Dim newOptLoopID = DirectCast(Visit(node._optLoopID), IdentifierNameSyntax)
+            If node._optLoopID IsNot newOptLoopID Then anyChanges = True
 
             If anyChanges Then
-                Return New ContinueStatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newContinueKeyword, newBlockKeyword)
+                Return New ContinueStatementSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newContinueKeyword, newBlockKeyword, newOptLoopID)
             Else
                 Return node
             End If
@@ -46283,17 +46355,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Shared Function ExitDoStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Shared Function ExitDoStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.DoKeyword)
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitDoStatement, exitKeyword, blockKeyword, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitDoStatement, exitKeyword, blockKeyword, optLoopID, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitDoStatement, exitKeyword, blockKeyword)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitDoStatement, exitKeyword, blockKeyword, optLoopID)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -46312,17 +46388,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Shared Function ExitForStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Shared Function ExitForStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.ForKeyword)
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitForStatement, exitKeyword, blockKeyword, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitForStatement, exitKeyword, blockKeyword, optLoopID, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitForStatement, exitKeyword, blockKeyword)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitForStatement, exitKeyword, blockKeyword, optLoopID)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -46341,17 +46421,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Shared Function ExitSubStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Shared Function ExitSubStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.SubKeyword)
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitSubStatement, exitKeyword, blockKeyword, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitSubStatement, exitKeyword, blockKeyword, optLoopID, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitSubStatement, exitKeyword, blockKeyword)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitSubStatement, exitKeyword, blockKeyword, optLoopID)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -46370,17 +46454,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Shared Function ExitFunctionStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Shared Function ExitFunctionStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.FunctionKeyword)
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitFunctionStatement, exitKeyword, blockKeyword, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitFunctionStatement, exitKeyword, blockKeyword, optLoopID, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitFunctionStatement, exitKeyword, blockKeyword)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitFunctionStatement, exitKeyword, blockKeyword, optLoopID)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -46399,17 +46487,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Shared Function ExitOperatorStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Shared Function ExitOperatorStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.OperatorKeyword)
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitOperatorStatement, exitKeyword, blockKeyword, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitOperatorStatement, exitKeyword, blockKeyword, optLoopID, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitOperatorStatement, exitKeyword, blockKeyword)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitOperatorStatement, exitKeyword, blockKeyword, optLoopID)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -46428,17 +46520,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Shared Function ExitPropertyStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Shared Function ExitPropertyStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.PropertyKeyword)
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitPropertyStatement, exitKeyword, blockKeyword, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitPropertyStatement, exitKeyword, blockKeyword, optLoopID, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitPropertyStatement, exitKeyword, blockKeyword)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitPropertyStatement, exitKeyword, blockKeyword, optLoopID)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -46457,17 +46553,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Shared Function ExitTryStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Shared Function ExitTryStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.TryKeyword)
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitTryStatement, exitKeyword, blockKeyword, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitTryStatement, exitKeyword, blockKeyword, optLoopID, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitTryStatement, exitKeyword, blockKeyword)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitTryStatement, exitKeyword, blockKeyword, optLoopID)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -46486,17 +46586,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Shared Function ExitSelectStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Shared Function ExitSelectStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.SelectKeyword)
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitSelectStatement, exitKeyword, blockKeyword, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitSelectStatement, exitKeyword, blockKeyword, optLoopID, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitSelectStatement, exitKeyword, blockKeyword)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitSelectStatement, exitKeyword, blockKeyword, optLoopID)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -46515,17 +46619,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Shared Function ExitWhileStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Shared Function ExitWhileStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.WhileKeyword)
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitWhileStatement, exitKeyword, blockKeyword, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitWhileStatement, exitKeyword, blockKeyword, optLoopID, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitWhileStatement, exitKeyword, blockKeyword)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitWhileStatement, exitKeyword, blockKeyword, optLoopID)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -46550,18 +46658,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Shared Function ExitStatement(kind As SyntaxKind, exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Shared Function ExitStatement(kind As SyntaxKind, exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(SyntaxFacts.IsExitStatement(kind))
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso SyntaxFacts.IsExitStatementBlockKeyword(blockKeyword.Kind))
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(kind, exitKeyword, blockKeyword, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(kind, exitKeyword, blockKeyword, optLoopID, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(kind, exitKeyword, blockKeyword)
+            Dim result = New ExitStatementSyntax(kind, exitKeyword, blockKeyword, optLoopID)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -46581,17 +46693,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "Do", "For" or "While" keyword that identifies the kind of loop being
         ''' continued.
         ''' </param>
-        Friend Shared Function ContinueWhileStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ContinueStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Shared Function ContinueWhileStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ContinueStatementSyntax
             Debug.Assert(continueKeyword IsNot Nothing AndAlso continueKeyword.Kind = SyntaxKind.ContinueKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.WhileKeyword)
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ContinueWhileStatement, continueKeyword, blockKeyword, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ContinueWhileStatement, continueKeyword, blockKeyword, optLoopID, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ContinueStatementSyntax)
             End If
 
-            Dim result = New ContinueStatementSyntax(SyntaxKind.ContinueWhileStatement, continueKeyword, blockKeyword)
+            Dim result = New ContinueStatementSyntax(SyntaxKind.ContinueWhileStatement, continueKeyword, blockKeyword, optLoopID)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -46611,17 +46727,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "Do", "For" or "While" keyword that identifies the kind of loop being
         ''' continued.
         ''' </param>
-        Friend Shared Function ContinueDoStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ContinueStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Shared Function ContinueDoStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ContinueStatementSyntax
             Debug.Assert(continueKeyword IsNot Nothing AndAlso continueKeyword.Kind = SyntaxKind.ContinueKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.DoKeyword)
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ContinueDoStatement, continueKeyword, blockKeyword, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ContinueDoStatement, continueKeyword, blockKeyword, optLoopID, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ContinueStatementSyntax)
             End If
 
-            Dim result = New ContinueStatementSyntax(SyntaxKind.ContinueDoStatement, continueKeyword, blockKeyword)
+            Dim result = New ContinueStatementSyntax(SyntaxKind.ContinueDoStatement, continueKeyword, blockKeyword, optLoopID)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -46641,17 +46761,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "Do", "For" or "While" keyword that identifies the kind of loop being
         ''' continued.
         ''' </param>
-        Friend Shared Function ContinueForStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ContinueStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Shared Function ContinueForStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ContinueStatementSyntax
             Debug.Assert(continueKeyword IsNot Nothing AndAlso continueKeyword.Kind = SyntaxKind.ContinueKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.ForKeyword)
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ContinueForStatement, continueKeyword, blockKeyword, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ContinueForStatement, continueKeyword, blockKeyword, optLoopID, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ContinueStatementSyntax)
             End If
 
-            Dim result = New ContinueStatementSyntax(SyntaxKind.ContinueForStatement, continueKeyword, blockKeyword)
+            Dim result = New ContinueStatementSyntax(SyntaxKind.ContinueForStatement, continueKeyword, blockKeyword, optLoopID)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -46676,18 +46800,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "Do", "For" or "While" keyword that identifies the kind of loop being
         ''' continued.
         ''' </param>
-        Friend Shared Function ContinueStatement(kind As SyntaxKind, continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ContinueStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Shared Function ContinueStatement(kind As SyntaxKind, continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ContinueStatementSyntax
             Debug.Assert(SyntaxFacts.IsContinueStatement(kind))
             Debug.Assert(continueKeyword IsNot Nothing AndAlso continueKeyword.Kind = SyntaxKind.ContinueKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso SyntaxFacts.IsContinueStatementBlockKeyword(blockKeyword.Kind))
 
             Dim hash As Integer
-            Dim cached = SyntaxNodeCache.TryGetNode(kind, continueKeyword, blockKeyword, hash)
+            Dim cached = SyntaxNodeCache.TryGetNode(kind, continueKeyword, blockKeyword, optLoopID, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ContinueStatementSyntax)
             End If
 
-            Dim result = New ContinueStatementSyntax(kind, continueKeyword, blockKeyword)
+            Dim result = New ContinueStatementSyntax(kind, continueKeyword, blockKeyword, optLoopID)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -58359,17 +58487,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Function ExitDoStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Function ExitDoStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.DoKeyword)
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitDoStatement, exitKeyword, blockKeyword, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitDoStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitDoStatement, exitKeyword, blockKeyword, _factoryContext)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitDoStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -58388,17 +58520,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Function ExitForStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Function ExitForStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.ForKeyword)
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitForStatement, exitKeyword, blockKeyword, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitForStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitForStatement, exitKeyword, blockKeyword, _factoryContext)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitForStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -58417,17 +58553,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Function ExitSubStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Function ExitSubStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.SubKeyword)
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitSubStatement, exitKeyword, blockKeyword, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitSubStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitSubStatement, exitKeyword, blockKeyword, _factoryContext)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitSubStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -58446,17 +58586,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Function ExitFunctionStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Function ExitFunctionStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.FunctionKeyword)
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitFunctionStatement, exitKeyword, blockKeyword, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitFunctionStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitFunctionStatement, exitKeyword, blockKeyword, _factoryContext)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitFunctionStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -58475,17 +58619,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Function ExitOperatorStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Function ExitOperatorStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.OperatorKeyword)
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitOperatorStatement, exitKeyword, blockKeyword, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitOperatorStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitOperatorStatement, exitKeyword, blockKeyword, _factoryContext)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitOperatorStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -58504,17 +58652,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Function ExitPropertyStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Function ExitPropertyStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.PropertyKeyword)
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitPropertyStatement, exitKeyword, blockKeyword, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitPropertyStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitPropertyStatement, exitKeyword, blockKeyword, _factoryContext)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitPropertyStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -58533,17 +58685,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Function ExitTryStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Function ExitTryStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.TryKeyword)
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitTryStatement, exitKeyword, blockKeyword, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitTryStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitTryStatement, exitKeyword, blockKeyword, _factoryContext)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitTryStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -58562,17 +58718,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Function ExitSelectStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Function ExitSelectStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.SelectKeyword)
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitSelectStatement, exitKeyword, blockKeyword, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitSelectStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitSelectStatement, exitKeyword, blockKeyword, _factoryContext)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitSelectStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -58591,17 +58751,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Function ExitWhileStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Function ExitWhileStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.WhileKeyword)
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitWhileStatement, exitKeyword, blockKeyword, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitWhileStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(SyntaxKind.ExitWhileStatement, exitKeyword, blockKeyword, _factoryContext)
+            Dim result = New ExitStatementSyntax(SyntaxKind.ExitWhileStatement, exitKeyword, blockKeyword, optLoopID, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -58626,18 +58790,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <param name="blockKeyword">
         ''' The keyword describing the block to exit.
         ''' </param>
-        Friend Function ExitStatement(kind As SyntaxKind, exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Function ExitStatement(kind As SyntaxKind, exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ExitStatementSyntax
             Debug.Assert(SyntaxFacts.IsExitStatement(kind))
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso SyntaxFacts.IsExitStatementBlockKeyword(blockKeyword.Kind))
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(kind, exitKeyword, blockKeyword, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(kind, exitKeyword, blockKeyword, optLoopID, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ExitStatementSyntax)
             End If
 
-            Dim result = New ExitStatementSyntax(kind, exitKeyword, blockKeyword, _factoryContext)
+            Dim result = New ExitStatementSyntax(kind, exitKeyword, blockKeyword, optLoopID, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -58657,17 +58825,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "Do", "For" or "While" keyword that identifies the kind of loop being
         ''' continued.
         ''' </param>
-        Friend Function ContinueWhileStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ContinueStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Function ContinueWhileStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ContinueStatementSyntax
             Debug.Assert(continueKeyword IsNot Nothing AndAlso continueKeyword.Kind = SyntaxKind.ContinueKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.WhileKeyword)
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ContinueWhileStatement, continueKeyword, blockKeyword, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ContinueWhileStatement, continueKeyword, blockKeyword, optLoopID, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ContinueStatementSyntax)
             End If
 
-            Dim result = New ContinueStatementSyntax(SyntaxKind.ContinueWhileStatement, continueKeyword, blockKeyword, _factoryContext)
+            Dim result = New ContinueStatementSyntax(SyntaxKind.ContinueWhileStatement, continueKeyword, blockKeyword, optLoopID, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -58687,17 +58859,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "Do", "For" or "While" keyword that identifies the kind of loop being
         ''' continued.
         ''' </param>
-        Friend Function ContinueDoStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ContinueStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Function ContinueDoStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ContinueStatementSyntax
             Debug.Assert(continueKeyword IsNot Nothing AndAlso continueKeyword.Kind = SyntaxKind.ContinueKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.DoKeyword)
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ContinueDoStatement, continueKeyword, blockKeyword, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ContinueDoStatement, continueKeyword, blockKeyword, optLoopID, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ContinueStatementSyntax)
             End If
 
-            Dim result = New ContinueStatementSyntax(SyntaxKind.ContinueDoStatement, continueKeyword, blockKeyword, _factoryContext)
+            Dim result = New ContinueStatementSyntax(SyntaxKind.ContinueDoStatement, continueKeyword, blockKeyword, optLoopID, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -58717,17 +58893,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "Do", "For" or "While" keyword that identifies the kind of loop being
         ''' continued.
         ''' </param>
-        Friend Function ContinueForStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ContinueStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Function ContinueForStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ContinueStatementSyntax
             Debug.Assert(continueKeyword IsNot Nothing AndAlso continueKeyword.Kind = SyntaxKind.ContinueKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.ForKeyword)
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ContinueForStatement, continueKeyword, blockKeyword, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ContinueForStatement, continueKeyword, blockKeyword, optLoopID, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ContinueStatementSyntax)
             End If
 
-            Dim result = New ContinueStatementSyntax(SyntaxKind.ContinueForStatement, continueKeyword, blockKeyword, _factoryContext)
+            Dim result = New ContinueStatementSyntax(SyntaxKind.ContinueForStatement, continueKeyword, blockKeyword, optLoopID, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -58752,18 +58932,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "Do", "For" or "While" keyword that identifies the kind of loop being
         ''' continued.
         ''' </param>
-        Friend Function ContinueStatement(kind As SyntaxKind, continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ContinueStatementSyntax
+        ''' <param name="optLoopID">
+        ''' Optional loop identifier, to refer a to particular loop. Only supports For and
+        ''' For Each.
+        ''' </param>
+        Friend Function ContinueStatement(kind As SyntaxKind, continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax, optLoopID As IdentifierNameSyntax) As ContinueStatementSyntax
             Debug.Assert(SyntaxFacts.IsContinueStatement(kind))
             Debug.Assert(continueKeyword IsNot Nothing AndAlso continueKeyword.Kind = SyntaxKind.ContinueKeyword)
             Debug.Assert(blockKeyword IsNot Nothing AndAlso SyntaxFacts.IsContinueStatementBlockKeyword(blockKeyword.Kind))
 
             Dim hash As Integer
-            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(kind, continueKeyword, blockKeyword, _factoryContext, hash)
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(kind, continueKeyword, blockKeyword, optLoopID, _factoryContext, hash)
             If cached IsNot Nothing Then
                 Return DirectCast(cached, ContinueStatementSyntax)
             End If
 
-            Dim result = New ContinueStatementSyntax(kind, continueKeyword, blockKeyword, _factoryContext)
+            Dim result = New ContinueStatementSyntax(kind, continueKeyword, blockKeyword, optLoopID, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If

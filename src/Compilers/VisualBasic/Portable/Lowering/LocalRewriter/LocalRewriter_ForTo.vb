@@ -214,13 +214,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim rewrittenCondition = RewriteForLoopCondition(rewrittenControlVariable, rewrittenLimit, rewrittenStep,
                                                              forStatement.OperatorsOpt, positiveFlag)
 
-            Dim startLabel = GenerateLabel("start")
+            Dim startLabel = MakeStart_Label(rewrittenControlVariable.ExpressionSymbol.Name)
             Dim ifConditionGotoStart As BoundStatement = New BoundConditionalGoto(
                 blockSyntax,
                 rewrittenCondition,
                 True,
                 startLabel)
-
+            '
+            ' Example:
+            '
             ' For i as Integer = 3 To 6 step 2
             '    body
             ' Next
@@ -232,14 +234,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             '     dim i as Integer = 3  '<-- all iterations share same variable (important for closures)
             '     dim temp1, temp2 ...  ' temps if needed for hoisting of Limit/Step/Direction
             '
-            '     goto postIncrement;
-            '   start:
+            '     goto postIncrement_i;
+            '   start_i:
             '     body      
-            '   continue:
+            '   continue_i:
             '     i += 2
-            '   postIncrement:
-            '     if i <= 6 goto start
-
+            '   postIncrement_i:
+            '     if i <= 6 goto start_i
+            '
             '   exit:
             ' }
 
@@ -255,7 +257,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 'We do not want to associate it with statement before.
                 'This jump may be a target of another jump (for example if loops are nested) and that will make 
                 'impression of the previous statement being re-executed
-                postIncrementLabel = New GeneratedLabelSymbol("PostIncrement")
+                postIncrementLabel = MakePostIncrement_Label( rewrittenControlVariable.ExpressionSymbol.Name)
                 Dim postIncrement As New BoundLabelStatement(blockSyntax, postIncrementLabel)
 
                 gotoPostIncrement = New BoundGotoStatement(blockSyntax, postIncrementLabel, Nothing)
@@ -276,9 +278,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             statements.Add(New BoundLabelStatement(blockSyntax, startLabel))
             statements.Add(rewrittenBody)
 
-            statements.Add(New BoundLabelStatement(blockSyntax, forStatement.ContinueLabel))
+            Dim continueLbl = forStatement.ContinueLabel
+            statements.Add(New BoundLabelStatement(blockSyntax, continueLbl))
+
             statements.Add(rewrittenIncrement)
 
+ 
             If postIncrementLabel IsNot Nothing Then
                 Dim label As BoundStatement = New BoundLabelStatement(blockSyntax, postIncrementLabel)
                 If instrument Then
@@ -292,7 +297,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
             statements.Add(ifConditionGotoStart)
 
-            statements.Add(New BoundLabelStatement(blockSyntax, forStatement.ExitLabel))
+            Dim exitlbl = forStatement.ExitLabel
+            statements.Add(New BoundLabelStatement(blockSyntax, exitlbl))
 
             Dim localSymbol = forStatement.DeclaredOrInferredLocalOpt
             If localSymbol IsNot Nothing Then
@@ -305,6 +311,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 locals.ToImmutableAndFree(),
                 statements.ToImmutableAndFree
             )
+        End Function
+
+        Private Function MakePostIncrement_Label(name As String) As GeneratedLabelSymbol
+            Dim labelName = $"PostIncrement_{If(name, String.Empty)}"
+            Return GenerateLabel(labelName)
+        End Function
+
+        Private Function MakeStart_Label(name As String) As GeneratedLabelSymbol
+            Dim labelName = $"start_{If(name, String.Empty)}"
+            Return GenerateLabel(labelName)
         End Function
 
         Private Shared Function WillDoAtLeastOneIteration(rewrittenInitialValue As BoundExpression,
@@ -505,7 +521,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                                 arguments, Compilation.GetSpecialType(SpecialType.System_Boolean), hasErrors:=True)
             End If
 
-            Dim startLabel = GenerateLabel("start")
+            Dim startLabel = MakeStart_Label(rewrittenControlVariable.ExpressionSymbol.Name)
 
             ' EnC: We need to insert a hidden sequence point to handle function remapping in case 
             ' the containing method is edited while the invoked function is being executed.
@@ -528,21 +544,24 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ifConditionGotoStart = _instrumenterOpt.InstrumentForLoopIncrement(forStatement, ifConditionGotoStart)
             End If
 
-            Dim label As BoundStatement = New BoundLabelStatement(blockSyntax, forStatement.ContinueLabel)
+            Dim continue_label As BoundStatement = New BoundLabelStatement(blockSyntax, forStatement.ContinueLabel)
 
             If instrument Then
-                label = SyntheticBoundNodeFactory.HiddenSequencePoint(label)
+                continue_label = SyntheticBoundNodeFactory.HiddenSequencePoint(continue_label)
                 ifConditionGotoStart = SyntheticBoundNodeFactory.HiddenSequencePoint(ifConditionGotoStart)
             End If
+
+            Dim exit_label As BoundStatement = New BoundLabelStatement(blockSyntax, forStatement.ExitLabel)
 
             'Build the rewritten loop
             Dim statements = ImmutableArray.Create(
                 ifNotInitObjExit,
                 New BoundLabelStatement(blockSyntax, startLabel),
                 rewrittenBody,
-                label,
+                continue_label,
                 ifConditionGotoStart,
-                New BoundLabelStatement(blockSyntax, forStatement.ExitLabel))
+                exit_label
+                )
 
             Dim localSymbol = forStatement.DeclaredOrInferredLocalOpt
             If localSymbol IsNot Nothing Then

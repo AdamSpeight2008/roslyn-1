@@ -29,6 +29,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Dim kind As SyntaxKind
             Dim blockKeyword As KeywordSyntax = Nothing
+            Dim loopId As IdentifierNameSyntax = Nothing
 
             Select Case (CurrentToken.Kind)
 
@@ -41,6 +42,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     kind = SyntaxKind.ContinueForStatement
                     blockKeyword = DirectCast(CurrentToken, KeywordSyntax)
                     GetNextToken()
+                    ' Parse optional loop identifier
+                    If CurrentToken.Kind = SyntaxKind.IdentifierName Then
+                        loopId = ParseIdentifierNameAllowingKeyword()
+                        loopId = CheckFeatureAvailability(Feature.ContinueExitWithIdentifier, loopID)
+                    End If
 
                 Case SyntaxKind.WhileKeyword
                     kind = SyntaxKind.ContinueWhileStatement
@@ -68,7 +74,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                             Case SyntaxKind.ForBlock, SyntaxKind.ForEachBlock
                                 kind = SyntaxKind.ContinueForStatement
                                 blockKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.ForKeyword)
-
                             Case SyntaxKind.WhileBlock
                                 kind = SyntaxKind.ContinueWhileStatement
                                 blockKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.WhileKeyword)
@@ -87,7 +92,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     blockKeyword = ReportSyntaxError(blockKeyword, ERRID.ERR_ExpectedContinueKind)
             End Select
 
-            Dim statement = SyntaxFactory.ContinueStatement(kind, continueKeyword, blockKeyword)
+            Dim statement = SyntaxFactory.ContinueStatement(kind, continueKeyword, blockKeyword, loopId)
 
             Return statement
         End Function
@@ -101,6 +106,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim statement As StatementSyntax = Nothing
             Dim kind As SyntaxKind
             Dim blockKeyword As KeywordSyntax = Nothing
+            Dim loopId As IdentifierNameSyntax = Nothing
 
             Select Case (CurrentToken.Kind)
 
@@ -113,6 +119,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     kind = SyntaxKind.ExitForStatement
                     blockKeyword = DirectCast(CurrentToken, KeywordSyntax)
                     GetNextToken()
+                    ' Parse optional loop identifier.
+                    If CurrentToken.Kind = SyntaxKind.IdentifierName Then
+                        loopId = ParseIdentifierNameAllowingKeyword()
+                        loopId = CheckFeatureAvailability(Feature.ContinueExitWithIdentifier, loopID)
+                    End If
+
 
                 Case SyntaxKind.WhileKeyword
                     kind = SyntaxKind.ExitWhileStatement
@@ -233,7 +245,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     blockKeyword = ReportSyntaxError(blockKeyword, ERRID.ERR_ExpectedExitKind)
             End Select
 
-            statement = SyntaxFactory.ExitStatement(kind, exitKeyword, blockKeyword)
+            statement = SyntaxFactory.ExitStatement(kind, exitKeyword, blockKeyword, loopId)
 
             Return statement
 

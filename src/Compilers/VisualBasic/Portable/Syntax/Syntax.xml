@@ -3049,6 +3049,11 @@ Unify Enum declarations with other block type declarations.
         <kind name="SelectKeyword" node-kind="ExitSelectStatement"/>
         <kind name="WhileKeyword" node-kind="ExitWhileStatement"/>
       </child>
+      
+      <child name="optLoopID" optional="True" kind="IdentifierName" >
+         <description>Optional loop identifier, to refer a to particular loop. Only supports For and For Each.</description>
+      </child>
+    
     </node-structure>
 
     <!--****************
@@ -3088,6 +3093,10 @@ Unify Enum declarations with other block type declarations.
         <kind name="DoKeyword" node-kind="ContinueDoStatement"/>
         <kind name="ForKeyword" node-kind="ContinueForStatement"/>
         <kind name="WhileKeyword" node-kind="ContinueWhileStatement"/>
+      </child>
+      
+      <child name="optLoopID" optional="True" kind="IdentifierName" >
+         <description>Optional loop identifier, to refer a to particular loop. Only supports For and For Each.</description>
       </child>
     </node-structure>
 

@@ -22,6 +22,16 @@
         <target state="translated">Nie można osadzić typu „{0}”, ponieważ ma nieabstrakcyjną składową. Rozważ ustawienie wartości false dla właściwości „Osadź typy międzyoperacyjne”.</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_InvalidContinueStatement">
+        <source>Continue statement has an invalid loop identifier {0}</source>
+        <target state="new">Continue statement has an invalid loop identifier {0}</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_InvalidExitStatement">
+        <source>Exit statement has an invalid loop identifier {0}</source>
+        <target state="new">Exit statement has an invalid loop identifier {0}</target>
+        <note />
+      </trans-unit>
       <trans-unit id="ERR_MultipleAnalyzerConfigsInSameDir">
         <source>Multiple analyzer config files cannot be in the same directory ('{0}').</source>
         <target state="translated">Wiele plików konfiguracji analizatora nie może znajdować się w tym samym katalogu („{0}”).</target>
@@ -65,6 +75,11 @@
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">
         <source>comments after line continuation</source>
         <target state="translated">komentarze po kontynuacji wiersza</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_ContinueExitWithIdentifier">
+        <source>Continue Exit With Loop Identifier</source>
+        <target state="new">Continue Exit With Loop Identifier</target>
         <note />
       </trans-unit>
       <trans-unit id="FEATURE_InitOnlySettersUsage">

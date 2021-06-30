@@ -22,6 +22,16 @@
         <target state="translated">Non è possibile incorporare il tipo '{0}' perché contiene un membro non astratto. Provare a impostare la proprietà 'Incorpora tipi di interoperabilità' su false.</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_InvalidContinueStatement">
+        <source>Continue statement has an invalid loop identifier {0}</source>
+        <target state="new">Continue statement has an invalid loop identifier {0}</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_InvalidExitStatement">
+        <source>Exit statement has an invalid loop identifier {0}</source>
+        <target state="new">Exit statement has an invalid loop identifier {0}</target>
+        <note />
+      </trans-unit>
       <trans-unit id="ERR_MultipleAnalyzerConfigsInSameDir">
         <source>Multiple analyzer config files cannot be in the same directory ('{0}').</source>
         <target state="translated">La stessa directory ('{0}') non può contenere più file di configurazione dell'analizzatore.</target>
@@ -65,6 +75,11 @@
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">
         <source>comments after line continuation</source>
         <target state="translated">commenti dopo la continuazione di riga</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_ContinueExitWithIdentifier">
+        <source>Continue Exit With Loop Identifier</source>
+        <target state="new">Continue Exit With Loop Identifier</target>
         <note />
       </trans-unit>
       <trans-unit id="FEATURE_InitOnlySettersUsage">

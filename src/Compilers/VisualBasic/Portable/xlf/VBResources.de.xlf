@@ -22,6 +22,16 @@
         <target state="translated">Der Typ "{0}" kann nicht eingebettet werden, weil er einen nicht abstrakten Member aufweist. Legen Sie die Eigenschaft "Interoptypen einbetten" ggf. auf FALSE fest.</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_InvalidContinueStatement">
+        <source>Continue statement has an invalid loop identifier {0}</source>
+        <target state="new">Continue statement has an invalid loop identifier {0}</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_InvalidExitStatement">
+        <source>Exit statement has an invalid loop identifier {0}</source>
+        <target state="new">Exit statement has an invalid loop identifier {0}</target>
+        <note />
+      </trans-unit>
       <trans-unit id="ERR_MultipleAnalyzerConfigsInSameDir">
         <source>Multiple analyzer config files cannot be in the same directory ('{0}').</source>
         <target state="translated">Dasselbe Verzeichnis ({0}) darf nicht mehrere Konfigurationsdateien des Analysetools enthalten.</target>
@@ -65,6 +75,11 @@
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">
         <source>comments after line continuation</source>
         <target state="translated">Kommentare nach Zeilenfortsetzung</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_ContinueExitWithIdentifier">
+        <source>Continue Exit With Loop Identifier</source>
+        <target state="new">Continue Exit With Loop Identifier</target>
         <note />
       </trans-unit>
       <trans-unit id="FEATURE_InitOnlySettersUsage">

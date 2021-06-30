@@ -22,6 +22,16 @@
         <target state="translated">Typ {0} nemůže být vložený, protože má neabstraktní člen. Zvažte nastavení vlastnosti Vložit typy spolupráce na hodnotu false.</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_InvalidContinueStatement">
+        <source>Continue statement has an invalid loop identifier {0}</source>
+        <target state="new">Continue statement has an invalid loop identifier {0}</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_InvalidExitStatement">
+        <source>Exit statement has an invalid loop identifier {0}</source>
+        <target state="new">Exit statement has an invalid loop identifier {0}</target>
+        <note />
+      </trans-unit>
       <trans-unit id="ERR_MultipleAnalyzerConfigsInSameDir">
         <source>Multiple analyzer config files cannot be in the same directory ('{0}').</source>
         <target state="translated">Ve stejném adresáři nemůže být více konfiguračních souborů analyzátoru ({0}).</target>
@@ -65,6 +75,11 @@
       <trans-unit id="FEATURE_CommentsAfterLineContinuation">
         <source>comments after line continuation</source>
         <target state="translated">komentáře po pokračování řádku</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_ContinueExitWithIdentifier">
+        <source>Continue Exit With Loop Identifier</source>
+        <target state="new">Continue Exit With Loop Identifier</target>
         <note />
       </trans-unit>
       <trans-unit id="FEATURE_InitOnlySettersUsage">
