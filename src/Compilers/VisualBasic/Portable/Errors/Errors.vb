@@ -2048,5 +2048,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_CommentsAfterLineContinuation
         FEATURE_InitOnlySettersUsage
         FEATURE_CallerArgumentExpression
+        FEATURE_IsNotReleationalClauses
     End Enum
 End Namespace

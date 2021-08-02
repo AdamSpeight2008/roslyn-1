@@ -42,6 +42,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         CommentsAfterLineContinuation
         InitOnlySettersUsage
         CallerArgumentExpression
+        IsNotReleationalClauses
     End Enum
 
     Friend Module FeatureExtensions
@@ -107,6 +108,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return LanguageVersion.VisualBasic16
 
                 Case Feature.InitOnlySettersUsage
+                    Return LanguageVersion.VisualBasic16_9
+                Case Feature.IsNotReleationalClauses
                     Return LanguageVersion.VisualBasic16_9
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(feature)
@@ -183,6 +186,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return ERRID.FEATURE_InitOnlySettersUsage
                 Case Feature.CallerArgumentExpression
                     Return ERRID.FEATURE_CallerArgumentExpression
+                Case feature.IsNotReleationalClauses
+                    Return ERRID.FEATURE_IsNotReleationalClauses
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(feature)
             End Select

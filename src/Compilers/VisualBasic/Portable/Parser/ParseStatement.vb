@@ -261,11 +261,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Dim StartCase As SyntaxKind = CurrentToken.Kind ' dev10_500588 Snap the start of the expression token AFTER we've moved off the EOL (if one is present)
                     Dim caseClause As CaseClauseSyntax
 
-                    If StartCase = SyntaxKind.IsKeyword OrElse SyntaxFacts.IsRelationalOperator(StartCase) Then
+                    If (StartCase = SyntaxKind.IsKeyword OrElse StartCase = SyntaxKind.IsNotKeyword) OrElse
+                        SyntaxFacts.IsRelationalOperator(StartCase) Then
 
                         ' dev10_526560 Allow implicit newline after IS
                         Dim optionalIsKeyword As KeywordSyntax = Nothing
-                        TryGetTokenAndEatNewLine(SyntaxKind.IsKeyword, optionalIsKeyword)
+                        If Not TryGetTokenAndEatNewLine(SyntaxKind.IsKeyword, optionalIsKeyword) Then
+                            If TryGetTokenAndEatNewLine(SyntaxKind.IsNotKeyword, optionalIsKeyword) Then
+                                StartCase = CheckFeatureAvailability(Of KeywordSyntax)(Feature.IsNotReleationalClauses, startcase)
+                            End If
+                        End If
 
                         If SyntaxFacts.IsRelationalOperator(CurrentToken.Kind) Then
 
@@ -316,13 +321,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                     caseClauses.Add(caseClause)
 
-                    Dim comma As PunctuationSyntax = Nothing
-                    If Not TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma) Then
-                        Exit Do
-                    End If
-
-                    caseClauses.AddSeparator(comma)
-                Loop
+                Loop While TryParseCommaInto(caseClauses)
 
             End If
 
@@ -339,6 +338,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Return statement
 
+        End Function
+
+        Private Function TryParseCommaInto(Of T As GreenNode)(byref seplist As SeparatedSyntaxListBuilder(Of T)) As Boolean
+            Dim comma As PunctuationSyntax = Nothing
+            Dim valid = TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma)
+            If valid Then seplist.AddSeparator(comma)
+            Return valid
         End Function
 
         Private Shared Function RelationalOperatorKindToCaseKind(kind As SyntaxKind) As SyntaxKind

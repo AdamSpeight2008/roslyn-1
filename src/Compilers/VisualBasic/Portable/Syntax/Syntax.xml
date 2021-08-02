@@ -4016,7 +4016,7 @@ Unify Enum declarations with other block type declarations.
       <node-kind name="CaseGreaterThanClause">
       </node-kind>
 
-      <child name="IsKeyword" optional="true" kind="IsKeyword">
+      <child name="IsKeyword" optional="true" kind="IsKeyword|IsnotKeyword">
         <description>The "Is" keyword, if present.</description>
         <lm-equiv name="IsKeyword"></lm-equiv>
         <native-equiv name="Is"></native-equiv>
