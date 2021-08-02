@@ -350,7 +350,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     isOperandOfConditionalBranch:=False,
                     diagnostics:=diagnostics,
                     isSelectCase:=True).MakeCompilerGenerated()
-
                 Return Nothing
             End If
         End Function
@@ -481,6 +480,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                                            isOperandOfConditionalBranch:=False,
                                                                            diagnostics:=diagnostics,
                                                                            isSelectCase:=True).MakeCompilerGenerated())
+            If syntax.IsKeyword.IsKind(SyntaxKind.IsNotKeyword)
+
+                dim bool = GetSpecialType(SpecialType.System_Boolean, syntax, diagnostics)
+
+                conditionOpt = New BoundUnaryOperator(syntax, UnaryOperatorKind.Not, conditionOpt, True, bool).MakeCompilerGenerated()
+            End If
 
             Return boundClause.Update(boundClause.OperatorKind, valueOpt:=Nothing, conditionOpt:=conditionOpt)
         End Function
