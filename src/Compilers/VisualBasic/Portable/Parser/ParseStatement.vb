@@ -266,10 +266,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                         ' dev10_526560 Allow implicit newline after IS
                         Dim optionalIsKeyword As KeywordSyntax = Nothing
-                        If Not TryGetTokenAndEatNewLine(SyntaxKind.IsKeyword, optionalIsKeyword) Then
-                            If TryGetTokenAndEatNewLine(SyntaxKind.IsNotKeyword, optionalIsKeyword) Then
-                                StartCase = CheckFeatureAvailability(Of KeywordSyntax)(Feature.IsNotReleationalClauses, startcase)
-                            End If
+                        If Not TryGetTokenAndEatNewLine(SyntaxKind.IsKeyword, optionalIsKeyword) _
+                           AndAlso TryGetTokenAndEatNewLine(SyntaxKind.IsNotKeyword, optionalIsKeyword) Then
+                            optionalIsKeyword = CheckFeatureAvailability(Of KeywordSyntax)(Feature.IsNotReleationalClauses, optionalIsKeyword)
                         End If
 
                         If SyntaxFacts.IsRelationalOperator(CurrentToken.Kind) Then
@@ -318,8 +317,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                             caseClause = SyntaxFactory.SimpleCaseClause(value)
                         End If
                     End If
-
-                    caseClauses.Add(caseClause)
 
                     Dim comma As PunctuationSyntax = Nothing
                     If Not TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma) Then

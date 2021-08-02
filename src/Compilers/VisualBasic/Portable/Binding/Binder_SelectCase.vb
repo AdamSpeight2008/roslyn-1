@@ -350,6 +350,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     isOperandOfConditionalBranch:=False,
                     diagnostics:=diagnostics,
                     isSelectCase:=True).MakeCompilerGenerated()
+
                 Return Nothing
             End If
         End Function
