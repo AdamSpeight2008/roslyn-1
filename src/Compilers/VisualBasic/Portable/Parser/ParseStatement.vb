@@ -260,14 +260,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Do
                     Dim StartCase As SyntaxKind = CurrentToken.Kind ' dev10_500588 Snap the start of the expression token AFTER we've moved off the EOL (if one is present)
                     Dim caseClause As CaseClauseSyntax
-
-                    If (StartCase = SyntaxKind.IsKeyword OrElse StartCase = SyntaxKind.IsNotKeyword) OrElse
-                        SyntaxFacts.IsRelationalOperator(StartCase) Then
+                    If StartCase = SyntaxKind.IsKeyword OrElse
+                       StartCase = SyntaxKind.IsNotKeyword OrElse
+                       SyntaxFacts.IsRelationalOperator(StartCase) Then
 
                         ' dev10_526560 Allow implicit newline after IS
                         Dim optionalIsKeyword As KeywordSyntax = Nothing
-                        If Not TryGetTokenAndEatNewLine(SyntaxKind.IsKeyword, optionalIsKeyword) _
-                           AndAlso TryGetTokenAndEatNewLine(SyntaxKind.IsNotKeyword, optionalIsKeyword) Then
+                        Dim hasIsKeyword = TryGetTokenAndEatNewLine(SyntaxKind.IsKeyword, optionalIsKeyword)
+                        If Not hasIsKeyword AndAlso TryGetTokenAndEatNewLine(SyntaxKind.IsNotKeyword, optionalIsKeyword) Then
                             optionalIsKeyword = CheckFeatureAvailability(Of KeywordSyntax)(Feature.IsNotReleationalClauses, optionalIsKeyword)
                         End If
 

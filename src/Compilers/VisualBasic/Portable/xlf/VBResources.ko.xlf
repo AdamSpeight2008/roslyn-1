@@ -77,6 +77,11 @@
         <target state="translated">초기값 전용 setter를 사용하여 'ByRef' 속성에 할당 또는 이 속성을 전달</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_IsNotReleationalClauses">
+        <source>IsNot Relational Clauses</source>
+        <target state="new">IsNot Relational Clauses</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_UnconstrainedTypeParameterInConditional">
         <source>unconstrained type parameters in binary conditional expressions</source>
         <target state="translated">이진 조건식의 비제한 형식 매개 변수</target>

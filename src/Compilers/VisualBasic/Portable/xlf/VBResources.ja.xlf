@@ -77,6 +77,11 @@
         <target state="translated">初期化専用セッターを使用して、'ByRef' プロパティに割り当てるか、そのプロパティを渡します</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_IsNotReleationalClauses">
+        <source>IsNot Relational Clauses</source>
+        <target state="new">IsNot Relational Clauses</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_UnconstrainedTypeParameterInConditional">
         <source>unconstrained type parameters in binary conditional expressions</source>
         <target state="translated">バイナリ条件式での非制約型パラメーター</target>

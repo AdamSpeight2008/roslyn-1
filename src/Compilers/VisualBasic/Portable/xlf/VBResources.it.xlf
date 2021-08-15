@@ -77,6 +77,11 @@
         <target state="translated">assegnazione o passaggio di proprietà 'ByRef' con i setter di sola inizializzazione</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_IsNotReleationalClauses">
+        <source>IsNot Relational Clauses</source>
+        <target state="new">IsNot Relational Clauses</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_UnconstrainedTypeParameterInConditional">
         <source>unconstrained type parameters in binary conditional expressions</source>
         <target state="translated">parametri di tipo non senza vincoli in espressioni condizionali binarie</target>

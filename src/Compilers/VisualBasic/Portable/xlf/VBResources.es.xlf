@@ -77,6 +77,11 @@
         <target state="translated">se asigna a propiedades "ByRef" o se pasa a estas con establecedores init-only</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_IsNotReleationalClauses">
+        <source>IsNot Relational Clauses</source>
+        <target state="new">IsNot Relational Clauses</target>
+        <note />
+      </trans-unit>
       <trans-unit id="FEATURE_UnconstrainedTypeParameterInConditional">
         <source>unconstrained type parameters in binary conditional expressions</source>
         <target state="translated">parámetros de tipo sin restricciones en expresiones condicionales binarias</target>
