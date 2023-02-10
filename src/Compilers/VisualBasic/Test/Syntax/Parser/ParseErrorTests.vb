@@ -1443,11 +1443,8 @@ End Class
                             End Function
                         End Class
                 ]]>,
-            <errors>
-                <error id="30200"/>
-                <error id="30201"/>
-                <error id="30812"/>
-            </errors>)
+                       Diagnostic(ERRID.ERR_InvalidNewInType, "")
+                       )
     End Sub
 
     <Fact()>
@@ -2211,10 +2208,13 @@ End Module
                     Function goo(byref byval t as Double) as Double
                     End Function
                 End Structure
-            ]]>,
-        <errors>
-            <error id="30641"/>
-        </errors>)
+            ]]>)
+        '    ,
+        '<errors>
+        '    <error id="30641"/>
+        '</errors>)
+        '
+        ' These are semantic errors, not syntactic.
     End Sub
 
     <Fact()>
@@ -2223,10 +2223,14 @@ End Module
                 interface I1
                     Function goo(byref byval t as Double) as Double
                 End interface
-            ]]>,
-        <errors>
-            <error id="30641"/>
-        </errors>)
+            ]]>)
+        ',
+        '<errors>
+        '    <error id="30641"/>
+        '</errors>) 
+        '
+        ' These are semantic errors, not syntactic.
+
     End Sub
 
     <Fact()>
@@ -2243,12 +2247,15 @@ End Module
                         End Function
                     End Module
                 End Namespace
-            ]]>,
-        <errors>
-            <error id="30642"/>
-            <error id="30812"/>
-            <error id="30201"/>
-        </errors>)
+            ]]>)
+        ',
+        '<errors>
+        '    <error id="30642"/>
+        '    <error id="30812"/>
+        '    <error id="30201"/>
+        '</errors>)
+        ' 
+        ' These are semantic errors, not syntactic.
     End Sub
 
     <Fact()>
@@ -2317,9 +2324,11 @@ End Module
                         End Module
             ]]>.Value
 
-        ParseAndVerify(code, <errors>
-                                 <error id="30667"/>
-                             </errors>)
+        ParseAndVerify(code)
+
+        'ParseAndVerify(code, <errors>
+        '                         <error id="30667"/>
+        '                     </errors>)
     End Sub
 
     <Fact()>
@@ -2471,10 +2480,15 @@ End Module
                     end sub
                 End Class
             ]]>.Value
-        ParseAndVerify(code, <errors>
-                                 <error id="30785"/>
-                                 <error id="30203"/>
-                             </errors>)
+
+        ParseAndVerify(code,
+                       Diagnostic(ERRID.ERR_ExpectedIdentifier, "")
+)
+
+        'ParseAndVerify(code, <errors>
+        '                         <error id="30785"/>
+        '                         <error id="30203"/>
+        '                     </errors>)
     End Sub
 
     <Fact()>
@@ -2557,10 +2571,13 @@ End Module
                     End Function
                 End Class
             ]]>.Value
-        ParseAndVerify(code, <errors>
-                                 <error id="30812"/>
-                                 <error id="30201"/>
-                             </errors>)
+
+        ParseAndVerify(code)
+
+        'ParseAndVerify(code, <errors>
+        '                         <error id="30812"/>
+        '                         <error id="30201"/>
+        '                     </errors>)
     End Sub
 
     <Fact()>
@@ -3468,12 +3485,17 @@ End Class
                     End Sub
                 End Class
             ]]>.Value
-
-        ParseAndVerify(code, <errors>
-                                 <error id="36714"/>
-                                 <error id="32024"/>
-                                 <error id="32024"/>
-                             </errors>)
+        ParseAndVerify(code,
+                       Diagnostic(ERRID.ERR_InitializedExpandedProperty, "Public Property NewProperty() As String = Nothing")
+                       )
+        ' 
+        ' These are now semantic errors, not syntactic.
+        '
+        'ParseAndVerify(code, <errors>
+        '                         <error id="36714"/>
+        '                         <error id="32024"/>
+        '                         <error id="32024"/>
+        '                     </errors>)
     End Sub
 
     ' changed in roslyn

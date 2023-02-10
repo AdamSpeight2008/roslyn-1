@@ -4486,8 +4486,7 @@ checkNullable:
                         attributes = ParseAttributeLists(False)
                     End If
 
-                    Dim paramSpecifiers As ParameterSpecifiers = 0
-                    Dim modifiers = ParseParameterSpecifiers(paramSpecifiers)
+                    Dim modifiers = ParseParameterSpecifiers()
                     Dim param = ParseParameter(attributes, modifiers)
 
                     ' TODO - Bug 889301 - Dev10 does a resync here when there is an error.  That prevents ERRID_InvalidParameterSyntax below from
@@ -4533,11 +4532,7 @@ checkNullable:
 
             TryEatNewLineAndGetToken(SyntaxKind.CloseParenToken, closeParen, createIfMissing:=True)
 
-            Dim result = parameters.ToList()
-
-            _pool.Free(parameters)
-
-            Return result
+            Return _pool.ToListAndFree(parameters)
 
         End Function
 
@@ -4554,69 +4549,43 @@ checkNullable:
         ' Lines: 9748 - 9748
         ' ParameterSpecifierList* .Parser::ParseParameterSpecifiers( [ _Inout_ bool& ErrorInConstruct ] )
 
-        Private Function ParseParameterSpecifiers(ByRef specifiers As ParameterSpecifiers) As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
-            Dim keywords = Me._pool.Allocate(Of KeywordSyntax)()
+        Private Function ParseParameterSpecifiers() As CoreInternalSyntax.SyntaxList(Of KeywordSyntax)
 
-            specifiers = 0
-
-            'TODO - Move these checks to Binder_Utils.DecodeParameterModifiers  
+            Dim keywords = _pool.Allocate(Of KeywordSyntax)()
 
             Do
-                Dim specifier As ParameterSpecifiers
-                Dim keyword As KeywordSyntax
-
-                Select Case (CurrentToken.Kind)
-
-                    Case SyntaxKind.ByValKeyword
-                        keyword = DirectCast(CurrentToken, KeywordSyntax)
-                        If (specifiers And ParameterSpecifiers.ByRef) <> 0 Then
-                            keyword = ReportSyntaxError(keyword, ERRID.ERR_MultipleParameterSpecifiers)
-                        End If
-                        specifier = ParameterSpecifiers.ByVal
-
-                    Case SyntaxKind.ByRefKeyword
-                        keyword = DirectCast(CurrentToken, KeywordSyntax)
-                        If (specifiers And ParameterSpecifiers.ByVal) <> 0 Then
-                            keyword = ReportSyntaxError(keyword, ERRID.ERR_MultipleParameterSpecifiers)
-
-                        ElseIf (specifiers And ParameterSpecifiers.ParamArray) <> 0 Then
-                            keyword = ReportSyntaxError(keyword, ERRID.ERR_ParamArrayMustBeByVal)
-                        End If
-                        specifier = ParameterSpecifiers.ByRef
-
-                    Case SyntaxKind.OptionalKeyword
-                        keyword = DirectCast(CurrentToken, KeywordSyntax)
-                        If (specifiers And ParameterSpecifiers.ParamArray) <> 0 Then
-                            keyword = ReportSyntaxError(keyword, ERRID.ERR_MultipleOptionalParameterSpecifiers)
-                        End If
-                        specifier = ParameterSpecifiers.Optional
-
-                    Case SyntaxKind.ParamArrayKeyword
-                        keyword = DirectCast(CurrentToken, KeywordSyntax)
-                        If (specifiers And ParameterSpecifiers.Optional) <> 0 Then
-                            keyword = ReportSyntaxError(keyword, ERRID.ERR_MultipleOptionalParameterSpecifiers)
-                        ElseIf (specifiers And ParameterSpecifiers.ByRef) <> 0 Then
-                            keyword = ReportSyntaxError(keyword, ERRID.ERR_ParamArrayMustBeByVal)
-                        End If
-                        specifier = ParameterSpecifiers.ParamArray
-
-                    Case Else
-                        Dim result = keywords.ToList
-                        Me._pool.Free(keywords)
-
-                        Return result
-                End Select
-
-                If (specifiers And specifier) <> 0 Then
-                    keyword = ReportSyntaxError(keyword, ERRID.ERR_DuplicateParameterSpecifier)
-                Else
-                    specifiers = specifiers Or specifier
+                Dim keyword As KeywordSyntax = Nothing
+                If TryParseParameterSpecifierKeyword(keyword) = False Then
+                    Exit Do
                 End If
 
                 keywords.Add(keyword)
 
                 GetNextToken()
             Loop
+            Return _pool.ToListAndFree(keywords)
+        End Function
+
+        Private Function TryParseParameterSpecifierKeyword(ByRef keyword As KeywordSyntax) As Boolean
+            Select Case CurrentToken.Kind
+
+                Case SyntaxKind.ByValKeyword
+                    keyword = DirectCast(CurrentToken, KeywordSyntax)
+
+                Case SyntaxKind.ByRefKeyword
+                    keyword = DirectCast(CurrentToken, KeywordSyntax)
+
+                Case SyntaxKind.OptionalKeyword
+                    keyword = DirectCast(CurrentToken, KeywordSyntax)
+
+                Case SyntaxKind.ParamArrayKeyword
+                    keyword = DirectCast(CurrentToken, KeywordSyntax)
+
+                Case Else
+                    keyword = Nothing
+                    Return False
+            End Select
+            Return True
         End Function
 
         ''' <summary>
@@ -4635,57 +4604,43 @@ checkNullable:
                 ' we are still on the same parameter. Otherwise, don't resync
                 ' and allow the caller to decide how to recover.
 
-                If PeekAheadFor(SyntaxKind.AsKeyword, SyntaxKind.CommaToken, SyntaxKind.CloseParenToken) = SyntaxKind.AsKeyword Then
+                If PeekAheadFor(SyntaxKind.AsKeyword, SyntaxKind.EqualsToken, SyntaxKind.CommaToken, SyntaxKind.CloseParenToken) = SyntaxKind.AsKeyword Then
                     paramName = ResyncAt(paramName, SyntaxKind.AsKeyword)
                 End If
             End If
 
-            Dim optionalAsClause As SimpleAsClauseSyntax = Nothing
-            Dim asKeyword As KeywordSyntax = Nothing
+            Dim optionalAsClause = ParseOptional_AsType()
 
-            If TryGetToken(SyntaxKind.AsKeyword, asKeyword) Then
-                Dim typeName = ParseGeneralType()
-
-                optionalAsClause = SyntaxFactory.SimpleAsClause(asKeyword, Nothing, typeName)
-
-                If optionalAsClause.ContainsDiagnostics Then
-                    optionalAsClause = ResyncAt(optionalAsClause, SyntaxKind.EqualsToken, SyntaxKind.CommaToken, SyntaxKind.CloseParenToken)
-                End If
-
+            If optionalAsClause?.ContainsDiagnostics Then
+                optionalAsClause = ResyncAt(optionalAsClause, SyntaxKind.EqualsToken, SyntaxKind.CommaToken, SyntaxKind.CloseParenToken)
             End If
 
-            Dim equals As PunctuationSyntax = Nothing
-            Dim value As ExpressionSyntax = Nothing
-
-            ' TODO - Move these errors (ERRID.ERR_DefaultValueForNonOptionalParamout, ERRID.ERR_ObsoleteOptionalWithoutValue) of the parser. 
-            ' These are semantic errors. The grammar allows the syntax. 
-            If TryGetTokenAndEatNewLine(SyntaxKind.EqualsToken, equals) Then
-
-                If Not (modifiers.Any AndAlso modifiers.Any(SyntaxKind.OptionalKeyword)) Then
-                    equals = ReportSyntaxError(equals, ERRID.ERR_DefaultValueForNonOptionalParam)
-                End If
-
-                value = ParseExpressionCore()
-
-            ElseIf modifiers.Any AndAlso modifiers.Any(SyntaxKind.OptionalKeyword) Then
-
-                equals = ReportSyntaxError(InternalSyntaxFactory.MissingPunctuation(SyntaxKind.EqualsToken), ERRID.ERR_ObsoleteOptionalWithoutValue)
-                value = ParseExpressionCore()
-
-            End If
-
-            Dim initializer As EqualsValueSyntax = Nothing
-
-            If value IsNot Nothing Then
-
-                If value.ContainsDiagnostics Then
-                    value = ResyncAt(value, SyntaxKind.CommaToken, SyntaxKind.CloseParenToken)
-                End If
-
-                initializer = SyntaxFactory.EqualsValue(equals, value)
+            Dim initializer = ParseOptional_Initialiser()
+            If initializer?.ContainsDiagnostics Then
+                initializer = ResyncAt(initializer, SyntaxKind.CommaToken, SyntaxKind.CloseParenToken)
             End If
 
             Return SyntaxFactory.Parameter(attributes, modifiers, paramName, optionalAsClause, initializer)
+        End Function
+
+        Private Function ParseOptional_Initialiser() As EqualsValueSyntax
+            Dim equals As PunctuationSyntax = Nothing
+            If TryGetTokenAndEatNewLine(SyntaxKind.EqualsToken, equals) = False Then Return Nothing
+
+            Dim value As ExpressionSyntax = ParseExpressionCore()
+            If value Is Nothing Then Return Nothing
+
+            Dim initializer As EqualsValueSyntax = SyntaxFactory.EqualsValue(equals, value)
+            Return initializer
+        End Function
+
+        Private Function ParseOptional_AsType() As SimpleAsClauseSyntax
+            Dim asKeyword As KeywordSyntax = Nothing
+            If TryGetToken(SyntaxKind.AsKeyword, asKeyword) = False Then Return Nothing
+
+            Dim typeName = ParseGeneralType()
+
+            Return SyntaxFactory.SimpleAsClause(asKeyword, Nothing, typeName)
         End Function
 
         ' File:Parser.cpp
@@ -6145,14 +6100,5 @@ checkNullable:
         End Function
 
     End Class
-
-    'TODO - These should be removed.  Checks should be in binding.
-    <Flags()>
-    Friend Enum ParameterSpecifiers
-        [ByRef] = &H1
-        [ByVal] = &H2
-        [Optional] = &H4
-        [ParamArray] = &H8
-    End Enum
 
 End Namespace

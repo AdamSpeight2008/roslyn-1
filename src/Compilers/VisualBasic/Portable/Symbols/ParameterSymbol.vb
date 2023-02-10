@@ -154,8 +154,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
                 If HasExplicitDefaultValue Then
                     Return ExplicitDefaultConstantValue.Value
                 End If
-
-                Throw New InvalidOperationException
+                Return Nothing
             End Get
         End Property
 

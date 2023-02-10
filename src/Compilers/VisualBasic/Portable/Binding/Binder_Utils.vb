@@ -252,25 +252,59 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return New MemberModifiers(foundModifiers, DirectCast(access, SourceMemberFlags))
         End Function
 
+        Private Shared Function FlagIsSet(withinFlags As SourceParameterFlags, thisFlag As SourceParameterFlags) As Boolean
+            Return (withinFlags And thisFlag) = thisFlag
+        End Function
+
         ''' <summary>
         ''' Decode a list of parameter modifiers, and return the flags associated with it.
         ''' </summary>
         Private Shared Function DecodeParameterModifiers(container As Symbol,
-                                                 modifiers As SyntaxTokenList,
+                                                         paramSyntax As ParameterSyntax,
                                                  checkModifier As CheckParameterModifierDelegate,
                                                  diagBag As BindingDiagnosticBag) As SourceParameterFlags
-            Dim flags As SourceParameterFlags = Nothing
-
+            RoslynDebug.Assert(paramSyntax IsNot Nothing)
+            Dim flags As SourceParameterFlags = Nothing, fullFlags As SourceParameterFlags = Nothing
             ' Go through each modifiers, accumulating flags of what we've seen and reporting errors.
-            For Each keywordSyntax In modifiers
+            For Each keywordSyntax In paramSyntax.Modifiers
                 Dim foundFlag As SourceParameterFlags
 
                 Select Case keywordSyntax.Kind
-                    Case SyntaxKind.ByRefKeyword : foundFlag = SourceParameterFlags.ByRef
-                    Case SyntaxKind.ByValKeyword : foundFlag = SourceParameterFlags.ByVal
-                    Case SyntaxKind.OptionalKeyword : foundFlag = SourceParameterFlags.Optional
-                    Case SyntaxKind.ParamArrayKeyword : foundFlag = SourceParameterFlags.ParamArray
+                    Case SyntaxKind.ByValKeyword
+                        foundFlag = SourceParameterFlags.ByVal
+                        If FlagIsSet(flags, SourceParameterFlags.ByRef) Then
+                            ReportDiagnostic(diagBag, keywordSyntax, ERRID.ERR_MultipleParameterSpecifiers)
+                        End If
+
+                    Case SyntaxKind.ByRefKeyword
+                        foundFlag = SourceParameterFlags.ByRef
+                        If FlagIsSet(flags, SourceParameterFlags.ByVal) Then
+                            ReportDiagnostic(diagBag, keywordSyntax, ERRID.ERR_MultipleParameterSpecifiers)
+
+                        ElseIf FlagIsSet(flags, SourceParameterFlags.ParamArray) Then
+                            ReportDiagnostic(diagBag, keywordSyntax, ERRID.ERR_ParamArrayMustBeByVal)
+                        End If
+
+                    Case SyntaxKind.OptionalKeyword
+                        foundFlag = SourceParameterFlags.Optional
+                        If FlagIsSet(flags, SourceParameterFlags.ParamArray) Then
+                            ReportDiagnostic(diagBag, keywordSyntax, ERRID.ERR_MultipleOptionalParameterSpecifiers)
+                        End If
+
+                    Case SyntaxKind.ParamArrayKeyword
+                        foundFlag = SourceParameterFlags.ParamArray
+                        If FlagIsSet(flags, SourceParameterFlags.Optional) Then
+                            ReportDiagnostic(diagBag, keywordSyntax, ERRID.ERR_MultipleOptionalParameterSpecifiers)
+                        ElseIf FlagIsSet(flags, SourceParameterFlags.ByRef) Then
+                            ReportDiagnostic(diagBag, keywordSyntax, ERRID.ERR_ParamArrayMustBeByVal)
+                        End If
                 End Select
+
+                If FlagIsSet(flags, foundFlag) Then
+                    ReportDiagnostic(diagBag, keywordSyntax, ERRID.ERR_DuplicateParameterSpecifier)
+                End If
+
+                fullFlags = fullFlags Or foundFlag
 
                 ' Report errors with the modifier
                 If checkModifier IsNot Nothing Then
@@ -280,6 +314,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 flags = flags Or foundFlag
             Next
+
+            Dim hasOptionalFlagSet = FlagIsSet(fullFlags, SourceParameterFlags.Optional)
+            Dim hasDefaultValue = paramSyntax.Default IsNot Nothing
+
+            ' The following check needs to be conditional on if language version supports it.
+            Dim hasSupport_OptionalParametersWithAssumedDefaults = True
+
+            If (hasDefaultValue = True) AndAlso (hasOptionalFlagSet = False) Then
+                ReportDiagnostic(diagBag, paramSyntax, ERRID.ERR_DefaultValueForNonOptionalParam)
+            ElseIf (hasOptionalFlagSet = True) AndAlso (hasDefaultValue = False) AndAlso
+                    Not hasSupport_OptionalParametersWithAssumedDefaults Then
+                ReportDiagnostic(diagBag, paramSyntax, ERRID.ERR_ObsoleteOptionalWithoutValue)
+            End If
 
             Return flags
         End Function
@@ -1043,7 +1090,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Dim name = paramSyntax.Identifier.Identifier.ValueText
                 Dim flags As SourceParameterFlags = Nothing
 
-                flags = DecodeParameterModifiers(container, paramSyntax.Modifiers, checkModifier, diagBag)
+                flags = DecodeParameterModifiers(container, paramSyntax, checkModifier, diagBag)
 
                 If (flagsOfPreviousParameters And SourceParameterFlags.Optional) = SourceParameterFlags.Optional Then
                     If (flags And SourceParameterFlags.ParamArray) = SourceParameterFlags.ParamArray AndAlso

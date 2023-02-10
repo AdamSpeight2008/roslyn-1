@@ -286,6 +286,30 @@ Public Class ParseMethods
     End Sub
 
     <Fact>
+    Public Sub ImplicitOptionalDefaults()
+        ParseAndVerify("
+Module Module1
+  Sub Method1(Optional x)
+  End Sub
+  Sub Method2(Optional x As String)
+  End Sub
+  Sub Method3(Optional x = Nothing)
+  End Sub
+  Sub Method4(Optional x As String = Nothing)
+  End Sub
+  Sub Method5(x As String, Optional y As String = Nothing)
+  End Sub
+  Sub Method6(x As String, Optional y As String)
+  End Sub
+  Sub Method7(x As String, Optional y = Nothing)
+  End Sub
+  Sub Method8(x As String, Optional y)
+  End Sub
+End Module
+")
+    End Sub
+
+    <Fact>
     Public Sub Bug862458()
         ParseAndVerify(<![CDATA[
             Imports System.Runtime.InteropServices
@@ -347,11 +371,13 @@ Public Class ParseMethods
                 End Function
             End Class
         ]]>,
-        <errors>
-            <error id="30201"/>
-            <error id="30812"/>
-            <error id="30180"/>
-        </errors>)
+                       Diagnostic(ERRID.ERR_UnrecognizedTypeKeyword, "")
+                       )
+        '<errors>
+        '    <error id="30201"/>
+        '    <error id="30812"/>
+        '    <error id="30180"/>
+        '</errors>)
     End Sub
 
     <Fact>
